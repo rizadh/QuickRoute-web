@@ -30,24 +30,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         editingModeEnabled: true
     }
 
-    // moveWaypointUp = (index: number) => {
-    //     if (index == 0) return null
-
-    //     const waypoints = [...this.props.waypoints]
-    //     waypoints.splice(index - 1, 2, waypoints[index], waypoints[index - 1])
-
-    //     this.props.onAddressesChange(waypoints)
-    // }
-
-    // moveWaypointDown = (index: number) => {
-    //     if (index >= this.props.waypoints.length - 1) return
-
-    //     const waypoints = [...this.props.waypoints]
-    //     waypoints.splice(index, 2, waypoints[index + 1], waypoints[index])
-
-    //     this.props.onAddressesChange(waypoints)
-    // }
-
     beginEditingMode = () => {
         this.setState({
             rawInput: this.props.waypoints.map(w => w.address).join('\n'),
