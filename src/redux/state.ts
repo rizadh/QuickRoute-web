@@ -12,7 +12,7 @@ export interface RouteInformation {
 
 export default interface AppState {
     waypoints: Waypoint[]
-    foundRoutes: []
+    foundRoutes: boolean[]
     routeInformation?: RouteInformation
     autofitIsEnabled: boolean
     mapIsUpdating: boolean

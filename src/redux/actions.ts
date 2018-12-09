@@ -11,7 +11,9 @@ import {
     BeginMapUpdateAction,
     FinishMapUpdateAction,
     MoveWaypointUpAction,
-    MoveWaypointDownAction
+    MoveWaypointDownAction,
+    RouteFoundAction,
+    RouteNotFoundAction
 } from './actionTypes'
 
 export const replaceAddresses = (addresses: Address[]): ReplaceAddressesAction => ({
@@ -47,6 +49,16 @@ export const geocodeSuccess = (waypointIndex: number): GeocodeSuccessAction => (
 export const geocodeFailure = (waypointIndex: number): GeocodeFailureAction => ({
     type: 'GEOCODE_FAILURE',
     waypointIndex
+})
+
+export const routeFound = (routeIndex: number): RouteFoundAction => ({
+    type: 'ROUTE_FOUND',
+    routeIndex
+})
+
+export const routeNotFound = (routeIndex: number): RouteNotFoundAction => ({
+    type: 'ROUTE_NOT_FOUND',
+    routeIndex
 })
 
 export const setRouteInformation = (routeInformation: RouteInformation): SetRouteInformationAction => ({

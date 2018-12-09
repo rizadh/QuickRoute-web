@@ -35,6 +35,16 @@ export interface GeocodeFailureAction {
     waypointIndex: number
 }
 
+export interface RouteFoundAction {
+    type: 'ROUTE_FOUND'
+    routeIndex: number
+}
+
+export interface RouteNotFoundAction {
+    type: 'ROUTE_NOT_FOUND'
+    routeIndex: number
+}
+
 export interface SetRouteInformationAction {
     type: 'SET_ROUTE_INFORMATION',
     routeInformation: RouteInformation
@@ -56,20 +66,12 @@ export interface FinishMapUpdateAction {
     type: 'FINISH_MAP_UPDATE'
 }
 
-// export interface RouteFoundAction {
-//     type: 'ROUTE_FOUND'
-//     index: 
-// }
-
-// export interface RouteNotFoundAction {
-
-// }
-
-type AddressAction = SetAddressAction | ReplaceAddressesAction 
-type WaypointsAction = AddressAction | MoveWaypointUpAction | MoveWaypointDownAction |ReverseWaypointsAction
+type AddressAction = SetAddressAction | ReplaceAddressesAction
+type WaypointsAction = AddressAction | MoveWaypointUpAction | MoveWaypointDownAction | ReverseWaypointsAction
 type GeocodeAction = GeocodeSuccessAction | GeocodeFailureAction
+type RouteAction = RouteFoundAction | RouteNotFoundAction | SetRouteInformationAction
 type AutofitAction = EnableAutofitAction | DisableAutofitAction
 type MapUpdateAction = BeginMapUpdateAction | FinishMapUpdateAction
 
-type AppAction = WaypointsAction | GeocodeAction | SetRouteInformationAction | AutofitAction | MapUpdateAction
+type AppAction = WaypointsAction | GeocodeAction | RouteAction | AutofitAction | MapUpdateAction
 export default AppAction

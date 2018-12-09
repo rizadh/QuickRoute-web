@@ -3,7 +3,7 @@ import { Store, Unsubscribe } from 'redux'
 import AppState, { Waypoint } from '../redux/state'
 import AppAction from '../redux/actionTypes'
 import { isEqual } from 'lodash'
-import { geocodeSuccess, geocodeFailure, setRouteInformation, disableAutofit, beginMapUpdate, finishMapUpdate } from '../redux/actions'
+import { geocodeSuccess, geocodeFailure, setRouteInformation, disableAutofit, beginMapUpdate, finishMapUpdate, routeFound, routeNotFound } from '../redux/actions'
 import store from '../redux/store';
 
 interface MapViewProps {
@@ -12,7 +12,9 @@ interface MapViewProps {
 
 const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
 const placeCache = new Map<string, mapkit.Place>()
-const geocodeRequests = new Map<string, number>()
+
+const directions = new mapkit.Directions();
+const routeCache = new Map<string, mapkit.Route>()
 
 export default class MapView extends React.Component<MapViewProps> {
     element?: HTMLElement
@@ -25,10 +27,7 @@ export default class MapView extends React.Component<MapViewProps> {
         if (cachedPlace) return cachedPlace
 
         return new Promise<mapkit.Place>((resolve, reject) => {
-            const previousRequestId = geocodeRequests.get(address)
-            if (previousRequestId) geocoder.cancel(previousRequestId)
-
-            const requestId = geocoder.lookup(address, (error, data) => {
+            geocoder.lookup(address, (error, data) => {
                 if (error) {
                     reject(error)
                     return
@@ -44,8 +43,30 @@ export default class MapView extends React.Component<MapViewProps> {
 
                 resolve(place)
             })
+        })
+    }
 
-            geocodeRequests.set(address, requestId)
+    routeBetween = async (origin: mapkit.Place, destination: mapkit.Place): Promise<mapkit.Route> => {
+        const cachedRoute = routeCache.get(origin.formattedAddress + destination.formattedAddress)
+        if (cachedRoute) return cachedRoute
+
+        return new Promise<mapkit.Route>((resolve, reject) => {
+            directions.route({ origin, destination }, (error, data) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+
+                const route = data.routes[0]
+                if (!route) {
+                    reject(`No results for route: '${origin.formattedAddress}' -> '${destination.formattedAddress}'`)
+                    return
+                }
+
+                routeCache.set(origin.formattedAddress + destination.formattedAddress, route)
+
+                resolve(route)
+            })
         })
     }
 
@@ -72,7 +93,16 @@ export default class MapView extends React.Component<MapViewProps> {
                 throw error
             }
         }))
-        const routes = await Promise.all(places.slice(0, -1).map((waypoint, index) => routeBetween(waypoint, places[index + 1])))
+        const routes = await Promise.all(places.slice(0, -1).map(async (waypoint, index) => {
+            try {
+                const route = await this.routeBetween(waypoint, places[index + 1])
+                this.props.store.dispatch(routeFound(index))
+                return route
+            } catch (error) {
+                this.props.store.dispatch(routeNotFound(index))
+                throw error
+            }
+        }))
 
         this.props.store.dispatch(setRouteInformation({
             distance: routes.reduce((prev, curr) => prev + curr.distance, 0),
@@ -169,30 +199,4 @@ export default class MapView extends React.Component<MapViewProps> {
             className="mapview"
         />
     }
-}
-
-const directions = new mapkit.Directions();
-const routeCache = new Map<string, mapkit.Route>()
-async function routeBetween(origin: mapkit.Place, destination: mapkit.Place): Promise<mapkit.Route> {
-    const cachedRoute = routeCache.get(origin.formattedAddress + destination.formattedAddress)
-    if (cachedRoute) return cachedRoute
-
-    return new Promise<mapkit.Route>((resolve, reject) => {
-        directions.route({ origin, destination }, (error, data) => {
-            if (error) {
-                reject(error)
-                return
-            }
-
-            const route = data.routes[0]
-            if (!route) {
-                reject(error)
-                return
-            }
-
-            routeCache.set(origin.formattedAddress + destination.formattedAddress, route)
-
-            resolve(route)
-        })
-    })
 }

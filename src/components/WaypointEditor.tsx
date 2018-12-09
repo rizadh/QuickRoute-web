@@ -12,6 +12,7 @@ interface WaypointEditorState {
 
 interface WaypointEditorStateProps {
     waypoints: Waypoint[],
+    foundRoutes: boolean[]
 }
 
 interface WaypointEditorDispatchProps {
@@ -131,6 +132,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     : null}
                 <WaypointTable
                     waypoints={this.props.waypoints}
+                    foundRoutes={this.props.foundRoutes}
                     onMoveUp={this.props.moveWaypointUp}
                     onMoveDown={this.props.moveWaypointDown}
                     setAddress={this.props.setAddress}
@@ -147,6 +149,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
 export default connect<WaypointEditorStateProps, WaypointEditorDispatchProps, {}, AppState>(state => ({
     waypoints: state.waypoints,
+    foundRoutes: state.foundRoutes
 }), dispatch => ({
     replaceAddresses: waypoints => dispatch(replaceAddresses(waypoints)),
     reverseWaypoints: () => dispatch(reverseWaypoints()),

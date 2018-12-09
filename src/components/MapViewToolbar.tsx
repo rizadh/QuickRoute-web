@@ -7,7 +7,8 @@ import { enableAutofit } from '../redux/actions';
 interface MapViewToolbarStateProps {
     routeInformation?: RouteInformation
     autofitIsEnabled: boolean,
-    mapIsUpdating: boolean
+    mapIsUpdating: boolean,
+    updateProgress: number
 }
 
 interface MapViewToolbarDispatchProps {
@@ -17,7 +18,7 @@ interface MapViewToolbarDispatchProps {
 type MapViewToolbarProps = MapViewToolbarStateProps & MapViewToolbarDispatchProps
 
 class MapViewToolbar extends React.Component<MapViewToolbarProps> {
-    stringForTime(seconds: number) {
+    stringForTime = (seconds: number) => {
         if (seconds < 60) {
             return `${Math.floor(seconds)} s`
         }
@@ -29,7 +30,7 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
         return `${Math.floor(seconds / 3600)} h ${Math.floor((seconds / 60) % 60)} m`
     }
 
-    stringForDistance(metres: number) {
+    stringForDistance = (metres: number) => {
         if (metres < 1000) {
             return `${Math.floor(metres)} metres`
         }
@@ -37,16 +38,19 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
         return `${Math.floor(metres / 100) / 10} km`
     }
 
-    render() {
-        const classNames = this.props.mapIsUpdating ? ['mapview-toolbar', 'frosted', 'updating'] : ['mapview-toolbar', 'frosted']
+    stringForUpdateProgress = (): string =>
+        `${Math.floor(this.props.updateProgress * 1000) / 10} %`
 
-        return <div className={classNames.join(' ')}>
+    render() {
+        return <div className="mapview-toolbar frosted">
             {this.props.routeInformation
                 ? <>
                     <StatView title="Distance" value={this.stringForDistance(this.props.routeInformation.distance)} />
                     <StatView title="Time" value={this.stringForTime(this.props.routeInformation.time)} />
                 </>
-                : "Add waypoints to show route information"
+                : this.props.mapIsUpdating
+                    ? <StatView title="Routing" value={this.stringForUpdateProgress()} />
+                    : "Add waypoints to show route information"
             }
             {this.props.autofitIsEnabled
                 ? null
@@ -58,10 +62,22 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
     }
 }
 
-export default connect<MapViewToolbarStateProps, MapViewToolbarDispatchProps, {}, AppState>(state => ({
-    routeInformation: state.routeInformation,
-    autofitIsEnabled: state.autofitIsEnabled,
-    mapIsUpdating: state.mapIsUpdating
-}), dispatch => ({
+export default connect<MapViewToolbarStateProps, MapViewToolbarDispatchProps, {}, AppState>(state => {
+    const waypointCount = state.waypoints.length
+    const currentRouteCount = state.foundRoutes.filter(a => a).length
+    const targetRouteCount = waypointCount - 1
+    const geocodedWaypointCount = state.waypoints.filter(w => typeof w.isGeocoded === 'boolean').length
+
+    const totalItems = waypointCount + targetRouteCount
+    const completedItems = geocodedWaypointCount + currentRouteCount
+    const progress = completedItems / totalItems
+
+    return {
+        routeInformation: state.routeInformation,
+        autofitIsEnabled: state.autofitIsEnabled,
+        mapIsUpdating: state.mapIsUpdating,
+        updateProgress: progress
+    }
+}, dispatch => ({
     enableAutofit: () => dispatch(enableAutofit())
 }))(MapViewToolbar)

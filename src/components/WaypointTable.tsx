@@ -4,12 +4,25 @@ import WaypointRow from './WaypointRow'
 
 interface WaypointTableProps {
     waypoints: Waypoint[]
+    foundRoutes: boolean[]
     onMoveUp: (index: number) => void
     onMoveDown: (index: number) => void
     setAddress: (index: number, address: string) => void
 }
 
 export default class WaypointTable extends React.Component<WaypointTableProps> {
+    routeStatus = (index: number): 'NONE' | 'ALL' | 'PARTIAL' => {
+        const forwardRoute = this.props.foundRoutes[index]
+        const backwardRoute = this.props.foundRoutes[index - 1]
+        const lastIndex = this.props.waypoints.length - 1
+
+        if (index === 0) return forwardRoute ? 'ALL' : 'NONE'
+        if (index === lastIndex) return backwardRoute ? 'ALL' : 'NONE'
+        else if (forwardRoute && backwardRoute) return 'ALL'
+        else if (forwardRoute || backwardRoute) return 'PARTIAL'
+        else return 'NONE'
+    }
+
     render() {
         return <table className="table">
             <thead>
@@ -21,7 +34,10 @@ export default class WaypointTable extends React.Component<WaypointTableProps> {
             </thead>
             <tbody>
                 {this.props.waypoints.map((waypoint, index) =>
-                    <WaypointRow key={index} index={index + 1}
+                    <WaypointRow
+                        key={index}
+                        index={index}
+                        routeStatus={this.routeStatus(index)}
                         waypoint={waypoint}
                         moveUp={() => this.props.onMoveUp(index)}
                         moveDown={() => this.props.onMoveDown(index)}

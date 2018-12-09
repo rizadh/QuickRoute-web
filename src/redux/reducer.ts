@@ -24,7 +24,8 @@ export default (state: AppState | undefined, action: AppAction): AppState => {
                             address: action.address
                         }
                         : waypoint
-                )
+                ),
+                foundRoutes: new Array(state.waypoints.length - 1)
             }
         case 'REPLACE_ADDRESSES':
             if (isEqual(
@@ -38,12 +39,13 @@ export default (state: AppState | undefined, action: AppAction): AppState => {
                 waypoints: action.addresses.map(address => ({
                     address
                 })),
+                foundRoutes: new Array(action.addresses.length - 1)
             }
-        case 'MOVE_WAYPOINT_UP':
+        case 'MOVE_WAYPOINT_UP': {
             if (action.index === 0) return state
 
-            const waypointsMovedUp = [...state.waypoints]
-            waypointsMovedUp.splice(
+            const waypoints = [...state.waypoints]
+            waypoints.splice(
                 action.index - 1,
                 2,
                 state.waypoints[action.index],
@@ -52,13 +54,15 @@ export default (state: AppState | undefined, action: AppAction): AppState => {
 
             return {
                 ...state,
-                waypoints: waypointsMovedUp
+                waypoints: waypoints,
+                foundRoutes: new Array(state.waypoints.length - 1)
             }
-        case 'MOVE_WAYPOINT_DOWN':
+        }
+        case 'MOVE_WAYPOINT_DOWN': {
             if (action.index >= state.waypoints.length - 1) return state
 
-            const waypointsMovedDown = [...state.waypoints]
-            waypointsMovedDown.splice(
+            const waypoints = [...state.waypoints]
+            waypoints.splice(
                 action.index,
                 2,
                 state.waypoints[action.index + 1],
@@ -67,12 +71,15 @@ export default (state: AppState | undefined, action: AppAction): AppState => {
 
             return {
                 ...state,
-                waypoints: waypointsMovedDown
+                waypoints: waypoints,
+                foundRoutes: new Array(state.waypoints.length - 1)
             }
+        }
         case 'REVERSE_WAYPOINTS':
             return {
                 ...state,
                 waypoints: state.waypoints.slice().reverse(),
+                foundRoutes: new Array(state.waypoints.length - 1)
             }
         case 'GEOCODE_SUCCESS':
             return {
@@ -84,7 +91,7 @@ export default (state: AppState | undefined, action: AppAction): AppState => {
                     } : waypoint
                 })
             }
-        case 'GEOCODE_FAILURE':
+        case 'GEOCODE_FAILURE': {
             return {
                 ...state,
                 waypoints: state.waypoints.map((waypoint, waypointIndex) => {
@@ -94,6 +101,7 @@ export default (state: AppState | undefined, action: AppAction): AppState => {
                     } : waypoint
                 })
             }
+        }
         case 'SET_ROUTE_INFORMATION':
             return {
                 ...state,
@@ -119,5 +127,23 @@ export default (state: AppState | undefined, action: AppAction): AppState => {
                 ...state,
                 mapIsUpdating: false
             }
+        case 'ROUTE_FOUND': {
+            const foundRoutes = state.foundRoutes.slice()
+            foundRoutes[action.routeIndex] = true
+
+            return {
+                ...state,
+                foundRoutes
+            }
+        }
+        case 'ROUTE_NOT_FOUND': {
+            const foundRoutes = state.foundRoutes.slice()
+            foundRoutes[action.routeIndex] = false
+
+            return {
+                ...state,
+                foundRoutes
+            }
+        }
     }
 };

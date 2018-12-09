@@ -6,7 +6,8 @@ interface WaypointRowProps {
     waypoint: Waypoint
     moveUp: () => void
     moveDown: () => void
-    setAddress: (address: string) => void
+    setAddress: (address: string) => void,
+    routeStatus: 'NONE' | 'PARTIAL' | 'ALL'
 }
 
 interface WaypointRowState {
@@ -46,16 +47,48 @@ export default class WaypointRow extends React.Component<WaypointRowProps, Waypo
     }
 
     render() {
+        let color: string
+        switch (this.props.routeStatus) {
+            case 'ALL':
+                color = 'black'
+                break
+            case 'PARTIAL':
+                color = 'grey'
+                break
+            case 'NONE':
+                color = 'orange'
+                break
+            default:
+                color = 'red'
+                break
+        }
+
         let icon: JSX.Element | number
         if (typeof this.props.waypoint.isGeocoded === 'undefined') {
             icon = <i className="fas fa-circle-notch fa-spin"></i>
         } else if (this.props.waypoint.isGeocoded) {
-            icon = this.props.index
+            icon = <span style={{ color }}>{this.props.index + 1}</span>
         } else {
             icon = <i className="fas fa-exclamation-circle text-danger"></i>
         }
 
-        return <tr>
+        let textClass: string
+        switch (this.props.routeStatus) {
+            case 'ALL':
+                textClass = 'text-dark'
+                break
+            case 'PARTIAL':
+                textClass = 'text-primary'
+                break
+            case 'NONE':
+                textClass = 'text-warning'
+                break
+            default:
+                textClass = 'text-danger'
+                break
+        }
+
+        return <tr className={textClass}>
             <td>
                 {icon}
             </td>
