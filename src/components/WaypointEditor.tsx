@@ -145,16 +145,12 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 }
 
-export default connect<WaypointEditorStateProps, WaypointEditorDispatchProps, {}, AppState>(state => {
-    return {
-        waypoints: state.waypoints,
-    }
-}, dispatch => {
-    return {
-        replaceAddresses: waypoints => dispatch(replaceAddresses(waypoints)),
-        reverseWaypoints: () => dispatch(reverseWaypoints()),
-        setAddress: (index, address) => dispatch(setAddress(index, address)),
-        moveWaypointUp: index => dispatch(moveWaypointUp(index)),
-        moveWaypointDown: index => dispatch(moveWaypointDown(index))
-    }
-})(WaypointEditor)
+export default connect<WaypointEditorStateProps, WaypointEditorDispatchProps, {}, AppState>(state => ({
+    waypoints: state.waypoints,
+}), dispatch => ({
+    replaceAddresses: waypoints => dispatch(replaceAddresses(waypoints)),
+    reverseWaypoints: () => dispatch(reverseWaypoints()),
+    setAddress: (index, address) => dispatch(setAddress(index, address)),
+    moveWaypointUp: index => dispatch(moveWaypointUp(index)),
+    moveWaypointDown: index => dispatch(moveWaypointDown(index))
+}))(WaypointEditor)
