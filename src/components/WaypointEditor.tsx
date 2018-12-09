@@ -110,7 +110,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     </div>
                     <textarea className="form-control" rows={this.rowsInRawInput} onChange={this.handleTextareaChange} value={this.state.rawInput}></textarea>
                 </div>
-                <div className="button-bar">
+                <div className="button-bar frosted">
                     <button className="btn btn-primary" onClick={this.endEditingMode}>Save</button>
                     {this.props.waypoints.length > 0 ?
                         <button className="btn btn-secondary" onClick={this.cancelEditingMode}>Cancel</button> : null
@@ -136,7 +136,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     setAddress={this.props.setAddress}
                 />
             </div>
-            <div className="button-bar">
+            <div className="button-bar frosted">
                 <button className="btn btn-primary" onClick={this.beginEditingMode}>Edit</button>
                 <button className="btn btn-secondary" onClick={this.props.reverseWaypoints}>Reverse</button>
                 <button className="btn btn-secondary" onClick={this.showUrls}>Show URLs</button>

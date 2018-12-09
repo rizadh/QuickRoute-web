@@ -38,7 +38,7 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
     }
 
     render() {
-        const classNames = this.props.mapIsUpdating ? ['mapview-toolbar', 'updating'] : ['mapview-toolbar']
+        const classNames = this.props.mapIsUpdating ? ['mapview-toolbar', 'frosted', 'updating'] : ['mapview-toolbar', 'frosted']
 
         return <div className={classNames.join(' ')}>
             {this.props.routeInformation

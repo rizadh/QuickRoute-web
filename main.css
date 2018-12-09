@@ -41,8 +41,6 @@
     overflow: hidden;
 
     padding: 8px 16px 16px 16px;
-
-    background-color: white;
 }
 
 /* TODO: Activate in code */
@@ -88,20 +86,22 @@
     align-items: center;
     justify-content: space-evenly;
 
-    background-color: rgba(255, 255, 255, 0.8);
-    border-top: 1px solid lightgray;
-
     transition: opacity 0.2s;
 }
 
+.frosted {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-top: 1px solid lightgray;
+}
+
 @supports (-webkit-backdrop-filter: blur(0px)) {
-    .mapview-toolbar {
+    .frosted {
         --background-blur: 80px;
         -webkit-backdrop-filter: blur(var(--background-blur));
         backdrop-filter: blur(var(--background-blur));
         background-color: rgba(255, 255, 255, 0.25);
 
-        border-top: 1px solid rgba(255, 255, 255, 0.8), 2px solid red;
+        border-top: 1px solid rgba(0, 0, 0, 0.2); 
     }
 }
 
