@@ -1,0 +1,142 @@
+:root {
+    --mapview-toolbar-height: 48px;
+    --waypoint-editor-width: 480px;
+}
+
+.waypoint-editor {
+    position: absolute;
+    left: 0;
+    width: var(--waypoint-editor-width);
+    top: 0;
+    bottom: 0;
+
+    border-right: 1px solid lightgray;
+
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+.waypoint-editor > .form-wrapper {
+    width: 100%;
+    padding: 16px 16px 8px 16px;
+}
+
+.waypoint-editor > .form-wrapper > textarea {
+    resize: none;
+}
+
+.waypoint-editor > .form-wrapper > * {
+    margin-bottom: 16px;
+}
+
+.waypoint-editor > .form-wrapper > *:last-child {
+    margin-bottom: 0;
+}
+
+.waypoint-editor > .button-bar {
+    width: 100%;
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: -8px;
+    overflow: hidden;
+
+    padding: 8px 16px 16px 16px;
+
+    background-color: white;
+}
+
+/* TODO: Activate in code */
+.waypoint-editor > .button-bar.stuck {
+    border-top: 1px solid lightgray;
+}
+
+.waypoint-editor > .button-bar > button {
+    float: right;
+}
+
+.waypoint-editor > .button-bar > button:not(:first-child) {
+    margin-right: 8px;
+}
+
+.mapview {
+    position: absolute;
+    left: var(--waypoint-editor-width);
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    transition: filter 0.2s;
+}
+
+.mapview.updating {
+    transition: filter 0.4s;
+    filter: saturate(0) brightness(0.5);
+}
+
+.mapview.updating * {
+    pointer-events: none;
+}
+
+.mapview-toolbar {
+    position: absolute;
+    left: var(--waypoint-editor-width);
+    right: 0;
+    bottom: 0;
+    height: var(--mapview-toolbar-height);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    background-color: rgba(255, 255, 255, 0.8);
+    border-top: 1px solid lightgray;
+
+    transition: opacity 0.2s;
+}
+
+@supports (-webkit-backdrop-filter: blur(0px)) {
+    .mapview-toolbar {
+        --background-blur: 80px;
+        -webkit-backdrop-filter: blur(var(--background-blur));
+        backdrop-filter: blur(var(--background-blur));
+        background-color: rgba(255, 255, 255, 0.25);
+
+        border-top: 1px solid rgba(255, 255, 255, 0.8), 2px solid red;
+    }
+}
+
+.mapview-toolbar.updating {
+    transition: opacity 0.4s;
+    opacity: 0;
+}
+
+@media (max-width: 1920px) {
+    :root {
+        --waypoint-editor-width: 25%;
+    }
+}
+
+@media (max-width: 1280px) {
+    :root {
+        --waypoint-editor-width: 320px;
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        --waypoint-editor-width: 100%;
+    }
+
+    .waypoint-editor {
+        bottom: var(--mapview-toolbar-height);
+    }
+
+    .mapview {
+        display: none;
+    }
+
+    .mapview-toolbar  {
+        left: 0;
+        width: 100%;
+    }
+}
