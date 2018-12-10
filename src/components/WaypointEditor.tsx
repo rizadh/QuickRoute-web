@@ -76,10 +76,9 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         })
     }
 
-    showUrls = () => {
+    openUrls = () => {
         const waypoints = this.props.waypoints.map(w => w.address)
         const MAX_WAYPOINTS = 10
-        const urls = []
 
         while (waypoints.length > 0) {
             const currentWaypoints = waypoints.splice(0, MAX_WAYPOINTS)
@@ -91,45 +90,36 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 waypoints: currentWaypoints.length > 0 ? currentWaypoints.join('|') : undefined
             }
 
-            urls.push('https://www.google.com/maps/dir/?' + stringify(parameters))
+            window.open('https://www.google.com/maps/dir/?' + stringify(parameters))
         }
-
-        alert(urls.join('\n'))
     }
 
     get rowsInRawInput() { return this.state.rawInput.split('\n').length }
 
     render() {
-        if (this.state.editingModeEnabled) {
-            return <div className="waypoint-editor">
-                <div className="form-wrapper">
-                    <div>
-                        <h2>Edit Waypoints</h2>
-                    </div>
-                    <div className="alert alert-info" role="alert">
-                        Enter one full address per line
-                    </div>
-                    <textarea className="form-control" rows={this.rowsInRawInput} onChange={this.handleTextareaChange} value={this.state.rawInput}></textarea>
-                </div>
-                <div className="button-bar frosted">
-                    <button className="btn btn-primary" onClick={this.endEditingMode}>Save</button>
-                    {this.props.waypoints.length > 0 ?
-                        <button className="btn btn-secondary" onClick={this.cancelEditingMode}>Cancel</button> : null
-                    }
-                </div>
-            </div>
-        }
+        const headerTitle = this.state.editingModeEnabled
+            ? "Editing Waypoints"
+            : "Waypoints"
 
-        return <div className="waypoint-editor">
-            <div className="form-wrapper">
-                <div>
-                    <h2>Waypoints</h2>
+        const formContent = this.state.editingModeEnabled
+            ? <>
+                <div className="alert alert-info" role="alert">
+                    Enter one full address per line
                 </div>
-                {this.props.waypoints.some(w => w.isGeocoded === false)
-                    ? <div className="alert alert-danger" role="alert">
-                        One or more waypoints could not be found
-                    </div>
-                    : null}
+                <textarea
+                    className="form-control"
+                    rows={this.rowsInRawInput}
+                    onChange={this.handleTextareaChange}
+                    value={this.state.rawInput}>
+                </textarea>
+            </>
+            : <>
+                <div
+                    className="alert alert-danger"
+                    role="alert"
+                    hidden={!this.props.waypoints.some(w => w.isGeocoded === false)}>
+                    One or more waypoints could not be found
+                </div>
                 <WaypointTable
                     waypoints={this.props.waypoints}
                     foundRoutes={this.props.foundRoutes}
@@ -137,11 +127,40 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     onMoveDown={this.props.moveWaypointDown}
                     setAddress={this.props.setAddress}
                 />
+            </>
+
+        const buttons = this.state.editingModeEnabled
+            ? <>
+                <button className="btn btn-primary" onClick={this.endEditingMode}>
+                    Save
+                </button>
+                {this.props.waypoints.length > 0
+                    ? <button className="btn btn-secondary" onClick={this.cancelEditingMode}>
+                        Cancel
+                    </button>
+                    : null}
+            </>
+            : <>
+                <button className="btn btn-primary" onClick={this.beginEditingMode}>
+                    Edit
+                </button>
+                <button className="btn btn-secondary" onClick={this.props.reverseWaypoints}>
+                    Reverse
+                </button>
+                <button className="btn btn-secondary" onClick={this.openUrls}>
+                    Open in <i className="fab fa-google"></i> Maps
+                </button>
+            </>
+
+        return <div className="waypoint-editor">
+            <div className="waypoint-editor-header frosted">
+                <h2>{headerTitle}</h2>
             </div>
-            <div className="button-bar frosted">
-                <button className="btn btn-primary" onClick={this.beginEditingMode}>Edit</button>
-                <button className="btn btn-secondary" onClick={this.props.reverseWaypoints}>Reverse</button>
-                <button className="btn btn-secondary" onClick={this.showUrls}>Show URLs</button>
+            <div className="waypoint-editor-form">
+                {formContent}
+            </div>
+            <div className="waypoint-editor-button-bar frosted">
+                {buttons}
             </div>
         </div>
     }

@@ -16,44 +16,57 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.waypoint-editor > .form-wrapper {
-    width: 100%;
-    padding: 16px 16px 8px 16px;
+.waypoint-editor > * {
+    padding: 0 16px;
 }
 
-.waypoint-editor > .form-wrapper > textarea {
+.waypoint-editor > *:not(:first-child) {
+    margin-top: 16px;
+}
+
+.waypoint-editor > *:first-child {
+    padding-top: 16px;
+}
+
+.waypoint-editor > *:last-child {
+    padding-bottom: 16px;
+}
+
+.waypoint-editor-header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    padding: 16px;
+
+    z-index: 1;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
+}
+
+.waypoint-editor-header > h2 {
+    margin: 0;
+}
+
+.waypoint-editor-form > textarea {
     resize: none;
 }
 
-.waypoint-editor > .form-wrapper > * {
-    margin-bottom: 16px;
-}
-
-.waypoint-editor > .form-wrapper > *:last-child {
-    margin-bottom: 0;
-}
-
-.waypoint-editor > .button-bar {
+.waypoint-editor-button-bar {
     width: 100%;
     position: -webkit-sticky;
     position: sticky;
     bottom: -8px;
     overflow: hidden;
 
-    padding: 8px 16px 16px 16px;
+    padding: 16px;
+
+    border-top: 1px solid rgba(0, 0, 0, 0.1); 
 }
 
-/* TODO: Activate in code */
-.waypoint-editor > .button-bar.stuck {
-    border-top: 1px solid lightgray;
-}
-
-.waypoint-editor > .button-bar > button {
+.waypoint-editor-button-bar > button {
     float: right;
-}
-
-.waypoint-editor > .button-bar > button:not(:first-child) {
-    margin-right: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
 }
 
 .mapview {
@@ -85,11 +98,12 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+
+    border-top: 1px solid rgba(0, 0, 0, 0.1); 
 }
 
 .frosted {
     background-color: rgba(255, 255, 255, 0.9);
-    border-top: 1px solid lightgray;
 }
 
 @supports (-webkit-backdrop-filter: blur(0px)) {
@@ -98,8 +112,6 @@
         -webkit-backdrop-filter: blur(var(--background-blur));
         backdrop-filter: blur(var(--background-blur));
         background-color: rgba(255, 255, 255, 0.25);
-
-        border-top: 1px solid rgba(0, 0, 0, 0.2); 
     }
 }
 
