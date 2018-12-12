@@ -12,19 +12,19 @@ import AppAction from '../redux/actionTypes';
 import Textarea from 'react-textarea-autosize'
 import TextareaAutosize from 'react-textarea-autosize';
 
-interface WaypointEditorState {
+type WaypointEditorState = {
     bulkEditTextAreaValue: string
     editingModeEnabled: boolean
 }
 
-interface WaypointEditorStateProps {
+type WaypointEditorStateProps = {
     waypoints: string[],
     fetchedPlaces: FetchedPlaces
     fetchedRoutes: FetchedRoutes
     routeInformation: RouteInformation
 }
 
-interface WaypointEditorDispatchProps {
+type WaypointEditorDispatchProps = {
     replaceWaypoints(waypoints: string[]): void
     setWaypoint(index: number, waypoint: string): void
     moveWaypointUp(index: number): void

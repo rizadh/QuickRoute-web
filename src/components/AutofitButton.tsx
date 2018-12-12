@@ -4,7 +4,7 @@ import AppAction from '../redux/actionTypes';
 import { enableAutofit } from '../redux/actions';
 import { connect } from 'react-redux';
 
-interface AutofitButtonProps {
+type AutofitButtonProps = {
     autofitIsEnabled: boolean,
     enableAutofit: () => void
 }

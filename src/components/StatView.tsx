@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-interface StatViewProps {
+type StatViewProps = {
     title: string
     value: string
 }

@@ -6,7 +6,7 @@ import { isEqual } from 'lodash'
 import { disableAutofit } from '../redux/actions'
 import { routeInformation } from '../redux/selectors'
 
-interface MapViewProps {
+type MapViewProps = {
     store: Store<AppState, AppAction>
 }
 

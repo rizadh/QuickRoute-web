@@ -7,7 +7,7 @@ import AppAction from '../redux/actionTypes'
 import MapViewToolbar from './MapViewToolbar'
 import AutofitButton from './AutofitButton'
 
-interface AppProps {
+type AppProps = {
     store: Store<AppState, AppAction>
 }
 

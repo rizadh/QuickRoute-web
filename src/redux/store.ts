@@ -8,7 +8,7 @@ import thunk, { ThunkMiddleware } from 'redux-thunk'
 const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
 const directions = new mapkit.Directions()
 
-export interface ExtraArgument {
+export type ExtraArgument = {
     geocoder: mapkit.Geocoder
     directions: mapkit.Directions
 }

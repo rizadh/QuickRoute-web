@@ -1,37 +1,37 @@
-export interface SetWaypointsAction {
+export type SetWaypointsAction = {
     type: 'SET_WAYPOINTS'
     waypoints: string[]
 }
 
-export interface LookupSuccessAction {
+export type LookupSuccessAction = {
     type: 'LOOKUP_SUCCESS',
     waypoint: string,
     place: mapkit.Place
 }
 
-export interface LookupFailureAction {
+export type LookupFailureAction = {
     type: 'LOOKUP_FAILURE',
     waypoint: string
 }
 
-export interface RouteSuccessAction {
+export type RouteSuccessAction = {
     type: 'ROUTE_SUCCESS',
     origin: string,
     destination: string,
     route: mapkit.Route
 }
 
-export interface RouteFailureAction {
+export type RouteFailureAction = {
     type: 'ROUTE_FAILURE',
     origin: string,
     destination: string
 }
 
-export interface EnableAutofitAction {
+export type EnableAutofitAction = {
     type: 'ENABLE_AUTOFIT'
 }
 
-export interface DisableAutofitAction {
+export type DisableAutofitAction = {
     type: 'DISABLE_AUTOFIT'
 }
 

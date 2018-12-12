@@ -1,20 +1,20 @@
 import AppState from '../redux/state'
 
-interface EmptyRouteInformation {
+type EmptyRouteInformation = {
     status: 'EMPTY'
 }
 
-interface FetchedRouteInformation {
+type FetchedRouteInformation = {
     status: 'FETCHED'
     totalDistance: number
     totalTime: number
 }
 
-interface FetchFailedRouteInformation {
+type FetchFailedRouteInformation = {
     status: 'FAILED'
 }
 
-interface FetchingRouteInformation {
+type FetchingRouteInformation = {
     status: 'FETCHING'
     fetchProgress: number
 }

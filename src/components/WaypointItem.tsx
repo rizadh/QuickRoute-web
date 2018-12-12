@@ -4,7 +4,7 @@ import { isValidWaypoint } from '../redux/validator'
 
 export type WaypointFetchStatus = 'IN_PROGRESS' | 'SUCCEEDED' | 'FAILED'
 
-interface WaypointItemProps {
+type WaypointItemProps = {
     waypoint: string
     setWaypoint: (waypoint: string) => void
     deleteWaypoint: () => void
@@ -14,7 +14,7 @@ interface WaypointItemProps {
     provided: DraggableProvided
 }
 
-interface WaypointItemState {
+type WaypointItemState = {
     isEditing: boolean
     waypointFieldValue: string
 }

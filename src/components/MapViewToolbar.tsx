@@ -5,7 +5,7 @@ import StatView from './StatView'
 import { routeInformation, RouteInformation } from '../redux/selectors'
 import { Line } from 'rc-progress'
 
-interface MapViewToolbarProps {
+type MapViewToolbarProps = {
     routeInformation: RouteInformation
 }
 

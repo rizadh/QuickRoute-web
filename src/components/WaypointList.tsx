@@ -9,13 +9,13 @@ import { isValidWaypoint } from '../redux/validator'
 import WaypointItem, { WaypointFetchStatus } from './WaypointItem'
 import { DragDropContext, DropResult, Droppable, Draggable } from 'react-beautiful-dnd'
 
-interface WaypointListStateProps {
+type WaypointListStateProps = {
     waypoints: string[]
     fetchedRoutes: FetchedRoutes
     fetchedPlaces: FetchedPlaces
 }
 
-interface WaypointListDispatchProps {
+type WaypointListDispatchProps = {
     setWaypoint: (index: number, waypoint: string) => void
     moveWaypoint: (sourceIndex: number, destinationIndex: number) => void
     moveWaypointUp: (index: number) => void
@@ -26,7 +26,7 @@ interface WaypointListDispatchProps {
 
 type WaypointListProps = WaypointListStateProps & WaypointListDispatchProps
 
-interface WaypointListState {
+type WaypointListState = {
     newWaypointFieldValue: string
 }
 
