@@ -1,53 +1,30 @@
-import { Waypoint, Address, RouteInformation } from './state'
-
-export interface ReplaceAddressesAction {
-    type: 'REPLACE_ADDRESSES'
-    addresses: Address[]
+export interface SetWaypointsAction {
+    type: 'SET_WAYPOINTS'
+    waypoints: string[]
 }
 
-export interface SetAddressAction {
-    type: 'SET_ADDRESS'
-    index: number
-    address: Address
+export interface LookupSuccessAction {
+    type: 'LOOKUP_SUCCESS',
+    waypoint: string,
+    place: mapkit.Place
 }
 
-export interface MoveWaypointUpAction {
-    type: 'MOVE_WAYPOINT_UP'
-    index: number
+export interface LookupFailureAction {
+    type: 'LOOKUP_FAILURE',
+    waypoint: string
 }
 
-export interface MoveWaypointDownAction {
-    type: 'MOVE_WAYPOINT_DOWN'
-    index: number
+export interface RouteSuccessAction {
+    type: 'ROUTE_SUCCESS',
+    origin: string,
+    destination: string,
+    route: mapkit.Route
 }
 
-export interface ReverseWaypointsAction {
-    type: 'REVERSE_WAYPOINTS',
-}
-
-export interface GeocodeSuccessAction {
-    type: 'GEOCODE_SUCCESS'
-    waypointIndex: number
-}
-
-export interface GeocodeFailureAction {
-    type: 'GEOCODE_FAILURE'
-    waypointIndex: number
-}
-
-export interface RouteFoundAction {
-    type: 'ROUTE_FOUND'
-    routeIndex: number
-}
-
-export interface RouteNotFoundAction {
-    type: 'ROUTE_NOT_FOUND'
-    routeIndex: number
-}
-
-export interface SetRouteInformationAction {
-    type: 'SET_ROUTE_INFORMATION',
-    routeInformation: RouteInformation
+export interface RouteFailureAction {
+    type: 'ROUTE_FAILURE',
+    origin: string,
+    destination: string
 }
 
 export interface EnableAutofitAction {
@@ -58,20 +35,10 @@ export interface DisableAutofitAction {
     type: 'DISABLE_AUTOFIT'
 }
 
-export interface BeginMapUpdateAction {
-    type: 'BEGIN_MAP_UPDATE'
-}
-
-export interface FinishMapUpdateAction {
-    type: 'FINISH_MAP_UPDATE'
-}
-
-type AddressAction = SetAddressAction | ReplaceAddressesAction
-type WaypointsAction = AddressAction | MoveWaypointUpAction | MoveWaypointDownAction | ReverseWaypointsAction
-type GeocodeAction = GeocodeSuccessAction | GeocodeFailureAction
-type RouteAction = RouteFoundAction | RouteNotFoundAction | SetRouteInformationAction
+type WaypointsAction = SetWaypointsAction
+type LookupAction = LookupSuccessAction | LookupFailureAction
+type RouteAction = RouteSuccessAction | RouteFailureAction
 type AutofitAction = EnableAutofitAction | DisableAutofitAction
-type MapUpdateAction = BeginMapUpdateAction | FinishMapUpdateAction
 
-type AppAction = WaypointsAction | GeocodeAction | RouteAction | AutofitAction | MapUpdateAction
+type AppAction = WaypointsAction | LookupAction | RouteAction | AutofitAction
 export default AppAction

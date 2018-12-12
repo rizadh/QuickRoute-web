@@ -1,23 +1,31 @@
 import * as React from 'react'
-import WaypointTable from './WaypointTable'
+import WaypointList from './WaypointList'
 import { connect } from 'react-redux'
-import AppState, { Waypoint, Address } from '../redux/state'
-import { replaceAddresses, reverseWaypoints, setAddress, moveWaypointUp, moveWaypointDown } from '../redux/actions'
+import AppState, { FetchedRoutes, FetchedPlaces } from '../redux/state'
+import { reverseWaypoints, moveWaypointUp, moveWaypointDown, setAndLookupWaypoints, setWaypoint } from '../redux/actions'
 import { stringify } from 'query-string'
+import { ThunkDispatch } from 'redux-thunk';
+import { ExtraArgument } from '../redux/store';
+import { chunk } from 'lodash';
+import { routeInformation, RouteInformation } from '../redux/selectors';
+import AppAction from '../redux/actionTypes';
+import Textarea from 'react-textarea-autosize'
 
 interface WaypointEditorState {
-    rawInput: string,
-    editingModeEnabled: boolean,
+    bulkEditFieldValue: string
+    editingModeEnabled: boolean
 }
 
 interface WaypointEditorStateProps {
-    waypoints: Waypoint[],
-    foundRoutes: boolean[]
+    waypoints: string[],
+    fetchedPlaces: FetchedPlaces
+    fetchedRoutes: FetchedRoutes
+    routeInformation: RouteInformation
 }
 
 interface WaypointEditorDispatchProps {
-    replaceAddresses(addresses: Address[]): void
-    setAddress(index: number, address: Address): void
+    replaceWaypoints(waypoints: string[]): void
+    setWaypoint(index: number, waypoint: string): void
     moveWaypointUp(index: number): void
     moveWaypointDown(index: number): void
     reverseWaypoints(): void
@@ -27,37 +35,40 @@ type WaypointEditorProps = WaypointEditorStateProps & WaypointEditorDispatchProp
 
 class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditorState> {
     state: WaypointEditorState = {
-        rawInput: '',
-        editingModeEnabled: true
+        bulkEditFieldValue: '',
+        editingModeEnabled: false
+    }
+
+    waypointsToEditingString = () => {
+        return this.props.waypoints.join('\n')
     }
 
     beginEditingMode = () => {
         this.setState({
-            rawInput: this.props.waypoints.map(w => w.address).join('\n'),
+            bulkEditFieldValue: this.waypointsToEditingString(),
             editingModeEnabled: true
         })
     }
 
-    addressesFromInput(input: string): string[] {
+    waypointsFromInput(input: string): string[] {
         return input
             .split('\n')
-            .filter(this.addressIsValid)
-            .map(this.parseAddress)
+            .filter(this.waypointIsValid)
+            .map(this.parseWaypoint)
     }
 
-    addressIsValid(input: string): boolean {
+    waypointIsValid(input: string): boolean {
         return /[A-Za-z]+/.test(input)
     }
 
-    parseAddress(input: string): string {
+    parseWaypoint(input: string): string {
         return input.replace(/[^A-Za-z0-9\s]/g, "")
     }
 
     endEditingMode = () => {
-        const addresses = this.addressesFromInput(this.state.rawInput)
-        if (addresses.length == 0) return
+        const waypoints = this.waypointsFromInput(this.state.bulkEditFieldValue)
 
-        this.props.replaceAddresses(addresses)
+        this.props.replaceWaypoints(waypoints)
 
         this.setState({
             editingModeEnabled: false
@@ -72,33 +83,27 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         this.setState({
-            rawInput: e.currentTarget.value
+            bulkEditFieldValue: e.currentTarget.value
         })
     }
 
     openUrls = () => {
-        const waypoints = this.props.waypoints.map(w => w.address)
-        const MAX_WAYPOINTS = 10
-
-        while (waypoints.length > 0) {
-            const currentWaypoints = waypoints.splice(0, MAX_WAYPOINTS)
-            const destination = currentWaypoints.pop()
+        chunk(this.props.waypoints, 10).forEach(waypoints => {
+            const destination = waypoints.pop()
             const parameters = {
                 api: 1,
                 travelmode: 'driving',
                 destination,
-                waypoints: currentWaypoints.length > 0 ? currentWaypoints.join('|') : undefined
+                waypoints: waypoints.length > 0 ? waypoints.join('|') : undefined
             }
 
             window.open('https://www.google.com/maps/dir/?' + stringify(parameters))
-        }
+        })
     }
-
-    get rowsInRawInput() { return this.state.rawInput.split('\n').length }
 
     render() {
         const headerTitle = this.state.editingModeEnabled
-            ? "Editing Waypoints"
+            ? "Bulk Edit"
             : "Waypoints"
 
         const formContent = this.state.editingModeEnabled
@@ -106,73 +111,95 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 <div className="alert alert-info" role="alert">
                     Enter one full address per line
                 </div>
-                <textarea
-                    className="form-control"
-                    rows={this.rowsInRawInput}
+                <Textarea
+                    className="form-control mb-3"
                     onChange={this.handleTextareaChange}
-                    value={this.state.rawInput}>
-                </textarea>
+                    value={this.state.bulkEditFieldValue}
+                    placeholder="Add waypoints...">
+                </Textarea>
             </>
             : <>
                 <div
                     className="alert alert-danger"
                     role="alert"
-                    hidden={!this.props.waypoints.some(w => w.isGeocoded === false)}>
+                    hidden={this.props.routeInformation.status !== 'FAILED'}>
                     One or more waypoints could not be found
                 </div>
-                <WaypointTable
-                    waypoints={this.props.waypoints}
-                    foundRoutes={this.props.foundRoutes}
-                    onMoveUp={this.props.moveWaypointUp}
-                    onMoveDown={this.props.moveWaypointDown}
-                    setAddress={this.props.setAddress}
-                />
+                <div
+                    className="alert alert-info"
+                    role="alert"
+                    hidden={this.props.waypoints.length > 0 || this.props.routeInformation.status === 'FAILED'}>
+                    Add a waypoint to begin
+                </div>
+                <div
+                    className="alert alert-info"
+                    role="alert"
+                    hidden={this.props.waypoints.length !== 1 || this.props.routeInformation.status === 'FAILED'}>
+                    Add another waypoint to show route information
+                </div>
+                <WaypointList />
             </>
 
         const buttons = this.state.editingModeEnabled
             ? <>
-                <button className="btn btn-primary" onClick={this.endEditingMode}>
-                    Save
+                <button
+                    className="btn btn-primary mt-3 ml-3 float-right"
+                    onClick={this.endEditingMode}
+                    disabled={this.state.bulkEditFieldValue === this.waypointsToEditingString()}
+                >
+                    <i className="fas fa-save"></i> Save
                 </button>
-                {this.props.waypoints.length > 0
-                    ? <button className="btn btn-secondary" onClick={this.cancelEditingMode}>
-                        Cancel
-                    </button>
-                    : null}
+                <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelEditingMode}>
+                    <i className="fas fa-ban"></i> Cancel
+                </button>
             </>
             : <>
-                <button className="btn btn-primary" onClick={this.beginEditingMode}>
-                    Edit
+                <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginEditingMode}>
+                    <i className="fas fa-list-alt"></i> Bulk Edit
                 </button>
-                <button className="btn btn-secondary" onClick={this.props.reverseWaypoints}>
-                    Reverse
+                <button
+                    className="btn btn-primary mt-3 ml-3 float-right"
+                    onClick={this.props.reverseWaypoints}
+                    disabled={this.props.waypoints.length < 2}
+                >
+                    <i className="fas fa-exchange-alt"></i> Reverse
                 </button>
-                <button className="btn btn-secondary" onClick={this.openUrls}>
-                    Open in <i className="fab fa-google"></i> Maps
+                <button
+                    className="btn btn-primary mt-3 ml-3 float-right"
+                    onClick={this.openUrls}
+                    disabled={this.props.waypoints.length === 0}
+                >
+                    <i className="fas fa-map-marked"></i> Open in Maps
                 </button>
             </>
 
         return <div className="waypoint-editor">
-            <div className="waypoint-editor-header frosted">
+            <div className="waypoint-editor-header frosted p-3">
                 <h2>{headerTitle}</h2>
             </div>
-            <div className="waypoint-editor-form">
+            <div className="waypoint-editor-form px-3 pt-3">
                 {formContent}
             </div>
-            <div className="waypoint-editor-button-bar frosted">
+            <div className="waypoint-editor-button-bar frosted pr-3 pb-3">
                 {buttons}
             </div>
         </div>
     }
 }
 
-export default connect<WaypointEditorStateProps, WaypointEditorDispatchProps, {}, AppState>(state => ({
+const mapStateToProps = (state: AppState): WaypointEditorStateProps => ({
     waypoints: state.waypoints,
-    foundRoutes: state.foundRoutes
-}), dispatch => ({
-    replaceAddresses: waypoints => dispatch(replaceAddresses(waypoints)),
+    fetchedRoutes: state.fetchedRoutes,
+    fetchedPlaces: state.fetchedPlaces,
+    routeInformation: routeInformation(state)
+})
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, ExtraArgument, AppAction>): WaypointEditorDispatchProps => ({
+    replaceWaypoints: waypoints => dispatch(setAndLookupWaypoints(waypoints)),
     reverseWaypoints: () => dispatch(reverseWaypoints()),
-    setAddress: (index, address) => dispatch(setAddress(index, address)),
+    setWaypoint: (index, address) => dispatch(setWaypoint(index, address)),
     moveWaypointUp: index => dispatch(moveWaypointUp(index)),
     moveWaypointDown: index => dispatch(moveWaypointDown(index))
-}))(WaypointEditor)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(WaypointEditor)

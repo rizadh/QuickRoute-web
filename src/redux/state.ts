@@ -1,19 +1,14 @@
-export type Address = string
-
-export interface Waypoint {
-    address: Address
-    isGeocoded?: boolean
+export type FetchedPlaces = {
+    [key: string]: mapkit.Place | null
 }
 
-export interface RouteInformation {
-    distance: number
-    time: number
+export type FetchedRoutes = {
+    [key: string]: mapkit.Route | null
 }
 
 export default interface AppState {
-    waypoints: Waypoint[]
-    foundRoutes: boolean[]
-    routeInformation?: RouteInformation
+    waypoints: string[]
+    fetchedPlaces: FetchedPlaces
+    fetchedRoutes: FetchedRoutes
     autofitIsEnabled: boolean
-    mapIsUpdating: boolean
 }

@@ -1,133 +1,82 @@
 import * as React from 'react'
 import { Store, Unsubscribe } from 'redux'
-import AppState, { Waypoint } from '../redux/state'
+import AppState from '../redux/state'
 import AppAction from '../redux/actionTypes'
 import { isEqual } from 'lodash'
-import { geocodeSuccess, geocodeFailure, setRouteInformation, disableAutofit, beginMapUpdate, finishMapUpdate, routeFound, routeNotFound } from '../redux/actions'
-import store from '../redux/store';
+import { disableAutofit } from '../redux/actions'
+import { routeInformation } from '../redux/selectors'
 
 interface MapViewProps {
     store: Store<AppState, AppAction>
 }
 
-const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
-const placeCache = new Map<string, mapkit.Place>()
-
-const directions = new mapkit.Directions();
-const routeCache = new Map<string, mapkit.Route>()
-
 export default class MapView extends React.Component<MapViewProps> {
     element?: HTMLElement
     map?: mapkit.Map
     unsubscribeCallback?: Unsubscribe
-    addresses: string[] = []
+    waypoints: string[] = []
+    places: string[] = []
+    routes: string[] = []
+    autofitIsEnabled: boolean = false
 
-    geocodeWaypoint = async (address: string) => {
-        const cachedPlace = placeCache.get(address)
-        if (cachedPlace) return cachedPlace
-
-        return new Promise<mapkit.Place>((resolve, reject) => {
-            geocoder.lookup(address, (error, data) => {
-                if (error) {
-                    reject(error)
-                    return
-                }
-
-                const place = data.results[0]
-                if (!place) {
-                    reject(`No results for lookup: '${address}'`)
-                    return
-                }
-
-                placeCache.set(address, place)
-
-                resolve(place)
-            })
-        })
-    }
-
-    routeBetween = async (origin: mapkit.Place, destination: mapkit.Place): Promise<mapkit.Route> => {
-        const cachedRoute = routeCache.get(origin.formattedAddress + destination.formattedAddress)
-        if (cachedRoute) return cachedRoute
-
-        return new Promise<mapkit.Route>((resolve, reject) => {
-            directions.route({ origin, destination }, (error, data) => {
-                if (error) {
-                    reject(error)
-                    return
-                }
-
-                const route = data.routes[0]
-                if (!route) {
-                    reject(`No results for route: '${origin.formattedAddress}' -> '${destination.formattedAddress}'`)
-                    return
-                }
-
-                routeCache.set(origin.formattedAddress + destination.formattedAddress, route)
-
-                resolve(route)
-            })
-        })
-    }
-
-    updateMap = async (waypoints: Waypoint[]) => {
-        if (!this.element) return
+    updateMap = () => {
         if (!this.map) return
 
-        const newAddresses = waypoints.map(w => w.address)
-        if (isEqual(this.addresses, newAddresses)) {
-            this.centerMap()
+        const state = this.props.store.getState()
+        const status = routeInformation(state).status
+
+        if (status == 'FETCHING') {
+            this.map.element.classList.add('updating')
             return
         }
-        this.addresses = newAddresses
 
-        this.props.store.dispatch(beginMapUpdate())
+        this.map.element.classList.remove('updating')
 
-        const places = await Promise.all(this.addresses.map(async (address, index) => {
-            try {
-                const place = await this.geocodeWaypoint(address)
-                this.props.store.dispatch(geocodeSuccess(index))
-                return place
-            } catch (error) {
-                this.props.store.dispatch(geocodeFailure(index))
-                throw error
+        if (status == 'FAILED') return
+
+        if (
+            isEqual(this.waypoints, state.waypoints)
+            && isEqual(this.places, Object.keys(state.fetchedPlaces))
+            && isEqual(this.routes, Object.keys(state.fetchedRoutes))
+        ) {
+            if (this.autofitIsEnabled !== state.autofitIsEnabled) {
+                this.autofitIsEnabled = state.autofitIsEnabled
+                this.centerMap()
             }
-        }))
-        const routes = await Promise.all(places.slice(0, -1).map(async (waypoint, index) => {
-            try {
-                const route = await this.routeBetween(waypoint, places[index + 1])
-                this.props.store.dispatch(routeFound(index))
-                return route
-            } catch (error) {
-                this.props.store.dispatch(routeNotFound(index))
-                throw error
-            }
-        }))
 
-        this.props.store.dispatch(setRouteInformation({
-            distance: routes.reduce((prev, curr) => prev + curr.distance, 0),
-            time: routes.reduce((prev, curr) => prev + curr.expectedTravelTime, 0)
-        }))
+            return
+        }
 
-        const annotations = places.map((place, index) => new mapkit.MarkerAnnotation(place.coordinate, {
-            title: this.addresses[index],
-            glyphText: `${index + 1}`,
-            subtitle: place.formattedAddress,
-            animates: false
-        }))
-        // TODO: Implement easy-selection feature
-        // annotations.forEach((annotation, index) => {
-        //     annotation.addEventListener('select', annotation => {
-        //     })
-        // })
-        const overlays = routes.map(route =>
-            new mapkit.PolylineOverlay(route.polyline.points, {
-                style: new mapkit.Style({
-                    lineWidth: 5,
-                    strokeOpacity: 0.75
-                })
+        this.waypoints = state.waypoints
+        this.places = Object.keys(state.fetchedPlaces)
+        this.routes = Object.keys(state.fetchedRoutes)
+
+        const annotations = state.waypoints
+            .map(waypoint => state.fetchedPlaces[waypoint])
+            .filter((p): p is mapkit.Place => !!p)
+            .map((place, index) => new mapkit.MarkerAnnotation(place.coordinate, {
+                title: this.waypoints[index],
+                glyphText: `${index + 1}`,
+                subtitle: place.formattedAddress,
+                animates: false
+            }))
+
+        const overlays = state.waypoints
+            .map((waypoint, index, waypoints) => {
+                if (index === 0) return
+                const previousWaypoint = waypoints[index - 1]
+                const forwardRoute = state.fetchedRoutes[previousWaypoint + '|' + waypoint]
+                if (forwardRoute) return forwardRoute.polyline
             })
-        )
+            .filter((p): p is mapkit.PolylineOverlay => p !== undefined)
+            .map(polyline =>
+                new mapkit.PolylineOverlay(polyline.points, {
+                    style: new mapkit.Style({
+                        lineWidth: 5,
+                        strokeOpacity: 0.75
+                    })
+                })
+            )
 
         this.map.annotations && this.map.removeAnnotations(this.map.annotations)
         this.map.overlays && this.map.removeOverlays(this.map.overlays)
@@ -135,8 +84,6 @@ export default class MapView extends React.Component<MapViewProps> {
         this.map.addAnnotations(annotations)
         this.map.addOverlays(overlays)
         this.centerMap()
-
-        this.props.store.dispatch(finishMapUpdate())
     }
 
     centerMap = () => {
@@ -160,7 +107,7 @@ export default class MapView extends React.Component<MapViewProps> {
                 .then(done)
         })
 
-        this.map = new mapkit.Map(this.element, {
+        const map = new mapkit.Map(this.element, {
             showsMapTypeControl: false,
             showsScale: mapkit.FeatureVisibility.Visible,
             showsPointsOfInterest: false,
@@ -168,24 +115,18 @@ export default class MapView extends React.Component<MapViewProps> {
             padding: new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 48 })
         })
 
-        this.map.addEventListener('zoom-start', () => {
-            this.props.store.dispatch(disableAutofit())
-        })
+        const mapDidMove = () => {
+            if (map.annotations && map.annotations.length > 0
+                || map.overlays && map.overlays.length > 0)
+                this.props.store.dispatch(disableAutofit())
+        }
 
-        this.map.addEventListener('scroll-start', () => {
-            this.props.store.dispatch(disableAutofit())
-        })
+        map.addEventListener('zoom-start', mapDidMove)
+        map.addEventListener('scroll-start', mapDidMove)
 
-        this.unsubscribeCallback = this.props.store.subscribe(() => {
-            const appState = this.props.store.getState()
+        this.map = map
 
-            if (appState.mapIsUpdating)
-                this.element && this.element.classList.add('updating')
-            else
-                this.element && this.element.classList.remove('updating')
-
-            this.updateMap(appState.waypoints)
-        })
+        this.unsubscribeCallback = this.props.store.subscribe(this.updateMap)
     }
 
     componentWillUnmount() {

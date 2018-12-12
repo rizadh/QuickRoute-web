@@ -1,22 +1,14 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import AppState, { RouteInformation } from '../redux/state'
+import AppState from '../redux/state'
 import StatView from './StatView'
-import { enableAutofit } from '../redux/actions';
+import { routeInformation, RouteInformation } from '../redux/selectors'
 
-interface MapViewToolbarStateProps {
-    routeInformation?: RouteInformation
-    autofitIsEnabled: boolean,
-    mapIsUpdating: boolean,
-    updateProgress: number
+interface MapViewToolbarProps {
+    routeInformation: RouteInformation
 }
 
-interface MapViewToolbarDispatchProps {
-    enableAutofit: () => void
-}
-
-type MapViewToolbarProps = MapViewToolbarStateProps & MapViewToolbarDispatchProps
-
+// TODO: Convert into plain function
 class MapViewToolbar extends React.Component<MapViewToolbarProps> {
     stringForTime = (seconds: number) => {
         if (seconds < 60) {
@@ -38,46 +30,39 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
         return `${Math.floor(metres / 100) / 10} km`
     }
 
-    stringForUpdateProgress = (): string =>
-        `${Math.floor(this.props.updateProgress * 1000) / 10} %`
+    stringForUpdateProgress = (progress: number): string =>
+        `${Math.floor(progress * 1000) / 10} %`
 
     render() {
-        return <div className="mapview-toolbar frosted">
-            {this.props.routeInformation
-                ? <>
-                    <StatView title="Distance" value={this.stringForDistance(this.props.routeInformation.distance)} />
-                    <StatView title="Time" value={this.stringForTime(this.props.routeInformation.time)} />
+        let toolbarItems: JSX.Element
+        switch (this.props.routeInformation.status) {
+            case 'FETCHING':
+                toolbarItems = <StatView title="Routing" value={this.stringForUpdateProgress(this.props.routeInformation.fetchProgress)} />
+                break
+            case 'FETCHED':
+                toolbarItems = <>
+                    <StatView title="Distance" value={this.stringForDistance(this.props.routeInformation.totalDistance)} />
+                    <StatView title="Time" value={this.stringForTime(this.props.routeInformation.totalTime)} />
                 </>
-                : this.props.mapIsUpdating
-                    ? <StatView title="Routing" value={this.stringForUpdateProgress()} />
-                    : "Add waypoints to show route information"
-            }
-            {this.props.autofitIsEnabled
-                ? null
-                : <button
-                    className="btn btn-warning btn-sm"
-                    onClick={this.props.enableAutofit}>Auto-Fit</button>
-            }
+                break
+            case 'FAILED':
+                toolbarItems = <>Routing failed</>
+                break
+            case 'EMPTY':
+                toolbarItems = <>Add waypoints to show route information</>
+                break
+            default:
+                throw new Error('Invalid route information')
+        }
+
+        return <div className="mapview-toolbar frosted">
+            {toolbarItems}
         </div>
     }
 }
 
-export default connect<MapViewToolbarStateProps, MapViewToolbarDispatchProps, {}, AppState>(state => {
-    const waypointCount = state.waypoints.length
-    const currentRouteCount = state.foundRoutes.filter(a => a).length
-    const targetRouteCount = waypointCount - 1
-    const geocodedWaypointCount = state.waypoints.filter(w => typeof w.isGeocoded === 'boolean').length
+const mapStateToProps = (state: AppState) => ({
+    routeInformation: routeInformation(state),
+})
 
-    const totalItems = waypointCount + targetRouteCount
-    const completedItems = geocodedWaypointCount + currentRouteCount
-    const progress = completedItems / totalItems
-
-    return {
-        routeInformation: state.routeInformation,
-        autofitIsEnabled: state.autofitIsEnabled,
-        mapIsUpdating: state.mapIsUpdating,
-        updateProgress: progress
-    }
-}, dispatch => ({
-    enableAutofit: () => dispatch(enableAutofit())
-}))(MapViewToolbar)
+export default connect(mapStateToProps)(MapViewToolbar)

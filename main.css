@@ -16,35 +16,14 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.waypoint-editor > * {
-    padding: 0 16px;
-}
-
-.waypoint-editor > *:not(:first-child) {
-    margin-top: 16px;
-}
-
-.waypoint-editor > *:first-child {
-    padding-top: 16px;
-}
-
-.waypoint-editor > *:last-child {
-    padding-bottom: 16px;
-}
-
 .waypoint-editor-header {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
-    padding: 16px;
 
-    z-index: 1;
+    z-index: 1020;
 
     border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
-}
-
-.waypoint-editor-header > h2 {
-    margin: 0;
 }
 
 .waypoint-editor-form > textarea {
@@ -55,18 +34,13 @@
     width: 100%;
     position: -webkit-sticky;
     position: sticky;
-    bottom: -8px;
-    overflow: hidden;
+    bottom: 0;
 
-    padding: 16px;
+    overflow: hidden;
+    
+    z-index: 1020;
 
     border-top: 1px solid rgba(0, 0, 0, 0.1); 
-}
-
-.waypoint-editor-button-bar > button {
-    float: right;
-    margin-bottom: 8px;
-    margin-left: 8px;
 }
 
 .mapview {
@@ -86,6 +60,12 @@
 
 .mapview.updating * {
     pointer-events: none;
+}
+
+.autofit-button {
+    position: absolute;
+    top: 0; 
+    right: 0;
 }
 
 .mapview-toolbar {
@@ -108,10 +88,10 @@
 
 @supports (-webkit-backdrop-filter: blur(0px)) {
     .frosted {
-        --background-blur: 80px;
+        --background-blur: 64px;
         -webkit-backdrop-filter: blur(var(--background-blur));
         backdrop-filter: blur(var(--background-blur));
-        background-color: rgba(255, 255, 255, 0.25);
+        background-color: rgba(255, 255, 255, 0.8);
     }
 }
 
