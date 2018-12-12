@@ -10,9 +10,10 @@ import { chunk } from 'lodash';
 import { routeInformation, RouteInformation } from '../redux/selectors';
 import AppAction from '../redux/actionTypes';
 import Textarea from 'react-textarea-autosize'
+import TextareaAutosize from 'react-textarea-autosize';
 
 interface WaypointEditorState {
-    bulkEditFieldValue: string
+    bulkEditTextAreaValue: string
     editingModeEnabled: boolean
 }
 
@@ -35,7 +36,7 @@ type WaypointEditorProps = WaypointEditorStateProps & WaypointEditorDispatchProp
 
 class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditorState> {
     state: WaypointEditorState = {
-        bulkEditFieldValue: '',
+        bulkEditTextAreaValue: '',
         editingModeEnabled: false
     }
 
@@ -45,7 +46,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     beginEditingMode = () => {
         this.setState({
-            bulkEditFieldValue: this.waypointsToEditingString(),
+            bulkEditTextAreaValue: this.waypointsToEditingString(),
             editingModeEnabled: true
         })
     }
@@ -66,7 +67,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     endEditingMode = () => {
-        const waypoints = this.waypointsFromInput(this.state.bulkEditFieldValue)
+        const waypoints = this.waypointsFromInput(this.state.bulkEditTextAreaValue)
 
         this.props.replaceWaypoints(waypoints)
 
@@ -83,7 +84,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         this.setState({
-            bulkEditFieldValue: e.currentTarget.value
+            bulkEditTextAreaValue: e.currentTarget.value
         })
     }
 
@@ -109,13 +110,15 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         const formContent = this.state.editingModeEnabled
             ? <>
                 <div className="alert alert-info" role="alert">
-                    Enter one full address per line
+                    Enter one address per line
                 </div>
                 <Textarea
+                    minRows={3}
                     className="form-control mb-3"
                     onChange={this.handleTextareaChange}
-                    value={this.state.bulkEditFieldValue}
-                    placeholder="Add waypoints...">
+                    value={this.state.bulkEditTextAreaValue}
+                    autoFocus
+                >
                 </Textarea>
             </>
             : <>
@@ -129,13 +132,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     className="alert alert-info"
                     role="alert"
                     hidden={this.props.waypoints.length > 0 || this.props.routeInformation.status === 'FAILED'}>
-                    Add a waypoint to begin
+                    Add an address to begin
                 </div>
                 <div
                     className="alert alert-info"
                     role="alert"
                     hidden={this.props.waypoints.length !== 1 || this.props.routeInformation.status === 'FAILED'}>
-                    Add another waypoint to show route information
+                    Add another address to show route information
                 </div>
                 <WaypointList />
             </>
@@ -145,7 +148,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 <button
                     className="btn btn-primary mt-3 ml-3 float-right"
                     onClick={this.endEditingMode}
-                    disabled={this.state.bulkEditFieldValue === this.waypointsToEditingString()}
+                    disabled={this.state.bulkEditTextAreaValue === this.waypointsToEditingString()}
                 >
                     <i className="fas fa-save"></i> Save
                 </button>
