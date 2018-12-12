@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import AppState from '../redux/state'
 import StatView from './StatView'
 import { routeInformation, RouteInformation } from '../redux/selectors'
+import { Line } from 'rc-progress'
 
 interface MapViewToolbarProps {
     routeInformation: RouteInformation
@@ -34,10 +35,24 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
         `${Math.floor(progress * 1000) / 10} %`
 
     render() {
-        let toolbarItems: JSX.Element
+        let toolbarItems: JSX.Element | string
         switch (this.props.routeInformation.status) {
             case 'FETCHING':
-                toolbarItems = <StatView title="Routing" value={this.stringForUpdateProgress(this.props.routeInformation.fetchProgress)} />
+                toolbarItems = <>
+                    <StatView
+                        title="Routing"
+                        value={this.stringForUpdateProgress(this.props.routeInformation.fetchProgress)}
+                    />
+                    <div className="mapview-toolbar-progress-bar">
+                        <Line
+                            percent={this.props.routeInformation.fetchProgress * 100}
+                            strokeWidth={8}
+                            strokeColor='#ffc107'
+                            strokeLinecap='butt'
+                            trailWidth={8}
+                        />
+                    </div>
+                </>
                 break
             case 'FETCHED':
                 toolbarItems = <>
@@ -46,10 +61,10 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
                 </>
                 break
             case 'FAILED':
-                toolbarItems = <>Routing failed</>
+                toolbarItems = "Routing failed"
                 break
             case 'EMPTY':
-                toolbarItems = <>Add waypoints to show route information</>
+                toolbarItems = "Add waypoints to show route information"
                 break
             default:
                 throw new Error('Invalid route information')

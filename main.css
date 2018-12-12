@@ -82,6 +82,16 @@
     border-top: 1px solid rgba(0, 0, 0, 0.1); 
 }
 
+.mapview-toolbar-progress-bar {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 4px;
+
+    overflow: hidden;
+}
+
 .frosted {
     background-color: rgba(255, 255, 255, 0.9);
 }
