@@ -24,7 +24,7 @@ export type RouteInformation = FetchedRouteInformation | FetchFailedRouteInforma
 export const routeInformation = (state: AppState): RouteInformation => {
     const waypointCount = state.waypoints.length
 
-    if (waypointCount === 0) return { status: 'EMPTY' }
+    if (waypointCount < 2) return { status: 'EMPTY' }
 
     const geocodedWaypointCount = state.waypoints.filter(waypoint => state.fetchedPlaces[waypoint]).length
     const routes = state.waypoints.map((waypoint, index, waypoints) => {
