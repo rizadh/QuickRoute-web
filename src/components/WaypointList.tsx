@@ -128,6 +128,7 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
                     value={this.state.newWaypointFieldValue}
                     onChange={this.handleNewWaypointFieldValueChange}
                     onKeyPress={this.handleNewWaypointFieldKeyPress}
+                    autoFocus
                 ></input>
                 <div className="input-group-append">
                     <button
