@@ -6,4 +6,6 @@ import { Provider } from 'react-redux'
 import App from './components/App'
 import store from './redux/store'
 
+require('babel-polyfill')
+
 render(<Provider store={store}><App store={store} /></Provider>, document.getElementById('root'))

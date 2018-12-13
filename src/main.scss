@@ -1,0 +1,131 @@
+$maxEditorWidth: 400px;
+$minEditorWidth: 300px;
+$minMapWidth: 275px;
+$toolbarHeight: 48px;
+
+$relativeEditorWidth: $minEditorWidth / ($minEditorWidth + $minMapWidth);
+$compactBreakpoint: $minEditorWidth + $minMapWidth;
+$wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
+
+:root {
+    --waypoint-editor-width: #{$maxEditorWidth};
+
+    @media (max-width: $wideBreakpoint) {
+        --waypoint-editor-width: #{100% * $relativeEditorWidth};
+    }
+
+    @media (max-width: $compactBreakpoint) {
+        --waypoint-editor-width: 100%;
+    }
+}
+
+.waypoint-editor {
+    position: absolute;
+    left: 0;
+    width: var(--waypoint-editor-width);
+    top: 0;
+    bottom: 0;
+
+    border-right: 1px solid lightgray;
+
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+
+    @media (max-width: $compactBreakpoint) {
+        bottom: $toolbarHeight;
+    }
+}
+
+.waypoint-editor-header {
+    position: sticky;
+    top: 0;
+
+    z-index: 1020;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
+
+    textarea {
+        resize: none;
+    }
+}
+
+.waypoint-editor-button-bar {
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+
+    overflow: hidden;
+    
+    z-index: 1020;
+
+    border-top: 1px solid rgba(0, 0, 0, 0.1); 
+}
+
+.mapview {
+    position: absolute;
+    left: var(--waypoint-editor-width);
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    transition: filter 0.2s;
+
+    @media (max-width: $compactBreakpoint) {
+        display: none;
+    }
+
+    &.updating {
+        transition: filter 0.4s;
+        filter: saturate(0) brightness(0.5);
+
+        * {
+            pointer-events: none;
+        }
+    }
+}
+
+.autofit-button {
+    position: absolute;
+    top: 0; 
+    right: 0;
+}
+
+.mapview-toolbar {
+    position: absolute;
+    left: var(--waypoint-editor-width);
+    right: 0;
+    bottom: 0;
+    height: $toolbarHeight;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    border-top: 1px solid rgba(0, 0, 0, 0.1); 
+
+    @media (max-width: $compactBreakpoint) {
+        left: 0;
+        width: 100%;
+    }
+}
+
+.mapview-toolbar-progress-bar {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 4px;
+
+    overflow: hidden;
+}
+
+.frosted {
+    $frostedBlur: 64px;
+
+    background-color: rgba(255, 255, 255, 0.9);
+
+    @supports (backdrop-filter: blur($frostedBlur)) {
+        backdrop-filter: blur($frostedBlur);
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+}

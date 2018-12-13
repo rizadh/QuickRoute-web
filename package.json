@@ -4,10 +4,11 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "serve": "python simple-https-server.py",
-    "build": "webpack --mode production",
-    "watch": "webpack -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf dist",
+    "start": "npm run serve",
+    "serve": "parcel src/index.html --https",
+    "build": "parcel build src/index.html",
+    "deploy": "npm run clean && npm run build && scp -r dist/* linode:/var/www/route-planner/"
   },
   "author": "",
   "license": "ISC",
@@ -23,7 +24,10 @@
     "@types/redux": "^3.6.0",
     "@types/redux-logger": "^3.0.6",
     "@types/uuid": "^3.4.4",
+    "babel-polyfill": "^6.26.0",
     "lodash": "^4.17.11",
+    "parcel": "^1.10.3",
+    "postcss-modules": "^1.4.1",
     "query-string": "^6.2.0",
     "rc-progress": "^2.2.6",
     "react": "^16.6.3",
@@ -33,10 +37,8 @@
     "react-textarea-autosize": "^7.1.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "ts-loader": "^5.3.1",
+    "sass": "^1.15.2",
     "typescript": "^3.2.1",
-    "uuid": "^3.3.2",
-    "webpack": "^4.27.1",
-    "webpack-cli": "^3.1.2"
+    "uuid": "^3.3.2"
   }
 }

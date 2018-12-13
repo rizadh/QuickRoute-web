@@ -64,7 +64,7 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
                 toolbarItems = "Routing failed"
                 break
             case 'EMPTY':
-                toolbarItems = "Add waypoints to show route information"
+                toolbarItems = "Enter more waypoints"
                 break
             default:
                 throw new Error('Invalid route information')

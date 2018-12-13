@@ -37,7 +37,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     waypointsToEditingString = () => {
-        return this.props.waypoints.join('\n')
+        return this.props.waypoints.map(w => w.address).join('\n')
     }
 
     beginEditingMode = () => {
@@ -146,7 +146,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 <button
                     className="btn btn-primary mt-3 ml-3 float-right"
                     onClick={this.endEditingMode}
-                    disabled={this.state.bulkEditTextAreaValue === this.waypointsToEditingString()}
                 >
                     <i className="fas fa-save"></i> Save
                 </button>
