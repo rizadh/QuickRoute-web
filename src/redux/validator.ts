@@ -1,10 +1,7 @@
-export const isValidWaypoint = (waypoint: string) => {
-    return /[A-Za-z]+/.test(waypoint)
+export const isValidAddress = (address: string) => {
+    return /[A-Za-z]+/.test(address)
 }
 
-export const parseWaypoint = (waypoint: string) => {
-    if (isValidWaypoint(waypoint))
-        return waypoint.replace(/[^A-Za-z0-9\s]/g, "")
-
-    return null
+export const parseAddress = (address: string) => {
+    return address.replace(/[^A-Za-z0-9\s]/g, "")
 }

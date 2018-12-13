@@ -1,4 +1,5 @@
 import AppState from '../redux/state'
+import { fetchedRoutesKey } from '../redux/reducer'
 
 type EmptyRouteInformation = {
     status: 'EMPTY'
@@ -26,12 +27,11 @@ export const routeInformation = (state: AppState): RouteInformation => {
 
     if (waypointCount < 2) return { status: 'EMPTY' }
 
-    const geocodedWaypointCount = state.waypoints.filter(waypoint => state.fetchedPlaces[waypoint]).length
+    const geocodedWaypointCount = state.waypoints.filter(waypoint => state.fetchedPlaces[waypoint.address]).length
     const routes = state.waypoints.map((waypoint, index, waypoints) => {
         if (index === 0) return
         const previousWaypoint = waypoints[index - 1]
-        const forwardRoute = state.fetchedRoutes[previousWaypoint + '|' + waypoint]
-        return forwardRoute
+        return state.fetchedRoutes[fetchedRoutesKey(previousWaypoint.address, waypoint.address)]
     })
     const fetchedRoutes = routes.filter((route): route is mapkit.Route => !!route)
     const totalDistance = fetchedRoutes.reduce((total, route) => total + route.distance, 0)
@@ -39,7 +39,7 @@ export const routeInformation = (state: AppState): RouteInformation => {
     const routeCount = fetchedRoutes.length
 
     const failedRouteExists = routes.some(route => route === null)
-    const failedLookupExists = state.waypoints.some(waypoint => state.fetchedPlaces[waypoint] === null)
+    const failedLookupExists = state.waypoints.some(waypoint => state.fetchedPlaces[waypoint.address] === null)
 
     const totalItems = 2 * waypointCount - 1
     const completedItems = geocodedWaypointCount + routeCount

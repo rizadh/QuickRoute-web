@@ -1,6 +1,5 @@
 import AppAction from './actionTypes'
-import AppState from './state'
-import WaypointEditor from '../components/WaypointEditor';
+import AppState, { Waypoint } from './state'
 
 const initialState: AppState = {
     waypoints: [],
@@ -14,9 +13,9 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
         case 'SET_WAYPOINTS':
             return setWaypoints(state, action.waypoints)
         case 'LOOKUP_SUCCESS':
-            return lookupSuccess(state, action.waypoint, action.place)
+            return lookupSuccess(state, action.address, action.place)
         case 'LOOKUP_FAILURE':
-            return lookupFailure(state, action.waypoint)
+            return lookupFailure(state, action.address)
         case 'ROUTE_SUCCESS':
             return routeSuccess(state, action.origin, action.destination, action.route)
         case 'ROUTE_FAILURE':
@@ -30,23 +29,27 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
     return state
 };
 
-const setWaypoints = (state: AppState, waypoints: string[]): AppState => {
+export const fetchedRoutesKey = (origin: string, destination: string) => {
+    return origin + '|' + destination
+}
+
+const setWaypoints = (state: AppState, waypoints: Waypoint[]): AppState => {
     return { ...state, waypoints }
 }
 
-const lookupSuccess = (state: AppState, waypoint: string, place: mapkit.Place): AppState => ({
+const lookupSuccess = (state: AppState, address: string, place: mapkit.Place): AppState => ({
     ...state,
     fetchedPlaces: {
         ...state.fetchedPlaces,
-        [waypoint]: place
+        [address]: place
     }
 })
 
-const lookupFailure = (state: AppState, waypoint: string): AppState => ({
+const lookupFailure = (state: AppState, address: string): AppState => ({
     ...state,
     fetchedPlaces: {
         ...state.fetchedPlaces,
-        [waypoint]: null
+        [address]: null
     }
 })
 
@@ -54,7 +57,7 @@ const routeSuccess = (state: AppState, origin: string, destination: string, rout
     ...state,
     fetchedRoutes: {
         ...state.fetchedRoutes,
-        [origin + '|' + destination]: route
+        [fetchedRoutesKey(origin, destination)]: route
     }
 })
 
@@ -62,7 +65,7 @@ const routeFailure = (state: AppState, origin: string, destination: string): App
     ...state,
     fetchedRoutes: {
         ...state.fetchedRoutes,
-        [origin + '|' + destination]: null
+        [fetchedRoutesKey(origin, destination)]: null
     }
 })
 

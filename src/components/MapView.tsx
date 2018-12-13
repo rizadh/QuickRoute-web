@@ -5,6 +5,7 @@ import AppAction from '../redux/actionTypes'
 import { isEqual } from 'lodash'
 import { disableAutofit } from '../redux/actions'
 import { routeInformation } from '../redux/selectors'
+import { fetchedRoutesKey } from '../redux/reducer'
 
 type MapViewProps = {
     store: Store<AppState, AppAction>
@@ -14,7 +15,7 @@ export default class MapView extends React.Component<MapViewProps> {
     element?: HTMLElement
     map?: mapkit.Map
     unsubscribeCallback?: Unsubscribe
-    waypoints: string[] = []
+    addresses: string[] = []
     places: string[] = []
     routes: string[] = []
     autofitIsEnabled: boolean = false
@@ -35,7 +36,7 @@ export default class MapView extends React.Component<MapViewProps> {
         if (status == 'FAILED') return
 
         if (
-            isEqual(this.waypoints, state.waypoints)
+            isEqual(this.addresses, state.waypoints)
             && isEqual(this.places, Object.keys(state.fetchedPlaces))
             && isEqual(this.routes, Object.keys(state.fetchedRoutes))
         ) {
@@ -47,15 +48,15 @@ export default class MapView extends React.Component<MapViewProps> {
             return
         }
 
-        this.waypoints = state.waypoints
+        this.addresses = state.waypoints.map(w => w.address)
         this.places = Object.keys(state.fetchedPlaces)
         this.routes = Object.keys(state.fetchedRoutes)
 
-        const annotations = state.waypoints
-            .map(waypoint => state.fetchedPlaces[waypoint])
+        const annotations = this.addresses
+            .map(address => state.fetchedPlaces[address])
             .filter((p): p is mapkit.Place => !!p)
             .map((place, index) => new mapkit.MarkerAnnotation(place.coordinate, {
-                title: this.waypoints[index],
+                title: this.addresses[index],
                 glyphText: `${index + 1}`,
                 subtitle: place.formattedAddress,
                 animates: false
@@ -65,7 +66,7 @@ export default class MapView extends React.Component<MapViewProps> {
             .map((waypoint, index, waypoints) => {
                 if (index === 0) return
                 const previousWaypoint = waypoints[index - 1]
-                const forwardRoute = state.fetchedRoutes[previousWaypoint + '|' + waypoint]
+                const forwardRoute = state.fetchedRoutes[fetchedRoutesKey(previousWaypoint.address, waypoint.address)]
                 if (forwardRoute) return forwardRoute.polyline
             })
             .filter((p): p is mapkit.PolylineOverlay => p !== undefined)

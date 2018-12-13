@@ -1,17 +1,19 @@
+import { Waypoint } from "./state";
+
 export type SetWaypointsAction = {
     type: 'SET_WAYPOINTS'
-    waypoints: string[]
+    waypoints: Waypoint[]
 }
 
 export type LookupSuccessAction = {
     type: 'LOOKUP_SUCCESS',
-    waypoint: string,
+    address: string,
     place: mapkit.Place
 }
 
 export type LookupFailureAction = {
     type: 'LOOKUP_FAILURE',
-    waypoint: string
+    address: string
 }
 
 export type RouteSuccessAction = {

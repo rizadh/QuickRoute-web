@@ -1,24 +1,25 @@
 import * as React from 'react'
-import AppState, { FetchedRoutes, FetchedPlaces } from '../redux/state';
+import AppState, { FetchedRoutes, FetchedPlaces, Waypoint } from '../redux/state';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { ExtraArgument } from '../redux/store';
 import AppAction from '../redux/actionTypes';
 import { addWaypoint, deleteWaypoint, setWaypoint, moveWaypoint } from '../redux/actions';
-import { isValidWaypoint } from '../redux/validator'
+import { isValidAddress } from '../redux/validator'
 import WaypointItem, { WaypointFetchStatus } from './WaypointItem'
 import { DragDropContext, DropResult, Droppable, Draggable } from 'react-beautiful-dnd'
+import { fetchedRoutesKey } from '../redux/reducer'
 
 type WaypointListStateProps = {
-    waypoints: string[]
+    waypoints: Waypoint[]
     fetchedRoutes: FetchedRoutes
     fetchedPlaces: FetchedPlaces
 }
 
 type WaypointListDispatchProps = {
-    setWaypoint: (index: number, waypoint: string) => void
+    setWaypoint: (index: number, address: string) => void
     moveWaypoint: (sourceIndex: number, destinationIndex: number) => void
-    addWaypoint: (waypoint: string) => string | null
+    addWaypoint: (address: string) => string | null
     deleteWaypoint: (index: number) => void
 }
 
@@ -33,7 +34,7 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
 
     lookupStatus = (index: number): boolean | undefined => {
         const waypoint = this.props.waypoints[index]
-        const place = this.props.fetchedPlaces[waypoint]
+        const place = this.props.fetchedPlaces[waypoint.address]
 
         if (place === undefined) return undefined
         if (place === null) return false
@@ -46,8 +47,8 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
         const thisWaypoint = this.props.waypoints[index]
         const nextWaypoint = this.props.waypoints[index + 1]
 
-        const incomingRoute = this.props.fetchedRoutes[previousWaypoint + '|' + thisWaypoint]
-        const outgoingRoute = this.props.fetchedRoutes[thisWaypoint + '|' + nextWaypoint]
+        const incomingRoute = this.props.fetchedRoutes[fetchedRoutesKey(previousWaypoint.address, thisWaypoint.address)]
+        const outgoingRoute = this.props.fetchedRoutes[fetchedRoutesKey(thisWaypoint.address, nextWaypoint.address)]
         const lastIndex = this.props.waypoints.length - 1
 
         if (index === 0) return outgoingRoute ? 'ALL' : 'NONE'
@@ -79,8 +80,8 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
         console.log(e.clientY)
     }
 
-    waypointFetchStatus = (waypoint: string): WaypointFetchStatus => {
-        const place = this.props.fetchedPlaces[waypoint]
+    addressFetchStatus = (address: string): WaypointFetchStatus => {
+        const place = this.props.fetchedPlaces[address]
         if (place) return 'SUCCEEDED'
         else if (place === null) return 'FAILED'
         else return 'IN_PROGRESS'
@@ -99,13 +100,13 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
                     {(provided) =>
                         <div ref={provided.innerRef} {...provided.droppableProps}>
                             {this.props.waypoints.map((waypoint, index) =>
-                                <Draggable key={waypoint} index={index} draggableId={waypoint}>
+                                <Draggable key={waypoint.uuid} index={index} draggableId={waypoint.uuid}>
                                     {(provided) =>
                                         <WaypointItem
                                             provided={provided}
                                             waypoint={waypoint}
-                                            fetchStatus={this.waypointFetchStatus(waypoint)}
-                                            setWaypoint={(newWaypoint) => this.props.setWaypoint(index, newWaypoint)}
+                                            fetchStatus={this.addressFetchStatus(waypoint.address)}
+                                            setAddress={(newWaypoint) => this.props.setWaypoint(index, newWaypoint)}
                                             deleteWaypoint={() => this.props.deleteWaypoint(index)}
                                         />
                                     }
@@ -129,7 +130,7 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
                 <div className="input-group-append">
                     <button
                         onClick={this.addNewWaypoint}
-                        disabled={!isValidWaypoint(this.state.newWaypointFieldValue)}
+                        disabled={!isValidAddress(this.state.newWaypointFieldValue)}
                         className="btn btn-primary">
                         <i className="fas fa-plus"></i>
                     </button>

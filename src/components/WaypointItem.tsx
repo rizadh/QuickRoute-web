@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { DraggableProvided } from 'react-beautiful-dnd';
-import { isValidWaypoint } from '../redux/validator'
+import { isValidAddress } from '../redux/validator'
+import { Waypoint } from '../redux/state';
 
 export type WaypointFetchStatus = 'IN_PROGRESS' | 'SUCCEEDED' | 'FAILED'
 
 type WaypointItemProps = {
-    waypoint: string
-    setWaypoint: (waypoint: string) => void
+    waypoint: Waypoint
+    setAddress: (address: string) => void
     deleteWaypoint: () => void
     fetchStatus: WaypointFetchStatus
     provided: DraggableProvided
@@ -20,7 +21,7 @@ type WaypointItemState = {
 export default class WaypointItem extends React.Component<WaypointItemProps, WaypointItemState> {
     state = {
         isEditing: false,
-        waypointFieldValue: this.props.waypoint
+        waypointFieldValue: this.props.waypoint.address
     }
 
     handleWaypointFieldValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,20 +31,20 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
     }
 
     handleWaypointFieldKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && isValidWaypoint(this.state.waypointFieldValue)) {
-            this.props.setWaypoint(this.state.waypointFieldValue)
+        if (e.key === 'Enter' && isValidAddress(this.state.waypointFieldValue)) {
+            this.props.setAddress(this.state.waypointFieldValue)
             e.currentTarget.blur()
         }
     }
 
     resetWaypointField = () => {
         this.setState({
-            waypointFieldValue: this.props.waypoint
+            waypointFieldValue: this.props.waypoint.address
         })
     }
 
     fieldWasEdited = (): boolean => {
-        return this.state.waypointFieldValue !== this.props.waypoint
+        return this.state.waypointFieldValue !== this.props.waypoint.address
     }
 
     render() {
@@ -59,7 +60,7 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
             </div>
             <input
                 className="form-control"
-                placeholder={this.props.waypoint}
+                placeholder={this.props.waypoint.address}
                 value={this.state.waypointFieldValue}
                 onChange={this.handleWaypointFieldValueChange}
                 onKeyPress={this.handleWaypointFieldKeyPress}

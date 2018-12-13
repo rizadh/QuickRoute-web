@@ -1,8 +1,8 @@
 import * as React from 'react'
 import WaypointList from './WaypointList'
 import { connect } from 'react-redux'
-import AppState, { FetchedRoutes, FetchedPlaces } from '../redux/state'
-import { reverseWaypoints, setAndLookupWaypoints } from '../redux/actions'
+import AppState, { FetchedRoutes, FetchedPlaces, Waypoint } from '../redux/state'
+import { reverseWaypoints, replaceWaypoints } from '../redux/actions'
 import { stringify } from 'query-string'
 import { ThunkDispatch } from 'redux-thunk';
 import { ExtraArgument } from '../redux/store';
@@ -17,14 +17,14 @@ type WaypointEditorState = {
 }
 
 type WaypointEditorStateProps = {
-    waypoints: string[],
+    waypoints: Waypoint[],
     fetchedPlaces: FetchedPlaces
     fetchedRoutes: FetchedRoutes
     routeInformation: RouteInformation
 }
 
 type WaypointEditorDispatchProps = {
-    replaceWaypoints(waypoints: string[]): void
+    replaceWaypoints(addresses: string[]): void
     reverseWaypoints(): void
 }
 
@@ -85,17 +85,19 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     openUrls = () => {
-        chunk(this.props.waypoints, 10).forEach(waypoints => {
-            const destination = waypoints.pop()
-            const parameters = {
-                api: 1,
-                travelmode: 'driving',
-                destination,
-                waypoints: waypoints.length > 0 ? waypoints.join('|') : undefined
-            }
+        chunk(this.props.waypoints, 10)
+            .map(waypoints => waypoints.map(w => w.address))
+            .forEach(addresses => {
+                const destination = addresses.pop()
+                const parameters = {
+                    api: 1,
+                    travelmode: 'driving',
+                    destination,
+                    waypoints: addresses.length > 0 ? addresses.join('|') : undefined
+                }
 
-            window.open('https://www.google.com/maps/dir/?' + stringify(parameters))
-        })
+                window.open('https://www.google.com/maps/dir/?' + stringify(parameters))
+            })
     }
 
     render() {
@@ -128,13 +130,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     className="alert alert-info"
                     role="alert"
                     hidden={this.props.waypoints.length > 0 || this.props.routeInformation.status === 'FAILED'}>
-                    Add an address to begin
+                    Enter an address to begin
                 </div>
                 <div
                     className="alert alert-info"
                     role="alert"
                     hidden={this.props.waypoints.length !== 1 || this.props.routeInformation.status === 'FAILED'}>
-                    Add another address to show route information
+                    Enter another address to show route information
                 </div>
                 <WaypointList />
             </>
@@ -194,7 +196,7 @@ const mapStateToProps = (state: AppState): WaypointEditorStateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, ExtraArgument, AppAction>): WaypointEditorDispatchProps => ({
-    replaceWaypoints: waypoints => dispatch(setAndLookupWaypoints(waypoints)),
+    replaceWaypoints: waypoints => dispatch(replaceWaypoints(waypoints)),
     reverseWaypoints: () => dispatch(reverseWaypoints())
 })
 
