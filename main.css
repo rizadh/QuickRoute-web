@@ -1,6 +1,6 @@
 :root {
     --mapview-toolbar-height: 48px;
-    --waypoint-editor-width: 480px;
+    --waypoint-editor-width: 400px;
 }
 
 .waypoint-editor {
@@ -105,15 +105,9 @@
     }
 }
 
-@media (max-width: 1920px) {
+@media (max-width: 800px) {
     :root {
-        --waypoint-editor-width: 25%;
-    }
-}
-
-@media (max-width: 1280px) {
-    :root {
-        --waypoint-editor-width: 320px;
+        --waypoint-editor-width: 50%;
     }
 }
 

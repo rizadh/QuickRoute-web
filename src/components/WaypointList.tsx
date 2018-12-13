@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { ExtraArgument } from '../redux/store';
 import AppAction from '../redux/actionTypes';
-import { addWaypoint, deleteWaypoint, setWaypoint, moveWaypointUp, moveWaypointDown, moveWaypoint } from '../redux/actions';
+import { addWaypoint, deleteWaypoint, setWaypoint, moveWaypoint } from '../redux/actions';
 import { isValidWaypoint } from '../redux/validator'
 import WaypointItem, { WaypointFetchStatus } from './WaypointItem'
 import { DragDropContext, DropResult, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -18,8 +18,6 @@ type WaypointListStateProps = {
 type WaypointListDispatchProps = {
     setWaypoint: (index: number, waypoint: string) => void
     moveWaypoint: (sourceIndex: number, destinationIndex: number) => void
-    moveWaypointUp: (index: number) => void
-    moveWaypointDown: (index: number) => void
     addWaypoint: (waypoint: string) => string | null
     deleteWaypoint: (index: number) => void
 }
@@ -109,8 +107,6 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
                                             fetchStatus={this.waypointFetchStatus(waypoint)}
                                             setWaypoint={(newWaypoint) => this.props.setWaypoint(index, newWaypoint)}
                                             deleteWaypoint={() => this.props.deleteWaypoint(index)}
-                                            moveWaypointUp={() => this.props.moveWaypointUp(index)}
-                                            moveWaypointDown={() => this.props.moveWaypointDown(index)}
                                         />
                                     }
                                 </Draggable>
@@ -153,9 +149,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, ExtraArgument, App
     addWaypoint: waypoint => dispatch(addWaypoint(waypoint)),
     deleteWaypoint: index => dispatch(deleteWaypoint(index)),
     setWaypoint: (index, waypoint) => dispatch(setWaypoint(index, waypoint)),
-    moveWaypoint: (sourceIndex, destinationIndex) => dispatch(moveWaypoint(sourceIndex, destinationIndex)),
-    moveWaypointUp: index => dispatch(moveWaypointUp(index)),
-    moveWaypointDown: index => dispatch(moveWaypointDown(index)),
+    moveWaypoint: (sourceIndex, destinationIndex) => dispatch(moveWaypoint(sourceIndex, destinationIndex))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaypointList)

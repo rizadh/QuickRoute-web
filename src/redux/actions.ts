@@ -125,23 +125,6 @@ export const moveWaypoint = (sourceIndex: number, destinationIndex: number): Thu
     dispatch(setAndLookupWaypoints(waypoints))
 }
 
-export const moveWaypointUp = (index: number): ThunkResult => (dispatch, getState) => {
-    if (index === 0) return
-
-    const waypoints = [...getState().waypoints]
-    waypoints.splice(index - 1, 2, waypoints[index], waypoints[index - 1])
-    dispatch(setAndLookupWaypoints(waypoints))
-}
-
-export const moveWaypointDown = (index: number): ThunkResult => (dispatch, getState) => {
-    const waypoints = [...getState().waypoints]
-
-    if (index === waypoints.length - 1) return
-
-    waypoints.splice(index, 2, waypoints[index + 1], waypoints[index])
-    dispatch(setAndLookupWaypoints(waypoints))
-}
-
 export const reverseWaypoints = (): ThunkResult => (dispatch, getState) => {
     dispatch(setAndLookupWaypoints([...getState().waypoints].reverse()))
 }

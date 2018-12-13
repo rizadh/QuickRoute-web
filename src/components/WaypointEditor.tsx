@@ -2,7 +2,7 @@ import * as React from 'react'
 import WaypointList from './WaypointList'
 import { connect } from 'react-redux'
 import AppState, { FetchedRoutes, FetchedPlaces } from '../redux/state'
-import { reverseWaypoints, moveWaypointUp, moveWaypointDown, setAndLookupWaypoints, setWaypoint } from '../redux/actions'
+import { reverseWaypoints, setAndLookupWaypoints } from '../redux/actions'
 import { stringify } from 'query-string'
 import { ThunkDispatch } from 'redux-thunk';
 import { ExtraArgument } from '../redux/store';
@@ -10,7 +10,6 @@ import { chunk } from 'lodash';
 import { routeInformation, RouteInformation } from '../redux/selectors';
 import AppAction from '../redux/actionTypes';
 import Textarea from 'react-textarea-autosize'
-import TextareaAutosize from 'react-textarea-autosize';
 
 type WaypointEditorState = {
     bulkEditTextAreaValue: string
@@ -26,9 +25,6 @@ type WaypointEditorStateProps = {
 
 type WaypointEditorDispatchProps = {
     replaceWaypoints(waypoints: string[]): void
-    setWaypoint(index: number, waypoint: string): void
-    moveWaypointUp(index: number): void
-    moveWaypointDown(index: number): void
     reverseWaypoints(): void
 }
 
@@ -172,7 +168,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     onClick={this.openUrls}
                     disabled={this.props.waypoints.length === 0}
                 >
-                    <i className="fas fa-map-marked"></i> Open in Maps
+                    <i className="fas fa-route"></i> Open in Maps
                 </button>
             </>
 
@@ -199,10 +195,7 @@ const mapStateToProps = (state: AppState): WaypointEditorStateProps => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, ExtraArgument, AppAction>): WaypointEditorDispatchProps => ({
     replaceWaypoints: waypoints => dispatch(setAndLookupWaypoints(waypoints)),
-    reverseWaypoints: () => dispatch(reverseWaypoints()),
-    setWaypoint: (index, address) => dispatch(setWaypoint(index, address)),
-    moveWaypointUp: index => dispatch(moveWaypointUp(index)),
-    moveWaypointDown: index => dispatch(moveWaypointDown(index))
+    reverseWaypoints: () => dispatch(reverseWaypoints())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaypointEditor)

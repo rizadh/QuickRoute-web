@@ -8,8 +8,6 @@ type WaypointItemProps = {
     waypoint: string
     setWaypoint: (waypoint: string) => void
     deleteWaypoint: () => void
-    moveWaypointUp: () => void
-    moveWaypointDown: () => void
     fetchStatus: WaypointFetchStatus
     provided: DraggableProvided
 }
@@ -22,14 +20,7 @@ type WaypointItemState = {
 export default class WaypointItem extends React.Component<WaypointItemProps, WaypointItemState> {
     state = {
         isEditing: false,
-        waypointFieldValue: ''
-    }
-
-    beginEditing = () => {
-        this.setState({
-            isEditing: true,
-            waypointFieldValue: this.props.waypoint
-        })
+        waypointFieldValue: this.props.waypoint
     }
 
     handleWaypointFieldValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,26 +29,61 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
         })
     }
 
-    handleWaypointFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') this.finishEditing()
+    handleWaypointFieldKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && isValidWaypoint(this.state.waypointFieldValue)) {
+            this.props.setWaypoint(this.state.waypointFieldValue)
+            e.currentTarget.blur()
+        }
     }
 
-    cancelEditing = () => {
+    resetWaypointField = () => {
         this.setState({
-            isEditing: false
+            waypointFieldValue: this.props.waypoint
         })
     }
 
-    finishEditing = () => {
-        if (!isValidWaypoint(this.state.waypointFieldValue)) return
-
-        this.props.setWaypoint(this.state.waypointFieldValue)
-
-        this.setState({
-            isEditing: false
-        })
+    fieldWasEdited = (): boolean => {
+        return this.state.waypointFieldValue !== this.props.waypoint
     }
 
+    render() {
+        return <div
+            className="input-group mb-3"
+            ref={this.props.provided.innerRef}
+            {...this.props.provided.draggableProps}
+        >
+            <div className="input-group-prepend">
+                <button onClick={this.props.deleteWaypoint} className="btn btn-sm btn-danger">
+                    <i className="fas fa-trash-alt"></i>
+                </button>
+            </div>
+            <input
+                className="form-control"
+                placeholder={this.props.waypoint}
+                value={this.state.waypointFieldValue}
+                onChange={this.handleWaypointFieldValueChange}
+                onKeyPress={this.handleWaypointFieldKeyPress}
+            />
+            <div className="input-group-append">
+                <button onClick={this.resetWaypointField} className="btn btn-secondary" hidden={!this.fieldWasEdited()}>
+                    <i className="fas fa-undo-alt"></i>
+                </button>
+                <span className="input-group-text text-danger" hidden={this.props.fetchStatus !== 'FAILED'}>
+                    <i className="fas fa-exclamation-circle"></i>
+                </span>
+                <span className="input-group-text text-muted" hidden={this.props.fetchStatus !== 'IN_PROGRESS'}>
+                    <i className="fas fa-circle-notch fa-spin"></i>
+                </span>
+                <span className="input-group-text text-success" hidden={this.props.fetchStatus !== 'SUCCEEDED'}>
+                    <i className="fas fa-check"></i>
+                </span>
+                <span className="input-group-text text-muted" {...this.props.provided.dragHandleProps}>
+                    <i className="fas fa-grip-lines-vertical"></i>
+                </span>
+            </div>
+        </div>
+    }
+    /*
     render() {
         return <div
             className="card mb-3"
@@ -127,4 +153,5 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
             </div>
         </div>
     }
+    */
 }
