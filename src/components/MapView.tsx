@@ -22,16 +22,17 @@ export default class MapView extends React.Component<MapViewProps> {
 
     updateMap = () => {
         if (!this.map) return
+        if (!this.element) return
 
         const state = this.props.store.getState()
         const status = routeInformation(state).status
 
         if (status == 'FETCHING') {
-            this.map.element.classList.add('updating')
+            this.element.classList.add('updating')
             return
         }
 
-        this.map.element.classList.remove('updating')
+        this.element.classList.remove('updating')
 
         if (status == 'FAILED') return
 
