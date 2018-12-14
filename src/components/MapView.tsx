@@ -37,7 +37,7 @@ export default class MapView extends React.Component<MapViewProps> {
         if (status == 'FAILED') return
 
         if (
-            isEqual(this.addresses, state.waypoints)
+            isEqual(this.addresses, state.waypoints.map(w => w.address))
             && isEqual(this.places, Object.keys(state.fetchedPlaces))
             && isEqual(this.routes, Object.keys(state.fetchedRoutes))
         ) {
