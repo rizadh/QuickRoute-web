@@ -13,6 +13,7 @@ import { ExtraArgument } from './store';
 import { range } from 'lodash'
 import { parseAddress as parseAddress, isValidAddress } from './validator'
 import { v4 as uuidv4 } from 'uuid'
+import { fetchedRoutesKey } from './reducer';
 
 type ThunkResult<R = void> = ThunkAction<R, AppState, ExtraArgument, AppAction>
 
@@ -34,6 +35,23 @@ const lookupAddress = (geocoder: mapkit.Geocoder, address: string) => new Promis
     })
 })
 
+const fetchRoute = (directions: mapkit.Directions, origin: mapkit.Place, destination: mapkit.Place) => new Promise<mapkit.Route>((resolve, reject) => {
+    directions.route({ origin, destination }, (error, data) => {
+        if (error) {
+            reject(error)
+            return
+        }
+
+        const route = data.routes[0]
+        if (!route) {
+            reject()
+            return
+        }
+
+        resolve(route)
+    })
+})
+
 export const lookupAddresses = (addresses: string[]): ThunkResult => (dispatch, getState, { geocoder, directions }) => {
     const places = addresses.map(async address => {
         const place = getState().fetchedPlaces[address]
@@ -50,50 +68,26 @@ export const lookupAddresses = (addresses: string[]): ThunkResult => (dispatch, 
 
     if (addresses.length === 0) return
 
-    const routes = range(0, addresses.length - 1).map(async index => {
-        const origin = {
-            address: addresses[index],
-            place: await places[index]
+    const routes = range(0, addresses.length - 1).map(async index=> {
+        const origin = addresses[index]
+        const destination = addresses[index + 1]
+
+        const route = getState().fetchedRoutes[fetchedRoutesKey(origin, destination)]
+        if (route) return route
+
+        const originPlace = await places[index]
+        const destinationPlace = await places[index + 1]
+
+        if (!originPlace) throw Error('Origin is undefined')
+        if (!destinationPlace) throw Error('Destination is undefined')
+
+        try {
+            const route = await fetchRoute(directions, originPlace, destinationPlace)
+            dispatch(routeSuccess(origin, destination, route))
+            return route
+        } catch {
+            dispatch(routeFailure(origin, destination))
         }
-
-        const destination = {
-            address: addresses[index + 1],
-            place: await places[index + 1]
-        }
-
-        return new Promise<mapkit.Route>((resolve, reject) => {
-            if (!origin.place) {
-                routeFailure(origin.address, destination.address)
-                reject('Origin is undefined')
-                return
-            }
-            if (!destination.place) {
-                routeFailure(origin.address, destination.address)
-                reject('Destination is undefined')
-                return
-            }
-
-            directions.route({
-                origin: origin.place,
-                destination: destination.place
-            }, (error, data) => {
-                if (error) {
-                    dispatch(routeFailure(origin.address, destination.address))
-                    reject(error)
-                    return
-                }
-
-                const route = data.routes[0]
-                if (!route) {
-                    dispatch(routeFailure(origin.address, destination.address))
-                    reject()
-                    return
-                }
-
-                resolve(route)
-                dispatch(routeSuccess(origin.address, destination.address, route))
-            })
-        })
     })
 }
 
@@ -103,8 +97,6 @@ const setWaypointsAndLookup = (waypoints: Waypoint[]): ThunkResult => dispatch =
 }
 
 const createWaypointFromAddress = (address: string): Waypoint => {
-    uuidv4
-
     return {
         address,
         uuid: uuidv4()
