@@ -88,6 +88,10 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     position: absolute;
     top: 0; 
     right: 0;
+
+    @media (max-width: $compactBreakpoint) {
+        display: none;
+    }
 }
 
 .mapview-toolbar {
