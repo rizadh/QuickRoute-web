@@ -28,7 +28,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
 
     border-right: 1px solid lightgray;
 
-    overflow: scroll;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
 
     @media (max-width: $compactBreakpoint) {
