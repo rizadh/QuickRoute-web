@@ -5,12 +5,12 @@ import StatView from './StatView'
 import { routeInformation, RouteInformation } from '../redux/selectors'
 import { Line } from 'rc-progress'
 
-type MapViewToolbarProps = {
+type MapViewStatusbarProps = {
     routeInformation: RouteInformation
 }
 
 // TODO: Convert into plain function
-class MapViewToolbar extends React.Component<MapViewToolbarProps> {
+class MapViewStatusbar extends React.Component<MapViewStatusbarProps> {
     stringForTime = (seconds: number) => {
         if (seconds < 60) {
             return `${Math.floor(seconds)} s`
@@ -35,15 +35,15 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
         `${Math.floor(progress * 1000) / 10} %`
 
     render() {
-        let toolbarItems: JSX.Element | string
+        let statusbarItems: JSX.Element | string
         switch (this.props.routeInformation.status) {
             case 'FETCHING':
-                toolbarItems = <>
+                statusbarItems = <>
                     <StatView
                         title="Routing"
                         value={this.stringForUpdateProgress(this.props.routeInformation.fetchProgress)}
                     />
-                    <div className="mapview-toolbar-progress-bar">
+                    <div className="mapview-statusbar-progress-bar">
                         <Line
                             percent={this.props.routeInformation.fetchProgress * 100}
                             strokeWidth={8}
@@ -55,23 +55,23 @@ class MapViewToolbar extends React.Component<MapViewToolbarProps> {
                 </>
                 break
             case 'FETCHED':
-                toolbarItems = <>
+                statusbarItems = <>
                     <StatView title="Distance" value={this.stringForDistance(this.props.routeInformation.totalDistance)} />
                     <StatView title="Time" value={this.stringForTime(this.props.routeInformation.totalTime)} />
                 </>
                 break
             case 'FAILED':
-                toolbarItems = "Routing failed"
+                statusbarItems = "Routing failed"
                 break
             case 'EMPTY':
-                toolbarItems = "Enter more waypoints"
+                statusbarItems = "Enter more waypoints"
                 break
             default:
                 throw new Error('Invalid route information')
         }
 
-        return <div className="mapview-toolbar frosted">
-            {toolbarItems}
+        return <div className="mapview-statusbar frosted">
+            {statusbarItems}
         </div>
     }
 }
@@ -80,4 +80,4 @@ const mapStateToProps = (state: AppState) => ({
     routeInformation: routeInformation(state),
 })
 
-export default connect(mapStateToProps)(MapViewToolbar)
+export default connect(mapStateToProps)(MapViewStatusbar)
