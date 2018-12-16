@@ -14,6 +14,7 @@ type MapViewProps = {
 export default class MapView extends React.Component<MapViewProps> {
     element?: HTMLElement
     map?: mapkit.Map
+    loadingIndicator?: HTMLElement
     unsubscribeCallback?: Unsubscribe
     addresses: string[] = []
     places: string[] = []
@@ -29,10 +30,12 @@ export default class MapView extends React.Component<MapViewProps> {
 
         if (status == 'FETCHING') {
             this.element.classList.add('updating')
+            if (this.loadingIndicator) this.loadingIndicator.hidden = false
             return
         }
 
         this.element.classList.remove('updating')
+        if (this.loadingIndicator) this.loadingIndicator.hidden = true
 
         if (status == 'FAILED') return
 
@@ -138,9 +141,16 @@ export default class MapView extends React.Component<MapViewProps> {
     }
 
     render() {
-        return <div
-            ref={e => this.element = e || undefined}
-            className="mapview"
-        />
+        return <>
+            <div
+                ref={e => this.element = e || undefined}
+                className="mapview"
+            />
+            <div ref={e => this.loadingIndicator = e || undefined}
+                className="loading-indicator rounded p-3 frosted text-dark"
+                hidden>
+                <i className="fas fa-spin fa-circle-notch"></i>
+            </div>
+        </>
     }
 }

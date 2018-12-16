@@ -1,7 +1,8 @@
 $maxEditorWidth: 400px;
 $minEditorWidth: 300px;
 $minMapWidth: 300px;
-$toolbarHeight: 48px;
+$statusbarHeight: 48px;
+$frostedBlurRadius: 258px;
 
 $relativeEditorWidth: $minEditorWidth / ($minEditorWidth + $minMapWidth);
 $compactBreakpoint: $minEditorWidth + $minMapWidth;
@@ -30,7 +31,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
 .waypoint-editor {
     grid-area: editor;
 
-    border-right: 1px solid lightgray;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
@@ -108,13 +109,22 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     overflow: hidden;
 }
 
-.frosted {
-    $frostedBlur: 64px;
+.loading-indicator {
+    grid-area: map;
+    align-self: center;
+    justify-self: center;
 
+    background-color: red;
+
+    pointer-events: none;
+    z-index: 1;
+}
+
+.frosted {
     background-color: rgba(255, 255, 255, 0.9);
 
-    @supports (backdrop-filter: blur($frostedBlur)) {
-        backdrop-filter: blur($frostedBlur);
+    @supports (backdrop-filter: blur($frostedBlurRadius)) {
+        backdrop-filter: blur($frostedBlurRadius);
         background-color: rgba(255, 255, 255, 0.5);
     }
 }
