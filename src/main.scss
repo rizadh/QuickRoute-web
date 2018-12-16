@@ -89,6 +89,8 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
 .mapview-toolbar {
     grid-area: toolbar;
 
+    z-index: 1;
+
     display: flex;
     align-items: center;
     justify-content: space-evenly;
