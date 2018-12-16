@@ -1,39 +1,39 @@
 $maxEditorWidth: 400px;
 $minEditorWidth: 300px;
-$minMapWidth: 275px;
+$minMapWidth: 300px;
 $toolbarHeight: 48px;
 
 $relativeEditorWidth: $minEditorWidth / ($minEditorWidth + $minMapWidth);
 $compactBreakpoint: $minEditorWidth + $minMapWidth;
 $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
 
-:root {
-    --waypoint-editor-width: #{$maxEditorWidth};
+#root {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: [editor-start] 400px [editor-end toolbar-start map-start] auto [toolbar-end map-end];
+    grid-template-rows: [editor-start map-start] auto [toolbar-start] 48px [editor-end toolbar-end map-end];
 
     @media (max-width: $wideBreakpoint) {
-        --waypoint-editor-width: #{100% * $relativeEditorWidth};
+        grid-template-columns: [editor-start] $relativeEditorWidth * 100% [editor-end toolbar-start map-start] auto [toolbar-end map-end];
     }
 
     @media (max-width: $compactBreakpoint) {
-        --waypoint-editor-width: 100%;
+        grid-template-columns: [editor-start toolbar-start map-start] auto [editor-end toolbar-end map-end];
+        grid-template-rows: [editor-start] fit-content(60%) [editor-end map-start] auto [toolbar-start] 48px [map-end toolbar-end];
     }
 }
 
 .waypoint-editor {
-    position: absolute;
-    left: 0;
-    width: var(--waypoint-editor-width);
-    top: 0;
-    bottom: 0;
+    grid-area: editor;
 
     border-right: 1px solid lightgray;
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-
-    @media (max-width: $compactBreakpoint) {
-        bottom: $toolbarHeight;
-    }
 }
 
 .waypoint-editor-header {
@@ -62,18 +62,11 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
 }
 
 .mapview {
-    position: absolute;
-    left: var(--waypoint-editor-width);
-    right: 0;
-    top: 0;
-    bottom: 0;
+    grid-area: map;
+    width: 100%;
+    height: 100%;
 
     transition: filter 0.2s;
-
-    @media (max-width: $compactBreakpoint) {
-        display: none;
-    }
-
     &.updating {
         transition: filter 0.4s;
         filter: saturate(0) brightness(0.5);
@@ -85,32 +78,22 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
 }
 
 .autofit-button {
-    position: absolute;
-    top: 0; 
-    right: 0;
+    grid-area: map;
 
-    @media (max-width: $compactBreakpoint) {
-        display: none;
-    }
+    z-index: 1;
+
+    align-self: start;
+    justify-self: end;
 }
 
 .mapview-toolbar {
-    position: absolute;
-    left: var(--waypoint-editor-width);
-    right: 0;
-    bottom: 0;
-    height: $toolbarHeight;
+    grid-area: toolbar;
 
     display: flex;
     align-items: center;
     justify-content: space-evenly;
 
     border-top: 1px solid rgba(0, 0, 0, 0.1); 
-
-    @media (max-width: $compactBreakpoint) {
-        left: 0;
-        width: 100%;
-    }
 }
 
 .mapview-toolbar-progress-bar {
