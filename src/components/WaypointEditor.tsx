@@ -173,14 +173,14 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 </button>
             </>
 
-        return <div className="waypoint-editor">
-            <div className="waypoint-editor-header frosted p-3">
+        return <div id="waypoint-editor">
+            <div id="waypoint-editor-header" className="frosted p-3">
                 <h2>{headerTitle}</h2>
             </div>
-            <div className="waypoint-editor-form px-3 pt-3">
+            <div className="px-3 pt-3">
                 {formContent}
             </div>
-            <div className="waypoint-editor-button-bar frosted pr-3 pb-3">
+            <div id="waypoint-editor-button-bar" className="frosted pr-3 pb-3">
                 {buttons}
             </div>
         </div>

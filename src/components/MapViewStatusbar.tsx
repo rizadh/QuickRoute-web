@@ -60,7 +60,7 @@ class MapViewStatusbar extends React.Component<MapViewStatusbarProps> {
                 throw new Error('Invalid route information')
         }
 
-        return <div className="mapview-statusbar frosted">
+        return <div id="mapview-statusbar" className="frosted">
             {statusbarItems}
         </div>
     }

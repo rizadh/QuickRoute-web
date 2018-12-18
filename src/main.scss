@@ -28,7 +28,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     }
 }
 
-.waypoint-editor {
+#waypoint-editor {
     grid-area: editor;
 
     border-right: 1px solid rgba(0, 0, 0, 0.2);
@@ -37,7 +37,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     -webkit-overflow-scrolling: touch;
 }
 
-.waypoint-editor-header {
+#waypoint-editor-header {
     position: sticky;
     top: 0;
 
@@ -50,7 +50,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     }
 }
 
-.waypoint-editor-button-bar {
+#waypoint-editor-button-bar {
     width: 100%;
     position: sticky;
     bottom: 0;
@@ -62,7 +62,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     border-top: 1px solid rgba(0, 0, 0, 0.1); 
 }
 
-.mapview {
+#mapview {
     grid-area: map;
     width: 100%;
     height: 100%;
@@ -78,7 +78,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     }
 }
 
-.autofit-button {
+#autofit-button {
     grid-area: map;
 
     z-index: 1;
@@ -87,7 +87,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     justify-self: end;
 }
 
-.mapview-statusbar {
+#mapview-statusbar {
     grid-area: statusbar;
 
     z-index: 1;
@@ -99,14 +99,14 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     border-top: 1px solid rgba(0, 0, 0, 0.1); 
 }
 
-.progress-bar {
+#progress-bar {
     grid-area: map;
     height: 4px;
     overflow: hidden;
     z-index: 1;
 }
 
-.loading-indicator {
+#loading-indicator {
     grid-area: map;
     align-self: center;
     justify-self: center;

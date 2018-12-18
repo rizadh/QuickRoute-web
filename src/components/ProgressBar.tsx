@@ -11,7 +11,7 @@ type ProgressBarProps = {
 class ProgressBar extends React.Component<ProgressBarProps> {
     render() {
         if (this.props.routeInformation.status === 'FETCHING')
-            return <div className="progress-bar">
+            return <div id="progress-bar">
                 <Line
                     percent={this.props.routeInformation.fetchProgress * 100}
                     trailColor="transparent"
