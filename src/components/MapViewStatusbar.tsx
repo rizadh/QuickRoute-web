@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import AppState from '../redux/state'
 import StatView from './StatView'
 import { routeInformation, RouteInformation } from '../redux/selectors'
-import { Line } from 'rc-progress'
 
 type MapViewStatusbarProps = {
     routeInformation: RouteInformation
@@ -43,15 +42,6 @@ class MapViewStatusbar extends React.Component<MapViewStatusbarProps> {
                         title="Routing"
                         value={this.stringForUpdateProgress(this.props.routeInformation.fetchProgress)}
                     />
-                    <div className="mapview-statusbar-progress-bar">
-                        <Line
-                            percent={this.props.routeInformation.fetchProgress * 100}
-                            strokeWidth={8}
-                            strokeColor='#ffc107'
-                            strokeLinecap='butt'
-                            trailWidth={8}
-                        />
-                    </div>
                 </>
                 break
             case 'FETCHED':

@@ -93,14 +93,15 @@ export default class MapView extends React.Component<MapViewProps> {
 
     centerMap = () => {
         if (!this.map) return
+        if (!this.element) return
         if (!this.props.store.getState().autofitIsEnabled) return
 
         this.map.showItems([...this.map.annotations || [], ...this.map.overlays], {
             animate: true, padding: new mapkit.Padding({
-                top: 64,
-                right: 64,
-                bottom: 64,
-                left: 64,
+                top: 48,
+                right: 16,
+                bottom: 48,
+                left: 16,
             })
         })
     }

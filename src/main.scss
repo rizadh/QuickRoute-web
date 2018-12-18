@@ -99,22 +99,17 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     border-top: 1px solid rgba(0, 0, 0, 0.1); 
 }
 
-.mapview-statusbar-progress-bar {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    right: 0;
+.progress-bar {
+    grid-area: map;
     height: 4px;
-
     overflow: hidden;
+    z-index: 1;
 }
 
 .loading-indicator {
     grid-area: map;
     align-self: center;
     justify-self: center;
-
-    background-color: red;
 
     pointer-events: none;
     z-index: 1;
