@@ -113,7 +113,6 @@ export default class MapView extends React.Component<MapViewProps> {
         })
 
         const map = new mapkit.Map(this.element, {
-            tracksUserLocation: true,
             showsMapTypeControl: false,
             showsScale: mapkit.FeatureVisibility.Visible,
             showsPointsOfInterest: false,
