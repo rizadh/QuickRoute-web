@@ -20,8 +20,6 @@ type WaypointEditorState = {
 
 type WaypointEditorStateProps = {
     waypoints: Waypoint[],
-    fetchedPlaces: FetchedPlaces
-    fetchedRoutes: FetchedRoutes
     routeInformation: RouteInformation
 }
 
@@ -229,8 +227,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
 const mapStateToProps = (state: AppState): WaypointEditorStateProps => ({
     waypoints: state.waypoints,
-    fetchedRoutes: state.fetchedRoutes,
-    fetchedPlaces: state.fetchedPlaces,
     routeInformation: routeInformation(state)
 })
 
