@@ -2,7 +2,8 @@ import * as React from 'react'
 import WaypointList from './WaypointList'
 import { connect } from 'react-redux'
 import AppState, { FetchedRoutes, FetchedPlaces, Waypoint } from '../redux/state'
-import { reverseWaypoints, replaceWaypoints } from '../redux/actions'
+import { reverseWaypoints, replaceWaypoints, addWaypoint } from '../redux/actions'
+import { isValidAddress } from '../redux/validator'
 import { stringify } from 'query-string'
 import { ThunkDispatch } from 'redux-thunk';
 import { ExtraArgument } from '../redux/store';
@@ -12,8 +13,9 @@ import AppAction from '../redux/actionTypes';
 import Textarea from 'react-textarea-autosize'
 
 type WaypointEditorState = {
+    bulkEditingModeIsEnabled: boolean
+    newWaypointFieldValue: string
     bulkEditTextAreaValue: string
-    editingModeEnabled: boolean
 }
 
 type WaypointEditorStateProps = {
@@ -25,6 +27,7 @@ type WaypointEditorStateProps = {
 
 type WaypointEditorDispatchProps = {
     replaceWaypoints(addresses: string[]): void
+    addWaypoint: (address: string) => string | null
     reverseWaypoints(): void
 }
 
@@ -32,8 +35,9 @@ type WaypointEditorProps = WaypointEditorStateProps & WaypointEditorDispatchProp
 
 class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditorState> {
     state: WaypointEditorState = {
+        bulkEditingModeIsEnabled: false,
+        newWaypointFieldValue: '',
         bulkEditTextAreaValue: '',
-        editingModeEnabled: false
     }
 
     waypointsToEditingString = () => {
@@ -43,7 +47,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     beginEditingMode = () => {
         this.setState({
             bulkEditTextAreaValue: this.waypointsToEditingString(),
-            editingModeEnabled: true
+            bulkEditingModeIsEnabled: true
         })
     }
 
@@ -68,13 +72,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         this.props.replaceWaypoints(waypoints)
 
         this.setState({
-            editingModeEnabled: false
+            bulkEditingModeIsEnabled: false
         })
     }
 
     cancelEditingMode = () => {
         this.setState({
-            editingModeEnabled: false
+            bulkEditingModeIsEnabled: false
         })
     }
 
@@ -100,12 +104,29 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             })
     }
 
+    addNewWaypoint = () => {
+        if (this.props.addWaypoint(this.state.newWaypointFieldValue))
+            this.setState({
+                newWaypointFieldValue: ''
+            })
+    }
+
+    handleNewWaypointFieldValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            newWaypointFieldValue: e.currentTarget.value
+        })
+    }
+
+    handleNewWaypointFieldKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') this.addNewWaypoint()
+    }
+
     render() {
-        const headerTitle = this.state.editingModeEnabled
+        const headerTitle = this.state.bulkEditingModeIsEnabled
             ? "Bulk Edit"
             : "Waypoints"
 
-        const formContent = this.state.editingModeEnabled
+        const formContent = this.state.bulkEditingModeIsEnabled
             ? <>
                 <div className="alert alert-info" role="alert">
                     Enter one address per line
@@ -141,7 +162,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 <WaypointList />
             </>
 
-        const buttons = this.state.editingModeEnabled
+        const footerItems = this.state.bulkEditingModeIsEnabled
             ? <>
                 <button
                     className="btn btn-primary mt-3 ml-3 float-right"
@@ -154,6 +175,25 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 </button>
             </>
             : <>
+                <div className="input-group pt-3 pl-3">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="e.g. 123 Example Street"
+                        value={this.state.newWaypointFieldValue}
+                        onChange={this.handleNewWaypointFieldValueChange}
+                        onKeyPress={this.handleNewWaypointFieldKeyPress}
+                        autoFocus
+                    ></input>
+                    <div className="input-group-append">
+                        <button
+                            onClick={this.addNewWaypoint}
+                            disabled={!isValidAddress(this.state.newWaypointFieldValue)}
+                            className="btn btn-primary">
+                            <i className="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
                 <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginEditingMode}>
                     <i className="fas fa-list-alt"></i> Bulk Edit
                 </button>
@@ -180,8 +220,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             <div className="px-3 pt-3">
                 {formContent}
             </div>
-            <div id="waypoint-editor-button-bar" className="frosted pr-3 pb-3">
-                {buttons}
+            <div id="waypoint-editor-footer" className="frosted pr-3 pb-3">
+                {footerItems}
             </div>
         </div>
     }
@@ -196,6 +236,7 @@ const mapStateToProps = (state: AppState): WaypointEditorStateProps => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, ExtraArgument, AppAction>): WaypointEditorDispatchProps => ({
     replaceWaypoints: waypoints => dispatch(replaceWaypoints(waypoints)),
+    addWaypoint: waypoint => dispatch(addWaypoint(waypoint)),
     reverseWaypoints: () => dispatch(reverseWaypoints())
 })
 

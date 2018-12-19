@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { ExtraArgument } from '../redux/store';
 import AppAction from '../redux/actionTypes';
-import { addWaypoint, deleteWaypoint, setWaypoint, moveWaypoint } from '../redux/actions';
-import { isValidAddress } from '../redux/validator'
+import { deleteWaypoint, setWaypoint, moveWaypoint } from '../redux/actions';
 import WaypointItem, { WaypointFetchStatus } from './WaypointItem'
 import { DragDropContext, DropResult, Droppable, Draggable } from 'react-beautiful-dnd'
 import { fetchedRoutesKey } from '../redux/reducer'
@@ -19,19 +18,13 @@ type WaypointListStateProps = {
 type WaypointListDispatchProps = {
     setWaypoint: (index: number, address: string) => void
     moveWaypoint: (sourceIndex: number, destinationIndex: number) => void
-    addWaypoint: (address: string) => string | null
     deleteWaypoint: (index: number) => void
 }
 
 type WaypointListProps = WaypointListStateProps & WaypointListDispatchProps
 
-type WaypointListState = {
-    newWaypointFieldValue: string
-}
 
-class WaypointList extends React.Component<WaypointListProps, WaypointListState> {
-    state = { newWaypointFieldValue: '' }
-
+class WaypointList extends React.Component<WaypointListProps> {
     lookupStatus = (index: number): boolean | undefined => {
         const waypoint = this.props.waypoints[index]
         const place = this.props.fetchedPlaces[waypoint.address]
@@ -58,23 +51,6 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
         else return 'NONE'
     }
 
-    addNewWaypoint = () => {
-        if (this.props.addWaypoint(this.state.newWaypointFieldValue))
-            this.setState({
-                newWaypointFieldValue: ''
-            })
-    }
-
-    handleNewWaypointFieldValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            newWaypointFieldValue: e.currentTarget.value
-        })
-    }
-
-    handleNewWaypointFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') this.addNewWaypoint()
-    }
-
     handleWaypointItemDrag = (e: React.DragEvent) => {
         console.log(e.clientX)
         console.log(e.clientY)
@@ -94,7 +70,7 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
     }
 
     render() {
-        return <>
+        return (
             <DragDropContext onDragEnd={this.onDragEnd}>
                 <Droppable droppableId="droppable">
                     {(provided) =>
@@ -117,26 +93,7 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
                     }
                 </Droppable>
             </DragDropContext>
-            <div className="input-group pb-3">
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="e.g. 123 Example Street"
-                    value={this.state.newWaypointFieldValue}
-                    onChange={this.handleNewWaypointFieldValueChange}
-                    onKeyPress={this.handleNewWaypointFieldKeyPress}
-                    autoFocus
-                ></input>
-                <div className="input-group-append">
-                    <button
-                        onClick={this.addNewWaypoint}
-                        disabled={!isValidAddress(this.state.newWaypointFieldValue)}
-                        className="btn btn-primary">
-                        <i className="fas fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-        </>
+        )
     }
 }
 
@@ -147,7 +104,6 @@ const mapStateToProps = (state: AppState): WaypointListStateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, ExtraArgument, AppAction>): WaypointListDispatchProps => ({
-    addWaypoint: waypoint => dispatch(addWaypoint(waypoint)),
     deleteWaypoint: index => dispatch(deleteWaypoint(index)),
     setWaypoint: (index, waypoint) => dispatch(setWaypoint(index, waypoint)),
     moveWaypoint: (sourceIndex, destinationIndex) => dispatch(moveWaypoint(sourceIndex, destinationIndex))
