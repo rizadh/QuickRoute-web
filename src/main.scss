@@ -33,6 +33,11 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
 
     border-right: 1px solid rgba(0, 0, 0, 0.2);
 
+    @media (max-width: $compactBreakpoint) {
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -96,7 +101,7 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     align-items: center;
     justify-content: space-evenly;
 
-    border-top: 1px solid rgba(0, 0, 0, 0.1); 
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 #progress-bar {
