@@ -177,7 +177,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="e.g. 123 Example Street"
+                        placeholder="New waypoint"
                         value={this.state.newWaypointFieldValue}
                         onChange={this.handleNewWaypointFieldValueChange}
                         onKeyPress={this.handleNewWaypointFieldKeyPress}
