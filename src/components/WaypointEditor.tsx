@@ -1,9 +1,8 @@
 import * as React from 'react'
 import WaypointList from './WaypointList'
 import { connect } from 'react-redux'
-import AppState, { FetchedRoutes, FetchedPlaces, Waypoint } from '../redux/state'
+import AppState, { Waypoint } from '../redux/state'
 import { reverseWaypoints, replaceWaypoints, addWaypoint } from '../redux/actions'
-import { isValidAddress } from '../redux/validator'
 import { stringify } from 'query-string'
 import { ThunkDispatch } from 'redux-thunk';
 import { ExtraArgument } from '../redux/store';
@@ -11,11 +10,13 @@ import { chunk } from 'lodash';
 import { routeInformation, RouteInformation } from '../redux/selectors';
 import AppAction from '../redux/actionTypes';
 import Textarea from 'react-textarea-autosize'
+import { isValidAddress, parseAddress } from '../redux/validator'
 
 type WaypointEditorState = {
-    bulkEditingModeIsEnabled: boolean
+    editorMode: 'regular' | 'bulk' | 'import' | 'importing'
+    bulkEditFieldValue: string
     newWaypointFieldValue: string
-    bulkEditTextAreaValue: string
+    driverNumberFieldValue: string
 }
 
 type WaypointEditorStateProps = {
@@ -25,7 +26,7 @@ type WaypointEditorStateProps = {
 
 type WaypointEditorDispatchProps = {
     replaceWaypoints(addresses: string[]): void
-    addWaypoint: (address: string) => string | null
+    addWaypoint(address: string): void
     reverseWaypoints(): void
 }
 
@@ -33,57 +34,114 @@ type WaypointEditorProps = WaypointEditorStateProps & WaypointEditorDispatchProp
 
 class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditorState> {
     state: WaypointEditorState = {
-        bulkEditingModeIsEnabled: false,
+        editorMode: 'regular',
+        bulkEditFieldValue: '',
         newWaypointFieldValue: '',
-        bulkEditTextAreaValue: '',
+        driverNumberFieldValue: '',
     }
 
-    waypointsToEditingString = () => {
-        return this.props.waypoints.map(w => w.address).join('\n')
+    get canReverseWaypoints() {
+        return this.props.waypoints.length >= 2
     }
 
-    beginEditingMode = () => {
+    handleNewWaypointFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
-            bulkEditTextAreaValue: this.waypointsToEditingString(),
-            bulkEditingModeIsEnabled: true
+            newWaypointFieldValue: e.currentTarget.value
         })
     }
 
-    waypointsFromInput(input: string): string[] {
-        return input
+    handleNewWaypointFieldKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') this.addNewWaypoint()
+    }
+
+    beginBulkEditing = () => {
+        this.setState({
+            editorMode: 'bulk',
+            bulkEditFieldValue: this.props.waypoints.map(w => w.address).join('\n')
+        })
+    }
+
+    handleBulkEditFieldChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        this.setState({
+            bulkEditFieldValue: e.currentTarget.value
+        })
+    }
+
+    handleBulkEditFieldKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && e.metaKey) this.finishBulkEditing()
+    }
+
+    finishBulkEditing = () => {
+        const waypoints = this.state.bulkEditFieldValue
             .split('\n')
-            .filter(this.waypointIsValid)
-            .map(this.parseWaypoint)
-    }
-
-    waypointIsValid(input: string): boolean {
-        return /[A-Za-z]+/.test(input)
-    }
-
-    parseWaypoint(input: string): string {
-        return input.replace(/[^A-Za-z0-9\s]/g, "")
-    }
-
-    endEditingMode = () => {
-        const waypoints = this.waypointsFromInput(this.state.bulkEditTextAreaValue)
+            .filter(isValidAddress)
+            .map(parseAddress)
 
         this.props.replaceWaypoints(waypoints)
 
         this.setState({
-            bulkEditingModeIsEnabled: false
+            editorMode: 'regular'
         })
     }
 
-    cancelEditingMode = () => {
+    cancelBulkEditing = () => {
         this.setState({
-            bulkEditingModeIsEnabled: false
+            editorMode: 'regular'
         })
     }
 
-    handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    beginImportMode = () => {
         this.setState({
-            bulkEditTextAreaValue: e.currentTarget.value
+            editorMode: 'import'
         })
+    }
+
+    handleDriverNumberFieldKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') this.executeImport()
+    }
+
+    handleDriverNumberFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            driverNumberFieldValue: e.currentTarget.value
+        })
+    }
+
+    executeImport = async () => {
+        this.setState({
+            editorMode: 'importing'
+        })
+
+        type Waypoint = { address: string, city: string, postalCode: string }
+        type WaypointsResponse = {
+            date: string
+            driverNumber: string
+            waypoints: {
+                dispatched: Waypoint[]
+                inprogress: Waypoint[]
+            }
+        }
+
+        const url = 'https://route-planner.rizadh.com/waypoints/' + this.state.driverNumberFieldValue
+        const httpResponse = await fetch(url)
+        const jsonResponse = await httpResponse.text()
+        const response = JSON.parse(jsonResponse) as WaypointsResponse
+        const waypoints = [...response.waypoints.dispatched, ...response.waypoints.inprogress]
+        const addresses = waypoints.map(w => `${w.address} ${w.city}`)
+        this.props.replaceWaypoints(addresses)
+
+        this.setState({
+            editorMode: 'regular'
+        })
+    }
+
+    cancelImportMode = () => {
+        this.setState({
+            editorMode: 'regular'
+        })
+    }
+
+    get canOpenUrls() {
+        return this.props.waypoints.length > 0
     }
 
     openUrls = () => {
@@ -102,124 +160,182 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             })
     }
 
+    get canAddNewWaypoint() {
+        return isValidAddress(this.state.newWaypointFieldValue)
+    }
+
     addNewWaypoint = () => {
-        if (this.props.addWaypoint(this.state.newWaypointFieldValue))
+        if (isValidAddress(this.state.newWaypointFieldValue)) {
+            this.props.addWaypoint(this.state.newWaypointFieldValue)
             this.setState({
                 newWaypointFieldValue: ''
             })
+        }
     }
 
-    handleNewWaypointFieldValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            newWaypointFieldValue: e.currentTarget.value
-        })
+    get headerTitle(): string {
+        switch (this.state.editorMode) {
+            case 'regular':
+                return 'Waypoints'
+            case 'bulk':
+                return 'Edit Bulk Waypoints'
+            case 'import':
+            case 'importing':
+                return 'Import Waypoints'
+        }
     }
 
-    handleNewWaypointFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') this.addNewWaypoint()
+    get bodyItems(): JSX.Element {
+        switch (this.state.editorMode) {
+            case 'regular':
+                return <>
+                    <div
+                        className="alert alert-danger"
+                        role="alert"
+                        hidden={this.props.routeInformation.status !== 'FAILED'}>
+                        Route could not be found
+                    </div>
+                    <div
+                        className="alert alert-info"
+                        role="alert"
+                        hidden={this.props.waypoints.length > 0}>
+                        Enter an address to begin
+                    </div>
+                    <div
+                        className="alert alert-info"
+                        role="alert"
+                        hidden={this.props.waypoints.length !== 1}>
+                        Enter another address to show route information
+                    </div>
+                    <WaypointList />
+                    <div className="input-group mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="New waypoint"
+                            value={this.state.newWaypointFieldValue}
+                            onChange={this.handleNewWaypointFieldChange}
+                            onKeyPress={this.handleNewWaypointFieldKeyPress}
+                            autoFocus
+                        ></input>
+                        <div className="input-group-append">
+                            <button
+                                onClick={this.addNewWaypoint}
+                                disabled={!this.canAddNewWaypoint}
+                                className="btn btn-primary">
+                                <i className="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </>
+            case 'bulk':
+                return <>
+                    <div className="alert alert-info" role="alert">
+                        Enter one address per line
+                    </div>
+                    <Textarea
+                        minRows={3}
+                        className="form-control mb-3"
+                        onChange={this.handleBulkEditFieldChange}
+                        onKeyPress={this.handleBulkEditFieldKeyPress}
+                        value={this.state.bulkEditFieldValue}
+                        autoFocus
+                    >
+                    </Textarea>
+                </>
+            case 'import':
+            case 'importing':
+                return <>
+                    <div
+                        className="alert alert-info"
+                        role="alert">
+                        Waypoints are imported from Atripco
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control mb-3"
+                        placeholder="Driver number"
+                        value={this.state.driverNumberFieldValue}
+                        onChange={this.handleDriverNumberFieldChange}
+                        onKeyPress={this.handleDriverNumberFieldKeyPress}
+                        disabled={this.state.editorMode === 'importing'}
+                        autoFocus
+                    ></input>
+                </>
+        }
+    }
+
+    get footerItems(): JSX.Element {
+        switch (this.state.editorMode) {
+            case 'regular':
+                return <>
+                    <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginBulkEditing}>
+                        <i className="fas fa-list-alt"></i> Bulk Edit
+                    </button>
+                    <button
+                        className="btn btn-primary mt-3 ml-3 float-right"
+                        onClick={this.props.reverseWaypoints}
+                        disabled={!this.canReverseWaypoints}
+                    >
+                        <i className="fas fa-exchange-alt"></i> Reverse
+                    </button>
+                    <button
+                        className="btn btn-primary mt-3 ml-3 float-right"
+                        onClick={this.openUrls}
+                        disabled={!this.canOpenUrls}
+                    >
+                        <i className="fas fa-route"></i> Open in Maps
+                    </button>
+                    <button
+                        className="btn btn-primary mt-3 ml-3 float-right"
+                        onClick={this.beginImportMode}
+                    >
+                        <i className="fas fa-cloud-download-alt"></i> Import Waypoints
+                    </button>
+                </>
+            case 'bulk':
+                return <>
+                    <button
+                        className="btn btn-primary mt-3 ml-3 float-right"
+                        onClick={this.finishBulkEditing}
+                    >
+                        <i className="fas fa-save"></i> Save
+                    </button>
+                    <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelBulkEditing}>
+                        <i className="fas fa-ban"></i> Cancel
+                    </button>
+                </>
+            case 'import':
+                return <>
+                    <button
+                        className="btn btn-primary mt-3 ml-3 float-right"
+                        onClick={this.executeImport}
+                    >
+                        <i className="fas fa-save"></i> Import
+                    </button>
+                    <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelImportMode}>
+                        <i className="fas fa-ban"></i> Cancel
+                    </button>
+                </>
+            case 'importing':
+                return <>
+                    <button className="btn btn-primary mt-3 ml-3 float-right" disabled>
+                        <i className="fas fa-spin fa-circle-notch"></i> Importing
+                    </button>
+                </>
+        }
     }
 
     render() {
-        const headerTitle = this.state.bulkEditingModeIsEnabled
-            ? "Bulk Edit"
-            : "Waypoints"
-
-        const formContent = this.state.bulkEditingModeIsEnabled
-            ? <>
-                <div className="alert alert-info" role="alert">
-                    Enter one address per line
-                </div>
-                <Textarea
-                    minRows={3}
-                    className="form-control mb-3"
-                    onChange={this.handleTextareaChange}
-                    value={this.state.bulkEditTextAreaValue}
-                    autoFocus
-                >
-                </Textarea>
-            </>
-            : <>
-                <div
-                    className="alert alert-danger"
-                    role="alert"
-                    hidden={this.props.routeInformation.status !== 'FAILED'}>
-                    One or more waypoints could not be found
-                </div>
-                <div
-                    className="alert alert-info"
-                    role="alert"
-                    hidden={this.props.waypoints.length > 0 || this.props.routeInformation.status === 'FAILED'}>
-                    Enter an address to begin
-                </div>
-                <div
-                    className="alert alert-info"
-                    role="alert"
-                    hidden={this.props.waypoints.length !== 1 || this.props.routeInformation.status === 'FAILED'}>
-                    Enter another address to show route information
-                </div>
-                <WaypointList />
-            </>
-
-        const footerItems = this.state.bulkEditingModeIsEnabled
-            ? <>
-                <button
-                    className="btn btn-primary mt-3 ml-3 float-right"
-                    onClick={this.endEditingMode}
-                >
-                    <i className="fas fa-save"></i> Save
-                </button>
-                <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelEditingMode}>
-                    <i className="fas fa-ban"></i> Cancel
-                </button>
-            </>
-            : <>
-                <div className="input-group pt-3 pl-3">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="New waypoint"
-                        value={this.state.newWaypointFieldValue}
-                        onChange={this.handleNewWaypointFieldValueChange}
-                        onKeyPress={this.handleNewWaypointFieldKeyPress}
-                        autoFocus
-                    ></input>
-                    <div className="input-group-append">
-                        <button
-                            onClick={this.addNewWaypoint}
-                            disabled={!isValidAddress(this.state.newWaypointFieldValue)}
-                            className="btn btn-primary">
-                            <i className="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginEditingMode}>
-                    <i className="fas fa-list-alt"></i> Bulk Edit
-                </button>
-                <button
-                    className="btn btn-primary mt-3 ml-3 float-right"
-                    onClick={this.props.reverseWaypoints}
-                    disabled={this.props.waypoints.length < 2}
-                >
-                    <i className="fas fa-exchange-alt"></i> Reverse
-                </button>
-                <button
-                    className="btn btn-primary mt-3 ml-3 float-right"
-                    onClick={this.openUrls}
-                    disabled={this.props.waypoints.length === 0}
-                >
-                    <i className="fas fa-route"></i> Open in Maps
-                </button>
-            </>
-
         return <div id="waypoint-editor">
             <div id="waypoint-editor-header" className="frosted p-3">
-                <h2>{headerTitle}</h2>
+                <h2>{this.headerTitle}</h2>
             </div>
             <div className="px-3 pt-3">
-                {formContent}
+                {this.bodyItems}
             </div>
             <div id="waypoint-editor-footer" className="frosted pr-3 pb-3">
-                {footerItems}
+                {this.footerItems}
             </div>
         </div>
     }

@@ -3,13 +3,15 @@ import { DraggableProvided } from 'react-beautiful-dnd';
 import { isValidAddress } from '../redux/validator'
 import { Waypoint } from '../redux/state';
 
-export type WaypointFetchStatus = 'IN_PROGRESS' | 'SUCCEEDED' | 'FAILED'
+export type FetchStatus = 'IN_PROGRESS' | 'SUCCEEDED' | 'FAILED'
 
 type WaypointItemProps = {
     waypoint: Waypoint
     setAddress: (address: string) => void
     deleteWaypoint: () => void
-    fetchStatus: WaypointFetchStatus
+    waypointFetchStatus: FetchStatus
+    outgoingRouteFetchStatus?: FetchStatus
+    incomingRouteFetchStatus?: FetchStatus
     provided: DraggableProvided
 }
 
@@ -43,8 +45,18 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
         })
     }
 
-    fieldWasEdited = (): boolean => {
-        return this.state.waypointFieldValue !== this.props.waypoint.address
+    get fieldWasEdited() { return this.state.waypointFieldValue !== this.props.waypoint.address }
+
+    get fetchIsInProgress() {
+        return this.props.waypointFetchStatus === 'IN_PROGRESS'
+            || this.props.incomingRouteFetchStatus === 'IN_PROGRESS'
+            || this.props.outgoingRouteFetchStatus === 'IN_PROGRESS'
+    }
+
+    get fetchFailed() {
+        return this.props.waypointFetchStatus === 'FAILED'
+            || this.props.incomingRouteFetchStatus === 'FAILED'
+            || this.props.outgoingRouteFetchStatus === 'FAILED'
     }
 
     render() {
@@ -60,23 +72,19 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
             </div>
             <input
                 className="form-control"
-                placeholder={this.props.waypoint.address}
                 value={this.state.waypointFieldValue}
                 onChange={this.handleWaypointFieldValueChange}
                 onKeyPress={this.handleWaypointFieldKeyPress}
             />
             <div className="input-group-append">
-                <button onClick={this.resetWaypointField} className="btn btn-secondary" hidden={!this.fieldWasEdited()}>
+                <button onClick={this.resetWaypointField} className="btn btn-secondary" hidden={!this.fieldWasEdited}>
                     <i className="fas fa-undo-alt"></i>
                 </button>
-                <span className="input-group-text text-danger" hidden={this.props.fetchStatus !== 'FAILED'}>
+                <span className="input-group-text text-danger" hidden={!this.fetchFailed}>
                     <i className="fas fa-exclamation-circle"></i>
                 </span>
-                <span className="input-group-text text-muted" hidden={this.props.fetchStatus !== 'IN_PROGRESS'}>
+                <span className="input-group-text text-muted" hidden={!this.fetchIsInProgress}>
                     <i className="fas fa-circle-notch fa-spin"></i>
-                </span>
-                <span className="input-group-text text-success" hidden={this.props.fetchStatus !== 'SUCCEEDED'}>
-                    <i className="fas fa-check"></i>
                 </span>
                 <span className="input-group-text text-muted" {...this.props.provided.dragHandleProps}>
                     <i className="fas fa-grip-lines-vertical"></i>

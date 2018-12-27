@@ -11,7 +11,7 @@ import { ThunkAction } from 'redux-thunk';
 import AppState, { Waypoint } from './state';
 import { ExtraArgument } from './store';
 import { range } from 'lodash'
-import { parseAddress as parseAddress, isValidAddress } from './validator'
+import { parseAddress as parseAddress } from './validator'
 import { v4 as uuidv4 } from 'uuid'
 import { fetchedRoutesKey } from './reducer';
 
@@ -68,7 +68,7 @@ export const lookupAddresses = (addresses: string[]): ThunkResult => (dispatch, 
 
     if (addresses.length === 0) return
 
-    const routes = range(0, addresses.length - 1).map(async index=> {
+    const routes = range(0, addresses.length - 1).map(async index => {
         const origin = addresses[index]
         const destination = addresses[index + 1]
 
@@ -114,14 +114,10 @@ export const setWaypoint = (index: number, address: string): ThunkResult => (dis
     dispatch(setWaypointsAndLookup(waypoints))
 }
 
-export const addWaypoint = (address: string): ThunkResult<string | null> => (dispatch, getState) => {
-    if (!isValidAddress(address)) return null
-
+export const addWaypoint = (address: string): ThunkResult => (dispatch, getState) => {
     const parsedAddress = parseAddress(address)
     const waypoint = createWaypointFromAddress(parsedAddress)
     dispatch(setWaypointsAndLookup([...getState().waypoints, waypoint]))
-
-    return parsedAddress
 }
 
 export const deleteWaypoint = (index: number): ThunkResult => (dispatch, getState) => {
