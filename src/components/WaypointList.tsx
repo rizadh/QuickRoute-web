@@ -78,7 +78,7 @@ class WaypointList extends React.Component<WaypointListProps> {
                                     {(provided) =>
                                         <WaypointItem
                                             provided={provided}
-                                            waypoint={waypoint}
+                                            address={waypoint.address}
                                             waypointFetchStatus={this.addressFetchStatus(waypoint.address)}
                                             outgoingRouteFetchStatus={this.outgoingRouteStatus(index)}
                                             incomingRouteFetchStatus={this.incomingRouteStatus(index)}

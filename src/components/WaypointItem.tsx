@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { DraggableProvided } from 'react-beautiful-dnd';
 import { isValidAddress } from '../redux/validator'
-import { Waypoint } from '../redux/state';
 
 export type FetchStatus = 'IN_PROGRESS' | 'SUCCEEDED' | 'FAILED'
 
 type WaypointItemProps = {
-    waypoint: Waypoint
+    address: string
     setAddress: (address: string) => void
     deleteWaypoint: () => void
     waypointFetchStatus: FetchStatus
@@ -23,7 +22,7 @@ type WaypointItemState = {
 export default class WaypointItem extends React.Component<WaypointItemProps, WaypointItemState> {
     state = {
         isEditing: false,
-        waypointFieldValue: this.props.waypoint.address
+        waypointFieldValue: this.props.address
     }
 
     handleWaypointFieldValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,11 +40,11 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
 
     resetWaypointField = () => {
         this.setState({
-            waypointFieldValue: this.props.waypoint.address
+            waypointFieldValue: this.props.address
         })
     }
 
-    get fieldWasEdited() { return this.state.waypointFieldValue !== this.props.waypoint.address }
+    get fieldWasEdited() { return this.state.waypointFieldValue !== this.props.address }
 
     get fetchIsInProgress() {
         return this.props.waypointFetchStatus === 'IN_PROGRESS'
