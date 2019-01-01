@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import AppState from '../redux/state'
+import { AppState } from '../redux/state'
 import StatView from './StatView'
 import { routeInformation, RouteInformation } from '../redux/selectors'
 
@@ -53,7 +53,7 @@ class MapViewStatusbar extends React.Component<MapViewStatusbarProps> {
             case 'FAILED':
                 statusbarItems = "Routing failed"
                 break
-            case 'EMPTY':
+            case 'NO_ROUTE':
                 statusbarItems = "Enter more waypoints"
                 break
             default:

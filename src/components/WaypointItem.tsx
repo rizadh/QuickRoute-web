@@ -2,13 +2,13 @@ import * as React from 'react'
 import { DraggableProvided } from 'react-beautiful-dnd';
 import { isValidAddress } from '../redux/validator'
 
-export type FetchStatus = 'IN_PROGRESS' | 'SUCCEEDED' | 'FAILED'
+export type FetchStatus = 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
 
 type WaypointItemProps = {
     address: string
     setAddress: (address: string) => void
     deleteWaypoint: () => void
-    waypointFetchStatus: FetchStatus
+    placeFetchStatus: FetchStatus
     outgoingRouteFetchStatus?: FetchStatus
     incomingRouteFetchStatus?: FetchStatus
     provided: DraggableProvided
@@ -47,13 +47,13 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
     get fieldWasEdited() { return this.state.waypointFieldValue !== this.props.address }
 
     get fetchIsInProgress() {
-        return this.props.waypointFetchStatus === 'IN_PROGRESS'
+        return this.props.placeFetchStatus === 'IN_PROGRESS'
             || this.props.incomingRouteFetchStatus === 'IN_PROGRESS'
             || this.props.outgoingRouteFetchStatus === 'IN_PROGRESS'
     }
 
     get fetchFailed() {
-        return this.props.waypointFetchStatus === 'FAILED'
+        return this.props.placeFetchStatus === 'FAILED'
             || this.props.incomingRouteFetchStatus === 'FAILED'
             || this.props.outgoingRouteFetchStatus === 'FAILED'
     }

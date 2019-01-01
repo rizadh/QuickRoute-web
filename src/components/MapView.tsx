@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { Store, Unsubscribe } from 'redux'
-import AppState from '../redux/state'
-import AppAction from '../redux/actionTypes'
+import { AppState, FetchSuccess, Waypoint, FetchedPlaces, FetchedRoutes } from '../redux/state'
+import { AppAction } from '../redux/actionTypes'
 import { isEqual } from 'lodash'
 import { disableAutofit } from '../redux/actions'
 import { routeInformation } from '../redux/selectors'
-import { fetchedRoutesKey } from '../redux/reducer'
 
 type MapViewProps = {
     store: Store<AppState, AppAction>
@@ -16,64 +15,60 @@ export default class MapView extends React.Component<MapViewProps> {
     map?: mapkit.Map
     loadingIndicator?: HTMLElement
     unsubscribeCallback?: Unsubscribe
-    addresses: string[] = []
-    places: string[] = []
-    routes: string[] = []
-    autofitIsEnabled: boolean = false
+    previousState?: AppState
 
     updateMap = () => {
         if (!this.map) return
         if (!this.element) return
+        if (!this.loadingIndicator) return
 
-        const state = this.props.store.getState()
-        const status = routeInformation(state).status
+        const previousState = this.previousState
+        const currentState = this.props.store.getState()
+        this.previousState = currentState
+
+        if (previousState === currentState) return
+
+        const status = routeInformation(currentState).status
 
         if (status == 'FETCHING') {
             this.element.classList.add('updating')
             if (this.loadingIndicator) this.loadingIndicator.hidden = false
+        } else {
+            this.element.classList.remove('updating')
+            if (this.loadingIndicator) this.loadingIndicator.hidden = true
+        }
+
+        // TODO: Determine if the list of fetched places and routes has changed
+        if (status !== 'FETCHED' && status !== 'NO_ROUTE') return
+
+        if (previousState
+            && previousState.waypoints === currentState.waypoints
+            && previousState.fetchedPlaces === currentState.fetchedPlaces
+            && previousState.fetchedRoutes === currentState.fetchedRoutes) {
+            if (currentState.autofitIsEnabled) this.centerMap()
             return
         }
 
-        this.element.classList.remove('updating')
-        if (this.loadingIndicator) this.loadingIndicator.hidden = true
-
-        if (status == 'FAILED') return
-
-        if (
-            isEqual(this.addresses, state.waypoints.map(w => w.address))
-            && isEqual(this.places, Object.keys(state.fetchedPlaces))
-            && isEqual(this.routes, Object.keys(state.fetchedRoutes))
-        ) {
-            if (this.autofitIsEnabled !== state.autofitIsEnabled) {
-                this.autofitIsEnabled = state.autofitIsEnabled
-                this.centerMap()
-            }
-
-            return
-        }
-
-        this.addresses = state.waypoints.map(w => w.address)
-        this.places = Object.keys(state.fetchedPlaces)
-        this.routes = Object.keys(state.fetchedRoutes)
-
-        const annotations = this.addresses
-            .map(address => state.fetchedPlaces[address])
-            .filter((p): p is mapkit.Place => !!p)
-            .map((place, index) => new mapkit.MarkerAnnotation(place.coordinate, {
-                title: this.addresses[index],
+        const annotations = currentState.waypoints
+            .map(({ address }) => currentState.fetchedPlaces.get(address))
+            .filter((p): p is FetchSuccess<mapkit.Place> => !!p && p.status === 'SUCCESS')
+            .map(({ result: {coordinate, formattedAddress} }, index) => new mapkit.MarkerAnnotation(coordinate, {
+                title: currentState.waypoints[index].address,
                 glyphText: `${index + 1}`,
-                subtitle: place.formattedAddress,
+                subtitle: formattedAddress,
                 animates: false
             }))
 
-        const overlays = state.waypoints
+        const overlays = currentState.waypoints
             .map((waypoint, index, waypoints) => {
                 if (index === 0) return
                 const previousWaypoint = waypoints[index - 1]
-                const forwardRoute = state.fetchedRoutes[fetchedRoutesKey(previousWaypoint.address, waypoint.address)]
-                if (forwardRoute) return forwardRoute.polyline
+                const routesFromPreviousWaypoint = currentState.fetchedRoutes.get(previousWaypoint.address)
+                if (!routesFromPreviousWaypoint) return
+                const forwardRoute = routesFromPreviousWaypoint.get(waypoint.address)
+                if (forwardRoute && forwardRoute.status === 'SUCCESS') return forwardRoute.result.polyline
             })
-            .filter((p): p is mapkit.PolylineOverlay => p !== undefined)
+            .filter((p): p is mapkit.PolylineOverlay => !!p)
             .map(polyline =>
                 new mapkit.PolylineOverlay(polyline.points, {
                     style: new mapkit.Style({
@@ -97,7 +92,8 @@ export default class MapView extends React.Component<MapViewProps> {
         if (!this.props.store.getState().autofitIsEnabled) return
 
         this.map.showItems([...this.map.annotations || [], ...this.map.overlays], {
-            animate: true, padding: new mapkit.Padding({
+            animate: true,
+            padding: new mapkit.Padding({
                 top: 48,
                 right: 16,
                 bottom: 48,

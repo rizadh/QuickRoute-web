@@ -1,21 +1,47 @@
-export type FetchedPlaces = {
-    [key: string]: mapkit.Place | null
-}
+export type FetchResult<ResultType> = FetchSuccess<ResultType> | FetchInProgress | FetchFailed
 
-export type FetchedRoutes = {
-    [key: string]: mapkit.Route | null
-}
+export type FetchSuccess<ResultType> = Readonly<{
+    status: 'SUCCESS'
+    result: ResultType
+}>
 
-export type Waypoint = {
+export const fetchSuccess = <ResultType>(result: ResultType): FetchSuccess<ResultType>  => ({
+    status: 'SUCCESS',
+    result
+})
+
+export type FetchInProgress = Readonly<{
+    status: 'IN_PROGRESS'
+    fetchId: number
+}>
+
+export const fetchInProgress = (fetchId: number): FetchInProgress => ({
+    status: 'IN_PROGRESS',
+    fetchId
+})
+
+export type FetchFailed = Readonly<{
+    status: 'FAILED'
+    error: Error
+}>
+
+export const fetchFailed = (error: Error): FetchFailed => ({
+    status: 'FAILED',
+    error
+})
+
+export type FetchedPlaces = ReadonlyMap<string, FetchResult<mapkit.Place>>
+
+export type FetchedRoutes = ReadonlyMap<string, ReadonlyMap<string, FetchResult<mapkit.Route>>>
+
+export type Waypoint = Readonly<{
     address: string
     uuid: string
-}
+}>
 
-type AppState = {
-    waypoints: Waypoint[]
+export type AppState = Readonly<{
+    waypoints: ReadonlyArray<Waypoint>
     fetchedPlaces: FetchedPlaces
     fetchedRoutes: FetchedRoutes
     autofitIsEnabled: boolean
-}
-
-export default AppState
+}>

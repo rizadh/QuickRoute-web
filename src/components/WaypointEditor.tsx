@@ -1,14 +1,12 @@
 import * as React from 'react'
 import WaypointList from './WaypointList'
 import { connect } from 'react-redux'
-import AppState, { Waypoint } from '../redux/state'
-import { reverseWaypoints, replaceWaypoints, addWaypoint } from '../redux/actions'
+import { Waypoint, AppState } from '../redux/state'
+import { reverseWaypoints, createWaypoint, createAndReplaceWaypoints } from '../redux/actions'
 import { stringify } from 'query-string'
-import { ThunkDispatch } from 'redux-thunk';
-import { ExtraArgument } from '../redux/store';
-import { chunk } from 'lodash';
-import { routeInformation, RouteInformation } from '../redux/selectors';
-import AppAction from '../redux/actionTypes';
+import { chunk } from 'lodash'
+import { routeInformation, RouteInformation } from '../redux/selectors'
+import { AppAction } from '../redux/actionTypes'
 import Textarea from 'react-textarea-autosize'
 import { isValidAddress, parseAddress } from '../redux/validator'
 
@@ -20,13 +18,13 @@ type WaypointEditorState = {
 }
 
 type WaypointEditorStateProps = {
-    waypoints: Waypoint[],
+    waypoints: ReadonlyArray<Waypoint>
     routeInformation: RouteInformation
 }
 
 type WaypointEditorDispatchProps = {
-    replaceWaypoints(addresses: string[]): void
-    addWaypoint(address: string): void
+    createAndReplaceWaypoints(addresses: ReadonlyArray<string>): void
+    createWaypoint(address: string): void
     reverseWaypoints(): void
 }
 
@@ -51,7 +49,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     handleNewWaypointFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') this.addNewWaypoint()
+        if (e.key === 'Enter' && isValidAddress(this.state.newWaypointFieldValue))
+            this.addNewWaypoint()
     }
 
     beginBulkEditing = () => {
@@ -77,7 +76,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             .filter(isValidAddress)
             .map(parseAddress)
 
-        this.props.replaceWaypoints(waypoints)
+        this.props.createAndReplaceWaypoints(waypoints)
 
         this.setState({
             editorMode: 'regular'
@@ -116,8 +115,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             date: string
             driverNumber: string
             waypoints: {
-                dispatched: Waypoint[]
-                inprogress: Waypoint[]
+                dispatched: ReadonlyArray<Waypoint>
+                inprogress: ReadonlyArray<Waypoint>
             }
         }
 
@@ -127,7 +126,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         const response = JSON.parse(jsonResponse) as WaypointsResponse
         const waypoints = [...response.waypoints.dispatched, ...response.waypoints.inprogress]
         const addresses = waypoints.map(w => `${w.address} ${w.city}`)
-        this.props.replaceWaypoints(addresses)
+        this.props.createAndReplaceWaypoints(addresses)
 
         this.setState({
             editorMode: 'regular'
@@ -165,12 +164,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     addNewWaypoint = () => {
-        if (isValidAddress(this.state.newWaypointFieldValue)) {
-            this.props.addWaypoint(this.state.newWaypointFieldValue)
-            this.setState({
-                newWaypointFieldValue: ''
-            })
-        }
+        this.props.createWaypoint(this.state.newWaypointFieldValue)
+        this.setState({
+            newWaypointFieldValue: ''
+        })
     }
 
     get headerTitle(): string {
@@ -346,9 +343,9 @@ const mapStateToProps = (state: AppState): WaypointEditorStateProps => ({
     routeInformation: routeInformation(state)
 })
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, ExtraArgument, AppAction>): WaypointEditorDispatchProps => ({
-    replaceWaypoints: waypoints => dispatch(replaceWaypoints(waypoints)),
-    addWaypoint: waypoint => dispatch(addWaypoint(waypoint)),
+const mapDispatchToProps = (dispatch: React.Dispatch<AppAction>): WaypointEditorDispatchProps => ({
+    createAndReplaceWaypoints: waypoints => dispatch(createAndReplaceWaypoints(waypoints)),
+    createWaypoint: waypoint => dispatch(createWaypoint(waypoint)),
     reverseWaypoints: () => dispatch(reverseWaypoints())
 })
 

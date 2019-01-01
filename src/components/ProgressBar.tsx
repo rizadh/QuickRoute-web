@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Line } from 'rc-progress'
 import { RouteInformation, routeInformation } from '../redux/selectors'
 import { connect } from 'react-redux';
-import AppState from '../redux/state';
+import {AppState} from '../redux/state';
 
 type ProgressBarProps = {
     routeInformation: RouteInformation
