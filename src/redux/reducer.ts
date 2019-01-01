@@ -74,6 +74,8 @@ const deleteWaypoint: Reducer<DeleteWaypointAction> = (state, { index }) => {
 }
 
 const moveWaypoint: Reducer<MoveWaypointAction> = (state, { sourceIndex, targetIndex }) => {
+    if (sourceIndex === targetIndex) return state
+
     const waypoints = [...state.waypoints]
     const [removed] = waypoints.splice(sourceIndex, 1)
     waypoints.splice(targetIndex, 0, removed)
