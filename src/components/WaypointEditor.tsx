@@ -174,156 +174,176 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     get bodyItems(): JSX.Element {
         switch (this.state.editorMode) {
             case 'regular':
-                return <>
-                    <div
-                        className="alert alert-danger"
-                        role="alert"
-                        hidden={this.props.routeInformation.status !== 'FAILED'}>
-                        Route could not be found
-                    </div>
-                    <div
-                        className="alert alert-info"
-                        role="alert"
-                        hidden={this.props.waypoints.length > 0}>
-                        Enter an address to begin
-                    </div>
-                    <div
-                        className="alert alert-info"
-                        role="alert"
-                        hidden={this.props.waypoints.length !== 1}>
-                        Enter another address to show route information
-                    </div>
-                    <WaypointList />
-                    <div className="input-group mb-3">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="New waypoint"
-                            value={this.state.newWaypointFieldValue}
-                            onChange={this.handleNewWaypointFieldChange}
-                            onKeyPress={this.handleNewWaypointFieldKeyPress}
-                            autoFocus
-                        ></input>
-                        <div className="input-group-append">
-                            <button
-                                onClick={this.addNewWaypoint}
-                                disabled={!this.canAddNewWaypoint}
-                                className="btn btn-primary">
-                                <i className="fas fa-plus"></i>
-                            </button>
+                return (
+                    <>
+                        <div
+                            className="alert alert-danger"
+                            role="alert"
+                            hidden={this.props.routeInformation.status !== 'FAILED'}
+                        >
+                            Route could not be found
                         </div>
-                    </div>
-                </>
+                        <div
+                            className="alert alert-info"
+                            role="alert"
+                            hidden={this.props.waypoints.length > 0}
+                        >
+                            Enter an address to begin
+                        </div>
+                        <div
+                            className="alert alert-info"
+                            role="alert"
+                            hidden={this.props.waypoints.length !== 1}
+                        >
+                            Enter another address to show route information
+                        </div>
+                        <WaypointList />
+                        <div className="input-group mb-3">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="New waypoint"
+                                value={this.state.newWaypointFieldValue}
+                                onChange={this.handleNewWaypointFieldChange}
+                                onKeyPress={this.handleNewWaypointFieldKeyPress}
+                                autoFocus={true}
+                            />
+                            <div className="input-group-append">
+                                <button
+                                    onClick={this.addNewWaypoint}
+                                    disabled={!this.canAddNewWaypoint}
+                                    className="btn btn-primary"
+                                >
+                                    <i className="fas fa-plus" />
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                )
             case 'bulk':
-                return <>
-                    <div className="alert alert-info" role="alert">
-                        Enter one address per line
+                return (
+                    <>
+                        <div className="alert alert-info" role="alert">
+                            Enter one address per line
                     </div>
-                    <Textarea
-                        minRows={3}
-                        className="form-control mb-3"
-                        onChange={this.handleBulkEditFieldChange}
-                        onKeyPress={this.handleBulkEditFieldKeyPress}
-                        value={this.state.bulkEditFieldValue}
-                        autoFocus
-                    >
-                    </Textarea>
-                </>
+                        <Textarea
+                            minRows={3}
+                            className="form-control mb-3"
+                            onChange={this.handleBulkEditFieldChange}
+                            onKeyPress={this.handleBulkEditFieldKeyPress}
+                            value={this.state.bulkEditFieldValue}
+                            autoFocus={true}
+                        />
+                    </>
+                )
             case 'import':
             case 'importing':
-                return <>
-                    <div
-                        className="alert alert-info"
-                        role="alert">
-                        Waypoints are imported from Atripco
-                    </div>
-                    <input
-                        type="text"
-                        className="form-control mb-3"
-                        placeholder="Driver number"
-                        value={this.state.driverNumberFieldValue}
-                        onChange={this.handleDriverNumberFieldChange}
-                        onKeyPress={this.handleDriverNumberFieldKeyPress}
-                        disabled={this.state.editorMode === 'importing'}
-                        autoFocus
-                    ></input>
-                </>
+                return (
+                    <>
+                        <div
+                            className="alert alert-info"
+                            role="alert"
+                        >
+                            Waypoints are imported from Atripco
+                        </div>
+                        <input
+                            type="text"
+                            className="form-control mb-3"
+                            placeholder="Driver number"
+                            value={this.state.driverNumberFieldValue}
+                            onChange={this.handleDriverNumberFieldChange}
+                            onKeyPress={this.handleDriverNumberFieldKeyPress}
+                            disabled={this.state.editorMode === 'importing'}
+                            autoFocus={true}
+                        />
+                    </>
+                )
         }
     }
 
     get footerItems(): JSX.Element {
         switch (this.state.editorMode) {
             case 'regular':
-                return <>
-                    <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginBulkEditing}>
-                        <i className="fas fa-list-alt"></i> Bulk Edit
-                    </button>
-                    <button
-                        className="btn btn-primary mt-3 ml-3 float-right"
-                        onClick={this.props.reverseWaypoints}
-                        disabled={!this.canReverseWaypoints}
-                    >
-                        <i className="fas fa-exchange-alt"></i> Reverse
-                    </button>
-                    <button
-                        className="btn btn-primary mt-3 ml-3 float-right"
-                        onClick={this.openUrls}
-                        disabled={!this.canOpenUrls}
-                    >
-                        <i className="fas fa-route"></i> Open in Maps
-                    </button>
-                    <button
-                        className="btn btn-primary mt-3 ml-3 float-right"
-                        onClick={this.beginImportMode}
-                    >
-                        <i className="fas fa-cloud-download-alt"></i> Import Waypoints
-                    </button>
-                </>
+                return (
+                    <>
+                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginBulkEditing}>
+                            <i className="fas fa-list-alt" /> Bulk Edit
+                </button>
+                        <button
+                            className="btn btn-primary mt-3 ml-3 float-right"
+                            onClick={this.props.reverseWaypoints}
+                            disabled={!this.canReverseWaypoints}
+                        >
+                            <i className="fas fa-exchange-alt" /> Reverse
+                        </button>
+                        <button
+                            className="btn btn-primary mt-3 ml-3 float-right"
+                            onClick={this.openUrls}
+                            disabled={!this.canOpenUrls}
+                        >
+                            <i className="fas fa-route" /> Open in Maps
+                        </button>
+                        <button
+                            className="btn btn-primary mt-3 ml-3 float-right"
+                            onClick={this.beginImportMode}
+                        >
+                            <i className="fas fa-cloud-download-alt" /> Import Waypoints
+                        </button>
+                    </>
+                )
             case 'bulk':
-                return <>
-                    <button
-                        className="btn btn-primary mt-3 ml-3 float-right"
-                        onClick={this.finishBulkEditing}
-                    >
-                        <i className="fas fa-save"></i> Save
+                return (
+                    <>
+                        <button
+                            className="btn btn-primary mt-3 ml-3 float-right"
+                            onClick={this.finishBulkEditing}
+                        >
+                            <i className="fas fa-save" /> Save
+                        </button>
+                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelBulkEditing}>
+                            <i className="fas fa-ban" /> Cancel
                     </button>
-                    <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelBulkEditing}>
-                        <i className="fas fa-ban"></i> Cancel
-                    </button>
-                </>
+                    </>
+                )
             case 'import':
-                return <>
-                    <button
-                        className="btn btn-primary mt-3 ml-3 float-right"
-                        onClick={this.executeImport}
-                    >
-                        <i className="fas fa-save"></i> Import
+                return (
+                    <>
+                        <button
+                            className="btn btn-primary mt-3 ml-3 float-right"
+                            onClick={this.executeImport}
+                        >
+                            <i className="fas fa-save" /> Import
+                        </button>
+                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelImportMode}>
+                            <i className="fas fa-ban" /> Cancel
                     </button>
-                    <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelImportMode}>
-                        <i className="fas fa-ban"></i> Cancel
-                    </button>
-                </>
+                    </>
+                )
             case 'importing':
-                return <>
-                    <button className="btn btn-primary mt-3 ml-3 float-right" disabled>
-                        <i className="fas fa-spin fa-circle-notch"></i> Importing
-                    </button>
-                </>
+                return (
+                    <>
+                        <button className="btn btn-primary mt-3 ml-3 float-right" disabled={true}>
+                            <i className="fas fa-spin fa-circle-notch" /> Importing
+                        </button>
+                    </>
+                )
         }
     }
 
     render() {
-        return <div id="waypoint-editor">
-            <div id="waypoint-editor-header" className="frosted p-3">
-                <h2>{this.headerTitle}</h2>
+        return (
+            <div id="waypoint-editor">
+                <div id="waypoint-editor-header" className="frosted p-3">
+                    <h2>{this.headerTitle}</h2>
+                </div>
+                <div className="px-3 pt-3">
+                    {this.bodyItems}
+                </div>
+                <div id="waypoint-editor-footer" className="frosted pr-3 pb-3">
+                    {this.footerItems}
+                </div>
             </div>
-            <div className="px-3 pt-3">
-                {this.bodyItems}
-            </div>
-            <div id="waypoint-editor-footer" className="frosted pr-3 pb-3">
-                {this.footerItems}
-            </div>
-        </div>
+        )
     }
 }
 

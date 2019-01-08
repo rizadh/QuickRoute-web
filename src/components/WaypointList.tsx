@@ -82,6 +82,7 @@ class WaypointList extends React.Component<WaypointListProps> {
         }
     }
 
+    /* tslint:disable:jsx-no-multiline-js */
     render() {
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
@@ -98,7 +99,9 @@ class WaypointList extends React.Component<WaypointListProps> {
                                     outgoingRouteFetchResult={this.outgoingRouteFetchResult(index)}
                                     incomingRouteFetchResult={this.incomingRouteFetchResult(index)}
                                     itemWasClicked={this.itemWasClicked(index)}
+                                    // tslint:disable-next-line:jsx-no-lambda
                                     deleteWaypoint={() => this.props.deleteWaypoint(index)}
+                                    // tslint:disable-next-line:jsx-no-lambda
                                     setAddress={(newWaypoint) => this.props.setWaypoint(index, newWaypoint)}
                                 />,
                             )}
@@ -109,6 +112,7 @@ class WaypointList extends React.Component<WaypointListProps> {
             </DragDropContext>
         )
     }
+    /* tslint:enable:jsx-no-multiline-js */
 }
 
 const mapStateToProps = (state: AppState): WaypointListStateProps => ({

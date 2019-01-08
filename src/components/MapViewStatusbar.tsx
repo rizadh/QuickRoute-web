@@ -37,24 +37,28 @@ class MapViewStatusbar extends React.Component<MapViewStatusbarProps> {
         let statusbarItems: JSX.Element | string
         switch (this.props.routeInformation.status) {
             case 'FETCHING':
-                statusbarItems = <>
-                    <StatView
-                        title="Routing"
-                        value={this.stringForUpdateProgress(this.props.routeInformation.fetchProgress)}
-                    />
-                </>
+                statusbarItems = (
+                    <>
+                        <StatView
+                            title="Routing"
+                            value={this.stringForUpdateProgress(this.props.routeInformation.fetchProgress)}
+                        />
+                    </>
+                )
                 break
             case 'FETCHED':
-                statusbarItems = <>
-                    <StatView
-                        title="Distance"
-                        value={this.stringForDistance(this.props.routeInformation.totalDistance)}
-                    />
-                    <StatView
-                        title="Time"
-                        value={this.stringForTime(this.props.routeInformation.totalTime)}
-                    />
-                </>
+                statusbarItems = (
+                    <>
+                        <StatView
+                            title="Distance"
+                            value={this.stringForDistance(this.props.routeInformation.totalDistance)}
+                        />
+                        <StatView
+                            title="Time"
+                            value={this.stringForTime(this.props.routeInformation.totalTime)}
+                        />
+                    </>
+                )
                 break
             case 'FAILED':
                 statusbarItems = 'Routing failed'
@@ -66,9 +70,11 @@ class MapViewStatusbar extends React.Component<MapViewStatusbarProps> {
                 throw new Error('Invalid route information')
         }
 
-        return <div id="mapview-statusbar" className="frosted">
-            {statusbarItems}
-        </div>
+        return (
+            <div id="mapview-statusbar" className="frosted">
+                {statusbarItems}
+            </div>
+        )
     }
 }
 

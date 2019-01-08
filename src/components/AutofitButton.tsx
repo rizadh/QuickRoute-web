@@ -11,13 +11,16 @@ type AutofitButtonProps = {
 
 class AutofitButton extends React.Component<AutofitButtonProps> {
     render() {
-        return <button
-            id="autofit-button"
-            className="btn btn-warning m-3"
-            hidden={this.props.autofitIsEnabled}
-            onClick={this.props.enableAutofit}>
-            <i className="fas fa-expand"></i> Auto-Fit
-        </button>
+        return (
+            <button
+                id="autofit-button"
+                className="btn btn-warning m-3"
+                hidden={this.props.autofitIsEnabled}
+                onClick={this.props.enableAutofit}
+            >
+                <i className="fas fa-expand" /> Auto-Fit
+            </button>
+        )
     }
 }
 

@@ -71,6 +71,7 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
             || outgoingRouteFetchResult && outgoingRouteFetchResult.status === 'FAILED'
     }
 
+    /* tslint:disable:jsx-no-multiline-js */
     render() {
         const {
             index,
@@ -80,54 +81,61 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
             isBeingDragged,
         } = this.props
 
-        return <Draggable index={index} draggableId={waypoint.uuid}>
-            {(provided, snapshot) =>
-                <div className="input-group mb-3"
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}>
-                    <div className="input-group-prepend">
-                        <button onClick={deleteWaypoint} className="btn btn-sm btn-danger">
-                            <i className="fas fa-trash-alt"></i>
-                        </button>
+        return (
+            <Draggable index={index} draggableId={waypoint.uuid}>
+                {(provided, snapshot) =>
+                    <div
+                        className="input-group mb-3"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                    >
+                        <div className="input-group-prepend">
+                            <button onClick={deleteWaypoint} className="btn btn-sm btn-danger">
+                                <i className="fas fa-trash-alt" />
+                            </button>
+                        </div>
+                        <input
+                            className={'form-control ' + (waypoint.isSelected ? 'text-primary' : '')}
+                            value={this.state.waypointFieldValue}
+                            onChange={this.handleWaypointFieldValueChange}
+                            onKeyPress={this.handleWaypointFieldKeyPress}
+                            disabled={isBeingDragged && !snapshot.isDragging}
+                        />
+                        <div className="input-group-append">
+                            <button
+                                onClick={this.resetWaypointField}
+                                className="btn btn-secondary"
+                                hidden={!this.fieldWasEdited}
+                            >
+                                <i className="fas fa-undo-alt" />
+                            </button>
+                            <span className="input-group-text text-danger" hidden={!this.fetchFailed}>
+                                <i className="fas fa-exclamation-circle" />
+                            </span>
+                            <span className="input-group-text text-muted" hidden={!this.fetchIsInProgress}>
+                                <i className="fas fa-circle-notch fa-spin" />
+                            </span>
+                            <span
+                                className={'input-group-text ' + (waypoint.isSelected ? 'text-primary' : 'text-muted')}
+                            >
+                                {index + 1}
+                            </span>
+                            <span
+                                onClick={itemWasClicked}
+                                className={'input-group-text ' + (
+                                    waypoint.isSelected
+                                        ? 'text-light bg-primary'
+                                        : 'text-muted'
+                                )}
+                                {...provided.dragHandleProps}
+                            >
+                                <i className="fas fa-grip-lines-vertical" />
+                            </span>
+                        </div>
                     </div>
-                    <input
-                        className={'form-control ' + (waypoint.isSelected ? 'text-primary' : '')}
-                        value={this.state.waypointFieldValue}
-                        onChange={this.handleWaypointFieldValueChange}
-                        onKeyPress={this.handleWaypointFieldKeyPress}
-                        disabled={isBeingDragged && !snapshot.isDragging}
-                    />
-                    <div className="input-group-append">
-                        <button
-                            onClick={this.resetWaypointField}
-                            className="btn btn-secondary"
-                            hidden={!this.fieldWasEdited}
-                        >
-                            <i className="fas fa-undo-alt"></i>
-                        </button>
-                        <span className="input-group-text text-danger" hidden={!this.fetchFailed}>
-                            <i className="fas fa-exclamation-circle"></i>
-                        </span>
-                        <span className="input-group-text text-muted" hidden={!this.fetchIsInProgress}>
-                            <i className="fas fa-circle-notch fa-spin"></i>
-                        </span>
-                        <span className={'input-group-text ' + (waypoint.isSelected ? 'text-primary' : 'text-muted')}>
-                            {index + 1}
-                        </span>
-                        <span
-                            onClick={itemWasClicked}
-                            className={'input-group-text ' + (
-                                waypoint.isSelected
-                                    ? 'text-light bg-primary'
-                                    : 'text-muted'
-                            )}
-                            {...provided.dragHandleProps}
-                        >
-                            <i className="fas fa-grip-lines-vertical"></i>
-                        </span>
-                    </div>
-                </div>
-            }
-        </Draggable>
+                }
+            </Draggable>
+        )
     }
+    /* tslint:enable:jsx-no-multiline-js */
 }

@@ -149,19 +149,21 @@ export default class MapView extends React.Component<MapViewProps> {
     }
 
     render() {
-        return <>
-            <div
-                ref={e => this.element = e || undefined}
-                id="mapview"
-            />
-            <div
-                ref={e => this.loadingIndicator = e || undefined}
-                id="loading-indicator"
-                className="rounded p-3 frosted"
-                hidden
-            >
-                <i className="fas fa-spin fa-circle-notch"></i>
-            </div>
-        </>
+        return (
+            <>
+                <div
+                    ref={e => this.element = e || undefined}
+                    id="mapview"
+                />
+                <div
+                    ref={e => this.loadingIndicator = e || undefined}
+                    id="loading-indicator"
+                    className="rounded p-3 frosted"
+                    hidden={true}
+                >
+                    <i className="fas fa-spin fa-circle-notch" />
+                </div>
+            </>
+        )
     }
 }
