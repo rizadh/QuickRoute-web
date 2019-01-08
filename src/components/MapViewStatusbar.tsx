@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { routeInformation, RouteInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
 import StatView from './StatView'
-import { routeInformation, RouteInformation } from '../redux/selectors'
 
 type MapViewStatusbarProps = {
     routeInformation: RouteInformation
@@ -46,8 +46,14 @@ class MapViewStatusbar extends React.Component<MapViewStatusbarProps> {
                 break
             case 'FETCHED':
                 statusbarItems = <>
-                    <StatView title="Distance" value={this.stringForDistance(this.props.routeInformation.totalDistance)} />
-                    <StatView title="Time" value={this.stringForTime(this.props.routeInformation.totalTime)} />
+                    <StatView
+                        title="Distance"
+                        value={this.stringForDistance(this.props.routeInformation.totalDistance)}
+                    />
+                    <StatView
+                        title="Time"
+                        value={this.stringForTime(this.props.routeInformation.totalTime)}
+                    />
                 </>
                 break
             case 'FAILED':

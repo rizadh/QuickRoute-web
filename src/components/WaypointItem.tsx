@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Draggable } from 'react-beautiful-dnd';
+import { PlaceFetchResult, RouteFetchResult, Waypoint } from '../redux/state';
 import { isValidAddress } from '../redux/validator'
-import { Waypoint, PlaceFetchResult, RouteFetchResult } from '../redux/state';
 
 type WaypointItemProps = {
     index: number
@@ -98,7 +98,11 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
                         disabled={isBeingDragged && !snapshot.isDragging}
                     />
                     <div className="input-group-append">
-                        <button onClick={this.resetWaypointField} className="btn btn-secondary" hidden={!this.fieldWasEdited}>
+                        <button
+                            onClick={this.resetWaypointField}
+                            className="btn btn-secondary"
+                            hidden={!this.fieldWasEdited}
+                        >
                             <i className="fas fa-undo-alt"></i>
                         </button>
                         <span className="input-group-text text-danger" hidden={!this.fetchFailed}>
@@ -110,7 +114,15 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
                         <span className={'input-group-text ' + (waypoint.isSelected ? 'text-primary' : 'text-muted')}>
                             {index + 1}
                         </span>
-                        <span onClick={itemWasClicked} className={'input-group-text ' + (waypoint.isSelected ? 'text-light bg-primary' : 'text-muted')} {...provided.dragHandleProps}>
+                        <span
+                            onClick={itemWasClicked}
+                            className={'input-group-text ' + (
+                                waypoint.isSelected
+                                    ? 'text-light bg-primary'
+                                    : 'text-muted'
+                            )}
+                            {...provided.dragHandleProps}
+                        >
                             <i className="fas fa-grip-lines-vertical"></i>
                         </span>
                     </div>

@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { AppState } from '../redux/state';
-import { AppAction } from '../redux/actionTypes';
-import { enableAutofit } from '../redux/actions';
 import { connect } from 'react-redux';
+import { enableAutofit } from '../redux/actions';
+import { AppAction } from '../redux/actionTypes';
+import { AppState } from '../redux/state';
 
 type AutofitButtonProps = {
     autofitIsEnabled: boolean,

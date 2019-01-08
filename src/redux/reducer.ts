@@ -1,23 +1,23 @@
 import {
-    AppAction,
     AddWaypointAction,
-    ReplaceWaypointsAction,
+    AppAction,
     DeleteWaypointAction,
-    MoveWaypointAction,
-    SetAddressAction,
+    FetchPlaceFailedAction,
     FetchPlaceInProgressAction,
     FetchPlaceSuccessAction,
-    FetchPlaceFailedAction,
+    FetchRouteFailedAction,
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
-    FetchRouteFailedAction,
+    MoveSelectedWaypointsAction,
+    MoveWaypointAction,
+    ReplaceWaypointsAction,
     ReverseWaypointsAction,
     SelectWaypointAction,
-    ToggleWaypointSelectionAction,
     SelectWaypointRangeAction,
-    MoveSelectedWaypointsAction
+    SetAddressAction,
+    ToggleWaypointSelectionAction
 } from './actionTypes'
-import { AppState, fetchInProgress, fetchSuccess, fetchFailed } from './state'
+import { AppState, fetchFailed, fetchInProgress, fetchSuccess } from './state'
 
 const initialState: AppState = {
     waypoints: [],
@@ -72,13 +72,14 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
 
 type Reducer<T> = (state: AppState, action: T) => AppState
 
-const replaceWaypoints: Reducer<ReplaceWaypointsAction> = (state, { waypoints }) => {
-    return { ...state, waypoints }
-}
+const replaceWaypoints: Reducer<ReplaceWaypointsAction> = (state, { waypoints }) => ({
+    ...state, waypoints
+})
 
-const addWaypoint: Reducer<AddWaypointAction> = (state, { waypoint }) => {
-    return { ...state, waypoints: [...state.waypoints, waypoint] }
-}
+const addWaypoint: Reducer<AddWaypointAction> = (state, { waypoint }) => ({
+    ...state,
+    waypoints: [...state.waypoints, waypoint]
+})
 
 const deleteWaypoint: Reducer<DeleteWaypointAction> = (state, { index }) => {
     const waypoints = [...state.waypoints]
@@ -97,7 +98,7 @@ const moveWaypoint: Reducer<MoveWaypointAction> = (state, { sourceIndex, targetI
 
 const moveSelectedWaypoints: Reducer<MoveSelectedWaypointsAction> = (state, { index }) => {
     const lowestIndex = state.waypoints.findIndex(waypoint => waypoint.isSelected)
-    const partitionIndex = lowestIndex < index ? index + 1 : index    
+    const partitionIndex = lowestIndex < index ? index + 1 : index
 
     const waypointsBeforePartition = state.waypoints.filter((waypoint, index) =>
         !waypoint.isSelected && index < partitionIndex)
@@ -113,9 +114,10 @@ const moveSelectedWaypoints: Reducer<MoveSelectedWaypointsAction> = (state, { in
     return { ...state, lastSelectedWaypointIndex, waypoints }
 }
 
-const reverseWaypoints: Reducer<ReverseWaypointsAction> = state => {
-    return { ...state, waypoints: [...state.waypoints].reverse() }
-}
+const reverseWaypoints: Reducer<ReverseWaypointsAction> = state => ({
+    ...state,
+    waypoints: [...state.waypoints].reverse()
+})
 
 const setAddress: Reducer<SetAddressAction> = (state, { index, address }) => {
     const waypoints = [...state.waypoints]
@@ -150,19 +152,17 @@ const selectWaypoint: Reducer<SelectWaypointAction> = (state, { index }) => {
     }
 }
 
-const toggleWaypoint: Reducer<ToggleWaypointSelectionAction> = (state, { index }) => {
-    return {
-        ...state,
-        lastSelectedWaypointIndex: index,
-        waypoints: state.waypoints.map((waypoint, waypointIndex) => {
-            if (waypointIndex === index) {
-                return { ...waypoint, isSelected: !waypoint.isSelected }
-            }
+const toggleWaypoint: Reducer<ToggleWaypointSelectionAction> = (state, { index }) => ({
+    ...state,
+    lastSelectedWaypointIndex: index,
+    waypoints: state.waypoints.map((waypoint, waypointIndex) => {
+        if (waypointIndex === index) {
+            return { ...waypoint, isSelected: !waypoint.isSelected }
+        }
 
-            return waypoint
-        })
-    }
-}
+        return waypoint
+    })
+})
 
 const selectWaypointRange: Reducer<SelectWaypointRangeAction> = (state, { index }) => {
     if (index < state.lastSelectedWaypointIndex) {
@@ -190,53 +190,41 @@ const selectWaypointRange: Reducer<SelectWaypointRangeAction> = (state, { index 
     }
 }
 
-const fetchPlaceInProgress: Reducer<FetchPlaceInProgressAction> = (state, { address, fetchId }) => {
-    return {
-        ...state,
-        fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchInProgress(fetchId))
-    }
-}
+const fetchPlaceInProgress: Reducer<FetchPlaceInProgressAction> = (state, { address, fetchId }) => ({
+    ...state,
+    fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchInProgress(fetchId))
+})
 
-const fetchPlaceSuccess: Reducer<FetchPlaceSuccessAction> = (state, { address, place }) => {
-    return {
-        ...state,
-        fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchSuccess(place))
-    }
-}
+const fetchPlaceSuccess: Reducer<FetchPlaceSuccessAction> = (state, { address, place }) => ({
+    ...state,
+    fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchSuccess(place))
+})
 
-const fetchPlaceFailed: Reducer<FetchPlaceFailedAction> = (state, { address, error }) => {
-    return {
-        ...state,
-        fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchFailed(error)),
-    }
-}
+const fetchPlaceFailed: Reducer<FetchPlaceFailedAction> = (state, { address, error }) => ({
+    ...state,
+    fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchFailed(error)),
+})
 
-const fetchRouteInProgress: Reducer<FetchRouteInProgressAction> = (state, { origin, destination, fetchId }) => {
-    return {
-        ...state,
-        fetchedRoutes: new Map(state.fetchedRoutes).set(
-            origin,
-            new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchInProgress(fetchId))
-        )
-    }
-}
+const fetchRouteInProgress: Reducer<FetchRouteInProgressAction> = (state, { origin, destination, fetchId }) => ({
+    ...state,
+    fetchedRoutes: new Map(state.fetchedRoutes).set(
+        origin,
+        new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchInProgress(fetchId))
+    )
+})
 
-const fetchRouteSuccess: Reducer<FetchRouteSuccessAction> = (state, { origin, destination, route }) => {
-    return {
-        ...state,
-        fetchedRoutes: new Map(state.fetchedRoutes).set(
-            origin,
-            new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchSuccess(route))
-        )
-    }
-}
+const fetchRouteSuccess: Reducer<FetchRouteSuccessAction> = (state, { origin, destination, route }) => ({
+    ...state,
+    fetchedRoutes: new Map(state.fetchedRoutes).set(
+        origin,
+        new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchSuccess(route))
+    )
+})
 
-const fetchRouteFailed: Reducer<FetchRouteFailedAction> = (state, { origin, destination, error }) => {
-    return {
-        ...state,
-        fetchedRoutes: new Map(state.fetchedRoutes).set(
-            origin,
-            new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchFailed(error))
-        )
-    }
-}
+const fetchRouteFailed: Reducer<FetchRouteFailedAction> = (state, { origin, destination, error }) => ({
+    ...state,
+    fetchedRoutes: new Map(state.fetchedRoutes).set(
+        origin,
+        new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchFailed(error))
+    )
+})

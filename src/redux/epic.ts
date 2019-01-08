@@ -1,20 +1,49 @@
-import { ofType, Epic, combineEpics } from 'redux-observable'
-import { map, flatMap, mergeMap, filter, take } from 'rxjs/operators'
-import { AppAction, AddWaypointAction, FetchPlaceAction, ReplaceWaypointsAction, FetchPlaceSuccessAction, FetchPlaceFailedAction, SetAddressAction, FetchPlaceInProgressAction, ReverseWaypointsAction, FetchRouteInProgressAction, FetchRouteSuccessAction, FetchRouteFailedAction, FetchRouteAction, DeleteWaypointAction, MoveWaypointAction, MoveSelectedWaypointsAction } from './actionTypes'
+import { combineEpics, Epic, ofType } from 'redux-observable'
+import { EMPTY, Observable, of, range } from 'rxjs';
+import { filter, flatMap, map, mergeMap, take } from 'rxjs/operators'
+import {
+    fetchPlace,
+    fetchPlaceFailed,
+    fetchPlaceInProgress,
+    fetchPlaceSuccess,
+    fetchRoute,
+    fetchRouteFailed,
+    fetchRouteInProgress,
+    fetchRouteSuccess
+} from './actions';
+import {
+    AddWaypointAction,
+    AppAction,
+    DeleteWaypointAction,
+    FetchPlaceAction,
+    FetchPlaceFailedAction,
+    FetchPlaceInProgressAction,
+    FetchPlaceSuccessAction,
+    FetchRouteAction,
+    FetchRouteFailedAction,
+    FetchRouteInProgressAction,
+    FetchRouteSuccessAction,
+    MoveSelectedWaypointsAction,
+    MoveWaypointAction,
+    ReplaceWaypointsAction,
+    ReverseWaypointsAction,
+    SetAddressAction
+} from './actionTypes'
 import { AppState } from './state'
-import { fetchPlace, fetchPlaceSuccess, fetchPlaceFailed, fetchPlaceInProgress, fetchRouteInProgress, fetchRouteSuccess, fetchRouteFailed, fetchRoute } from './actions';
-import { Observable, range, EMPTY, of } from 'rxjs';
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 
 const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
 const directions = new mapkit.Directions()
 
-const performLookup = (address: string) => new Observable<FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction>(observer => {
+type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
+
+const performLookup = (address: string) => new Observable<FetchPlaceResultAction>(observer => {
     const fetchId = geocoder.lookup(address, (error, data) => {
         if (error) {
             observer.next(fetchPlaceFailed(address, error))
             observer.complete()
+
             return
         }
 
@@ -23,6 +52,7 @@ const performLookup = (address: string) => new Observable<FetchPlaceInProgressAc
         if (!place) {
             observer.next(fetchPlaceFailed(address, new Error('No places returned')))
             observer.complete()
+
             return
         }
 
@@ -35,14 +65,17 @@ const performLookup = (address: string) => new Observable<FetchPlaceInProgressAc
     return () => geocoder.cancel(fetchId)
 })
 
+type FetchRouteResultAction = FetchRouteInProgressAction | FetchRouteSuccessAction | FetchRouteFailedAction
+
 const performRoute = (
     origin: { address: string, place: mapkit.Place },
     destination: { address: string, place: mapkit.Place }
-) => new Observable<FetchRouteInProgressAction | FetchRouteSuccessAction | FetchRouteFailedAction>(observer => {
+) => new Observable<FetchRouteResultAction>(observer => {
     const fetchId = directions.route({ origin: origin.place, destination: destination.place }, (error, data) => {
         if (error) {
             observer.next(fetchRouteFailed(origin.address, destination.address, error))
             observer.complete()
+
             return
         }
 
@@ -51,6 +84,7 @@ const performRoute = (
         if (!route) {
             observer.next(fetchRouteFailed(origin.address, destination.address, new Error('No places returned')))
             observer.complete()
+
             return
         }
 
@@ -161,6 +195,7 @@ const fetchPlaceEpic: AppEpic = (action$, state$) => action$.pipe(
     ofType<AppAction, FetchPlaceAction>('FETCH_PLACE'),
     filter(({ address }) => {
         const fetchedPlace = state$.value.fetchedPlaces.get(address)
+
         return !fetchedPlace || fetchedPlace.status === 'FAILED'
     }),
     mergeMap(({ address }) => performLookup(address))
@@ -172,6 +207,7 @@ const fetchRouteEpic: AppEpic = (action$, state$) => action$.pipe(
         const routesFromOrigin = state$.value.fetchedRoutes.get(origin)
         if (!routesFromOrigin) return true
         const route = routesFromOrigin.get(destination)
+
         return !route || route.status === 'FAILED'
     }),
     mergeMap(({ origin, destination }) => state$.pipe(

@@ -1,5 +1,5 @@
-import { AppState, FetchSuccess } from '../redux/state'
 import { range } from 'lodash'
+import { AppState, FetchSuccess } from '../redux/state'
 
 type NoRouteInformation = Readonly<{
     status: 'NO_ROUTE'
@@ -20,7 +20,10 @@ type FetchingRouteInformation = Readonly<{
     fetchProgress: number
 }>
 
-export type RouteInformation = FetchedRouteInformation | FetchFailedRouteInformation | FetchingRouteInformation | NoRouteInformation
+export type RouteInformation = FetchedRouteInformation
+    | FetchFailedRouteInformation
+    | FetchingRouteInformation
+    | NoRouteInformation
 
 export const routeInformation = (state: AppState): RouteInformation => {
     const waypointCount = state.waypoints.length
@@ -28,7 +31,8 @@ export const routeInformation = (state: AppState): RouteInformation => {
     if (waypointCount < 2) return { status: 'NO_ROUTE' }
 
     const fetchedPlaceResults = state.waypoints.map(waypoint => state.fetchedPlaces.get(waypoint.address))
-    const fetchedPlacesSuccessCount = fetchedPlaceResults.filter(result => !!result && result.status === 'SUCCESS').length
+    const fetchedPlacesSuccessCount =
+        fetchedPlaceResults.filter(result => !!result && result.status === 'SUCCESS').length
     const fetchedPlacesFailedCount = fetchedPlaceResults.filter(result => !!result && result.status === 'FAILED').length
     if (fetchedPlacesFailedCount) return { status: 'FAILED' }
 
@@ -42,14 +46,16 @@ export const routeInformation = (state: AppState): RouteInformation => {
         const route = routesFromOrigin.get(destination)
         return route
     })
-    const fetchedRoutesSuccessCount = fetchedRouteResults.filter(result => !!result && result.status === 'SUCCESS').length
+    const fetchedRoutesSuccessCount =
+        fetchedRouteResults.filter(result => !!result && result.status === 'SUCCESS').length
     const fetchedRoutesFailedCount = fetchedRouteResults.filter(result => !!result && result.status === 'FAILED').length
     if (fetchedRoutesFailedCount) return { status: 'FAILED' }
 
     const [totalDistance, totalTime] = fetchedRouteResults
         .filter((result): result is FetchSuccess<mapkit.Route> => !!result && result.status === 'SUCCESS')
         .map(result => result.result)
-        .reduce(([totalDistance, totalTime], route) => [totalDistance + route.distance, totalTime + route.expectedTravelTime], [0, 0])
+        .reduce(([totalDistance, totalTime], route) =>
+            [totalDistance + route.distance, totalTime + route.expectedTravelTime], [0, 0])
 
     const completedItems = fetchedPlacesSuccessCount + fetchedRoutesSuccessCount
     const totalItems = 2 * waypointCount - 1

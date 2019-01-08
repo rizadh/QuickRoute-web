@@ -8,6 +8,9 @@
         "strict": true,
         "jsx": "react",
         "outDir": "dist",
-        "target": "es2015"
+        "target": "es2015",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noEmit": true
     }
 }

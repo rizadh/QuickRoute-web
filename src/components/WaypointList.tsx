@@ -1,10 +1,18 @@
 import * as React from 'react'
-import { AppState, FetchedRoutes, FetchedPlaces, Waypoint, RouteFetchResult, PlaceFetchResult } from '../redux/state';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import { connect } from 'react-redux';
+import {
+    deleteWaypoint,
+    moveSelectedWaypoints,
+    moveWaypoint,
+    selectWaypoint,
+    selectWaypointRange,
+    setAddress,
+    toggleWaypointSelection
+} from '../redux/actions';
 import { AppAction } from '../redux/actionTypes';
-import { deleteWaypoint, setAddress, moveWaypoint, moveSelectedWaypoints, selectWaypoint, toggleWaypointSelection, selectWaypointRange } from '../redux/actions';
+import { AppState, FetchedPlaces, FetchedRoutes, PlaceFetchResult, RouteFetchResult, Waypoint } from '../redux/state';
 import WaypointItem from './WaypointItem'
-import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd'
 
 type WaypointListStateProps = {
     waypoints: ReadonlyArray<Waypoint>
@@ -24,10 +32,9 @@ type WaypointListDispatchProps = {
 
 type WaypointListProps = WaypointListStateProps & WaypointListDispatchProps
 class WaypointList extends React.Component<WaypointListProps> {
-    placeFetchResult = (address: string): PlaceFetchResult | undefined => {
+    placeFetchResult = (address: string): PlaceFetchResult | undefined =>
 
-        return this.props.fetchedPlaces.get(address)
-    }
+        this.props.fetchedPlaces.get(address)
 
     incomingRouteFetchResult = (index: number): RouteFetchResult | undefined => {
         if (index === 0) return
@@ -49,6 +56,7 @@ class WaypointList extends React.Component<WaypointListProps> {
 
     routeFetchResult = (origin: string, destination: string): RouteFetchResult | undefined => {
         const routesFromOrigin = this.props.fetchedRoutes.get(origin)
+
         return routesFromOrigin ? routesFromOrigin.get(destination) : undefined
     }
 

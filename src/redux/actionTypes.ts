@@ -114,4 +114,4 @@ export type AppAction = ReplaceWaypointsAction | AddWaypointAction | DeleteWaypo
     | SelectWaypointAction | ToggleWaypointSelectionAction | SelectWaypointRangeAction
     | FetchPlaceAction | FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
     | FetchRouteAction | FetchRouteInProgressAction | FetchRouteSuccessAction | FetchRouteFailedAction
-    | EnableAutofitAction | DisableAutofitAction 
+    | EnableAutofitAction | DisableAutofitAction

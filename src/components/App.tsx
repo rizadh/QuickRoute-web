@@ -1,12 +1,12 @@
 import * as React from 'react'
-import WaypointEditor from './WaypointEditor'
-import MapView from './MapView'
 import { Store } from 'redux'
-import {AppState} from '../redux/state'
-import {AppAction} from '../redux/actionTypes'
-import MapViewStatusbar from './MapViewStatusbar'
-import AutofitButton from './AutofitButton'
 import ProgressBar from '../components/ProgressBar'
+import {AppAction} from '../redux/actionTypes'
+import {AppState} from '../redux/state'
+import AutofitButton from './AutofitButton'
+import MapView from './MapView'
+import MapViewStatusbar from './MapViewStatusbar'
+import WaypointEditor from './WaypointEditor'
 
 type AppProps = {
     store: Store<AppState, AppAction>

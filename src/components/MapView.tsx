@@ -1,10 +1,10 @@
+import { zip } from 'lodash'
 import * as React from 'react'
 import { Store, Unsubscribe } from 'redux'
-import { AppState, FetchSuccess, Waypoint, FetchedPlaces, FetchedRoutes } from '../redux/state'
-import { AppAction } from '../redux/actionTypes'
-import { zip } from 'lodash'
 import { disableAutofit } from '../redux/actions'
+import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
+import { AppState, FetchSuccess, Waypoint } from '../redux/state'
 
 type MapViewProps = {
     store: Store<AppState, AppAction>
@@ -78,8 +78,8 @@ export default class MapView extends React.Component<MapViewProps> {
                 })
             )
 
-        this.map.annotations && this.map.removeAnnotations(this.map.annotations)
-        this.map.overlays && this.map.removeOverlays(this.map.overlays)
+        if (this.map.annotations) this.map.removeAnnotations(this.map.annotations)
+        if (this.map.overlays) this.map.removeOverlays(this.map.overlays)
 
         this.map.addAnnotations(annotations)
         this.map.addOverlays(overlays)

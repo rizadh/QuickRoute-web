@@ -1,27 +1,27 @@
+import { v4 as uuidv4 } from 'uuid'
 import {
-    ReplaceWaypointsAction,
     AddWaypointAction,
     DeleteWaypointAction,
-    ReverseWaypointsAction,
-    SetAddressAction,
-    EnableAutofitAction,
     DisableAutofitAction,
-    MoveWaypointAction,
+    EnableAutofitAction,
     FetchPlaceAction,
+    FetchPlaceFailedAction,
     FetchPlaceInProgressAction,
     FetchPlaceSuccessAction,
-    FetchPlaceFailedAction,
     FetchRouteAction,
+    FetchRouteFailedAction,
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
-    FetchRouteFailedAction,
-    SelectWaypointAction,
-    ToggleWaypointSelectionAction,
-    SelectWaypointRangeAction,
     MoveSelectedWaypointsAction,
+    MoveWaypointAction,
+    ReplaceWaypointsAction,
+    ReverseWaypointsAction,
+    SelectWaypointAction,
+    SelectWaypointRangeAction,
+    SetAddressAction,
+    ToggleWaypointSelectionAction,
 } from './actionTypes'
 import { Waypoint } from './state';
-import { v4 as uuidv4 } from 'uuid'
 
 const createWaypointFromAddress = (address: string): Waypoint => ({
     address,
@@ -115,19 +115,21 @@ export const fetchRoute = (origin: string, destination: string): FetchRouteActio
     destination,
 })
 
-export const fetchRouteInProgress = (origin: string, destination: string, fetchId: number): FetchRouteInProgressAction => ({
-    type: 'FETCH_ROUTE_IN_PROGRESS',
-    origin,
-    destination,
-    fetchId,
-})
+export const fetchRouteInProgress =
+    (origin: string, destination: string, fetchId: number): FetchRouteInProgressAction => ({
+        type: 'FETCH_ROUTE_IN_PROGRESS',
+        origin,
+        destination,
+        fetchId,
+    })
 
-export const fetchRouteSuccess = (origin: string, destination: string, route: mapkit.Route): FetchRouteSuccessAction => ({
-    type: 'FETCH_ROUTE_SUCCESS',
-    origin,
-    destination,
-    route,
-})
+export const fetchRouteSuccess =
+    (origin: string, destination: string, route: mapkit.Route): FetchRouteSuccessAction => ({
+        type: 'FETCH_ROUTE_SUCCESS',
+        origin,
+        destination,
+        route,
+    })
 
 export const fetchRouteFailed = (origin: string, destination: string, error: Error): FetchRouteFailedAction => ({
     type: 'FETCH_ROUTE_FAILED',

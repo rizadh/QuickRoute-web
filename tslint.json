@@ -1,0 +1,22 @@
+{
+    "defaultSeverity": "warning",
+    "extends": [],
+    "jsRules": {},
+    "rules": {
+        "ordered-imports": true,
+        "no-unused-expression": true,
+        "arrow-return-shorthand": [
+            true,
+            "multiline"
+        ],
+        "array-type": [
+            true,
+            "generic"
+        ],
+        "max-line-length": [true, 120],
+        "no-trailing-whitespace": true,
+        "trailing-comma": true,
+        "newline-before-return": true
+    },
+    "rulesDirectory": []
+}
