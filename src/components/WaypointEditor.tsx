@@ -44,25 +44,26 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     handleNewWaypointFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
-            newWaypointFieldValue: e.currentTarget.value
+            newWaypointFieldValue: e.currentTarget.value,
         })
     }
 
     handleNewWaypointFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && isValidAddress(this.state.newWaypointFieldValue))
+        if (e.key === 'Enter' && isValidAddress(this.state.newWaypointFieldValue)) {
             this.addNewWaypoint()
+        }
     }
 
     beginBulkEditing = () => {
         this.setState({
             editorMode: 'bulk',
-            bulkEditFieldValue: this.props.waypoints.map(w => w.address).join('\n')
+            bulkEditFieldValue: this.props.waypoints.map(w => w.address).join('\n'),
         })
     }
 
     handleBulkEditFieldChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         this.setState({
-            bulkEditFieldValue: e.currentTarget.value
+            bulkEditFieldValue: e.currentTarget.value,
         })
     }
 
@@ -78,20 +79,18 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
         this.props.createAndReplaceWaypoints(waypoints)
 
-        this.setState({
-            editorMode: 'regular'
-        })
+        this.setState({ editorMode: 'regular' })
     }
 
     cancelBulkEditing = () => {
         this.setState({
-            editorMode: 'regular'
+            editorMode: 'regular',
         })
     }
 
     beginImportMode = () => {
         this.setState({
-            editorMode: 'import'
+            editorMode: 'import',
         })
     }
 
@@ -101,22 +100,20 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     handleDriverNumberFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
-            driverNumberFieldValue: e.currentTarget.value
+            driverNumberFieldValue: e.currentTarget.value,
         })
     }
 
     executeImport = async () => {
-        this.setState({
-            editorMode: 'importing'
-        })
+        this.setState({ editorMode: 'importing' })
 
-        type Waypoint = { address: string, city: string, postalCode: string }
+        type FetchedWaypoint = { address: string, city: string, postalCode: string }
         type WaypointsResponse = {
             date: string
             driverNumber: string
             waypoints: {
-                dispatched: ReadonlyArray<Waypoint>
-                inprogress: ReadonlyArray<Waypoint>
+                dispatched: ReadonlyArray<FetchedWaypoint>
+                inprogress: ReadonlyArray<FetchedWaypoint>
             }
         }
 
@@ -128,16 +125,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         const addresses = waypoints.map(w => `${w.address} ${w.postalCode}`)
         this.props.createAndReplaceWaypoints(addresses)
 
-        this.setState({
-            editorMode: 'regular'
-        })
+        this.setState({ editorMode: 'regular' })
     }
 
-    cancelImportMode = () => {
-        this.setState({
-            editorMode: 'regular'
-        })
-    }
+    cancelImportMode = () => this.setState({ editorMode: 'regular' })
 
     get canOpenUrls() {
         return this.props.waypoints.length > 0
@@ -150,9 +141,9 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 const destination = addresses.pop()
                 const parameters = {
                     api: 1,
-                    travelmode: 'driving',
                     destination,
-                    waypoints: addresses.length > 0 ? addresses.join('|') : undefined
+                    travelmode: 'driving',
+                    waypoints: addresses.length > 0 ? addresses.join('|') : undefined,
                 }
 
                 window.open('https://www.google.com/maps/dir/?' + stringify(parameters))
@@ -165,9 +156,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     addNewWaypoint = () => {
         this.props.createWaypoint(this.state.newWaypointFieldValue)
-        this.setState({
-            newWaypointFieldValue: ''
-        })
+        this.setState({ newWaypointFieldValue: '' })
     }
 
     get headerTitle(): string {
@@ -340,13 +329,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
 const mapStateToProps = (state: AppState): WaypointEditorStateProps => ({
     waypoints: state.waypoints,
-    routeInformation: routeInformation(state)
+    routeInformation: routeInformation(state),
 })
 
 const mapDispatchToProps = (dispatch: React.Dispatch<AppAction>): WaypointEditorDispatchProps => ({
     createAndReplaceWaypoints: waypoints => dispatch(createAndReplaceWaypoints(waypoints)),
     createWaypoint: waypoint => dispatch(createWaypoint(waypoint)),
-    reverseWaypoints: () => dispatch(reverseWaypoints())
+    reverseWaypoints: () => dispatch(reverseWaypoints()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaypointEditor)

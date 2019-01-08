@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import {
     deleteWaypoint,
     moveSelectedWaypoints,
@@ -9,9 +9,9 @@ import {
     selectWaypointRange,
     setAddress,
     toggleWaypointSelection
-} from '../redux/actions';
-import { AppAction } from '../redux/actionTypes';
-import { AppState, FetchedPlaces, FetchedRoutes, PlaceFetchResult, RouteFetchResult, Waypoint } from '../redux/state';
+} from '../redux/actions'
+import { AppAction } from '../redux/actionTypes'
+import { AppState, FetchedPlaces, FetchedRoutes, PlaceFetchResult, RouteFetchResult, Waypoint } from '../redux/state'
 import WaypointItem from './WaypointItem'
 
 type WaypointListStateProps = {
@@ -100,7 +100,7 @@ class WaypointList extends React.Component<WaypointListProps> {
                                     itemWasClicked={this.itemWasClicked(index)}
                                     deleteWaypoint={() => this.props.deleteWaypoint(index)}
                                     setAddress={(newWaypoint) => this.props.setWaypoint(index, newWaypoint)}
-                                />
+                                />,
                             )}
                             {provided.placeholder}
                         </div>
@@ -114,12 +114,12 @@ class WaypointList extends React.Component<WaypointListProps> {
 const mapStateToProps = (state: AppState): WaypointListStateProps => ({
     waypoints: state.waypoints,
     fetchedRoutes: state.fetchedRoutes,
-    fetchedPlaces: state.fetchedPlaces
+    fetchedPlaces: state.fetchedPlaces,
 })
 
 const mapDispatchToProps = (dispatch: React.Dispatch<AppAction>): WaypointListDispatchProps => ({
-    deleteWaypoint: index => dispatch(deleteWaypoint(index)),
     setWaypoint: (index, waypoint) => dispatch(setAddress(index, waypoint)),
+    deleteWaypoint: index => dispatch(deleteWaypoint(index)),
     selectWaypoint: index => dispatch(selectWaypoint(index)),
     toggleWaypointSelection: index => dispatch(toggleWaypointSelection(index)),
     selectWaypointRange: index => dispatch(selectWaypointRange(index)),

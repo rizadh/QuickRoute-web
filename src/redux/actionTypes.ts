@@ -1,4 +1,4 @@
-import { Waypoint } from "./state";
+import { Waypoint } from './state'
 
 export type ReplaceWaypointsAction = Readonly<{
     type: 'REPLACE_WAYPOINTS'

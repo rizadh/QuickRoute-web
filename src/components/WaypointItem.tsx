@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Draggable } from 'react-beautiful-dnd';
-import { PlaceFetchResult, RouteFetchResult, Waypoint } from '../redux/state';
+import { Draggable } from 'react-beautiful-dnd'
+import { PlaceFetchResult, RouteFetchResult, Waypoint } from '../redux/state'
 import { isValidAddress } from '../redux/validator'
 
 type WaypointItemProps = {
@@ -23,12 +23,12 @@ type WaypointItemState = {
 export default class WaypointItem extends React.Component<WaypointItemProps, WaypointItemState> {
     state = {
         isEditing: false,
-        waypointFieldValue: this.props.waypoint.address
+        waypointFieldValue: this.props.waypoint.address,
     }
 
     handleWaypointFieldValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
-            waypointFieldValue: e.currentTarget.value
+            waypointFieldValue: e.currentTarget.value,
         })
     }
 
@@ -41,7 +41,7 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
 
     resetWaypointField = () => {
         this.setState({
-            waypointFieldValue: this.props.waypoint.address
+            waypointFieldValue: this.props.waypoint.address,
         })
     }
 
@@ -51,7 +51,7 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
         const {
             placeFetchResult,
             incomingRouteFetchResult,
-            outgoingRouteFetchResult
+            outgoingRouteFetchResult,
         } = this.props
 
         return placeFetchResult && placeFetchResult.status === 'IN_PROGRESS'
@@ -63,7 +63,7 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
         const {
             placeFetchResult,
             incomingRouteFetchResult,
-            outgoingRouteFetchResult
+            outgoingRouteFetchResult,
         } = this.props
 
         return placeFetchResult && placeFetchResult.status === 'FAILED'
@@ -77,7 +77,7 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
             waypoint,
             itemWasClicked,
             deleteWaypoint,
-            isBeingDragged
+            isBeingDragged,
         } = this.props
 
         return <Draggable index={index} draggableId={waypoint.uuid}>

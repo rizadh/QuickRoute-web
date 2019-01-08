@@ -1,5 +1,5 @@
 import { combineEpics, Epic, ofType } from 'redux-observable'
-import { EMPTY, Observable, of, range } from 'rxjs';
+import { EMPTY, Observable, of, range } from 'rxjs'
 import { filter, flatMap, map, mergeMap, take } from 'rxjs/operators'
 import {
     fetchPlace,
@@ -10,7 +10,7 @@ import {
     fetchRouteFailed,
     fetchRouteInProgress,
     fetchRouteSuccess
-} from './actions';
+} from './actions'
 import {
     AddWaypointAction,
     AppAction,
@@ -69,7 +69,7 @@ type FetchRouteResultAction = FetchRouteInProgressAction | FetchRouteSuccessActi
 
 const performRoute = (
     origin: { address: string, place: mapkit.Place },
-    destination: { address: string, place: mapkit.Place }
+    destination: { address: string, place: mapkit.Place },
 ) => new Observable<FetchRouteResultAction>(observer => {
     const fetchId = directions.route({ origin: origin.place, destination: destination.place }, (error, data) => {
         if (error) {
@@ -108,21 +108,21 @@ const replaceWaypointsEpic: AppEpic = combineEpics(
             map(index => fetchRoute(
                 state$.value.waypoints[index].address,
                 state$.value.waypoints[index + 1].address,
-            ))
-        ))
-    )
+            )),
+        )),
+    ),
 )
 
 const addWaypointEpic: AppEpic = combineEpics(
     action$ => action$.pipe(
         ofType<AppAction, AddWaypointAction>('ADD_WAYPOINT'),
-        map(({ waypoint: { address } }) => fetchPlace(address))
+        map(({ waypoint: { address } }) => fetchPlace(address)),
     ),
     (action$, state$) => action$.pipe(
         ofType<AppAction, AddWaypointAction>('ADD_WAYPOINT'),
         filter(() => state$.value.waypoints.length > 1),
-        map(({ waypoint: { address } }) => fetchRoute(state$.value.waypoints.slice(-2)[0].address, address))
-    )
+        map(({ waypoint: { address } }) => fetchRoute(state$.value.waypoints.slice(-2)[0].address, address)),
+    ),
 )
 
 const deleteWaypointEpic: AppEpic = (action$, state$) => action$.pipe(
@@ -133,13 +133,13 @@ const deleteWaypointEpic: AppEpic = (action$, state$) => action$.pipe(
     map(({ index }) => fetchRoute(
         state$.value.waypoints[index - 1].address,
         state$.value.waypoints[index].address,
-    ))
+    )),
 )
 
 const setAddressEpic: AppEpic = combineEpics(
     action$ => action$.pipe(
         ofType<AppAction, SetAddressAction>('SET_ADDRESS'),
-        map(({ address }) => fetchPlace(address))
+        map(({ address }) => fetchPlace(address)),
     ),
     (action$, state$) => action$.pipe(
         ofType<AppAction, SetAddressAction>('SET_ADDRESS'),
@@ -147,7 +147,7 @@ const setAddressEpic: AppEpic = combineEpics(
         map(({ index }) => fetchRoute(
             state$.value.waypoints[index - 1].address,
             state$.value.waypoints[index].address,
-        ))
+        )),
     ),
     (action$, state$) => action$.pipe(
         ofType<AppAction, SetAddressAction>('SET_ADDRESS'),
@@ -155,8 +155,8 @@ const setAddressEpic: AppEpic = combineEpics(
         map(({ index }) => fetchRoute(
             state$.value.waypoints[index].address,
             state$.value.waypoints[index + 1].address,
-        ))
-    )
+        )),
+    ),
 )
 
 const moveWaypointEpic: AppEpic = (action$, state$) => action$.pipe(
@@ -166,8 +166,8 @@ const moveWaypointEpic: AppEpic = (action$, state$) => action$.pipe(
         map(index => fetchRoute(
             state$.value.waypoints[index].address,
             state$.value.waypoints[index + 1].address,
-        ))
-    ))
+        )),
+    )),
 )
 
 const moveSelectedWaypointsEpic: AppEpic = (action$, state$) => action$.pipe(
@@ -177,8 +177,8 @@ const moveSelectedWaypointsEpic: AppEpic = (action$, state$) => action$.pipe(
         map(index => fetchRoute(
             state$.value.waypoints[index].address,
             state$.value.waypoints[index + 1].address,
-        ))
-    ))
+        )),
+    )),
 )
 
 const reverseWaypointsEpic: AppEpic = (action$, state$) => action$.pipe(
@@ -187,8 +187,8 @@ const reverseWaypointsEpic: AppEpic = (action$, state$) => action$.pipe(
         map(index => fetchRoute(
             state$.value.waypoints[index].address,
             state$.value.waypoints[index + 1].address,
-        ))
-    ))
+        )),
+    )),
 )
 
 const fetchPlaceEpic: AppEpic = (action$, state$) => action$.pipe(
@@ -198,7 +198,7 @@ const fetchPlaceEpic: AppEpic = (action$, state$) => action$.pipe(
 
         return !fetchedPlace || fetchedPlace.status === 'FAILED'
     }),
-    mergeMap(({ address }) => performLookup(address))
+    mergeMap(({ address }) => performLookup(address)),
 )
 
 const fetchRouteEpic: AppEpic = (action$, state$) => action$.pipe(
@@ -224,8 +224,8 @@ const fetchRouteEpic: AppEpic = (action$, state$) => action$.pipe(
         mergeMap(([originPlace, destinationPlace]) => performRoute(
             { address: origin, place: originPlace },
             { address: destination, place: destinationPlace },
-        ))
-    ))
+        )),
+    )),
 )
 
 export default combineEpics(

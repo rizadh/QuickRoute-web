@@ -21,12 +21,12 @@ import {
     SetAddressAction,
     ToggleWaypointSelectionAction,
 } from './actionTypes'
-import { Waypoint } from './state';
+import { Waypoint } from './state'
 
 const createWaypointFromAddress = (address: string): Waypoint => ({
     address,
     uuid: uuidv4(),
-    isSelected: false
+    isSelected: false,
 })
 
 export const createAndReplaceWaypoints = (addresses: ReadonlyArray<string>): ReplaceWaypointsAction =>
@@ -34,7 +34,7 @@ export const createAndReplaceWaypoints = (addresses: ReadonlyArray<string>): Rep
 
 export const replaceWaypoints = (waypoints: ReadonlyArray<Waypoint>): ReplaceWaypointsAction => ({
     type: 'REPLACE_WAYPOINTS',
-    waypoints
+    waypoints,
 })
 
 export const createWaypoint = (address: string): AddWaypointAction =>
@@ -58,7 +58,7 @@ export const moveWaypoint = (sourceIndex: number, targetIndex: number): MoveWayp
 
 export const moveSelectedWaypoints = (index: number): MoveSelectedWaypointsAction => ({
     type: 'MOVE_SELECTED_WAYPOINTS',
-    index
+    index,
 })
 
 export const setAddress = (index: number, address: string): SetAddressAction => ({
@@ -69,21 +69,21 @@ export const setAddress = (index: number, address: string): SetAddressAction => 
 
 export const selectWaypoint = (index: number): SelectWaypointAction => ({
     type: 'SELECT_WAYPOINT',
-    index
+    index,
 })
 
 export const toggleWaypointSelection = (index: number): ToggleWaypointSelectionAction => ({
     type: 'TOGGLE_WAYPOINT_SELECTION',
-    index
+    index,
 })
 
 export const selectWaypointRange = (index: number): SelectWaypointRangeAction => ({
     type: 'SELECT_WAYPOINT_RANGE',
-    index
+    index,
 })
 
 export const reverseWaypoints = (): ReverseWaypointsAction => ({
-    type: 'REVERSE_WAYPOINTS'
+    type: 'REVERSE_WAYPOINTS',
 })
 
 export const fetchPlace = (address: string): FetchPlaceAction => ({
@@ -115,23 +115,33 @@ export const fetchRoute = (origin: string, destination: string): FetchRouteActio
     destination,
 })
 
-export const fetchRouteInProgress =
-    (origin: string, destination: string, fetchId: number): FetchRouteInProgressAction => ({
-        type: 'FETCH_ROUTE_IN_PROGRESS',
-        origin,
-        destination,
-        fetchId,
-    })
+export const fetchRouteInProgress = (
+    origin: string,
+    destination: string,
+    fetchId: number,
+): FetchRouteInProgressAction => ({
+    type: 'FETCH_ROUTE_IN_PROGRESS',
+    origin,
+    destination,
+    fetchId,
+})
 
-export const fetchRouteSuccess =
-    (origin: string, destination: string, route: mapkit.Route): FetchRouteSuccessAction => ({
-        type: 'FETCH_ROUTE_SUCCESS',
-        origin,
-        destination,
-        route,
-    })
+export const fetchRouteSuccess = (
+    origin: string,
+    destination: string,
+    route: mapkit.Route,
+): FetchRouteSuccessAction => ({
+    type: 'FETCH_ROUTE_SUCCESS',
+    origin,
+    destination,
+    route,
+})
 
-export const fetchRouteFailed = (origin: string, destination: string, error: Error): FetchRouteFailedAction => ({
+export const fetchRouteFailed = (
+    origin: string,
+    destination: string,
+    error: Error,
+): FetchRouteFailedAction => ({
     type: 'FETCH_ROUTE_FAILED',
     origin,
     destination,

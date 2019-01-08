@@ -57,10 +57,10 @@ class MapViewStatusbar extends React.Component<MapViewStatusbarProps> {
                 </>
                 break
             case 'FAILED':
-                statusbarItems = "Routing failed"
+                statusbarItems = 'Routing failed'
                 break
             case 'NO_ROUTE':
-                statusbarItems = "Enter more waypoints"
+                statusbarItems = 'Enter more waypoints'
                 break
             default:
                 throw new Error('Invalid route information')

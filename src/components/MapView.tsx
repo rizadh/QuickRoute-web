@@ -30,7 +30,7 @@ export default class MapView extends React.Component<MapViewProps> {
 
         const status = routeInformation(currentState).status
 
-        if (status == 'FETCHING') {
+        if (status === 'FETCHING') {
             this.element.classList.add('updating')
             if (this.loadingIndicator) this.loadingIndicator.hidden = false
         } else {
@@ -53,10 +53,10 @@ export default class MapView extends React.Component<MapViewProps> {
             .map(({ address }) => currentState.fetchedPlaces.get(address))
             .filter((p): p is FetchSuccess<mapkit.Place> => !!p && p.status === 'SUCCESS')
             .map(({ result: { coordinate, formattedAddress } }, index) => new mapkit.MarkerAnnotation(coordinate, {
-                title: currentState.waypoints[index].address,
                 glyphText: `${index + 1}`,
+                title: currentState.waypoints[index].address,
                 subtitle: formattedAddress,
-                animates: false
+                animates: false,
             }))
 
         const overlays = currentState.waypoints
@@ -73,9 +73,9 @@ export default class MapView extends React.Component<MapViewProps> {
                 new mapkit.PolylineOverlay(polyline.points, {
                     style: new mapkit.Style({
                         lineWidth: 5,
-                        strokeOpacity: 0.75
-                    })
-                })
+                        strokeOpacity: 0.75,
+                    }),
+                }),
             )
 
         if (this.map.annotations) this.map.removeAnnotations(this.map.annotations)
@@ -110,7 +110,7 @@ export default class MapView extends React.Component<MapViewProps> {
                 right: 16,
                 bottom: 48,
                 left: 16,
-            })
+            }),
         })
     }
 
@@ -118,21 +118,21 @@ export default class MapView extends React.Component<MapViewProps> {
         mapkit.init({
             authorizationCallback: done => fetch('https://route-planner.rizadh.com/token/')
                 .then(res => res.text())
-                .then(done)
+                .then(done),
         })
 
         const map = new mapkit.Map(this.element, {
             showsMapTypeControl: false,
-            showsScale: mapkit.FeatureVisibility.Visible,
             showsPointsOfInterest: false,
+            showsScale: mapkit.FeatureVisibility.Visible,
             isRotationEnabled: false,
-            padding: new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 48 })
+            padding: new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 48 }),
         })
 
         const mapDidMove = () => {
-            if (map.annotations && map.annotations.length > 0
-                || map.overlays && map.overlays.length > 0)
+            if (map.annotations && map.annotations.length > 0 || map.overlays && map.overlays.length > 0) {
                 this.props.store.dispatch(disableAutofit())
+            }
         }
 
         map.addEventListener('zoom-start', mapDidMove)

@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { connect } from 'react-redux';
-import { enableAutofit } from '../redux/actions';
-import { AppAction } from '../redux/actionTypes';
-import { AppState } from '../redux/state';
+import { connect } from 'react-redux'
+import { enableAutofit } from '../redux/actions'
+import { AppAction } from '../redux/actionTypes'
+import { AppState } from '../redux/state'
 
 type AutofitButtonProps = {
-    autofitIsEnabled: boolean,
+    autofitIsEnabled: boolean
     enableAutofit: () => void
 }
 
@@ -22,11 +22,11 @@ class AutofitButton extends React.Component<AutofitButtonProps> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-    autofitIsEnabled: state.autofitIsEnabled
+    autofitIsEnabled: state.autofitIsEnabled,
 })
 
 const mapDispatchToProps = (dispatch: React.Dispatch<AppAction>) => ({
-    enableAutofit: () => dispatch(enableAutofit())
+    enableAutofit: () => dispatch(enableAutofit()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AutofitButton)

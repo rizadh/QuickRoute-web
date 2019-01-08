@@ -54,8 +54,8 @@ export const routeInformation = (state: AppState): RouteInformation => {
     const [totalDistance, totalTime] = fetchedRouteResults
         .filter((result): result is FetchSuccess<mapkit.Route> => !!result && result.status === 'SUCCESS')
         .map(result => result.result)
-        .reduce(([totalDistance, totalTime], route) =>
-            [totalDistance + route.distance, totalTime + route.expectedTravelTime], [0, 0])
+        .reduce(([cumulativeDistance, cumulativeTime], route) =>
+            [cumulativeDistance + route.distance, cumulativeTime + route.expectedTravelTime], [0, 0])
 
     const completedItems = fetchedPlacesSuccessCount + fetchedRoutesSuccessCount
     const totalItems = 2 * waypointCount - 1
@@ -64,10 +64,10 @@ export const routeInformation = (state: AppState): RouteInformation => {
         ? {
             status: 'FETCHED',
             totalDistance,
-            totalTime
+            totalTime,
         }
         : {
             status: 'FETCHING',
-            fetchProgress: completedItems / totalItems
+            fetchProgress: completedItems / totalItems,
         }
 }

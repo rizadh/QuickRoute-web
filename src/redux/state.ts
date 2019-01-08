@@ -7,7 +7,7 @@ export type FetchSuccess<ResultType> = Readonly<{
 
 export const fetchSuccess = <ResultType>(result: ResultType): FetchSuccess<ResultType>  => ({
     status: 'SUCCESS',
-    result
+    result,
 })
 
 export type FetchInProgress = Readonly<{
@@ -17,7 +17,7 @@ export type FetchInProgress = Readonly<{
 
 export const fetchInProgress = (fetchId: number): FetchInProgress => ({
     status: 'IN_PROGRESS',
-    fetchId
+    fetchId,
 })
 
 export type FetchFailed = Readonly<{
@@ -27,7 +27,7 @@ export type FetchFailed = Readonly<{
 
 export const fetchFailed = (error: Error): FetchFailed => ({
     status: 'FAILED',
-    error
+    error,
 })
 
 export type PlaceFetchResult = FetchResult<mapkit.Place>

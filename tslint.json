@@ -1,22 +1,42 @@
 {
     "defaultSeverity": "warning",
-    "extends": [],
+    "extends": [
+        "tslint:recommended"
+    ],
     "jsRules": {},
     "rules": {
-        "ordered-imports": true,
-        "no-unused-expression": true,
-        "arrow-return-shorthand": [
+        "quotemark": [
             true,
-            "multiline"
+            "single",
+            "jsx-double"
         ],
-        "array-type": [
+        "semicolon": [
             true,
-            "generic"
+            "never"
         ],
-        "max-line-length": [true, 120],
-        "no-trailing-whitespace": true,
-        "trailing-comma": true,
-        "newline-before-return": true
+        "interface-over-type-literal": false,
+        "member-access": [
+            true,
+            "no-public"
+        ],
+        "curly": [
+            true,
+            "ignore-same-line"
+        ],
+        "trailing-comma": {
+            "options": {
+                "esSpecCompliant": true,
+                "multiline": {
+                    "objects": "always",
+                    "arrays": "always",
+                    "functions": "always",
+                    "typeLiterals": "never"
+                },
+                "singleline": "never"
+            }
+        },
+        "object-literal-sort-keys": false,
+        "arrow-parens": false
     },
     "rulesDirectory": []
 }

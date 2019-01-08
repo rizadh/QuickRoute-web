@@ -13,7 +13,7 @@ const store = createStore(
     applyMiddleware(
         epicMiddleware,
         logger,
-    )
+    ),
 )
 
 epicMiddleware.run(epic)

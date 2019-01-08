@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "clean": "rm -rf dist",
+    "lint": "tslint --project . --format verbose",
     "start": "npm run serve",
     "serve": "parcel src/index.html --https",
     "build": "parcel build src/index.html",
