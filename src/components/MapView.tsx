@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Store, Unsubscribe } from 'redux'
 import { AppState, FetchSuccess, Waypoint, FetchedPlaces, FetchedRoutes } from '../redux/state'
 import { AppAction } from '../redux/actionTypes'
-import { isEqual } from 'lodash'
+import { zip } from 'lodash'
 import { disableAutofit } from '../redux/actions'
 import { routeInformation } from '../redux/selectors'
 
@@ -42,7 +42,7 @@ export default class MapView extends React.Component<MapViewProps> {
         if (status !== 'FETCHED' && status !== 'NO_ROUTE') return
 
         if (previousState
-            && previousState.waypoints === currentState.waypoints
+            && this.waypointsAreSimilar(previousState.waypoints, currentState.waypoints)
             && previousState.fetchedPlaces === currentState.fetchedPlaces
             && previousState.fetchedRoutes === currentState.fetchedRoutes) {
             if (currentState.autofitIsEnabled) this.centerMap()
@@ -52,7 +52,7 @@ export default class MapView extends React.Component<MapViewProps> {
         const annotations = currentState.waypoints
             .map(({ address }) => currentState.fetchedPlaces.get(address))
             .filter((p): p is FetchSuccess<mapkit.Place> => !!p && p.status === 'SUCCESS')
-            .map(({ result: {coordinate, formattedAddress} }, index) => new mapkit.MarkerAnnotation(coordinate, {
+            .map(({ result: { coordinate, formattedAddress } }, index) => new mapkit.MarkerAnnotation(coordinate, {
                 title: currentState.waypoints[index].address,
                 glyphText: `${index + 1}`,
                 subtitle: formattedAddress,
@@ -84,6 +84,18 @@ export default class MapView extends React.Component<MapViewProps> {
         this.map.addAnnotations(annotations)
         this.map.addOverlays(overlays)
         this.centerMap()
+    }
+
+    waypointsAreSimilar = (a: ReadonlyArray<Waypoint>, b: ReadonlyArray<Waypoint>) => {
+        if (a.length !== b.length) return false
+
+        for (const [itemA, itemB] of zip(a, b)) {
+            if (!itemA || !itemB) return false
+
+            if (itemA.address !== itemB.address) return false
+        }
+
+        return true
     }
 
     centerMap = () => {
