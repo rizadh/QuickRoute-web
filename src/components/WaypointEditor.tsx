@@ -67,7 +67,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     handleBulkEditFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && e.metaKey) this.finishBulkEditing()
+        if (e.key === 'Enter' && e.shiftKey) this.finishBulkEditing()
     }
 
     finishBulkEditing = () => {
