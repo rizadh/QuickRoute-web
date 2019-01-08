@@ -125,7 +125,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         const jsonResponse = await httpResponse.text()
         const response = JSON.parse(jsonResponse) as WaypointsResponse
         const waypoints = [...response.waypoints.dispatched, ...response.waypoints.inprogress]
-        const addresses = waypoints.map(w => `${w.address} ${w.city}`)
+        const addresses = waypoints.map(w => `${w.address} ${w.postalCode}`)
         this.props.createAndReplaceWaypoints(addresses)
 
         this.setState({
