@@ -39,10 +39,12 @@ export type FetchedRoutes = ReadonlyMap<string, ReadonlyMap<string, RouteFetchRe
 export type Waypoint = Readonly<{
     address: string
     uuid: string
+    isSelected: boolean
 }>
 
 export type AppState = Readonly<{
     waypoints: ReadonlyArray<Waypoint>
+    lastSelectedWaypointIndex: number
     fetchedPlaces: FetchedPlaces
     fetchedRoutes: FetchedRoutes
     autofitIsEnabled: boolean

@@ -1,6 +1,6 @@
 import { ofType, Epic, combineEpics } from 'redux-observable'
 import { map, flatMap, mergeMap, filter, take } from 'rxjs/operators'
-import { AppAction, AddWaypointAction, FetchPlaceAction, ReplaceWaypointsAction, FetchPlaceSuccessAction, FetchPlaceFailedAction, SetAddressAction, FetchPlaceInProgressAction, ReverseWaypointsAction, FetchRouteInProgressAction, FetchRouteSuccessAction, FetchRouteFailedAction, FetchRouteAction, DeleteWaypointAction, MoveWaypointAction, MoveWaypointsAction } from './actionTypes'
+import { AppAction, AddWaypointAction, FetchPlaceAction, ReplaceWaypointsAction, FetchPlaceSuccessAction, FetchPlaceFailedAction, SetAddressAction, FetchPlaceInProgressAction, ReverseWaypointsAction, FetchRouteInProgressAction, FetchRouteSuccessAction, FetchRouteFailedAction, FetchRouteAction, DeleteWaypointAction, MoveWaypointAction, MoveSelectedWaypointsAction } from './actionTypes'
 import { AppState } from './state'
 import { fetchPlace, fetchPlaceSuccess, fetchPlaceFailed, fetchPlaceInProgress, fetchRouteInProgress, fetchRouteSuccess, fetchRouteFailed, fetchRoute } from './actions';
 import { Observable, range, EMPTY, of } from 'rxjs';
@@ -136,8 +136,8 @@ const moveWaypointEpic: AppEpic = (action$, state$) => action$.pipe(
     ))
 )
 
-const moveWaypointsEpic: AppEpic = (action$, state$) => action$.pipe(
-    ofType<AppAction, MoveWaypointsAction>('MOVE_WAYPOINTS'),
+const moveSelectedWaypointsEpic: AppEpic = (action$, state$) => action$.pipe(
+    ofType<AppAction, MoveSelectedWaypointsAction>('MOVE_SELECTED_WAYPOINTS'),
     // TODO: Use a more efficient update algorithm
     mergeMap(() => range(0, state$.value.waypoints.length - 1).pipe(
         map(index => fetchRoute(
@@ -198,7 +198,7 @@ export default combineEpics(
     addWaypointEpic,
     deleteWaypointEpic,
     moveWaypointEpic,
-    moveWaypointsEpic,
+    moveSelectedWaypointsEpic,
     setAddressEpic,
     fetchPlaceEpic,
     fetchRouteEpic,

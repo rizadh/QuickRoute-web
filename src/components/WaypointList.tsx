@@ -2,10 +2,9 @@ import * as React from 'react'
 import { AppState, FetchedRoutes, FetchedPlaces, Waypoint, RouteFetchResult, PlaceFetchResult } from '../redux/state';
 import { connect } from 'react-redux';
 import { AppAction } from '../redux/actionTypes';
-import { deleteWaypoint, setAddress, moveWaypoint, moveWaypoints } from '../redux/actions';
+import { deleteWaypoint, setAddress, moveWaypoint, moveSelectedWaypoints, selectWaypoint, toggleWaypointSelection, selectWaypointRange } from '../redux/actions';
 import WaypointItem from './WaypointItem'
-import { DragDropContext, DropResult, Droppable, DragStart } from 'react-beautiful-dnd'
-import { range } from 'lodash'
+import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd'
 
 type WaypointListStateProps = {
     waypoints: ReadonlyArray<Waypoint>
@@ -15,21 +14,16 @@ type WaypointListStateProps = {
 
 type WaypointListDispatchProps = {
     setWaypoint: (index: number, address: string) => void
-    moveWaypoint: (sourceIndex: number, destinationIndex: number) => void
-    moveWaypoints: (sourceIndexes: ReadonlySet<number>, destinationIndex: number) => void
     deleteWaypoint: (index: number) => void
+    selectWaypoint: (index: number) => void
+    toggleWaypointSelection: (index: number) => void
+    selectWaypointRange: (index: number) => void
+    moveWaypoint: (sourceIndex: number, destinationIndex: number) => void
+    moveSelectedWaypoints: (index: number) => void
 }
 
 type WaypointListProps = WaypointListStateProps & WaypointListDispatchProps
-
-type WaypointListState = {
-    selectedItems: ReadonlySet<number>
-    initialSelection: number
-}
-
-class WaypointList extends React.Component<WaypointListProps, WaypointListState> {
-    state = { selectedItems: new Set() as ReadonlySet<number>, initialSelection: 0 }
-
+class WaypointList extends React.Component<WaypointListProps> {
     placeFetchResult = (address: string): PlaceFetchResult | undefined => {
 
         return this.props.fetchedPlaces.get(address)
@@ -62,70 +56,27 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
         if (!result.destination) return
         if (result.destination.index === result.source.index) return
 
-        if (this.state.selectedItems.has(result.source.index)) {
-            this.props.moveWaypoints(this.state.selectedItems, result.destination.index)
-
-            this.setState({
-                selectedItems: new Set(range(
-                    result.destination.index,
-                    result.destination.index + this.state.selectedItems.size
-                ))
-            })
+        if (this.props.waypoints[result.source.index].isSelected) {
+            this.props.moveSelectedWaypoints(result.destination.index)
         } else {
             this.props.moveWaypoint(result.source.index, result.destination.index)
         }
     }
 
-    onDragStart = (dragStart: DragStart) => {
-        if (!this.state.selectedItems.has(dragStart.source.index)) {
-            this.setState({
-                selectedItems: new Set()
-            })
-        }
-    }
-
     itemWasClicked = (index: number) => (e: React.MouseEvent) => {
-        const shouldToggleItem = e.ctrlKey || e.metaKey
-        const shouldSelectRange = e.shiftKey
-
-        if (shouldSelectRange) e.preventDefault()
-
-        this.setState(state => {
-            if (shouldSelectRange) {
-                const newItems = state.initialSelection < index
-                    ? range(state.initialSelection, index + 1)
-                    : range(index, state.initialSelection + 1)
-
-                // TODO: Handle overlap of an existing selection (by replacing the existing selection)
-
-                return ({
-                    initialSelection: state.initialSelection,
-                    selectedItems: new Set([...newItems, ...state.selectedItems])
-                })
-            } else if (shouldToggleItem) {
-                return {
-                    initialSelection: index,
-                    selectedItems: state.selectedItems.has(index)
-                        ? new Set([...state.selectedItems].filter(item => item !== index))
-                        : new Set(state.selectedItems).add(index)
-                }
-            } else if (state.selectedItems.size === 1 && state.selectedItems.has(index)) {
-                return {
-                    initialSelection: index,
-                    selectedItems: new Set(),
-                }
-            } else {
-                return {
-                    initialSelection: index,
-                    selectedItems: new Set([index]),
-                }
-            }
-        })
+        if (e.shiftKey) {
+            e.preventDefault()
+            this.props.selectWaypointRange(index)
+        } else if (e.ctrlKey || e.metaKey) {
+            this.props.toggleWaypointSelection(index)
+        } else {
+            this.props.selectWaypoint(index)
+        }
     }
 
     render() {
         return (
-            <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart}>
+            <DragDropContext onDragEnd={this.onDragEnd}>
                 <Droppable droppableId="waypointlist">
                     {(provided, snapshot) =>
                         <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -134,8 +85,7 @@ class WaypointList extends React.Component<WaypointListProps, WaypointListState>
                                     key={waypoint.uuid}
                                     index={index}
                                     waypoint={waypoint}
-                                    isSelected={this.state.selectedItems.has(index)}
-                                    isBeingDragged={snapshot.isDraggingOver && this.state.selectedItems.has(index)}
+                                    isBeingDragged={snapshot.isDraggingOver && waypoint.isSelected}
                                     placeFetchResult={this.placeFetchResult(waypoint.address)}
                                     outgoingRouteFetchResult={this.outgoingRouteFetchResult(index)}
                                     incomingRouteFetchResult={this.incomingRouteFetchResult(index)}
@@ -162,8 +112,11 @@ const mapStateToProps = (state: AppState): WaypointListStateProps => ({
 const mapDispatchToProps = (dispatch: React.Dispatch<AppAction>): WaypointListDispatchProps => ({
     deleteWaypoint: index => dispatch(deleteWaypoint(index)),
     setWaypoint: (index, waypoint) => dispatch(setAddress(index, waypoint)),
+    selectWaypoint: index => dispatch(selectWaypoint(index)),
+    toggleWaypointSelection: index => dispatch(toggleWaypointSelection(index)),
+    selectWaypointRange: index => dispatch(selectWaypointRange(index)),
     moveWaypoint: (sourceIndex, destinationIndex) => dispatch(moveWaypoint(sourceIndex, destinationIndex)),
-    moveWaypoints: (sourceIndexes, destinationIndex) => dispatch(moveWaypoints(sourceIndexes, destinationIndex)),
+    moveSelectedWaypoints: index => dispatch(moveSelectedWaypoints(index)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaypointList)

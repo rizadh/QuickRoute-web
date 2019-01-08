@@ -7,7 +7,6 @@ import {
     EnableAutofitAction,
     DisableAutofitAction,
     MoveWaypointAction,
-    MoveWaypointsAction,
     FetchPlaceAction,
     FetchPlaceInProgressAction,
     FetchPlaceSuccessAction,
@@ -16,13 +15,18 @@ import {
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
     FetchRouteFailedAction,
+    SelectWaypointAction,
+    ToggleWaypointSelectionAction,
+    SelectWaypointRangeAction,
+    MoveSelectedWaypointsAction,
 } from './actionTypes'
 import { Waypoint } from './state';
 import { v4 as uuidv4 } from 'uuid'
 
-const createWaypointFromAddress = (address: string) => ({
+const createWaypointFromAddress = (address: string): Waypoint => ({
     address,
     uuid: uuidv4(),
+    isSelected: false
 })
 
 export const createAndReplaceWaypoints = (addresses: ReadonlyArray<string>): ReplaceWaypointsAction =>
@@ -52,16 +56,30 @@ export const moveWaypoint = (sourceIndex: number, targetIndex: number): MoveWayp
     targetIndex,
 })
 
-export const moveWaypoints = (sourceIndexes: ReadonlySet<number>, targetIndex: number): MoveWaypointsAction => ({
-    type: 'MOVE_WAYPOINTS',
-    sourceIndexes,
-    targetIndex
+export const moveSelectedWaypoints = (index: number): MoveSelectedWaypointsAction => ({
+    type: 'MOVE_SELECTED_WAYPOINTS',
+    index
 })
 
 export const setAddress = (index: number, address: string): SetAddressAction => ({
     type: 'SET_ADDRESS',
     index,
     address,
+})
+
+export const selectWaypoint = (index: number): SelectWaypointAction => ({
+    type: 'SELECT_WAYPOINT',
+    index
+})
+
+export const toggleWaypointSelection = (index: number): ToggleWaypointSelectionAction => ({
+    type: 'TOGGLE_WAYPOINT_SELECTION',
+    index
+})
+
+export const selectWaypointRange = (index: number): SelectWaypointRangeAction => ({
+    type: 'SELECT_WAYPOINT_RANGE',
+    index
 })
 
 export const reverseWaypoints = (): ReverseWaypointsAction => ({

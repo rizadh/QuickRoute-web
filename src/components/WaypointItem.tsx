@@ -11,7 +11,6 @@ type WaypointItemProps = {
     placeFetchResult?: PlaceFetchResult
     outgoingRouteFetchResult?: RouteFetchResult
     incomingRouteFetchResult?: RouteFetchResult
-    isSelected: boolean
     isBeingDragged: boolean
     itemWasClicked: (e: React.MouseEvent) => void
 }
@@ -77,7 +76,6 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
             index,
             waypoint,
             itemWasClicked,
-            isSelected,
             deleteWaypoint,
             isBeingDragged
         } = this.props
@@ -109,7 +107,7 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
                         <span className="input-group-text text-muted" hidden={!this.fetchIsInProgress}>
                             <i className="fas fa-circle-notch fa-spin"></i>
                         </span>
-                        <span onClick={itemWasClicked} className={'input-group-text ' + (isSelected ? 'text-light bg-primary' : 'text-muted')} {...provided.dragHandleProps}>
+                        <span onClick={itemWasClicked} className={'input-group-text ' + (waypoint.isSelected ? 'text-light bg-primary' : 'text-muted')} {...provided.dragHandleProps}>
                             <i className="fas fa-grip-lines-vertical"></i>
                         </span>
                     </div>

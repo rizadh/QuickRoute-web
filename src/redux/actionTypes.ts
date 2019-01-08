@@ -21,10 +21,9 @@ export type MoveWaypointAction = Readonly<{
     targetIndex: number
 }>
 
-export type MoveWaypointsAction = Readonly<{
-    type: 'MOVE_WAYPOINTS'
-    sourceIndexes: ReadonlySet<number>
-    targetIndex: number
+export type MoveSelectedWaypointsAction = Readonly<{
+    type: 'MOVE_SELECTED_WAYPOINTS'
+    index: number
 }>
 
 export type ReverseWaypointsAction = Readonly<{
@@ -35,6 +34,21 @@ export type SetAddressAction = Readonly<{
     type: 'SET_ADDRESS'
     index: number
     address: string
+}>
+
+export type SelectWaypointAction = Readonly<{
+    type: 'SELECT_WAYPOINT'
+    index: number
+}>
+
+export type ToggleWaypointSelectionAction = Readonly<{
+    type: 'TOGGLE_WAYPOINT_SELECTION'
+    index: number
+}>
+
+export type SelectWaypointRangeAction = Readonly<{
+    type: 'SELECT_WAYPOINT_RANGE'
+    index: number
 }>
 
 export type FetchPlaceAction = Readonly<{
@@ -95,9 +109,9 @@ export type DisableAutofitAction = Readonly<{
     type: 'DISABLE_AUTOFIT'
 }>
 
-export type AppAction = ReplaceWaypointsAction
-    | AddWaypointAction | DeleteWaypointAction
-    | MoveWaypointAction | MoveWaypointsAction |  ReverseWaypointsAction | SetAddressAction
+export type AppAction = ReplaceWaypointsAction | AddWaypointAction | DeleteWaypointAction
+    | MoveWaypointAction | MoveSelectedWaypointsAction | ReverseWaypointsAction | SetAddressAction
+    | SelectWaypointAction | ToggleWaypointSelectionAction | SelectWaypointRangeAction
     | FetchPlaceAction | FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
     | FetchRouteAction | FetchRouteInProgressAction | FetchRouteSuccessAction | FetchRouteFailedAction
     | EnableAutofitAction | DisableAutofitAction 
