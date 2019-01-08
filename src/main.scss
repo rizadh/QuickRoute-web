@@ -14,6 +14,8 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
     width: 100%;
     height: 100%;
 
+    user-select: none;
+
     display: grid;
     grid-template-columns: [editor-start] $maxEditorWidth [editor-end statusbar-start map-start] auto [statusbar-end map-end];
     grid-template-rows: [editor-start map-start] auto [statusbar-start] $statusbarHeight [editor-end statusbar-end map-end];
@@ -26,6 +28,10 @@ $wideBreakpoint: $maxEditorWidth / $relativeEditorWidth;
         grid-template-columns: [editor-start statusbar-start map-start] auto [editor-end statusbar-end map-end];
         grid-template-rows: [editor-start] fit-content(60%) [editor-end map-start] auto [statusbar-start] $statusbarHeight [map-end statusbar-end];
     }
+}
+
+*:focus {
+    outline: none;
 }
 
 #waypoint-editor {

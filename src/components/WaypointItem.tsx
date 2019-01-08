@@ -91,7 +91,7 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
                         </button>
                     </div>
                     <input
-                        className="form-control"
+                        className={'form-control ' + (waypoint.isSelected ? 'text-primary' : '')}
                         value={this.state.waypointFieldValue}
                         onChange={this.handleWaypointFieldValueChange}
                         onKeyPress={this.handleWaypointFieldKeyPress}
@@ -106,6 +106,9 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
                         </span>
                         <span className="input-group-text text-muted" hidden={!this.fetchIsInProgress}>
                             <i className="fas fa-circle-notch fa-spin"></i>
+                        </span>
+                        <span className={'input-group-text ' + (waypoint.isSelected ? 'text-primary' : 'text-muted')}>
+                            {index + 1}
                         </span>
                         <span onClick={itemWasClicked} className={'input-group-text ' + (waypoint.isSelected ? 'text-light bg-primary' : 'text-muted')} {...provided.dragHandleProps}>
                             <i className="fas fa-grip-lines-vertical"></i>
