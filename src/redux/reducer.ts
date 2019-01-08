@@ -11,7 +11,8 @@ import {
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
     FetchRouteFailedAction,
-    ReverseWaypointsAction
+    ReverseWaypointsAction,
+    MoveWaypointsAction
 } from './actionTypes'
 import { AppState, fetchInProgress, fetchSuccess, fetchFailed } from './state'
 
@@ -32,6 +33,8 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return deleteWaypoint(state, action)
         case 'MOVE_WAYPOINT':
             return moveWaypoint(state, action)
+        case 'MOVE_WAYPOINTS':
+            return moveWaypoints(state, action)
         case 'REVERSE_WAYPOINTS':
             return reverseWaypoints(state, action)
         case 'SET_ADDRESS':
@@ -79,6 +82,22 @@ const moveWaypoint: Reducer<MoveWaypointAction> = (state, { sourceIndex, targetI
     const waypoints = [...state.waypoints]
     const [removed] = waypoints.splice(sourceIndex, 1)
     waypoints.splice(targetIndex, 0, removed)
+    return { ...state, waypoints }
+}
+
+const moveWaypoints: Reducer<MoveWaypointsAction> = (state, { sourceIndexes, targetIndex }) => {
+    const lowestIndex = [...sourceIndexes].reduce((a, b) => Math.min(a, b))
+    const partitionIndex = lowestIndex < targetIndex ? targetIndex + 1 : targetIndex
+
+    const waypointsBeforePartition = [...state.waypoints].filter((value, index) =>
+        !sourceIndexes.has(index) && index < partitionIndex)
+    const movedWaypoints = [...state.waypoints].filter((value, index) =>
+        sourceIndexes.has(index))
+    const waypointsAfterPartition = [...state.waypoints].filter((value, index) =>
+        !sourceIndexes.has(index) && index >= partitionIndex)
+
+    const waypoints = [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
+
     return { ...state, waypoints }
 }
 

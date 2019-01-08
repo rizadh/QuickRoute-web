@@ -1,6 +1,6 @@
 import { ofType, Epic, combineEpics } from 'redux-observable'
 import { map, flatMap, mergeMap, filter, take } from 'rxjs/operators'
-import { AppAction, AddWaypointAction, FetchPlaceAction, ReplaceWaypointsAction, FetchPlaceSuccessAction, FetchPlaceFailedAction, SetAddressAction, FetchPlaceInProgressAction, ReverseWaypointsAction, FetchRouteInProgressAction, FetchRouteSuccessAction, FetchRouteFailedAction, FetchRouteAction, DeleteWaypointAction, MoveWaypointAction } from './actionTypes'
+import { AppAction, AddWaypointAction, FetchPlaceAction, ReplaceWaypointsAction, FetchPlaceSuccessAction, FetchPlaceFailedAction, SetAddressAction, FetchPlaceInProgressAction, ReverseWaypointsAction, FetchRouteInProgressAction, FetchRouteSuccessAction, FetchRouteFailedAction, FetchRouteAction, DeleteWaypointAction, MoveWaypointAction, MoveWaypointsAction } from './actionTypes'
 import { AppState } from './state'
 import { fetchPlace, fetchPlaceSuccess, fetchPlaceFailed, fetchPlaceInProgress, fetchRouteInProgress, fetchRouteSuccess, fetchRouteFailed, fetchRoute } from './actions';
 import { Observable, range, EMPTY, of } from 'rxjs';
@@ -136,6 +136,17 @@ const moveWaypointEpic: AppEpic = (action$, state$) => action$.pipe(
     ))
 )
 
+const moveWaypointsEpic: AppEpic = (action$, state$) => action$.pipe(
+    ofType<AppAction, MoveWaypointsAction>('MOVE_WAYPOINTS'),
+    // TODO: Use a more efficient update algorithm
+    mergeMap(() => range(0, state$.value.waypoints.length - 1).pipe(
+        map(index => fetchRoute(
+            state$.value.waypoints[index].address,
+            state$.value.waypoints[index + 1].address,
+        ))
+    ))
+)
+
 const reverseWaypointsEpic: AppEpic = (action$, state$) => action$.pipe(
     ofType<AppAction, ReverseWaypointsAction>('REVERSE_WAYPOINTS'),
     mergeMap(() => range(0, state$.value.waypoints.length - 1).pipe(
@@ -187,6 +198,7 @@ export default combineEpics(
     addWaypointEpic,
     deleteWaypointEpic,
     moveWaypointEpic,
+    moveWaypointsEpic,
     setAddressEpic,
     fetchPlaceEpic,
     fetchRouteEpic,

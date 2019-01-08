@@ -7,6 +7,7 @@ import {
     EnableAutofitAction,
     DisableAutofitAction,
     MoveWaypointAction,
+    MoveWaypointsAction,
     FetchPlaceAction,
     FetchPlaceInProgressAction,
     FetchPlaceSuccessAction,
@@ -49,6 +50,12 @@ export const moveWaypoint = (sourceIndex: number, targetIndex: number): MoveWayp
     type: 'MOVE_WAYPOINT',
     sourceIndex,
     targetIndex,
+})
+
+export const moveWaypoints = (sourceIndexes: ReadonlySet<number>, targetIndex: number): MoveWaypointsAction => ({
+    type: 'MOVE_WAYPOINTS',
+    sourceIndexes,
+    targetIndex
 })
 
 export const setAddress = (index: number, address: string): SetAddressAction => ({

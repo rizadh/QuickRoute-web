@@ -21,6 +21,12 @@ export type MoveWaypointAction = Readonly<{
     targetIndex: number
 }>
 
+export type MoveWaypointsAction = Readonly<{
+    type: 'MOVE_WAYPOINTS'
+    sourceIndexes: ReadonlySet<number>
+    targetIndex: number
+}>
+
 export type ReverseWaypointsAction = Readonly<{
     type: 'REVERSE_WAYPOINTS'
 }>
@@ -91,7 +97,7 @@ export type DisableAutofitAction = Readonly<{
 
 export type AppAction = ReplaceWaypointsAction
     | AddWaypointAction | DeleteWaypointAction
-    | MoveWaypointAction | ReverseWaypointsAction | SetAddressAction
+    | MoveWaypointAction | MoveWaypointsAction |  ReverseWaypointsAction | SetAddressAction
     | FetchPlaceAction | FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
     | FetchRouteAction | FetchRouteInProgressAction | FetchRouteSuccessAction | FetchRouteFailedAction
     | EnableAutofitAction | DisableAutofitAction 

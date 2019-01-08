@@ -30,9 +30,11 @@ export const fetchFailed = (error: Error): FetchFailed => ({
     error
 })
 
-export type FetchedPlaces = ReadonlyMap<string, FetchResult<mapkit.Place>>
+export type PlaceFetchResult = FetchResult<mapkit.Place>
+export type FetchedPlaces = ReadonlyMap<string, PlaceFetchResult>
 
-export type FetchedRoutes = ReadonlyMap<string, ReadonlyMap<string, FetchResult<mapkit.Route>>>
+export type RouteFetchResult = FetchResult<mapkit.Route>
+export type FetchedRoutes = ReadonlyMap<string, ReadonlyMap<string, RouteFetchResult>>
 
 export type Waypoint = Readonly<{
     address: string
