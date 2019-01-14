@@ -11,7 +11,7 @@ import { isValidAddress, parseAddress } from '../redux/validator'
 import WaypointList from './WaypointList'
 
 type WaypointEditorState = {
-    editorMode: 'regular' | 'bulk' | 'import' | 'importing'
+    editorMode: 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING'
     bulkEditFieldValue: string
     newWaypointFieldValue: string
     driverNumberFieldValue: string
@@ -32,7 +32,7 @@ type WaypointEditorProps = WaypointEditorStateProps & WaypointEditorDispatchProp
 
 class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditorState> {
     state: WaypointEditorState = {
-        editorMode: 'regular',
+        editorMode: 'REGULAR',
         bulkEditFieldValue: '',
         newWaypointFieldValue: '',
         driverNumberFieldValue: '',
@@ -56,7 +56,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     beginBulkEditing = () => {
         this.setState({
-            editorMode: 'bulk',
+            editorMode: 'BULK',
             bulkEditFieldValue: this.props.waypoints.map(w => w.address).join('\n'),
         })
     }
@@ -79,18 +79,18 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
         this.props.createAndReplaceWaypoints(waypoints)
 
-        this.setState({ editorMode: 'regular' })
+        this.setState({ editorMode: 'REGULAR' })
     }
 
     cancelBulkEditing = () => {
         this.setState({
-            editorMode: 'regular',
+            editorMode: 'REGULAR',
         })
     }
 
     beginImportMode = () => {
         this.setState({
-            editorMode: 'import',
+            editorMode: 'IMPORT',
         })
     }
 
@@ -105,7 +105,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     executeImport = async () => {
-        this.setState({ editorMode: 'importing' })
+        this.setState({ editorMode: 'IMPORTING' })
 
         type FetchedWaypoint = { address: string, city: string, postalCode: string }
         type WaypointsResponse = {
@@ -125,10 +125,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         const addresses = waypoints.map(w => `${w.address} ${w.postalCode}`)
         this.props.createAndReplaceWaypoints(addresses)
 
-        this.setState({ editorMode: 'regular' })
+        this.setState({ editorMode: 'REGULAR' })
     }
 
-    cancelImportMode = () => this.setState({ editorMode: 'regular' })
+    cancelImportMode = () => this.setState({ editorMode: 'REGULAR' })
 
     get canOpenUrls() {
         return this.props.waypoints.length > 0
@@ -161,19 +161,19 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     get headerTitle(): string {
         switch (this.state.editorMode) {
-            case 'regular':
+            case 'REGULAR':
                 return 'Waypoints'
-            case 'bulk':
+            case 'BULK':
                 return 'Edit Bulk Waypoints'
-            case 'import':
-            case 'importing':
+            case 'IMPORT':
+            case 'IMPORTING':
                 return 'Import Waypoints'
         }
     }
 
     get bodyItems(): JSX.Element {
         switch (this.state.editorMode) {
-            case 'regular':
+            case 'REGULAR':
                 return (
                     <>
                         <div
@@ -220,7 +220,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         </div>
                     </>
                 )
-            case 'bulk':
+            case 'BULK':
                 return (
                     <>
                         <div className="alert alert-info" role="alert">
@@ -236,8 +236,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         />
                     </>
                 )
-            case 'import':
-            case 'importing':
+            case 'IMPORT':
+            case 'IMPORTING':
                 return (
                     <>
                         <div
@@ -253,7 +253,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             value={this.state.driverNumberFieldValue}
                             onChange={this.handleDriverNumberFieldChange}
                             onKeyPress={this.handleDriverNumberFieldKeyPress}
-                            disabled={this.state.editorMode === 'importing'}
+                            disabled={this.state.editorMode === 'IMPORTING'}
                             autoFocus={true}
                         />
                     </>
@@ -263,7 +263,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     get footerItems(): JSX.Element {
         switch (this.state.editorMode) {
-            case 'regular':
+            case 'REGULAR':
                 return (
                     <>
                         <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginBulkEditing}>
@@ -291,7 +291,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         </button>
                     </>
                 )
-            case 'bulk':
+            case 'BULK':
                 return (
                     <>
                         <button
@@ -305,7 +305,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     </button>
                     </>
                 )
-            case 'import':
+            case 'IMPORT':
                 return (
                     <>
                         <button
@@ -319,7 +319,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     </button>
                     </>
                 )
-            case 'importing':
+            case 'IMPORTING':
                 return (
                     <>
                         <button className="btn btn-primary mt-3 ml-3 float-right" disabled={true}>
