@@ -1,3 +1,4 @@
+import copyToClipboard from 'copy-text-to-clipboard'
 import { chunk } from 'lodash'
 import { stringify } from 'query-string'
 import * as React from 'react'
@@ -11,7 +12,7 @@ import { isValidAddress, parseAddress } from '../redux/validator'
 import WaypointList from './WaypointList'
 
 type WaypointEditorState = {
-    editorMode: 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING'
+    editorMode: 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING' | 'SHOW_URLS'
     bulkEditFieldValue: string
     newWaypointFieldValue: string
     driverNumberFieldValue: string
@@ -130,14 +131,36 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     cancelImportMode = () => this.setState({ editorMode: 'REGULAR' })
 
-    get canOpenUrls() {
+    get haveUrls() {
         return this.props.waypoints.length > 0
     }
 
-    openUrls = () => {
-        chunk(this.props.waypoints, 10)
+    showUrls = () => {
+        this.setState({ editorMode: 'SHOW_URLS' })
+    }
+
+    openUrl = (index: number) => () => {
+        window.open(this.navigationUrls[index])
+    }
+
+    openAllUrls = () => {
+        this.navigationUrls.forEach(url => window.open(url))
+    }
+
+    copyUrl = (index: number) => () => {
+        copyToClipboard(this.navigationUrls[index])
+    }
+
+    copyAllUrls = () => {
+        copyToClipboard(this.navigationUrls.join('\n'))
+    }
+
+    cancelShowUrls = () => this.setState({ editorMode: 'REGULAR' })
+
+    get navigationUrls() {
+        return chunk(this.props.waypoints, 10)
             .map(waypoints => waypoints.map(w => w.address))
-            .forEach(addresses => {
+            .map(addresses => {
                 const destination = addresses.pop()
                 const parameters = {
                     api: 1,
@@ -146,7 +169,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     waypoints: addresses.length > 0 ? addresses.join('|') : undefined,
                 }
 
-                window.open('https://www.google.com/maps/dir/?' + stringify(parameters))
+                return 'https://www.google.com/maps/dir/?' + stringify(parameters)
             })
     }
 
@@ -164,14 +187,16 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'REGULAR':
                 return 'Waypoints'
             case 'BULK':
-                return 'Edit Bulk Waypoints'
+                return 'Bulk Edit'
             case 'IMPORT':
             case 'IMPORTING':
                 return 'Import Waypoints'
+            case 'SHOW_URLS':
+                return 'Show Links'
         }
     }
 
-    get bodyItems(): JSX.Element {
+    get bodyItems(): JSX.Element | JSX.Element[] {
         switch (this.state.editorMode) {
             case 'REGULAR':
                 return (
@@ -258,6 +283,31 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         />
                     </>
                 )
+            case 'SHOW_URLS':
+                return this.navigationUrls.map((url, index) => (
+                    <div key={index} className="input-group mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={url}
+                            readOnly={true}
+                        />
+                        <div className="input-group-append">
+                            <button
+                                onClick={this.copyUrl(index)}
+                                className="btn btn-primary"
+                            >
+                                <i className="far fa-clipboard" />
+                            </button>
+                            <button
+                                onClick={this.openUrl(index)}
+                                className="btn btn-primary"
+                            >
+                                <i className="fas fa-external-link-alt" />
+                            </button>
+                        </div>
+                    </div>
+                ))
         }
     }
 
@@ -268,7 +318,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     <>
                         <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginBulkEditing}>
                             <i className="fas fa-list-alt" /> Bulk Edit
-                </button>
+                        </button>
+                        <button
+                            className="btn btn-primary mt-3 ml-3 float-right"
+                            onClick={this.beginImportMode}
+                        >
+                            <i className="fas fa-cloud-download-alt" /> Import Waypoints
+                        </button>
                         <button
                             className="btn btn-primary mt-3 ml-3 float-right"
                             onClick={this.props.reverseWaypoints}
@@ -278,44 +334,32 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         </button>
                         <button
                             className="btn btn-primary mt-3 ml-3 float-right"
-                            onClick={this.openUrls}
-                            disabled={!this.canOpenUrls}
+                            onClick={this.showUrls}
+                            disabled={!this.haveUrls}
                         >
-                            <i className="fas fa-route" /> Open in Maps
-                        </button>
-                        <button
-                            className="btn btn-primary mt-3 ml-3 float-right"
-                            onClick={this.beginImportMode}
-                        >
-                            <i className="fas fa-cloud-download-alt" /> Import Waypoints
+                            <i className="fas fa-link" /> Show Links
                         </button>
                     </>
                 )
             case 'BULK':
                 return (
                     <>
-                        <button
-                            className="btn btn-primary mt-3 ml-3 float-right"
-                            onClick={this.finishBulkEditing}
-                        >
+                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.finishBulkEditing}>
                             <i className="fas fa-save" /> Save
                         </button>
                         <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelBulkEditing}>
-                            <i className="fas fa-ban" /> Cancel
+                            <i className="fas fa-undo" /> Revert
                     </button>
                     </>
                 )
             case 'IMPORT':
                 return (
                     <>
-                        <button
-                            className="btn btn-primary mt-3 ml-3 float-right"
-                            onClick={this.executeImport}
-                        >
-                            <i className="fas fa-save" /> Import
+                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.executeImport}>
+                            <i className="fas fa-cloud-download-alt" /> Import
                         </button>
                         <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelImportMode}>
-                            <i className="fas fa-ban" /> Cancel
+                            <i className="fas fa-chevron-left" /> Back
                     </button>
                     </>
                 )
@@ -324,6 +368,20 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     <>
                         <button className="btn btn-primary mt-3 ml-3 float-right" disabled={true}>
                             <i className="fas fa-spin fa-circle-notch" /> Importing
+                        </button>
+                    </>
+                )
+            case 'SHOW_URLS':
+                return (
+                    <>
+                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.openAllUrls}>
+                            <i className="fas fa-external-link-alt" /> Open All
+                        </button>
+                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.copyAllUrls}>
+                            <i className="far fa-clipboard" /> Copy All
+                        </button>
+                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelShowUrls}>
+                            <i className="fas fa-chevron-left" /> Back
                         </button>
                     </>
                 )

@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/copy-text-to-clipboard": "^1.0.0",
     "@types/lodash": "^4.14.119",
     "@types/query-string": "^6.1.1",
     "@types/rc-progress": "^2.2.0",
@@ -26,6 +27,7 @@
     "@types/redux-logger": "^3.0.6",
     "@types/uuid": "^3.4.4",
     "babel-polyfill": "^6.26.0",
+    "copy-text-to-clipboard": "^1.0.4",
     "lodash": "^4.17.11",
     "parcel": "^1.10.3",
     "postcss-modules": "^1.4.1",
