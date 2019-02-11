@@ -123,9 +123,7 @@ export default class MapView extends React.Component<MapViewProps> {
 
         const map = new mapkit.Map(this.element, {
             showsMapTypeControl: false,
-            showsPointsOfInterest: false,
             showsScale: mapkit.FeatureVisibility.Visible,
-            isRotationEnabled: false,
             padding: new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 48 }),
         })
 

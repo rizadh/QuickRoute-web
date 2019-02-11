@@ -35,16 +35,28 @@ declare namespace mapkit {
 
     function init(options: MapKitInitOptions): void;
 
-    enum MapType {
-        /** A satellite image of the area with road and road name information layered on top. */
-        Hybrid = 'Hybrid',
+    namespace Map {
+        enum ColorSchemes {
+            /** A constant indicating a light color scheme. */
+            Light = 'Light',
 
-        /** Satellite imagery of the area. */
-        Satellite = 'Satellite',
+            /** A constant indicating a dark color scheme. */
+            Dark = 'Dark',
+        }
 
-        /** A street map that shows the position of all roads and some road names. */
-        Standard = 'Standard'
+        enum MapTypes {
+            /** A satellite image of the area with road and road name information layered on top. */
+            Hybrid = 'Hybrid',
 
+            /** Satellite imagery of the area. */
+            Satellite = 'Satellite',
+
+            /** A street map that shows the position of all roads and some road names. */
+            Standard = 'Standard',
+
+            /** A street map where your data is emphasized over the underlying map details. */
+            MutedStandard = 'MutedStandard'
+        }
     }
 
     interface MapConstructorOptions {
@@ -63,8 +75,11 @@ declare namespace mapkit {
         /** The CSS color that is used to paint the user interface controls on the map. */
         tintColor?: string
 
+        /** The map’s color scheme when displaying standard or muted standard map types. */
+        colorScheme?: Map.ColorSchemes
+
         /** The type of data displayed by the map view. */
-        mapType?: MapType
+        mapType?: Map.MapTypes
 
         /** The map's inset margins. */
         padding?: Padding
@@ -166,7 +181,10 @@ declare namespace mapkit {
         setVisibleMapRectAnimated(mapRect: MapRect, animate?: boolean): Map;
 
         /** The type of data displayed by the map view. */
-        mapType: MapType
+        mapType: Map.MapTypes
+
+        /** The map’s color scheme when displaying standard or muted standard map types. */
+        colorScheme: Map.ColorSchemes
 
         /** The map's inset margins. */
         padding: Padding
@@ -827,7 +845,7 @@ calloutRightAccessoryForAnnotation
 
         /** Retrieves directions and estimated travel time for the specified start and end points. */
         route(request: DirectionsRequest, callback: (error: any, data: DirectionsResponse) => void): number
-        
+
         /** Cancels a previous request for route directions. */
         cancel(id: number): boolean
     }
