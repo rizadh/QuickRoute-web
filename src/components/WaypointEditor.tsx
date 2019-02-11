@@ -348,8 +348,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             <i className="fas fa-save" /> Save
                         </button>
                         <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelBulkEditing}>
-                            <i className="fas fa-undo" /> Revert
-                    </button>
+                            <i className="fas fa-chevron-left" /> Back
+                        </button>
                     </>
                 )
             case 'IMPORT':
