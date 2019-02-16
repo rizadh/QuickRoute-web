@@ -19,7 +19,7 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
 
     @media (max-width: $compactBreakpoint) {
         grid-template-columns: [editor-start statusbar-start map-start] auto [editor-end statusbar-end map-end];
-        grid-template-rows: [editor-start] fit-content(60%) [editor-end map-start] auto [statusbar-start] $statusbarHeight [map-end statusbar-end];
+        grid-template-rows: [editor-start] $editorWidth [editor-end map-start] auto [statusbar-start] $statusbarHeight [map-end statusbar-end];
     }
 }
 
@@ -27,11 +27,19 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
     outline: none;
 }
 
-#waypoint-editor-wrapper {
-    grid-area: editor;
+#waypoint-editor {
+    // grid-area: editor;
 
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
+    /* Temporary fix until CSS Grid + overflow bug is fixed in Safari */
+
+    position: absolute;
+    height: 100%;
+    width: $editorWidth;
+
+    @media (max-width: $compactBreakpoint) {
+        width: 100%;
+        height: $editorWidth;
+    }
 
     border-right: 1px solid rgba(0, 0, 0, 0.2);
 
@@ -39,6 +47,9 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
         border-right: none;
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     }
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 #waypoint-editor-header {

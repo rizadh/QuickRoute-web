@@ -390,17 +390,15 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     render() {
         return (
-            <div id="waypoint-editor-wrapper">
-                <div id="waypoint-editor">
-                    <div id="waypoint-editor-header" className="frosted p-3">
-                        <h2>{this.headerTitle}</h2>
-                    </div>
-                    <div className="px-3 pt-3">
-                        {this.bodyItems}
-                    </div>
-                    <div id="waypoint-editor-footer" className="frosted pr-3 pb-3">
-                        {this.footerItems}
-                    </div>
+            <div id="waypoint-editor">
+                <div id="waypoint-editor-header" className="frosted p-3">
+                    <h2>{this.headerTitle}</h2>
+                </div>
+                <div className="px-3 pt-3">
+                    {this.bodyItems}
+                </div>
+                <div id="waypoint-editor-footer" className="frosted pr-3 pb-3">
+                    {this.footerItems}
                 </div>
             </div>
         )
