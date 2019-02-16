@@ -106,9 +106,9 @@ export default class MapView extends React.Component<MapViewProps> {
         this.map.showItems([...this.map.annotations || [], ...this.map.overlays], {
             animate: true,
             padding: new mapkit.Padding({
-                top: 48,
+                top: 16,
                 right: 16,
-                bottom: 48,
+                bottom: 16,
                 left: 16,
             }),
         })
