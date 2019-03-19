@@ -1,0 +1,14 @@
+{
+    "includes": "src",
+    "compilerOptions": {
+        "outDir": "out",
+        "moduleResolution": "node",
+        "module": "commonjs",
+        "target": "es2015",
+        "strict": true,
+        "esModuleInterop": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "allowSyntheticDefaultImports": true
+    }
+}

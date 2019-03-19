@@ -1,13 +1,9 @@
 {
-    "files": [
-        "./src/index.tsx"
-    ],
     "compilerOptions": {
         "moduleResolution": "node",
         "module": "es6",
         "strict": true,
         "jsx": "react",
-        "outDir": "dist",
         "target": "es2015",
         "noUnusedLocals": true,
         "noUnusedParameters": true,

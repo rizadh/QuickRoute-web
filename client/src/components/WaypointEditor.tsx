@@ -118,7 +118,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             }
         }
 
-        const url = 'https://route-planner.rizadh.com/waypoints/' + this.state.driverNumberFieldValue
+        const url = '/waypoints/' + this.state.driverNumberFieldValue
         const httpResponse = await fetch(url)
         const jsonResponse = await httpResponse.text()
         const response = JSON.parse(jsonResponse) as WaypointsResponse

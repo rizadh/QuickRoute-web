@@ -116,7 +116,7 @@ export default class MapView extends React.Component<MapViewProps> {
 
     componentDidMount() {
         mapkit.init({
-            authorizationCallback: done => fetch('https://route-planner.rizadh.com/token/')
+            authorizationCallback: done => fetch('/token')
                 .then(res => res.text())
                 .then(done),
         })
