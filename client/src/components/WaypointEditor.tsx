@@ -366,7 +366,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             onClick={this.generatePdf}
                             disabled={this.noWaypoints}
                         >
-                            <i className="far fa-file-pdf" /> Generate PDF
+                            <i className="fas fa-file-pdf" /> Generate PDF
                         </button>
                     </>
                 )
