@@ -421,6 +421,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         return (
             <div id="waypoint-editor">
                 <div id="waypoint-editor-header" className="frosted p-3">
+                    <h6 className="text-muted">Route Planner v2019.03.20 by <a href="https://github.com/rizadh">@rizadh</a></h6>
                     <h2>{this.headerTitle}</h2>
                 </div>
                 <div className="px-3 pt-3">
