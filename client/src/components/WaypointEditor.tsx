@@ -131,8 +131,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     cancelImportMode = () => this.setState({ editorMode: 'REGULAR' })
 
-    get haveUrls() {
-        return this.props.waypoints.length > 0
+    get noWaypoints() {
+        return this.props.waypoints.length === 0
     }
 
     showUrls = () => {
@@ -172,7 +172,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         a.href = url
         a.style.display = 'none'
         document.body.appendChild(a)
-        a.download = 'route-list.pdf'
+        a.download = 'waypoints.pdf'
         a.click()
         a.remove()
 
@@ -357,15 +357,16 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <button
                             className="btn btn-primary mt-3 ml-3 float-right"
                             onClick={this.showUrls}
-                            disabled={!this.haveUrls}
+                            disabled={this.noWaypoints}
                         >
                             <i className="fas fa-link" /> Show Links
                         </button>
                         <button
                             className="btn btn-primary mt-3 ml-3 float-right"
                             onClick={this.generatePdf}
+                            disabled={this.noWaypoints}
                         >
-                            <i className="fas fa-file-pdf" /> Generate PDF
+                            <i className="far fa-file-pdf" /> Generate PDF
                         </button>
                     </>
                 )
