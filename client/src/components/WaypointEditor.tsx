@@ -157,6 +157,28 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     cancelShowUrls = () => this.setState({ editorMode: 'REGULAR' })
 
+    generatePdf = async () => {
+        const response = await fetch('/pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ waypoints: this.props.waypoints.map(w => w.address) }),
+        })
+
+        const url = window.URL.createObjectURL(await response.blob())
+
+        const a = document.createElement('a')
+        a.href = url
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.download = 'route-list.pdf'
+        a.click()
+        a.remove()
+
+        window.URL.revokeObjectURL(url)
+    }
+
     get navigationUrls() {
         return chunk(this.props.waypoints, 10)
             .map(waypoints => waypoints.map(w => w.address))
@@ -338,6 +360,12 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             disabled={!this.haveUrls}
                         >
                             <i className="fas fa-link" /> Show Links
+                        </button>
+                        <button
+                            className="btn btn-primary mt-3 ml-3 float-right"
+                            onClick={this.generatePdf}
+                        >
+                            <i className="fas fa-file-pdf" /> Generate PDF
                         </button>
                     </>
                 )
