@@ -1,8 +1,8 @@
 {
   "name": "route-planner",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "description": "Web app to plan routes with large numbers of waypoints",
+  "repository": "https://github.com/rizadh/route-planner",
   "scripts": {
     "build": "npm run build:client && npm run build:server",
     "build:client": "parcel build -d client/public client/src/index.html",
