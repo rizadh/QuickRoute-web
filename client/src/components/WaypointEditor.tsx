@@ -7,7 +7,7 @@ import Textarea from 'react-textarea-autosize'
 import { createAndReplaceWaypoints, createWaypoint, reverseWaypoints } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation, RouteInformation } from '../redux/selectors'
-import { AppState, Waypoint } from '../redux/state'
+import { AppState, FetchedPlaces, Waypoint } from '../redux/state'
 import { isValidAddress, parseAddress } from '../redux/validator'
 import WaypointList from './WaypointList'
 
@@ -21,6 +21,7 @@ type WaypointEditorState = {
 type WaypointEditorStateProps = {
     waypoints: ReadonlyArray<Waypoint>
     routeInformation: RouteInformation
+    fetchedPlaces: FetchedPlaces
 }
 
 type WaypointEditorDispatchProps = {
@@ -177,6 +178,51 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         a.remove()
 
         window.URL.revokeObjectURL(url)
+    }
+
+    optimize = async () => {
+        const directions = new mapkit.Directions()
+        const costMatrix: number[][] = await Promise.all(this.props.waypoints.map(async waypointA =>
+            await Promise.all(this.props.waypoints.map(waypointB => new Promise<number>((resolve, reject) => {
+                if (waypointA === waypointB) return resolve(0)
+
+                const placeA = this.props.fetchedPlaces.get(waypointA.address)
+                const placeB = this.props.fetchedPlaces.get(waypointB.address)
+                if (!placeA || placeA.status !== 'SUCCESS') {
+                    return reject(new Error(`Place '${waypointA.address} not found'`))
+                }
+                if (!placeB || placeB.status !== 'SUCCESS') {
+                    return reject(new Error(`Place '${waypointB.address} not found'`))
+                }
+
+                directions.route({ origin: placeA.result, destination: placeB.result }, (error, data) => {
+                    if (error) return reject(error)
+
+                    const route = data.routes[0]
+
+                    if (!route) {
+                        return reject(new Error(`No routes returned: ` +
+                            `origin = '${waypointA.address}', destination = '${waypointB.address}'`))
+                    }
+
+                    resolve(route.distance)
+                    // resolve(route.expectedTravelTime)
+                })
+            }))),
+        ))
+
+        const response = await fetch('/optimize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ costMatrix }),
+        })
+
+        interface IOptimizeResponse { result: number[] }
+
+        const jsonResponse: IOptimizeResponse = await response.json()
+        this.props.createAndReplaceWaypoints(jsonResponse.result.map(i => this.props.waypoints[i].address))
     }
 
     get navigationUrls() {
@@ -368,6 +414,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         >
                             <i className="fas fa-file-pdf" /> Generate PDF
                         </button>
+                        <button
+                            className="btn btn-primary mt-3 ml-3 float-right"
+                            onClick={this.optimize}
+                            disabled={this.noWaypoints}
+                        >
+                            <i className="fas fa-star" /> Optimize <sup>BETA</sup>
+                        </button>
                     </>
                 )
             case 'BULK':
@@ -440,6 +493,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 const mapStateToProps = (state: AppState): WaypointEditorStateProps => ({
     waypoints: state.waypoints,
     routeInformation: routeInformation(state),
+    fetchedPlaces: state.fetchedPlaces,
 })
 
 const mapDispatchToProps = (dispatch: React.Dispatch<AppAction>): WaypointEditorDispatchProps => ({

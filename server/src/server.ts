@@ -3,6 +3,7 @@ import Parser from 'koa-bodyparser'
 import Logger from 'koa-logger'
 import Router from 'koa-router'
 import Static from 'koa-static'
+import optimizeRoute from './routes/optimize'
 import pdfRoute from './routes/pdf'
 import tokenRoute from './routes/token'
 import waypointsRoute from './routes/waypoints'
@@ -16,6 +17,7 @@ const router = new Router()
 router.get('/token', tokenRoute)
 router.get('/waypoints/:id', waypointsRoute)
 router.post('/pdf', pdfRoute)
+router.post('/optimize', optimizeRoute)
 
 app.use(Logger())
 app.use(Static(WEB_ROOT))
