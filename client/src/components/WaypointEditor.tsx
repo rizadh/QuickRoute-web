@@ -44,9 +44,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         endPointFieldValue: '',
     }
 
-    get haveMultipleWaypoints() {
-        return this.props.waypoints.length >= 2
-    }
+    // Regular Functions
 
     handleNewWaypointFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
@@ -60,7 +58,18 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         }
     }
 
-    beginBulkEditing = () => {
+    get canAddNewWaypoint() {
+        return isValidAddress(this.state.newWaypointFieldValue)
+    }
+
+    addNewWaypoint = () => {
+        this.props.createWaypoint(this.state.newWaypointFieldValue)
+        this.setState({ newWaypointFieldValue: '' })
+    }
+
+    // Bulk Edit Functions
+
+    beginBulkEdit = () => {
         this.setState({
             editorMode: 'BULK',
             bulkEditFieldValue: this.props.waypoints.map(w => w.address).join('\n'),
@@ -74,10 +83,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     handleBulkEditFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && e.shiftKey) this.finishBulkEditing()
+        if (e.key === 'Enter' && e.shiftKey) this.commitBulkEdit()
     }
 
-    finishBulkEditing = () => {
+    commitBulkEdit = () => {
         const waypoints = this.state.bulkEditFieldValue
             .split('\n')
             .filter(isValidAddress)
@@ -88,11 +97,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         this.setState({ editorMode: 'REGULAR' })
     }
 
-    cancelBulkEditing = () => {
+    cancelBulkEdit = () => {
         this.setState({
             editorMode: 'REGULAR',
         })
     }
+
+    // Import Functions
 
     beginImportMode = () => {
         this.setState({
@@ -136,13 +147,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
     cancelImportMode = () => this.setState({ editorMode: 'REGULAR' })
 
-    get noWaypoints() {
-        return this.props.waypoints.length === 0
-    }
+    // URLs Functions
 
     showUrls = () => {
         this.setState({ editorMode: 'SHOW_URLS' })
     }
+
+    hideUrls = () => this.setState({ editorMode: 'REGULAR' })
 
     openUrl = (index: number) => () => {
         window.open(this.navigationUrls[index])
@@ -160,8 +171,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         copyToClipboard(this.navigationUrls.join('\n'))
     }
 
-    cancelShowUrls = () => this.setState({ editorMode: 'REGULAR' })
-
     get navigationUrls() {
         return chunk(this.props.waypoints, 10)
             .map(waypoints => waypoints.map(w => w.address))
@@ -177,6 +186,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 return 'https://www.google.com/maps/dir/?' + stringify(parameters)
             })
     }
+
+    // PDF Functions
 
     generatePdf = async () => {
         const response = await fetch('/pdf', {
@@ -199,6 +210,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
         window.URL.revokeObjectURL(url)
     }
+
+    // Optimizer Functions
 
     showOptimizer = () => {
         this.setState({ editorMode: 'OPTIMIZER' })
@@ -338,14 +351,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         this.setState({ editorMode: 'REGULAR' })
     }
 
-    get canAddNewWaypoint() {
-        return isValidAddress(this.state.newWaypointFieldValue)
-    }
-
-    addNewWaypoint = () => {
-        this.props.createWaypoint(this.state.newWaypointFieldValue)
-        this.setState({ newWaypointFieldValue: '' })
-    }
+    // Content Helper Functions
 
     get headerTitle(): string {
         switch (this.state.editorMode) {
@@ -514,7 +520,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'REGULAR':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginBulkEditing}>
+                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginBulkEdit}>
                             <i className="fas fa-list-alt" /> Bulk Edit
                         </button>
                         <button
@@ -526,28 +532,28 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <button
                             className="btn btn-primary mt-3 ml-3 float-right"
                             onClick={this.showUrls}
-                            disabled={this.noWaypoints}
+                            disabled={this.props.waypoints.length === 0}
                         >
                             <i className="fas fa-link" /> Show Links
                         </button>
                         <button
                             className="btn btn-primary mt-3 ml-3 float-right"
                             onClick={this.generatePdf}
-                            disabled={this.noWaypoints}
+                            disabled={this.props.waypoints.length === 0}
                         >
                             <i className="fas fa-file-pdf" /> Generate PDF
                         </button>
                         <button
                             className="btn btn-primary mt-3 ml-3 float-right"
                             onClick={this.props.reverseWaypoints}
-                            disabled={!this.haveMultipleWaypoints}
+                            disabled={this.props.waypoints.length < 2}
                         >
                             <i className="fas fa-exchange-alt" /> Reverse
                         </button>
                         <button
                             className="btn btn-primary mt-3 ml-3 float-right"
                             onClick={this.showOptimizer}
-                            disabled={!this.haveMultipleWaypoints}
+                            disabled={this.props.waypoints.length < 3}
                         >
                             <i className="fas fa-star" /> Optimizer
                         </button>
@@ -556,10 +562,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'BULK':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.finishBulkEditing}>
+                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.commitBulkEdit}>
                             <i className="fas fa-save" /> Save
                         </button>
-                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelBulkEditing}>
+                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelBulkEdit}>
                             <i className="fas fa-chevron-left" /> Back
                         </button>
                     </>
@@ -592,7 +598,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.copyAllUrls}>
                             <i className="far fa-clipboard" /> Copy All
                         </button>
-                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelShowUrls}>
+                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.hideUrls}>
                             <i className="fas fa-chevron-left" /> Back
                         </button>
                     </>
