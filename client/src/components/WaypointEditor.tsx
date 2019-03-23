@@ -4,6 +4,7 @@ import { stringify } from 'query-string'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
+import { appVersion } from '..'
 import { createAndReplaceWaypoints, createWaypoint, reverseWaypoints } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation, RouteInformation } from '../redux/selectors'
@@ -660,7 +661,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             <div id="waypoint-editor">
                 <div id="waypoint-editor-header" className="frosted p-3">
                     <h6 className="text-muted">
-                        Route Planner v2019.03.21 by <a href="https://github.com/rizadh">@rizadh</a>
+                        Route Planner {appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
                     </h6>
                     <h2>{this.headerTitle}</h2>
                 </div>

@@ -7,6 +7,8 @@ import { Provider } from 'react-redux'
 import App from './components/App'
 import store from './redux/store'
 
+export const appVersion = 'v2019.03.23'
+
 // tslint:disable-next-line:no-var-requires
 require('babel-polyfill')
 
