@@ -13,6 +13,7 @@ import WaypointList from './WaypointList'
 
 type WaypointEditorState = {
     editorMode: 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING' | 'SHOW_URLS' | 'OPTIMIZER' | 'OPTIMIZING'
+    errorMessage: string,
     bulkEditFieldValue: string
     newWaypointFieldValue: string
     driverNumberFieldValue: string
@@ -37,6 +38,7 @@ type WaypointEditorProps = WaypointEditorStateProps & WaypointEditorDispatchProp
 class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditorState> {
     state: WaypointEditorState = {
         editorMode: 'REGULAR',
+        errorMessage: '',
         bulkEditFieldValue: '',
         newWaypointFieldValue: '',
         driverNumberFieldValue: '',
@@ -72,6 +74,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     beginBulkEdit = () => {
         this.setState({
             editorMode: 'BULK',
+            errorMessage: '',
             bulkEditFieldValue: this.props.waypoints.map(w => w.address).join('\n'),
         })
     }
@@ -94,21 +97,17 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
         this.props.createAndReplaceWaypoints(waypoints)
 
-        this.setState({ editorMode: 'REGULAR' })
+        this.setState({ editorMode: 'REGULAR', errorMessage: '' })
     }
 
     cancelBulkEdit = () => {
-        this.setState({
-            editorMode: 'REGULAR',
-        })
+        this.setState({ editorMode: 'REGULAR', errorMessage: '' })
     }
 
     // Import Functions
 
     beginImportMode = () => {
-        this.setState({
-            editorMode: 'IMPORT',
-        })
+        this.setState({ editorMode: 'IMPORT', errorMessage: '' })
     }
 
     handleDriverNumberFieldKeyPress = (e: React.KeyboardEvent) => {
@@ -122,7 +121,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     }
 
     executeImport = async () => {
-        this.setState({ editorMode: 'IMPORTING' })
+        this.setState({ editorMode: 'IMPORTING', errorMessage: '' })
 
         type FetchedWaypoint = { address: string, city: string, postalCode: string }
         type WaypointsResponse = {
@@ -136,24 +135,32 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
         const url = '/waypoints/' + this.state.driverNumberFieldValue
         const httpResponse = await fetch(url)
+        if (!httpResponse.ok) {
+            this.setState({
+                editorMode: 'REGULAR',
+                errorMessage: `Failed to import waypoints for driver ${this.state.driverNumberFieldValue} ` +
+                    `(ERROR: '${await httpResponse.text()}')`,
+            })
+            return
+        }
         const jsonResponse = await httpResponse.text()
         const response = JSON.parse(jsonResponse) as WaypointsResponse
         const waypoints = [...response.waypoints.dispatched, ...response.waypoints.inprogress]
         const addresses = waypoints.map(w => `${w.address} ${w.postalCode}`)
         this.props.createAndReplaceWaypoints(addresses)
 
-        this.setState({ editorMode: 'REGULAR' })
+        this.setState({ editorMode: 'REGULAR', errorMessage: '' })
     }
 
-    cancelImportMode = () => this.setState({ editorMode: 'REGULAR' })
+    cancelImportMode = () => this.setState({ editorMode: 'REGULAR', errorMessage: '' })
 
     // URLs Functions
 
     showUrls = () => {
-        this.setState({ editorMode: 'SHOW_URLS' })
+        this.setState({ editorMode: 'SHOW_URLS', errorMessage: '' })
     }
 
-    hideUrls = () => this.setState({ editorMode: 'REGULAR' })
+    hideUrls = () => this.setState({ editorMode: 'REGULAR', errorMessage: '' })
 
     openUrl = (index: number) => () => {
         window.open(this.navigationUrls[index])
@@ -198,6 +205,14 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             body: JSON.stringify({ waypoints: this.props.waypoints.map(w => w.address) }),
         })
 
+        if (!response.ok) {
+            this.setState({
+                editorMode: 'REGULAR',
+                errorMessage: `Failed to generate PDF (ERROR: '${await response.text()}')`,
+            })
+            return
+        }
+
         const url = window.URL.createObjectURL(await response.blob())
 
         const a = document.createElement('a')
@@ -214,10 +229,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     // Optimizer Functions
 
     showOptimizer = () => {
-        this.setState({ editorMode: 'OPTIMIZER' })
+        this.setState({ editorMode: 'OPTIMIZER', errorMessage: '' })
     }
 
-    hideOptimizer = () => this.setState({ editorMode: 'REGULAR' })
+    hideOptimizer = () => this.setState({ editorMode: 'REGULAR', errorMessage: '' })
 
     get defaultStartPoint() {
         return this.state.endPointFieldValue ||
@@ -245,7 +260,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     optimizeDistance = () => this.optimize('DISTANCE')
 
     optimize = async (optimizationParameter: 'TIME' | 'DISTANCE') => {
-        this.setState({ editorMode: 'OPTIMIZING' })
+        this.setState({ editorMode: 'OPTIMIZING', errorMessage: '' })
 
         const startPoint = this.state.startPointFieldValue || this.state.endPointFieldValue
         const endPoint = this.state.endPointFieldValue || this.state.startPointFieldValue
@@ -259,16 +274,60 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             ]
         } else waypoints = this.props.waypoints.map(w => w.address)
 
+        try {
+            const costMatrix = await this.getCostMatrix(waypoints, optimizationParameter)
+
+            const response = await fetch('/optimize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ costMatrix }),
+            })
+
+            interface IOptimizeResponse { result: number[] }
+
+            if (!response.ok) {
+                this.setState({
+                    editorMode: 'REGULAR',
+                    errorMessage: `Failed to optimize route (ERROR: '${await response.text()}')`,
+                })
+                return
+            }
+
+            const jsonResponse: IOptimizeResponse = await response.json()
+            const optimalOrdering = startPoint ?
+                jsonResponse.result.slice(1, -1).map(i => i - 1) :
+                jsonResponse.result
+
+            this.props.createAndReplaceWaypoints(optimalOrdering.map(i => this.props.waypoints[i].address))
+
+            this.setState({ editorMode: 'REGULAR', errorMessage: '' })
+        } catch (e) {
+            this.setState({
+                editorMode: 'REGULAR',
+                errorMessage: `Failed to optimize route (ERROR: '${e}')`,
+            })
+        }
+
+    }
+
+    async getCostMatrix(waypoints: string[], optimizationParameter: 'DISTANCE' | 'TIME'): Promise<number[][]> {
         const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
         const directions = new mapkit.Directions()
-        const costMatrix: number[][] = await Promise.all(waypoints.map(async waypointA =>
+
+        return await Promise.all(waypoints.map(async waypointA =>
             await Promise.all(waypoints.map(waypointB => new Promise<number>(async (resolve, reject) => {
                 if (waypointA === waypointB) return resolve(0)
 
                 let placeA: mapkit.Place
                 let placeB: mapkit.Place
 
-                if (waypointA === startPoint || waypointA === endPoint) {
+                const fetchedPlaceA = this.props.fetchedPlaces.get(waypointA)
+
+                if (fetchedPlaceA && fetchedPlaceA.status === 'SUCCESS') {
+                    placeA = fetchedPlaceA.result
+                } else {
                     placeA = await new Promise((resolvePlace, rejectPlace) => {
                         geocoder.lookup(waypointA, (error, data) => {
                             if (error) return rejectPlace(error)
@@ -279,17 +338,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             resolvePlace(place)
                         })
                     })
-                } else {
-                    const fetchedPlaceA = this.props.fetchedPlaces.get(waypointA)
-
-                    if (!fetchedPlaceA || fetchedPlaceA.status !== 'SUCCESS') {
-                        return reject(new Error(`Place '${waypointA} not found'`))
-                    }
-
-                    placeA = fetchedPlaceA.result
                 }
 
-                if (waypointB === endPoint || waypointB === endPoint) {
+                const fetchedPlaceB = this.props.fetchedPlaces.get(waypointB)
+
+                if (fetchedPlaceB && fetchedPlaceB.status === 'SUCCESS') {
+                    placeB = fetchedPlaceB.result
+                } else {
                     placeB = await new Promise((resolvePlace, rejectPlace) => {
                         geocoder.lookup(waypointB, (error, data) => {
                             if (error) return rejectPlace(error)
@@ -300,15 +355,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             resolvePlace(place)
                         })
                     })
-                } else {
-
-                    const fetchedPlaceB = this.props.fetchedPlaces.get(waypointB)
-
-                    if (!fetchedPlaceB || fetchedPlaceB.status !== 'SUCCESS') {
-                        return reject(new Error(`Place '${waypointB} not found'`))
-                    }
-
-                    placeB = fetchedPlaceB.result
                 }
 
                 directions.route({ origin: placeA, destination: placeB }, (error, data) => {
@@ -330,25 +376,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 })
             }))),
         ))
-
-        const response = await fetch('/optimize', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ costMatrix }),
-        })
-
-        interface IOptimizeResponse { result: number[] }
-
-        const jsonResponse: IOptimizeResponse = await response.json()
-        const optimalOrdering = startPoint ?
-            jsonResponse.result.slice(1, -1).map(i => i - 1) :
-            jsonResponse.result
-
-        this.props.createAndReplaceWaypoints(optimalOrdering.map(i => this.props.waypoints[i].address))
-
-        this.setState({ editorMode: 'REGULAR' })
     }
 
     // Content Helper Functions
@@ -638,6 +665,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     <h2>{this.headerTitle}</h2>
                 </div>
                 <div className="px-3 pt-3">
+                    <div
+                        className="alert alert-danger"
+                        role="alert"
+                        hidden={!this.state.errorMessage}
+                    >
+                        {this.state.errorMessage}
+                    </div>
                     {this.bodyItems}
                 </div>
                 <div id="waypoint-editor-footer" className="frosted pr-3 pb-3">

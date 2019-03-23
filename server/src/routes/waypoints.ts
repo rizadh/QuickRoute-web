@@ -118,9 +118,14 @@ function waypointLineIndexForOrderType(orderType: OrderType): number {
 }
 
 const waypointsRoute: IMiddleware = async ctx => {
-    const waypoints = await loginAndFetchWaypoints({ driverNumber: ctx.params.id, password: ctx.params.id })
-    const date = new Date().toISOString()
-    ctx.body = JSON.stringify({ date, driverNumber: ctx.params.id, waypoints })
+    try {
+        const waypoints = await loginAndFetchWaypoints({ driverNumber: ctx.params.id, password: ctx.params.id })
+        const date = new Date().toISOString()
+        ctx.body = JSON.stringify({ date, driverNumber: ctx.params.id, waypoints })
+    } catch (e) {
+        ctx.status = 500
+        ctx.body = e instanceof Error ? e.message : e
+    }
 }
 
 export default waypointsRoute
