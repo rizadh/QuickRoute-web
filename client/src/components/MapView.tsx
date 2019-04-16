@@ -1,69 +1,87 @@
-import { zip } from 'lodash'
-import * as React from 'react'
-import { Store, Unsubscribe } from 'redux'
+import React, { useEffect, useRef, useState } from 'react'
+import { Store } from 'redux'
 import { disableAutofit } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
-import { AppState, FetchSuccess, Waypoint } from '../redux/state'
+import { AppState, FetchSuccess } from '../redux/state'
 
 type MapViewProps = {
     store: Store<AppState, AppAction>
 }
 
-export default class MapView extends React.Component<MapViewProps> {
-    element?: HTMLElement
-    map?: mapkit.Map
-    loadingIndicator?: HTMLElement
-    unsubscribeCallback?: Unsubscribe
-    previousState?: AppState
+mapkit.init({
+    authorizationCallback: done => fetch('/token')
+        .then(res => res.text())
+        .then(done),
+})
 
-    updateMap = () => {
-        if (!this.map) return
-        if (!this.element) return
-        if (!this.loadingIndicator) return
+const MapView = (props: MapViewProps) => {
+    const mapviewRef = useRef<HTMLDivElement>(null)
+    const loadingIndicatorRef = useRef<HTMLDivElement>(null)
+    const [map, setMap] = useState<mapkit.Map>()
+    const [appState, setAppState] = useState(props.store.getState())
+    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = appState
+    const status = routeInformation(appState).status
 
-        const previousState = this.previousState
-        const currentState = this.props.store.getState()
-        this.previousState = currentState
+    useEffect(() => {
+        if (mapviewRef.current == null) return
 
-        if (previousState === currentState) return
+        const newMap = new mapkit.Map(mapviewRef.current, {
+            showsMapTypeControl: false,
+            showsScale: mapkit.FeatureVisibility.Visible,
+            padding: new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 48 }),
+        })
 
-        const status = routeInformation(currentState).status
+        const mapDidMove = () => {
+            if (newMap.annotations && newMap.annotations.length > 0 || newMap.overlays && newMap.overlays.length > 0) {
+                props.store.dispatch(disableAutofit())
+            }
+        }
+
+        newMap.addEventListener('zoom-start', mapDidMove)
+        newMap.addEventListener('scroll-start', mapDidMove)
+
+        const unsubscribeCallback = props.store.subscribe(() => setAppState(props.store.getState()))
+
+        setMap(newMap)
+
+        return () => {
+            newMap.destroy()
+            unsubscribeCallback()
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!mapviewRef.current) return
 
         if (status === 'FETCHING') {
-            this.element.classList.add('updating')
-            if (this.loadingIndicator) this.loadingIndicator.hidden = false
+            mapviewRef.current.classList.add('updating')
+            if (loadingIndicatorRef.current) loadingIndicatorRef.current.hidden = false
         } else {
-            this.element.classList.remove('updating')
-            if (this.loadingIndicator) this.loadingIndicator.hidden = true
+            mapviewRef.current.classList.remove('updating')
+            if (loadingIndicatorRef.current) loadingIndicatorRef.current.hidden = true
         }
+    }, [status])
 
-        // TODO: Determine if the list of fetched places and routes has changed
-        if (status !== 'FETCHED' && status !== 'NO_ROUTE') return
+    useEffect(() => {
+        if (!map) return
+        if (status === 'FETCHING') return
 
-        if (previousState
-            && this.waypointsAreSimilar(previousState.waypoints, currentState.waypoints)
-            && previousState.fetchedPlaces === currentState.fetchedPlaces
-            && previousState.fetchedRoutes === currentState.fetchedRoutes) {
-            if (currentState.autofitIsEnabled) this.centerMap()
-            return
-        }
-
-        const annotations = currentState.waypoints
-            .map(({ address }) => currentState.fetchedPlaces.get(address))
+        const annotations = waypoints
+            .map(({ address }) => fetchedPlaces.get(address))
             .filter((p): p is FetchSuccess<mapkit.Place> => !!p && p.status === 'SUCCESS')
             .map(({ result: { coordinate, formattedAddress } }, index) => new mapkit.MarkerAnnotation(coordinate, {
                 glyphText: `${index + 1}`,
-                title: currentState.waypoints[index].address,
+                title: waypoints[index].address,
                 subtitle: formattedAddress,
                 animates: false,
             }))
 
-        const overlays = currentState.waypoints
-            .map((waypoint, index, waypoints) => {
+        const overlays = waypoints
+            .map((waypoint, index) => {
                 if (index === 0) return
                 const previousWaypoint = waypoints[index - 1]
-                const routesFromPreviousWaypoint = currentState.fetchedRoutes.get(previousWaypoint.address)
+                const routesFromPreviousWaypoint = fetchedRoutes.get(previousWaypoint.address)
                 if (!routesFromPreviousWaypoint) return
                 const forwardRoute = routesFromPreviousWaypoint.get(waypoint.address)
                 if (forwardRoute && forwardRoute.status === 'SUCCESS') return forwardRoute.result.polyline
@@ -78,90 +96,43 @@ export default class MapView extends React.Component<MapViewProps> {
                 }),
             )
 
-        if (this.map.annotations) this.map.removeAnnotations(this.map.annotations)
-        if (this.map.overlays) this.map.removeOverlays(this.map.overlays)
+        if (map.annotations) map.removeAnnotations(map.annotations)
+        if (map.overlays) map.removeOverlays(map.overlays)
 
-        this.map.addAnnotations(annotations)
-        this.map.addOverlays(overlays)
-        this.centerMap()
-    }
+        map.addAnnotations(annotations)
+        map.addOverlays(overlays)
+    }, [map, waypoints, fetchedPlaces, fetchedRoutes])
 
-    waypointsAreSimilar = (a: ReadonlyArray<Waypoint>, b: ReadonlyArray<Waypoint>) => {
-        if (a.length !== b.length) return false
-
-        for (const [itemA, itemB] of zip(a, b)) {
-            if (!itemA || !itemB) return false
-
-            if (itemA.address !== itemB.address) return false
+    useEffect(() => {
+        if (autofitIsEnabled && map) {
+            map.showItems([...map.annotations || [], ...map.overlays], {
+                animate: true,
+                padding: new mapkit.Padding({
+                    top: 16,
+                    right: 16,
+                    bottom: 16,
+                    left: 16,
+                }),
+            })
         }
+    }, [map, waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled])
 
-        return true
-    }
-
-    centerMap = () => {
-        if (!this.map) return
-        if (!this.element) return
-        if (!this.props.store.getState().autofitIsEnabled) return
-
-        this.map.showItems([...this.map.annotations || [], ...this.map.overlays], {
-            animate: true,
-            padding: new mapkit.Padding({
-                top: 16,
-                right: 16,
-                bottom: 16,
-                left: 16,
-            }),
-        })
-    }
-
-    componentDidMount() {
-        mapkit.init({
-            authorizationCallback: done => fetch('/token')
-                .then(res => res.text())
-                .then(done),
-        })
-
-        const map = new mapkit.Map(this.element, {
-            showsMapTypeControl: false,
-            showsScale: mapkit.FeatureVisibility.Visible,
-            padding: new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 48 }),
-        })
-
-        const mapDidMove = () => {
-            if (map.annotations && map.annotations.length > 0 || map.overlays && map.overlays.length > 0) {
-                this.props.store.dispatch(disableAutofit())
-            }
-        }
-
-        map.addEventListener('zoom-start', mapDidMove)
-        map.addEventListener('scroll-start', mapDidMove)
-
-        this.map = map
-
-        this.unsubscribeCallback = this.props.store.subscribe(this.updateMap)
-    }
-
-    componentWillUnmount() {
-        if (this.map) this.map.destroy()
-        if (this.unsubscribeCallback) this.unsubscribeCallback()
-    }
-
-    render() {
-        return (
-            <>
-                <div
-                    ref={e => this.element = e || undefined}
-                    id="mapview"
-                />
-                <div
-                    ref={e => this.loadingIndicator = e || undefined}
-                    id="loading-indicator"
-                    className="rounded p-3 frosted"
-                    hidden={true}
-                >
-                    <i className="fas fa-spin fa-circle-notch" />
-                </div>
-            </>
-        )
-    }
+    return (
+        <>
+            <div
+                ref={mapviewRef}
+                id="mapview"
+            />
+            <div
+                ref={loadingIndicatorRef}
+                id="loading-indicator"
+                className="rounded p-3 frosted"
+                hidden={true}
+            >
+                <i className="fas fa-spin fa-circle-notch" />
+            </div>
+        </>
+    )
 }
+
+export default MapView
