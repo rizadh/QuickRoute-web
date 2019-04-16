@@ -14,11 +14,24 @@ type AppProps = {
 
 export const AppContext = createContext({
     editorIsCollapsed: false,
-    setEditorIsCollapsed: (_: boolean) => { return },
+    collapseEditor: () => { return },
+    uncollapseEditor: () => { return },
 })
 
-export const App = (props: AppProps) => {
+export const App = (props: AppProps) => (
+    <AppContext.Provider value={useEditorCollapsed()}>
+        <MapView store={props.store} />
+        <ProgressBar />
+        <MapButtons />
+        <MapViewStatusbar />
+        <WaypointEditor />
+    </AppContext.Provider>
+)
+
+const useEditorCollapsed = () => {
     const [editorIsCollapsed, setEditorIsCollapsed] = useState(false)
+    const collapseEditor = () => setEditorIsCollapsed(true)
+    const uncollapseEditor = () => setEditorIsCollapsed(false)
 
     useEffect(() => {
         const root = document.getElementById('root')
@@ -31,13 +44,5 @@ export const App = (props: AppProps) => {
         }
     }, [editorIsCollapsed])
 
-    return (
-        <AppContext.Provider value={{ editorIsCollapsed, setEditorIsCollapsed }}>
-            <MapView store={props.store} />
-            <ProgressBar />
-            <MapButtons />
-            <MapViewStatusbar />
-            <WaypointEditor />
-        </AppContext.Provider>
-    )
+    return { editorIsCollapsed, collapseEditor, uncollapseEditor }
 }

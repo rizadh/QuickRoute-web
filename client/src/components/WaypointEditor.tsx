@@ -10,8 +10,8 @@ import { AppAction } from '../redux/actionTypes'
 import { routeInformation, RouteInformation } from '../redux/selectors'
 import { AppState, FetchedPlaces, Waypoint } from '../redux/state'
 import { isValidAddress, parseAddress } from '../redux/validator'
+import { AppContext } from './App'
 import WaypointList from './WaypointList'
-import { AppContext } from './App';
 
 type WaypointEditorState = {
     editorMode: 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING' | 'SHOW_URLS' | 'OPTIMIZER' | 'OPTIMIZING'
@@ -588,16 +588,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         </button>
                         <AppContext.Consumer>
                             {context =>
-                                /* tslint:disable:jsx-no-multiline-js */
-                                /* tslint:disable:jsx-no-lambda */
+                                // tslint:disable-next-line:jsx-no-multiline-js
                                 <button
                                     className="btn btn-primary mt-3 ml-3 float-right"
-                                    onClick={() => context.setEditorIsCollapsed(true)}
+                                    onClick={context.collapseEditor}
                                 >
                                     <i className="far fa-window-maximize" /> Hide Editor
                                 </button>
-                                /* tslint:disable:jsx-no-lambda */
-                                /* tslint:disable:jsx-no-multiline-js */
                             }
                         </AppContext.Consumer>
                     </>

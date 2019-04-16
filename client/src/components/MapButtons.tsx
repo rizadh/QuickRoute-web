@@ -11,21 +11,7 @@ type MapButtonsProps = {
 }
 
 const MapButtons = (props: MapButtonsProps) => {
-    const { editorIsCollapsed, setEditorIsCollapsed } = useContext(AppContext)
-
-    const collapseEditor = () => {
-        // const root = document.getElementById('root')
-        // if (root) root.classList.add('editor-collapsed')
-
-        setEditorIsCollapsed(true)
-    }
-
-    const uncollapseEditor = () => {
-        // const root = document.getElementById('root')
-        // if (root) root.classList.remove('editor-collapsed')
-
-        setEditorIsCollapsed(false)
-    }
+    const { editorIsCollapsed, uncollapseEditor } = useContext(AppContext)
 
     return (
         <div id="map-buttons">
