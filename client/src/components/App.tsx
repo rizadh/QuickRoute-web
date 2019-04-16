@@ -1,9 +1,9 @@
-import * as React from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { Store } from 'redux'
 import ProgressBar from '../components/ProgressBar'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
-import AutofitButton from './AutofitButton'
+import MapButtons from './MapButtons'
 import MapView from './MapView'
 import MapViewStatusbar from './MapViewStatusbar'
 import WaypointEditor from './WaypointEditor'
@@ -12,15 +12,32 @@ type AppProps = {
     store: Store<AppState, AppAction>
 }
 
-export default class App extends React.Component<AppProps> {
-    render() {
-        return (
-            <>
-                <MapView store={this.props.store} />
-                <ProgressBar />
-                <AutofitButton />
-                <MapViewStatusbar />
-                <WaypointEditor />
-            </>)
-    }
+export const AppContext = createContext({
+    editorIsCollapsed: false,
+    setEditorIsCollapsed: (_: boolean) => { return },
+})
+
+export const App = (props: AppProps) => {
+    const [editorIsCollapsed, setEditorIsCollapsed] = useState(false)
+
+    useEffect(() => {
+        const root = document.getElementById('root')
+        if (!root) return
+
+        if (editorIsCollapsed) {
+            root.classList.add('editor-collapsed')
+        } else {
+            root.classList.remove('editor-collapsed')
+        }
+    }, [editorIsCollapsed])
+
+    return (
+        <AppContext.Provider value={{ editorIsCollapsed, setEditorIsCollapsed }}>
+            <MapView store={props.store} />
+            <ProgressBar />
+            <MapButtons />
+            <MapViewStatusbar />
+            <WaypointEditor />
+        </AppContext.Provider>
+    )
 }

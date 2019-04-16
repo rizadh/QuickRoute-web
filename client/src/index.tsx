@@ -4,7 +4,7 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import App from './components/App'
+import { App } from './components/App'
 import store from './redux/store'
 
 export const appVersion = 'v2019.03.23'

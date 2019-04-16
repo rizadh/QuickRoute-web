@@ -21,7 +21,6 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
     @media (max-width: $compactBreakpoint) {
         grid-template-columns: [editor-start statusbar-start map-start] auto [editor-end statusbar-end map-end];
         grid-template-rows: [editor-start] auto [editor-end map-start] 0 [statusbar-start] $statusbarHeight [map-end statusbar-end];
-        grid-template-rows: [editor-start map-start] 0 [editor-end map-end] auto [statusbar-start] $statusbarHeight [statusbar-end];
     }
 
     &.editor-collapsed {
@@ -51,7 +50,7 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
 
     @media (max-width: $compactBreakpoint) {
         width: 100%;
-        height: 100%;
+        height: calc(100% - #{$statusbarHeight});
     }
 
     #root.editor-collapsed & {
@@ -111,7 +110,7 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
     }
 }
 
-#autofit-button {
+#map-buttons {
     grid-area: map;
 
     z-index: 1;

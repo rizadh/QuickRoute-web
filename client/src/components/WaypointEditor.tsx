@@ -11,6 +11,7 @@ import { routeInformation, RouteInformation } from '../redux/selectors'
 import { AppState, FetchedPlaces, Waypoint } from '../redux/state'
 import { isValidAddress, parseAddress } from '../redux/validator'
 import WaypointList from './WaypointList'
+import { AppContext } from './App';
 
 type WaypointEditorState = {
     editorMode: 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING' | 'SHOW_URLS' | 'OPTIMIZER' | 'OPTIMIZING'
@@ -583,8 +584,22 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             onClick={this.showOptimizer}
                             disabled={this.props.waypoints.length < 3}
                         >
-                            <i className="fas fa-star" /> Optimizer
+                            <i className="fas fa-star" /> Optimize
                         </button>
+                        <AppContext.Consumer>
+                            {context =>
+                                /* tslint:disable:jsx-no-multiline-js */
+                                /* tslint:disable:jsx-no-lambda */
+                                <button
+                                    className="btn btn-primary mt-3 ml-3 float-right"
+                                    onClick={() => context.setEditorIsCollapsed(true)}
+                                >
+                                    <i className="far fa-window-maximize" /> Hide Editor
+                                </button>
+                                /* tslint:disable:jsx-no-lambda */
+                                /* tslint:disable:jsx-no-multiline-js */
+                            }
+                        </AppContext.Consumer>
                     </>
                 )
             case 'BULK':
