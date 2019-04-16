@@ -5,12 +5,10 @@ type StatViewProps = {
     value: string
 }
 
-export default class StatView extends React.Component<StatViewProps> {
-    render() {
-        return (
-            <div className="statview">
-                <span className="font-weight-bold">{this.props.title}</span> {this.props.value}
-            </div>
-        )
-    }
-}
+const StatView = (props: StatViewProps) => (
+    <div className="statview">
+        <span className="font-weight-bold">{props.title}</span> {props.value}
+    </div>
+)
+
+export default StatView
