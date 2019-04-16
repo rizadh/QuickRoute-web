@@ -6,6 +6,7 @@ $frostedBlurRadius: 258px;
 $compactBreakpoint: $editorWidth + $minMapWidth;
 
 #root {
+    position: absolute;
     left: 0;
     top: 0;
     width: 100%;
@@ -19,7 +20,13 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
 
     @media (max-width: $compactBreakpoint) {
         grid-template-columns: [editor-start statusbar-start map-start] auto [editor-end statusbar-end map-end];
-        grid-template-rows: [editor-start] $editorWidth [editor-end map-start] auto [statusbar-start] $statusbarHeight [map-end statusbar-end];
+        grid-template-rows: [editor-start] auto [editor-end map-start] 0 [statusbar-start] $statusbarHeight [map-end statusbar-end];
+        grid-template-rows: [editor-start map-start] 0 [editor-end map-end] auto [statusbar-start] $statusbarHeight [statusbar-end];
+    }
+
+    &.editor-collapsed {
+        grid-template-columns: [editor-start statusbar-start map-start] auto [editor-end statusbar-end map-end];
+        grid-template-rows: [editor-start] 0 [editor-end map-start] auto [statusbar-start] $statusbarHeight [statusbar-end map-end];
     }
 }
 
@@ -28,9 +35,15 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
 }
 
 #waypoint-editor {
+    /* Temporary fix until CSS Grid + overflow bug is fixed in Safari */
+
+    /* ORIGINAL BEGIN */
+
     // grid-area: editor;
 
-    /* Temporary fix until CSS Grid + overflow bug is fixed in Safari */
+    /* ORIGINAL END */
+
+    /* WORKAROUND BEGIN */
 
     position: absolute;
     height: 100%;
@@ -38,14 +51,19 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
 
     @media (max-width: $compactBreakpoint) {
         width: 100%;
-        height: $editorWidth;
+        height: 100%;
     }
+
+    #root.editor-collapsed & {
+        display: none;
+    }
+
+    /* WORKAROUND END */
 
     border-right: 1px solid rgba(0, 0, 0, 0.2);
 
     @media (max-width: $compactBreakpoint) {
-        border-right: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border: none;
     }
 
     overflow: auto;
@@ -58,7 +76,7 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
 
     z-index: 1020;
 
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
     textarea {
         resize: none;
@@ -71,10 +89,10 @@ $compactBreakpoint: $editorWidth + $minMapWidth;
     bottom: 0;
 
     overflow: hidden;
-    
+
     z-index: 1020;
 
-    border-top: 1px solid rgba(0, 0, 0, 0.1); 
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #mapview {
