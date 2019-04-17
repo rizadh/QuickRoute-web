@@ -5,12 +5,12 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import { appVersion } from '..'
+import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
 import { createAndReplaceWaypoints, createWaypoint, reverseWaypoints } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation, RouteInformation } from '../redux/selectors'
 import { AppState, FetchedPlaces, Waypoint } from '../redux/state'
 import { isValidAddress, parseAddress } from '../redux/validator'
-import { AppContext } from './App'
 import WaypointList from './WaypointList'
 
 type WaypointEditorState = {
@@ -584,17 +584,17 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         >
                             <i className="fas fa-star" /> Optimize
                         </button>
-                        <AppContext.Consumer>
+                        <EditorVisibilityContext.Consumer>
                             {context =>
                                 // tslint:disable-next-line:jsx-no-multiline-js
                                 <button
                                     className="btn btn-primary"
-                                    onClick={context.collapseEditor}
+                                    onClick={context.hideEditor}
                                 >
                                     <i className="far fa-window-maximize" /> Hide Editor
                                 </button>
                             }
-                        </AppContext.Consumer>
+                        </EditorVisibilityContext.Consumer>
                     </>
                 )
             case 'BULK':

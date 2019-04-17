@@ -36,7 +36,7 @@ html {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 
-    #root.editor-collapsed & {
+    #root.editor-hidden & {
         display: none;
     }
 
@@ -199,7 +199,7 @@ a:hover {
     }
 
     @media (max-width: $compactBreakpoint) {
-        #root:not(.editor-collapsed) & {
+        #root:not(.editor-hidden) & {
             display: none;
         }
     }
@@ -212,7 +212,7 @@ a:hover {
     width: calc(100% - #{$editorWidth + 3 * $standardMargin});
     height: $statusbarHeight;
 
-    #root.editor-collapsed & {
+    #root.editor-hidden & {
         display: none;
     }
 

@@ -1,7 +1,8 @@
-import React, { createContext } from 'react'
+import React from 'react'
 import { Store } from 'redux'
 import ProgressBar from '../components/ProgressBar'
-import { useEditorCollapsed } from '../hooks/editorCollapsed'
+import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
+import { useEditorVisibility } from '../hooks/useEditorCollapsed'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import MapButtons from './MapButtons'
@@ -13,18 +14,12 @@ type AppProps = {
     store: Store<AppState, AppAction>
 }
 
-export const AppContext = createContext({
-    editorIsCollapsed: false,
-    collapseEditor: () => { return },
-    uncollapseEditor: () => { return },
-})
-
 export const App = (props: AppProps) => (
-    <AppContext.Provider value={useEditorCollapsed()}>
+    <EditorVisibilityContext.Provider value={useEditorVisibility()}>
         <MapView store={props.store} />
         <ProgressBar />
         <MapButtons />
         <MapViewStatusbar />
         <WaypointEditor />
-    </AppContext.Provider>
+    </EditorVisibilityContext.Provider>
 )

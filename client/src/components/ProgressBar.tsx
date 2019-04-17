@@ -1,16 +1,16 @@
 import { Line } from 'rc-progress'
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { useMedia } from '../hooks/useMedia'
 import { RouteInformation, routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
-import { useMedia } from '../hooks/media';
 
 type ProgressBarProps = {
     routeInformation: RouteInformation
 }
 
 const ProgressBar = (props: ProgressBarProps) => {
-    const darkMode = useMedia('(prefers-color-scheme: dark)');
+    const darkMode = useMedia('(prefers-color-scheme: dark)')
 
     if (props.routeInformation.status === 'FETCHING') {
         return (

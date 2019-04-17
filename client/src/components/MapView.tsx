@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Store } from 'redux'
-import { useMedia } from '../hooks/media'
+import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
+import { useMedia } from '../hooks/useMedia'
 import { disableAutofit } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
 import { AppState, FetchSuccess } from '../redux/state'
-import { AppContext } from './App'
 
 type MapViewProps = {
     store: Store<AppState, AppAction>
@@ -22,7 +22,7 @@ const MapView = (props: MapViewProps) => {
     const [map, setMap] = useState<mapkit.Map>()
     const [appState, setAppState] = useState(props.store.getState())
     const darkMode = useMedia('(prefers-color-scheme: dark)')
-    const { editorIsCollapsed } = useContext(AppContext)
+    const { editorIsHidden: editorIsVisible } = useContext(EditorVisibilityContext)
     const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = appState
     const status = routeInformation(appState).status
 
@@ -71,10 +71,10 @@ const MapView = (props: MapViewProps) => {
     useEffect(() => {
         if (!map) return
 
-        map.padding = editorIsCollapsed ?
+        map.padding = editorIsVisible ?
             new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 0 }) :
             new mapkit.Padding({ top: 16, left: 16 + 420 + 16, right: 16, bottom: 16 + 48 })
-    }, [editorIsCollapsed, map])
+    }, [editorIsVisible, map])
 
     useEffect(() => {
         if (!mapviewRef.current) return
@@ -126,7 +126,7 @@ const MapView = (props: MapViewProps) => {
         map.addOverlays(overlays)
 
         centerMap()
-    }, [map, fetchedPlaces, fetchedRoutes])
+    }, [map, waypoints, fetchedPlaces, fetchedRoutes])
 
     useEffect(centerMap, [map, autofitIsEnabled])
 

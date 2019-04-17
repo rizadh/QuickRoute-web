@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { connect } from 'react-redux'
+import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
 import { enableAutofit } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
-import { AppContext } from './App'
 
 type MapButtonsProps = {
     autofitIsEnabled: boolean
@@ -11,7 +11,7 @@ type MapButtonsProps = {
 }
 
 const MapButtons = (props: MapButtonsProps) => {
-    const { editorIsCollapsed, uncollapseEditor } = useContext(AppContext)
+    const { editorIsHidden, showEditor } = useContext(EditorVisibilityContext)
 
     return (
         <div id="map-buttons">
@@ -24,8 +24,8 @@ const MapButtons = (props: MapButtonsProps) => {
             </button>
             <button
                 className="btn btn-primary"
-                hidden={!editorIsCollapsed}
-                onClick={uncollapseEditor}
+                hidden={!editorIsHidden}
+                onClick={showEditor}
             >
                 <i className="fas fa-columns" /> Show Editor
             </button>
