@@ -455,7 +455,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <Textarea
                                 minRows={3}
-                                className="form-control mb-3"
+                                className="form-control"
                                 onChange={this.handleBulkEditFieldChange}
                                 onKeyPress={this.handleBulkEditFieldKeyPress}
                                 value={this.state.bulkEditFieldValue}
@@ -477,7 +477,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <input
                                 type="text"
-                                className="form-control mb-3"
+                                className="form-control"
                                 placeholder="Driver number"
                                 value={this.state.driverNumberFieldValue}
                                 onChange={this.handleDriverNumberFieldChange}
@@ -525,7 +525,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <input
                                 type="text"
-                                className="form-control mb-3"
+                                className="form-control"
                                 placeholder={`Start Point (default: ${this.defaultStartPoint})`}
                                 value={this.state.startPointFieldValue}
                                 onChange={this.handleStartPointFieldChange}
@@ -536,7 +536,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <input
                                 type="text"
-                                className="form-control mb-3"
+                                className="form-control"
                                 placeholder={`End Point (default: ${this.defaultEndPoint})`}
                                 value={this.state.endPointFieldValue}
                                 onChange={this.handleEndPointFieldChange}
@@ -553,38 +553,38 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'REGULAR':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.beginBulkEdit}>
+                        <button className="btn btn-primary" onClick={this.beginBulkEdit}>
                             <i className="fas fa-list-alt" /> Bulk Edit
                         </button>
                         <button
-                            className="btn btn-primary mt-3 ml-3 float-right"
+                            className="btn btn-primary"
                             onClick={this.beginImportMode}
                         >
                             <i className="fas fa-cloud-download-alt" /> Import Waypoints
                         </button>
                         <button
-                            className="btn btn-primary mt-3 ml-3 float-right"
+                            className="btn btn-primary"
                             onClick={this.showUrls}
                             disabled={this.props.waypoints.length === 0}
                         >
                             <i className="fas fa-link" /> Show Links
                         </button>
                         <button
-                            className="btn btn-primary mt-3 ml-3 float-right"
+                            className="btn btn-primary"
                             onClick={this.generatePdf}
                             disabled={this.props.waypoints.length === 0}
                         >
                             <i className="fas fa-file-pdf" /> Generate PDF
                         </button>
                         <button
-                            className="btn btn-primary mt-3 ml-3 float-right"
+                            className="btn btn-primary"
                             onClick={this.props.reverseWaypoints}
                             disabled={this.props.waypoints.length < 2}
                         >
                             <i className="fas fa-exchange-alt" /> Reverse
                         </button>
                         <button
-                            className="btn btn-primary mt-3 ml-3 float-right"
+                            className="btn btn-primary"
                             onClick={this.showOptimizer}
                             disabled={this.props.waypoints.length < 3}
                         >
@@ -594,7 +594,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             {context =>
                                 // tslint:disable-next-line:jsx-no-multiline-js
                                 <button
-                                    className="btn btn-primary mt-3 ml-3 float-right"
+                                    className="btn btn-primary"
                                     onClick={context.collapseEditor}
                                 >
                                     <i className="far fa-window-maximize" /> Hide Editor
@@ -606,10 +606,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'BULK':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.commitBulkEdit}>
+                        <button className="btn btn-primary" onClick={this.commitBulkEdit}>
                             <i className="fas fa-save" /> Save
                         </button>
-                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelBulkEdit}>
+                        <button className="btn btn-secondary" onClick={this.cancelBulkEdit}>
                             <i className="fas fa-chevron-left" /> Back
                         </button>
                     </>
@@ -617,10 +617,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'IMPORT':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.executeImport}>
+                        <button className="btn btn-primary" onClick={this.executeImport}>
                             <i className="fas fa-cloud-download-alt" /> Import
                         </button>
-                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.cancelImportMode}>
+                        <button className="btn btn-secondary" onClick={this.cancelImportMode}>
                             <i className="fas fa-chevron-left" /> Back
                     </button>
                     </>
@@ -628,7 +628,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'IMPORTING':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" disabled={true}>
+                        <button className="btn btn-primary" disabled={true}>
                             <i className="fas fa-spin fa-circle-notch" /> Importing
                         </button>
                     </>
@@ -636,13 +636,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'SHOW_URLS':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.openAllUrls}>
+                        <button className="btn btn-primary" onClick={this.openAllUrls}>
                             <i className="fas fa-external-link-alt" /> Open All
                         </button>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.copyAllUrls}>
+                        <button className="btn btn-primary" onClick={this.copyAllUrls}>
                             <i className="far fa-clipboard" /> Copy All
                         </button>
-                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.hideUrls}>
+                        <button className="btn btn-secondary" onClick={this.hideUrls}>
                             <i className="fas fa-chevron-left" /> Back
                         </button>
                     </>
@@ -650,13 +650,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'OPTIMIZER':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.optimizeDistance}>
+                        <button className="btn btn-primary" onClick={this.optimizeDistance}>
                             <i className="fas fa-ruler-combined" /> Optimize Distance
                         </button>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" onClick={this.optimizeTime}>
+                        <button className="btn btn-primary" onClick={this.optimizeTime}>
                             <i className="fas fa-clock" /> Optimize Time
                         </button>
-                        <button className="btn btn-secondary mt-3 ml-3 float-right" onClick={this.hideOptimizer}>
+                        <button className="btn btn-secondary" onClick={this.hideOptimizer}>
                             <i className="fas fa-chevron-left" /> Back
                     </button>
                     </>
@@ -664,7 +664,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'OPTIMIZING':
                 return (
                     <>
-                        <button className="btn btn-primary mt-3 ml-3 float-right" disabled={true}>
+                        <button className="btn btn-primary" disabled={true}>
                             <i className="fas fa-spin fa-circle-notch" /> Optimizing (this may take a while)
                         </button>
                     </>
@@ -681,7 +681,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     </div>
                     <div id="waypoint-editor-title">{this.headerTitle}</div>
                 </div>
-                <div className="px-3 pt-3">
+                <div>
                     <div
                         className="alert alert-danger"
                         role="alert"
