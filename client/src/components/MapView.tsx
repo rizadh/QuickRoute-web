@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Store } from 'redux'
+import { useMedia } from '../hooks/media'
 import { disableAutofit } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
 import { AppState, FetchSuccess } from '../redux/state'
+import { AppContext } from './App'
 
 type MapViewProps = {
     store: Store<AppState, AppAction>
@@ -20,6 +22,8 @@ const MapView = (props: MapViewProps) => {
     const loadingIndicatorRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const [appState, setAppState] = useState(props.store.getState())
+    const darkMode = useMedia('(prefers-color-scheme: dark)')
+    const { editorIsCollapsed } = useContext(AppContext)
     const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = appState
     const status = routeInformation(appState).status
 
@@ -50,6 +54,14 @@ const MapView = (props: MapViewProps) => {
             unsubscribeCallback()
         }
     }, [])
+
+    useEffect(() => {
+        if (!map) return
+
+        map.padding = editorIsCollapsed ?
+            new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 0 }) :
+            new mapkit.Padding({ top: 16, left: 16 + 420 + 16, right: 16, bottom: 16 + 48 })
+    }, [editorIsCollapsed, map])
 
     useEffect(() => {
         if (!mapviewRef.current) return
@@ -101,7 +113,7 @@ const MapView = (props: MapViewProps) => {
 
         map.addAnnotations(annotations)
         map.addOverlays(overlays)
-    }, [map, waypoints, fetchedPlaces, fetchedRoutes])
+    }, [map, fetchedPlaces, fetchedRoutes])
 
     useEffect(() => {
         if (autofitIsEnabled && map) {
@@ -117,6 +129,10 @@ const MapView = (props: MapViewProps) => {
         }
     }, [map, waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled])
 
+    useEffect(() => {
+        if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light
+    }, [map, darkMode])
+
     return (
         <>
             <div
@@ -126,7 +142,6 @@ const MapView = (props: MapViewProps) => {
             <div
                 ref={loadingIndicatorRef}
                 id="loading-indicator"
-                className="rounded p-3 frosted"
                 hidden={true}
             >
                 <i className="fas fa-spin fa-circle-notch" />

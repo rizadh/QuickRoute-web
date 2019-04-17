@@ -426,7 +426,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             Enter another address to show route information
                         </div>
                         <WaypointList />
-                        <div className="input-group mb-3">
+                        <div className="input-row">
                             <input
                                 type="text"
                                 className="form-control"
@@ -436,15 +436,13 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                                 onKeyPress={this.handleNewWaypointFieldKeyPress}
                                 autoFocus={true}
                             />
-                            <div className="input-group-append">
-                                <button
-                                    onClick={this.addNewWaypoint}
-                                    disabled={!this.canAddNewWaypoint}
-                                    className="btn btn-primary"
-                                >
-                                    <i className="fas fa-plus" />
-                                </button>
-                            </div>
+                            <button
+                                onClick={this.addNewWaypoint}
+                                disabled={!this.canAddNewWaypoint}
+                                className="btn btn-primary"
+                            >
+                                <i className="fas fa-plus" />
+                            </button>
                         </div>
                     </>
                 )
@@ -453,15 +451,17 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     <>
                         <div className="alert alert-info" role="alert">
                             Enter one address per line
-                    </div>
-                        <Textarea
-                            minRows={3}
-                            className="form-control mb-3"
-                            onChange={this.handleBulkEditFieldChange}
-                            onKeyPress={this.handleBulkEditFieldKeyPress}
-                            value={this.state.bulkEditFieldValue}
-                            autoFocus={true}
-                        />
+                        </div>
+                        <div className="input-row">
+                            <Textarea
+                                minRows={3}
+                                className="form-control mb-3"
+                                onChange={this.handleBulkEditFieldChange}
+                                onKeyPress={this.handleBulkEditFieldKeyPress}
+                                value={this.state.bulkEditFieldValue}
+                                autoFocus={true}
+                            />
+                        </div>
                     </>
                 )
             case 'IMPORT':
@@ -474,41 +474,41 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         >
                             Waypoints are imported from Atripco
                         </div>
-                        <input
-                            type="text"
-                            className="form-control mb-3"
-                            placeholder="Driver number"
-                            value={this.state.driverNumberFieldValue}
-                            onChange={this.handleDriverNumberFieldChange}
-                            onKeyPress={this.handleDriverNumberFieldKeyPress}
-                            disabled={this.state.editorMode === 'IMPORTING'}
-                            autoFocus={true}
-                        />
+                        <div className="input-row">
+                            <input
+                                type="text"
+                                className="form-control mb-3"
+                                placeholder="Driver number"
+                                value={this.state.driverNumberFieldValue}
+                                onChange={this.handleDriverNumberFieldChange}
+                                onKeyPress={this.handleDriverNumberFieldKeyPress}
+                                disabled={this.state.editorMode === 'IMPORTING'}
+                                autoFocus={true}
+                            />
+                        </div>
                     </>
                 )
             case 'SHOW_URLS':
                 return this.navigationUrls.map((url, index) => (
-                    <div key={index} className="input-group mb-3">
+                    <div className="input-row">
                         <input
                             type="text"
                             className="form-control"
                             value={url}
                             readOnly={true}
                         />
-                        <div className="input-group-append">
-                            <button
-                                onClick={this.copyUrl(index)}
-                                className="btn btn-primary"
-                            >
-                                <i className="far fa-clipboard" />
-                            </button>
-                            <button
-                                onClick={this.openUrl(index)}
-                                className="btn btn-primary"
-                            >
-                                <i className="fas fa-external-link-alt" />
-                            </button>
-                        </div>
+                        <button
+                            onClick={this.copyUrl(index)}
+                            className="btn btn-primary"
+                        >
+                            <i className="far fa-clipboard" />
+                        </button>
+                        <button
+                            onClick={this.openUrl(index)}
+                            className="btn btn-primary"
+                        >
+                            <i className="fas fa-external-link-alt" />
+                        </button>
                     </div>
                 ))
             case 'OPTIMIZER':
@@ -522,23 +522,27 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             Note that the route found will be the most optimal route from start point to end point
                             passing through all waypoints along the way.
                         </div>
-                        <input
-                            type="text"
-                            className="form-control mb-3"
-                            placeholder={`Start Point (default: ${this.defaultStartPoint})`}
-                            value={this.state.startPointFieldValue}
-                            onChange={this.handleStartPointFieldChange}
-                            disabled={this.state.editorMode === 'OPTIMIZING'}
-                            autoFocus={true}
-                        />
-                        <input
-                            type="text"
-                            className="form-control mb-3"
-                            placeholder={`End Point (default: ${this.defaultEndPoint})`}
-                            value={this.state.endPointFieldValue}
-                            onChange={this.handleEndPointFieldChange}
-                            disabled={this.state.editorMode === 'OPTIMIZING'}
-                        />
+                        <div className="input-row">
+                            <input
+                                type="text"
+                                className="form-control mb-3"
+                                placeholder={`Start Point (default: ${this.defaultStartPoint})`}
+                                value={this.state.startPointFieldValue}
+                                onChange={this.handleStartPointFieldChange}
+                                disabled={this.state.editorMode === 'OPTIMIZING'}
+                                autoFocus={true}
+                            />
+                        </div>
+                        <div className="input-row">
+                            <input
+                                type="text"
+                                className="form-control mb-3"
+                                placeholder={`End Point (default: ${this.defaultEndPoint})`}
+                                value={this.state.endPointFieldValue}
+                                onChange={this.handleEndPointFieldChange}
+                                disabled={this.state.editorMode === 'OPTIMIZING'}
+                            />
+                        </div>
                     </>
                 )
         }
@@ -671,11 +675,11 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     render() {
         return (
             <div id="waypoint-editor">
-                <div id="waypoint-editor-header" className="frosted p-3">
-                    <h6 className="text-muted">
+                <div id="waypoint-editor-header">
+                    <div id="app-title">
                         Route Planner {appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
-                    </h6>
-                    <h2>{this.headerTitle}</h2>
+                    </div>
+                    <div id="waypoint-editor-title">{this.headerTitle}</div>
                 </div>
                 <div className="px-3 pt-3">
                     <div
@@ -687,7 +691,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     </div>
                     {this.bodyItems}
                 </div>
-                <div id="waypoint-editor-footer" className="frosted pr-3 pb-3">
+                <div id="waypoint-editor-footer">
                     {this.footerItems}
                 </div>
             </div>

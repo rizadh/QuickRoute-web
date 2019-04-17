@@ -38,10 +38,10 @@ declare namespace mapkit {
     namespace Map {
         enum ColorSchemes {
             /** A constant indicating a light color scheme. */
-            Light = 'Light',
+            Light = 'light',
 
             /** A constant indicating a dark color scheme. */
-            Dark = 'Dark',
+            Dark = 'dark',
         }
 
         enum MapTypes {

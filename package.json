@@ -7,7 +7,8 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "parcel build -d client/public client/src/index.html",
     "build:server": "tsc -p server",
-    "watch": "parcel watch -d client/public client/src/index.html",
+    "watch:client": "parcel watch -d client/public client/src/index.html",
+    "watch:server": "nodemon server/out/server.js",
     "clean": "npm run clean:client && npm run clean:server",
     "clean:client": "rm -rf client/public",
     "clean:server": "rm -rf server/out",
@@ -77,6 +78,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "autoprefixer": "^9.5.1"
+    "autoprefixer": "^9.5.1",
+    "nodemon": "^1.18.11"
   }
 }

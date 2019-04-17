@@ -46,7 +46,7 @@ const MapViewStatusbar = (props: MapViewStatusbarProps) => {
     }
 
     return (
-        <div id="mapview-statusbar" className="frosted">
+        <div id="mapview-statusbar">
             {statusbarItems}
         </div>
     )
