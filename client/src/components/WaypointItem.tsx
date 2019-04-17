@@ -106,13 +106,13 @@ export default class WaypointItem extends React.Component<WaypointItemProps, Way
                         >
                             <i className="fas fa-undo-alt" />
                         </button>
+                        <span>{index + 1}</span>
                         <span className="text-danger" hidden={!this.fetchFailed}>
                             <i className="fas fa-exclamation-circle" />
                         </span>
                         <span className="text-muted" hidden={!this.fetchIsInProgress}>
                             <i className="fas fa-circle-notch fa-spin" />
                         </span>
-                        <span>{index + 1}</span>
                         <span onClick={itemWasClicked} {...provided.dragHandleProps}>
                             <i className="fas fa-grip-lines-vertical" />
                         </span>
