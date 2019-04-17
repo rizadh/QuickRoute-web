@@ -258,16 +258,8 @@ a:hover {
     left: 0;
     top: 0;
     width: 100%;
-    height: 4px;
+    height: 6px;
     z-index: 1;
 
     overflow: hidden;
-}
-
-#loading-indicator {
-    align-self: center;
-    justify-self: center;
-
-    pointer-events: none;
-    z-index: 1;
 }

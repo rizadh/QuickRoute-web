@@ -19,13 +19,26 @@ mapkit.init({
 
 const MapView = (props: MapViewProps) => {
     const mapviewRef = useRef<HTMLDivElement>(null)
-    const loadingIndicatorRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const [appState, setAppState] = useState(props.store.getState())
     const darkMode = useMedia('(prefers-color-scheme: dark)')
     const { editorIsCollapsed } = useContext(AppContext)
     const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = appState
     const status = routeInformation(appState).status
+
+    const centerMap = () => {
+        if (autofitIsEnabled && map) {
+            map.showItems([...map.annotations || [], ...map.overlays], {
+                animate: true,
+                padding: new mapkit.Padding({
+                    top: 16,
+                    right: 16,
+                    bottom: 16,
+                    left: 16,
+                }),
+            })
+        }
+    }
 
     useEffect(() => {
         if (mapviewRef.current == null) return
@@ -68,10 +81,8 @@ const MapView = (props: MapViewProps) => {
 
         if (status === 'FETCHING') {
             mapviewRef.current.classList.add('updating')
-            if (loadingIndicatorRef.current) loadingIndicatorRef.current.hidden = false
         } else {
             mapviewRef.current.classList.remove('updating')
-            if (loadingIndicatorRef.current) loadingIndicatorRef.current.hidden = true
         }
     }, [status])
 
@@ -102,7 +113,7 @@ const MapView = (props: MapViewProps) => {
             .map(polyline =>
                 new mapkit.PolylineOverlay(polyline.points, {
                     style: new mapkit.Style({
-                        lineWidth: 5,
+                        lineWidth: 6,
                         strokeOpacity: 0.75,
                     }),
                 }),
@@ -113,41 +124,17 @@ const MapView = (props: MapViewProps) => {
 
         map.addAnnotations(annotations)
         map.addOverlays(overlays)
+
+        centerMap()
     }, [map, fetchedPlaces, fetchedRoutes])
 
-    useEffect(() => {
-        if (autofitIsEnabled && map) {
-            map.showItems([...map.annotations || [], ...map.overlays], {
-                animate: true,
-                padding: new mapkit.Padding({
-                    top: 16,
-                    right: 16,
-                    bottom: 16,
-                    left: 16,
-                }),
-            })
-        }
-    }, [map, waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled])
+    useEffect(centerMap, [map, autofitIsEnabled])
 
     useEffect(() => {
         if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light
     }, [map, darkMode])
 
-    return (
-        <>
-            <div
-                ref={mapviewRef}
-                id="mapview"
-            />
-            <div
-                ref={loadingIndicatorRef}
-                id="loading-indicator"
-                hidden={true}
-            >
-                <i className="fas fa-spin fa-circle-notch" />
-            </div>
-        </>
-    )
+    return <div ref={mapviewRef} id="mapview" />
 }
 
 export default MapView
