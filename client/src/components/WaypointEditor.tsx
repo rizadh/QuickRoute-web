@@ -429,7 +429,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <input
                                 type="text"
-                                className="form-control"
                                 placeholder="New waypoint"
                                 value={this.state.newWaypointFieldValue}
                                 onChange={this.handleNewWaypointFieldChange}
@@ -455,7 +454,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <Textarea
                                 minRows={3}
-                                className="form-control"
                                 onChange={this.handleBulkEditFieldChange}
                                 onKeyPress={this.handleBulkEditFieldKeyPress}
                                 value={this.state.bulkEditFieldValue}
@@ -477,7 +475,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <input
                                 type="text"
-                                className="form-control"
                                 placeholder="Driver number"
                                 value={this.state.driverNumberFieldValue}
                                 onChange={this.handleDriverNumberFieldChange}
@@ -493,7 +490,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     <div className="input-row">
                         <input
                             type="text"
-                            className="form-control"
                             value={url}
                             readOnly={true}
                         />
@@ -525,7 +521,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <input
                                 type="text"
-                                className="form-control"
                                 placeholder={`Start Point (default: ${this.defaultStartPoint})`}
                                 value={this.state.startPointFieldValue}
                                 onChange={this.handleStartPointFieldChange}
@@ -536,7 +531,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <div className="input-row">
                             <input
                                 type="text"
-                                className="form-control"
                                 placeholder={`End Point (default: ${this.defaultEndPoint})`}
                                 value={this.state.endPointFieldValue}
                                 onChange={this.handleEndPointFieldChange}

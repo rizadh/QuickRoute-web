@@ -52,7 +52,7 @@ html {
     }
 }
 
-.form-control {
+input, textarea {
     border: none;
     padding: $standardPadding;
     border-radius: $standardBorderRadius;
