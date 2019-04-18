@@ -1,27 +1,45 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Store } from 'redux'
+import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
+import { useMedia } from '../hooks/useMedia'
 import { disableAutofit } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
 import { AppState, FetchSuccess } from '../redux/state'
 
 type MapViewProps = {
-    store: Store<AppState, AppAction>
+    store: Store<AppState, AppAction>;
 }
 
 mapkit.init({
-    authorizationCallback: done => fetch('/token')
-        .then(res => res.text())
-        .then(done),
+    authorizationCallback: done =>
+        fetch('/token')
+            .then(res => res.text())
+            .then(done),
 })
 
 const MapView = (props: MapViewProps) => {
     const mapviewRef = useRef<HTMLDivElement>(null)
-    const loadingIndicatorRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const [appState, setAppState] = useState(props.store.getState())
+    const darkMode = useMedia('(prefers-color-scheme: dark)')
+    const { editorIsHidden: editorIsVisible } = useContext(EditorVisibilityContext)
     const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = appState
     const status = routeInformation(appState).status
+
+    const centerMap = () => {
+        if (autofitIsEnabled && map) {
+            map.showItems([...(map.annotations || []), ...map.overlays], {
+                animate: true,
+                padding: new mapkit.Padding({
+                    top: 16,
+                    right: 16,
+                    bottom: 16,
+                    left: 16,
+                }),
+            })
+        }
+    }
 
     useEffect(() => {
         if (mapviewRef.current == null) return
@@ -33,7 +51,10 @@ const MapView = (props: MapViewProps) => {
         })
 
         const mapDidMove = () => {
-            if (newMap.annotations && newMap.annotations.length > 0 || newMap.overlays && newMap.overlays.length > 0) {
+            if (
+                (newMap.annotations && newMap.annotations.length > 0) ||
+                (newMap.overlays && newMap.overlays.length > 0)
+            ) {
                 props.store.dispatch(disableAutofit())
             }
         }
@@ -52,14 +73,20 @@ const MapView = (props: MapViewProps) => {
     }, [])
 
     useEffect(() => {
+        if (!map) return
+
+        map.padding = editorIsVisible
+            ? new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 0 })
+            : new mapkit.Padding({ top: 16, left: 16 + 420 + 16, right: 16, bottom: 16 + 48 })
+    }, [editorIsVisible, map])
+
+    useEffect(() => {
         if (!mapviewRef.current) return
 
         if (status === 'FETCHING') {
             mapviewRef.current.classList.add('updating')
-            if (loadingIndicatorRef.current) loadingIndicatorRef.current.hidden = false
         } else {
             mapviewRef.current.classList.remove('updating')
-            if (loadingIndicatorRef.current) loadingIndicatorRef.current.hidden = true
         }
     }, [status])
 
@@ -70,12 +97,15 @@ const MapView = (props: MapViewProps) => {
         const annotations = waypoints
             .map(({ address }) => fetchedPlaces.get(address))
             .filter((p): p is FetchSuccess<mapkit.Place> => !!p && p.status === 'SUCCESS')
-            .map(({ result: { coordinate, formattedAddress } }, index) => new mapkit.MarkerAnnotation(coordinate, {
-                glyphText: `${index + 1}`,
-                title: waypoints[index].address,
-                subtitle: formattedAddress,
-                animates: false,
-            }))
+            .map(
+                ({ result: { coordinate, formattedAddress } }, index) =>
+                    new mapkit.MarkerAnnotation(coordinate, {
+                        glyphText: `${index + 1}`,
+                        title: waypoints[index].address,
+                        subtitle: formattedAddress,
+                        animates: false,
+                    }),
+            )
 
         const overlays = waypoints
             .map((waypoint, index) => {
@@ -87,13 +117,14 @@ const MapView = (props: MapViewProps) => {
                 if (forwardRoute && forwardRoute.status === 'SUCCESS') return forwardRoute.result.polyline
             })
             .filter((p): p is mapkit.PolylineOverlay => !!p)
-            .map(polyline =>
-                new mapkit.PolylineOverlay(polyline.points, {
-                    style: new mapkit.Style({
-                        lineWidth: 5,
-                        strokeOpacity: 0.75,
+            .map(
+                polyline =>
+                    new mapkit.PolylineOverlay(polyline.points, {
+                        style: new mapkit.Style({
+                            lineWidth: 6,
+                            strokeOpacity: 0.75,
+                        }),
                     }),
-                }),
             )
 
         if (map.annotations) map.removeAnnotations(map.annotations)
@@ -101,38 +132,17 @@ const MapView = (props: MapViewProps) => {
 
         map.addAnnotations(annotations)
         map.addOverlays(overlays)
+
+        centerMap()
     }, [map, waypoints, fetchedPlaces, fetchedRoutes])
 
-    useEffect(() => {
-        if (autofitIsEnabled && map) {
-            map.showItems([...map.annotations || [], ...map.overlays], {
-                animate: true,
-                padding: new mapkit.Padding({
-                    top: 16,
-                    right: 16,
-                    bottom: 16,
-                    left: 16,
-                }),
-            })
-        }
-    }, [map, waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled])
+    useEffect(centerMap, [map, autofitIsEnabled])
 
-    return (
-        <>
-            <div
-                ref={mapviewRef}
-                id="mapview"
-            />
-            <div
-                ref={loadingIndicatorRef}
-                id="loading-indicator"
-                className="rounded p-3 frosted"
-                hidden={true}
-            >
-                <i className="fas fa-spin fa-circle-notch" />
-            </div>
-        </>
-    )
+    useEffect(() => {
+        if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light
+    }, [map, darkMode])
+
+    return <div ref={mapviewRef} id="mapview" />
 }
 
 export default MapView

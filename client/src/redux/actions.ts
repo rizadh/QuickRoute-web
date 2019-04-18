@@ -37,8 +37,7 @@ export const replaceWaypoints = (waypoints: ReadonlyArray<Waypoint>): ReplaceWay
     waypoints,
 })
 
-export const createWaypoint = (address: string): AddWaypointAction =>
-    addWaypoint(createWaypointFromAddress(address))
+export const createWaypoint = (address: string): AddWaypointAction => addWaypoint(createWaypointFromAddress(address))
 
 export const addWaypoint = (waypoint: Waypoint): AddWaypointAction => ({
     type: 'ADD_WAYPOINT',
@@ -137,11 +136,7 @@ export const fetchRouteSuccess = (
     route,
 })
 
-export const fetchRouteFailed = (
-    origin: string,
-    destination: string,
-    error: Error,
-): FetchRouteFailedAction => ({
+export const fetchRouteFailed = (origin: string, destination: string, error: Error): FetchRouteFailedAction => ({
     type: 'FETCH_ROUTE_FAILED',
     origin,
     destination,

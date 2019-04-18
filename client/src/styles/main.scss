@@ -1,0 +1,265 @@
+@import "./variables.scss";
+@import "./btn.scss";
+@import "./alert.scss";
+@import "./colors.scss";
+@import "./mixins.scss";
+
+html {
+    background-color: var(--app-background-color);
+    color: var(--app-primary-text-color);
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#waypoint-editor {
+    position: absolute;
+
+    left: $standardMargin;
+    top: $standardMargin;
+
+    width: $editorWidth;
+    max-height: calc(100% - #{2 * $standardMargin});
+
+    border-radius: $standardBorderRadius;
+
+    @include bordered();
+    @include frosted();
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    #root.editor-hidden & {
+        display: none;
+    }
+
+    @media (max-width: $compactBreakpoint) {
+        left: 0;
+        top: 0;
+
+        width: 100%;
+        height: calc(100% - #{$statusbarHeight});
+
+        border: none;
+        border-radius: 0;
+    }
+}
+
+input,
+textarea {
+    border: none;
+    padding: $standardPadding;
+    border-radius: $standardBorderRadius;
+
+    appearance: none;
+    outline: none;
+
+    box-shadow: none;
+
+    line-height: 1.5;
+
+    color: var(--app-primary-text-color);
+
+    transition: background-color 0.2s, border 0.2s;
+    background-color: var(--app-form-control-color);
+    @include bordered(var(--app-heavy-border-color));
+
+    &::placeholder {
+        color: var(--app-secondary-text-color);
+    }
+
+    &:focus {
+        background-color: var(--app-form-control-focus-color);
+
+        @include bordered(var(--apple-system-blue));
+    }
+}
+
+#waypoint-editor-header {
+    padding: $standardMargin;
+    position: sticky;
+    top: 0;
+
+    @include frosted();
+
+    border-bottom: 1px solid var(--app-border-color);
+}
+
+a {
+    color: var(--apple-system-blue);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#app-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--app-secondary-text-color);
+}
+
+#waypoint-editor-title {
+    margin-top: $standardMargin;
+
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+#waypoint-editor-footer {
+    position: sticky;
+    bottom: 0;
+
+    overflow: auto;
+
+    @include frosted();
+
+    border-top: 1px solid var(--app-border-color);
+
+    & button {
+        float: right;
+        margin-top: $standardMargin;
+        margin-right: $standardMargin;
+
+        &:last-child {
+            margin-bottom: $standardMargin;
+        }
+    }
+}
+
+.input-row {
+    margin: $standardMargin;
+
+    display: flex;
+    align-items: center;
+
+    & > * {
+        border-radius: $standardBorderRadius / 2;
+        margin-left: $standardMargin / 2;
+
+        padding: $standardPadding;
+
+        line-height: 1.5;
+    }
+
+    & > input,
+    & > textarea {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    & > span {
+        background-color: var(--app-input-row-span-color);
+        @include bordered(var(--app-heavy-border-color));
+    }
+
+    &.waypoint-item-selected > span {
+        background-color: var(--apple-system-blue);
+        color: white;
+    }
+
+    & > *:first-child {
+        margin-left: 0;
+
+        border-top-left-radius: $standardBorderRadius;
+        border-bottom-left-radius: $standardBorderRadius;
+    }
+
+    & > *:last-child {
+        border-top-right-radius: $standardBorderRadius;
+        border-bottom-right-radius: $standardBorderRadius;
+    }
+}
+
+#mapview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    transition: filter 0.2s;
+    &.updating {
+        transition: filter 0.4s;
+        filter: saturate(0) brightness(0.5);
+
+        @media (prefers-color-scheme: dark) {
+            filter: saturate(0) brightness(2);
+        }
+
+        * {
+            pointer-events: none;
+        }
+    }
+
+    @media (max-width: $compactBreakpoint) {
+        #root:not(.editor-hidden) & {
+            display: none;
+        }
+    }
+}
+
+#mapview-statusbar {
+    position: absolute;
+    right: $standardMargin;
+    bottom: $standardMargin;
+    width: calc(100% - #{$editorWidth + 3 * $standardMargin});
+    height: $statusbarHeight;
+
+    #root.editor-hidden & {
+        display: none;
+    }
+
+    z-index: 1;
+
+    @include frosted();
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    @include bordered();
+    border-radius: $standardBorderRadius;
+
+    @media (max-width: $compactBreakpoint) {
+        left: 0;
+        bottom: 0;
+        width: 100%;
+
+        border: none;
+        border-top: 1px solid var(--app-border-color);
+        border-radius: 0;
+    }
+}
+
+.statview > span {
+    font-weight: 600;
+}
+
+#map-buttons {
+    position: absolute;
+    top: $standardMargin;
+    right: $standardMargin;
+
+    & > button {
+        float: right;
+        margin-left: $standardMargin / 2;
+    }
+}
+
+#progress-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 6px;
+    z-index: 1;
+
+    overflow: hidden;
+}

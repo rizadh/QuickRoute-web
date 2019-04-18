@@ -10,21 +10,21 @@ const dispatchedCountRegex = /Disptchd (\d+)/
 const inprogressCountRegex = /In Prog. (\d+)/
 
 type LoginParameters = {
-    driverNumber: string
-    password: string
+    driverNumber: string;
+    password: string;
 }
 
 type OrderType = 'dispatched' | 'inprogress'
 
 type Waypoint = {
-    address: string
-    city: string
-    postalCode: string
+    address: string;
+    city: string;
+    postalCode: string;
 }
 
 type WaypointsSet = {
-    dispatched: Waypoint[]
-    inprogress: Waypoint[]
+    dispatched: Waypoint[];
+    inprogress: Waypoint[];
 }
 
 async function loginAndFetchWaypoints(loginParameters: LoginParameters): Promise<WaypointsSet> {
@@ -77,17 +77,24 @@ async function fetchWaypoints(count: number, identifier: string, orderType: Orde
     if (!viewstateRegexResult) throw new Error('Could not extract __VIEWSTATE from: ' + text)
     const viewstate = viewstateRegexResult[1]
 
-    const waypoints = Promise.all(range(0, count).map(async i => {
-        const waypoint = await fetchWaypoint(i, identifier, orderType, viewstate)
-        return waypoint
-    }))
+    const waypoints = Promise.all(
+        range(0, count).map(async i => {
+            const waypoint = await fetchWaypoint(i, identifier, orderType, viewstate)
+            return waypoint
+        }),
+    )
 
     return waypoints
 }
 
-async function fetchWaypoint(index: number, identifier: string, orderType: OrderType,
-                             viewstate: string): Promise<Waypoint> {
-    const url = `http://pickup.atripcocourier.com/ccwap/(S(${identifier}))/${orderType}.aspx` +
+async function fetchWaypoint(
+    index: number,
+    identifier: string,
+    orderType: OrderType,
+    viewstate: string,
+): Promise<Waypoint> {
+    const url =
+        `http://pickup.atripcocourier.com/ccwap/(S(${identifier}))/${orderType}.aspx` +
         `?__VIEWSTATE=${encodeURIComponent(viewstate)}&__ET=${eventTargetForOrderType(orderType)}&__EA=${index}`
     const response = await fetch(url)
     const text = await response.text()

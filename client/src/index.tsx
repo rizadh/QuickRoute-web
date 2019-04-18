@@ -7,9 +7,14 @@ import { Provider } from 'react-redux'
 import { App } from './components/App'
 import store from './redux/store'
 
-export const appVersion = 'v2019.03.23'
+export const appVersion = 'v2019.04.17'
 
 // tslint:disable-next-line:no-var-requires
 require('babel-polyfill')
 
-render(<Provider store={store}><App store={store} /></Provider>, document.getElementById('root'))
+render(
+    <Provider store={store}>
+        <App store={store} />
+    </Provider>,
+    document.getElementById('root'),
+)

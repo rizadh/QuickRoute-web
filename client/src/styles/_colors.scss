@@ -1,0 +1,85 @@
+:root {
+    // Apple System Colors
+    --apple-system-blue: rgb(0, 122, 255);
+    --apple-system-brown: rgb(162, 132, 94);
+    --apple-system-gray: rgb(142, 142, 147);
+    --apple-system-green: rgb(40, 205, 65);
+    --apple-system-orange: rgb(245, 149, 0);
+    --apple-system-pink: rgb(255, 45, 85);
+    --apple-system-purple: rgb(175, 82, 222);
+    --apple-system-red: rgb(255, 59, 48);
+    --apple-system-yellow: rgb(255, 204, 0);
+
+    // App Colors
+    --app-background-color: white;
+    --app-primary-text-color: rgba(0, 0, 0, 0.8);
+    --app-secondary-text-color: rgba(0, 0, 0, 0.5);
+    --app-form-control-color: rgba(0, 0, 0, 0.05);
+    --app-form-control-focus-color: rgba(255, 255, 255, 0.5);
+    --app-border-color: rgba(0, 0, 0, 0.1);
+    --app-heavy-border-color: rgba(0, 0, 0, 0.2);
+    --app-frost-color: rgba(255, 255, 255, 0.5);
+    --app-frost-fallback-color: rgba(255, 255, 255, 0.9);
+    --app-input-row-span-color: rgba(255, 255, 255, 0.5);
+    --app-button-hover-highlight-color: rgba(0, 0, 0, 0.1);
+    --app-button-active-highlight-color: rgba(0, 0, 0, 0.2);
+
+    @media (prefers-color-scheme: dark) {
+        // Apple System Colors
+        --apple-system-blue: rgb(10, 132, 255);
+        --apple-system-brown: rgb(172, 142, 104);
+        --apple-system-gray: rgb(152, 152, 157);
+        --apple-system-green: rgb(50, 215, 75);
+        --apple-system-orange: rgb(255, 159, 10);
+        --apple-system-pink: rgb(255, 55, 95);
+        --apple-system-purple: rgb(191, 90, 242);
+        --apple-system-red: rgb(255, 69, 58);
+        --apple-system-yellow: rgb(255, 214, 10);
+
+        // App Colors
+        --app-background-color: rgb(64, 64, 64);
+        --app-primary-text-color: rgba(255, 255, 255, 0.8);
+        --app-secondary-text-color: rgba(255, 255, 255, 0.5);
+        --app-form-control-color: rgba(0, 0, 0, 0.2);
+        --app-form-control-focus-color: rgba(255, 255, 255, 0.05);
+        --app-border-color: rgba(255, 255, 255, 0.1);
+        --app-heavy-border-color: rgba(255, 255, 255, 0.1);
+        --app-frost-color: rgba(0, 0, 0, 0.2);
+        --app-frost-fallback-color: rgba(0, 0, 0, 0.9);
+        --app-input-row-span-color: rgba(255, 255, 255, 0.05);
+        --app-button-hover-highlight-color: rgba(255, 255, 255, 0.1);
+        --app-button-active-highlight-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.text-primary {
+    color: var(--apple-system-blue);
+}
+
+.text-secondary {
+    color: var(--app-secondary-text-color);
+}
+
+.text-danger {
+    color: var(--apple-system-red);
+}
+
+.text-light {
+    color: white;
+}
+
+.border-primary {
+    border-color: var(--apple-system-blue);
+}
+
+.border-danger {
+    border-color: var(--apple-system-red);
+}
+
+.bg-primary {
+    background-color: var(--apple-system-blue);
+}
+
+.bg-danger {
+    background-color: var(--apple-system-red);
+}
