@@ -8,7 +8,7 @@
     "build:client": "parcel build -d client/public client/src/index.html",
     "build:server": "tsc -p server",
     "watch:client": "parcel watch -d client/public client/src/index.html",
-    "watch:server": "nodemon server/out/server.js",
+    "watch:server": "tsc -w -p server",
     "clean": "npm run clean:client && npm run clean:server",
     "clean:client": "rm -rf client/public",
     "clean:server": "rm -rf server/out",
@@ -17,7 +17,8 @@
     "lint": "npm run lint:client && npm run lint:server",
     "lint:client": "tslint --project client --format verbose",
     "lint:server": "tslint --project server --format verbose",
-    "serve": "node server/out/server.js"
+    "serve": "node server/out/server.js",
+    "serve:watch": "nodemon server/out/server.js"
   },
   "author": "",
   "license": "ISC",
