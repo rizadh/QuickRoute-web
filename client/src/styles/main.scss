@@ -190,11 +190,7 @@ a:hover {
     transition: filter 0.2s;
     &.updating {
         transition: filter 0.4s;
-        filter: saturate(0) brightness(0.5);
-
-        @media (prefers-color-scheme: dark) {
-            filter: saturate(0) brightness(2);
-        }
+        filter: saturate(0) opacity(0.5);
 
         * {
             pointer-events: none;
