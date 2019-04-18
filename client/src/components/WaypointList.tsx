@@ -81,7 +81,6 @@ class WaypointList extends React.Component<WaypointListProps> {
                     {(provided, snapshot) => (
                         // tslint:disable-next-line: jsx-no-multiline-js
                         <div ref={provided.innerRef} {...provided.droppableProps}>
-                            // tslint:disable-next-line: jsx-no-multiline-js
                             {this.props.waypoints.map((waypoint, index) => (
                                 // tslint:disable-next-line: jsx-no-multiline-js
                                 <WaypointItem
