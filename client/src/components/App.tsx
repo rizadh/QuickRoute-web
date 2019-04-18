@@ -14,12 +14,16 @@ type AppProps = {
     store: Store<AppState, AppAction>;
 }
 
-export const App = (props: AppProps) => (
-    <EditorVisibilityContext.Provider value={useEditorVisibility()}>
-        <MapView store={props.store} />
-        <ProgressBar />
-        <MapButtons />
-        <MapViewStatusbar />
-        <WaypointEditor />
-    </EditorVisibilityContext.Provider>
-)
+export const App = (props: AppProps) => {
+    const editorVisibility = useEditorVisibility()
+
+    return (
+        <EditorVisibilityContext.Provider value={editorVisibility}>
+            <MapView store={props.store} />
+            <ProgressBar />
+            <MapButtons />
+            {!editorVisibility.editorIsHidden && <MapViewStatusbar />}
+            {!editorVisibility.editorIsHidden && <WaypointEditor />}
+        </EditorVisibilityContext.Provider>
+    )
+}

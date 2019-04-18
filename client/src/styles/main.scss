@@ -36,10 +36,6 @@ html {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 
-    #root.editor-hidden & {
-        display: none;
-    }
-
     @media (max-width: $compactBreakpoint) {
         left: 0;
         top: 0;
@@ -87,6 +83,8 @@ textarea {
     position: sticky;
     top: 0;
 
+    z-index: 1;
+
     @include frosted();
 
     border-bottom: 1px solid var(--app-border-color);
@@ -119,6 +117,7 @@ a:hover {
     bottom: 0;
 
     overflow: auto;
+    z-index: 1;
 
     @include frosted();
 
@@ -132,6 +131,10 @@ a:hover {
         &:last-child {
             margin-bottom: $standardMargin;
         }
+    }
+
+    @media (max-width: $compactBreakpoint) {
+        border-bottom: 1px solid var(--app-border-color);
     }
 }
 
@@ -212,12 +215,6 @@ a:hover {
     width: calc(100% - #{$editorWidth + 3 * $standardMargin});
     height: $statusbarHeight;
 
-    #root.editor-hidden & {
-        display: none;
-    }
-
-    z-index: 1;
-
     @include frosted();
 
     display: flex;
@@ -238,8 +235,13 @@ a:hover {
     }
 }
 
-.statview > span {
-    font-weight: 600;
+.statview {
+    color: var(--app-secondary-text-color);
+
+    & > span {
+        font-weight: 600;
+        color: var(--app-primary-text-color);
+    }
 }
 
 #map-buttons {
@@ -259,7 +261,6 @@ a:hover {
     top: 0;
     width: 100%;
     height: 6px;
-    z-index: 1;
-
     overflow: hidden;
+    z-index: 2;
 }
