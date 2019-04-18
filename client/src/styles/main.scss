@@ -1,8 +1,8 @@
-@import './variables.scss';
-@import './btn.scss';
-@import './alert.scss';
-@import './colors.scss';
-@import './mixins.scss';
+@import "./variables.scss";
+@import "./btn.scss";
+@import "./alert.scss";
+@import "./colors.scss";
+@import "./mixins.scss";
 
 html {
     background-color: var(--app-background-color);
@@ -27,7 +27,7 @@ html {
 
     width: $editorWidth;
     max-height: calc(100% - #{2 * $standardMargin});
-    
+
     border-radius: $standardBorderRadius;
 
     @include bordered();
@@ -43,7 +43,7 @@ html {
     @media (max-width: $compactBreakpoint) {
         left: 0;
         top: 0;
- 
+
         width: 100%;
         height: calc(100% - #{$statusbarHeight});
 
@@ -52,7 +52,8 @@ html {
     }
 }
 
-input, textarea {
+input,
+textarea {
     border: none;
     padding: $standardPadding;
     border-radius: $standardBorderRadius;
@@ -66,7 +67,7 @@ input, textarea {
 
     color: var(--app-primary-text-color);
 
-    transition: background-color .2s, border .2s;
+    transition: background-color 0.2s, border 0.2s;
     background-color: var(--app-form-control-color);
     @include bordered(var(--app-heavy-border-color));
 
@@ -108,7 +109,7 @@ a:hover {
 
 #waypoint-editor-title {
     margin-top: $standardMargin;
-    
+
     font-size: 2rem;
     font-weight: 500;
 }
@@ -116,7 +117,7 @@ a:hover {
 #waypoint-editor-footer {
     position: sticky;
     bottom: 0;
-    
+
     overflow: auto;
 
     @include frosted();
@@ -149,7 +150,8 @@ a:hover {
         line-height: 1.5;
     }
 
-    & > input, & > textarea {
+    & > input,
+    & > textarea {
         flex-grow: 1;
         min-width: 0;
     }
@@ -166,7 +168,7 @@ a:hover {
 
     & > *:first-child {
         margin-left: 0;
-        
+
         border-top-left-radius: $standardBorderRadius;
         border-bottom-left-radius: $standardBorderRadius;
     }

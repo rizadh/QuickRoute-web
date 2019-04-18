@@ -15,7 +15,7 @@ import {
     SelectWaypointAction,
     SelectWaypointRangeAction,
     SetAddressAction,
-    ToggleWaypointSelectionAction
+    ToggleWaypointSelectionAction,
 } from './actionTypes'
 import { AppState, fetchFailed, fetchInProgress, fetchSuccess } from './state'
 
@@ -73,7 +73,8 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
 type Reducer<T> = (state: AppState, action: T) => AppState
 
 const replaceWaypoints: Reducer<ReplaceWaypointsAction> = (state, { waypoints }) => ({
-    ...state, waypoints,
+    ...state,
+    waypoints,
 })
 
 const addWaypoint: Reducer<AddWaypointAction> = (state, { waypoint }) => ({
@@ -100,11 +101,13 @@ const moveSelectedWaypoints: Reducer<MoveSelectedWaypointsAction> = (state, { in
     const lowestIndex = state.waypoints.findIndex(waypoint => waypoint.isSelected)
     const partitionIndex = lowestIndex < targetIndex ? targetIndex + 1 : targetIndex
 
-    const waypointsBeforePartition = state.waypoints.filter((waypoint, index) =>
-        !waypoint.isSelected && index < partitionIndex)
+    const waypointsBeforePartition = state.waypoints.filter(
+        (waypoint, index) => !waypoint.isSelected && index < partitionIndex,
+    )
     const movedWaypoints = state.waypoints.filter(waypoint => waypoint.isSelected)
-    const waypointsAfterPartition = state.waypoints.filter((waypoint, index) =>
-        !waypoint.isSelected && index >= partitionIndex)
+    const waypointsAfterPartition = state.waypoints.filter(
+        (waypoint, index) => !waypoint.isSelected && index >= partitionIndex,
+    )
 
     const waypoints = [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
 

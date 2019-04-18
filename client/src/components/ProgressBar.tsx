@@ -6,7 +6,7 @@ import { RouteInformation, routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
 
 type ProgressBarProps = {
-    routeInformation: RouteInformation
+    routeInformation: RouteInformation;
 }
 
 const ProgressBar = (props: ProgressBarProps) => {

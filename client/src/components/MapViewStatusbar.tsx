@@ -5,7 +5,7 @@ import { AppState } from '../redux/state'
 import StatView from './StatView'
 
 type MapViewStatusbarProps = {
-    routeInformation: RouteInformation
+    routeInformation: RouteInformation;
 }
 
 const MapViewStatusbar = (props: MapViewStatusbarProps) => {
@@ -14,24 +14,15 @@ const MapViewStatusbar = (props: MapViewStatusbarProps) => {
         case 'FETCHING':
             statusbarItems = (
                 <>
-                    <StatView
-                        title="Routing"
-                        value={stringForUpdateProgress(props.routeInformation.fetchProgress)}
-                    />
+                    <StatView title="Routing" value={stringForUpdateProgress(props.routeInformation.fetchProgress)} />
                 </>
             )
             break
         case 'FETCHED':
             statusbarItems = (
                 <>
-                    <StatView
-                        title="Distance"
-                        value={stringForDistance(props.routeInformation.totalDistance)}
-                    />
-                    <StatView
-                        title="Time"
-                        value={stringForTime(props.routeInformation.totalTime)}
-                    />
+                    <StatView title="Distance" value={stringForDistance(props.routeInformation.totalDistance)} />
+                    <StatView title="Time" value={stringForTime(props.routeInformation.totalTime)} />
                 </>
             )
             break
@@ -45,11 +36,7 @@ const MapViewStatusbar = (props: MapViewStatusbarProps) => {
             throw new Error('Invalid route information')
     }
 
-    return (
-        <div id="mapview-statusbar">
-            {statusbarItems}
-        </div>
-    )
+    return <div id="mapview-statusbar">{statusbarItems}</div>
 }
 
 function stringForTime(seconds: number) {

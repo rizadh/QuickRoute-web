@@ -14,25 +14,25 @@ import { isValidAddress, parseAddress } from '../redux/validator'
 import WaypointList from './WaypointList'
 
 type WaypointEditorState = {
-    editorMode: 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING' | 'SHOW_URLS' | 'OPTIMIZER' | 'OPTIMIZING'
-    errorMessage: string,
-    bulkEditFieldValue: string
-    newWaypointFieldValue: string
-    driverNumberFieldValue: string
-    startPointFieldValue: string,
-    endPointFieldValue: string
+    editorMode: 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING' | 'SHOW_URLS' | 'OPTIMIZER' | 'OPTIMIZING';
+    errorMessage: string;
+    bulkEditFieldValue: string;
+    newWaypointFieldValue: string;
+    driverNumberFieldValue: string;
+    startPointFieldValue: string;
+    endPointFieldValue: string;
 }
 
 type WaypointEditorStateProps = {
-    waypoints: ReadonlyArray<Waypoint>
-    routeInformation: RouteInformation
-    fetchedPlaces: FetchedPlaces
+    waypoints: ReadonlyArray<Waypoint>;
+    routeInformation: RouteInformation;
+    fetchedPlaces: FetchedPlaces;
 }
 
 type WaypointEditorDispatchProps = {
-    createAndReplaceWaypoints(addresses: ReadonlyArray<string>): void
-    createWaypoint(address: string): void
-    reverseWaypoints(): void
+    createAndReplaceWaypoints(addresses: ReadonlyArray<string>): void;
+    createWaypoint(address: string): void;
+    reverseWaypoints(): void;
 }
 
 type WaypointEditorProps = WaypointEditorStateProps & WaypointEditorDispatchProps
@@ -125,14 +125,14 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     executeImport = async () => {
         this.setState({ editorMode: 'IMPORTING', errorMessage: '' })
 
-        type FetchedWaypoint = { address: string, city: string, postalCode: string }
+        type FetchedWaypoint = { address: string; city: string; postalCode: string }
         type WaypointsResponse = {
-            date: string
-            driverNumber: string
+            date: string;
+            driverNumber: string;
             waypoints: {
-                dispatched: ReadonlyArray<FetchedWaypoint>
-                inprogress: ReadonlyArray<FetchedWaypoint>
-            }
+                dispatched: ReadonlyArray<FetchedWaypoint>;
+                inprogress: ReadonlyArray<FetchedWaypoint>;
+            };
         }
 
         const url = '/waypoints/' + this.state.driverNumberFieldValue
@@ -140,7 +140,8 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
         if (!httpResponse.ok) {
             this.setState({
                 editorMode: 'REGULAR',
-                errorMessage: `Failed to import waypoints for driver ${this.state.driverNumberFieldValue} ` +
+                errorMessage:
+                    `Failed to import waypoints for driver ${this.state.driverNumberFieldValue} ` +
                     `(ERROR: '${await httpResponse.text()}')`,
             })
             return
@@ -237,13 +238,11 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
     hideOptimizer = () => this.setState({ editorMode: 'REGULAR', errorMessage: '' })
 
     get defaultStartPoint() {
-        return this.state.endPointFieldValue ||
-            this.props.waypoints[0].address
+        return this.state.endPointFieldValue || this.props.waypoints[0].address
     }
 
     get defaultEndPoint() {
-        return this.state.startPointFieldValue ||
-            this.props.waypoints[this.props.waypoints.length - 1].address
+        return this.state.startPointFieldValue || this.props.waypoints[this.props.waypoints.length - 1].address
     }
 
     handleStartPointFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -269,11 +268,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
 
         let waypoints: string[]
         if (startPoint) {
-            waypoints = [
-                startPoint,
-                ...this.props.waypoints.map(w => w.address),
-                endPoint,
-            ]
+            waypoints = [startPoint, ...this.props.waypoints.map(w => w.address), endPoint]
         } else waypoints = this.props.waypoints.map(w => w.address)
 
         try {
@@ -287,7 +282,9 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 body: JSON.stringify({ costMatrix }),
             })
 
-            interface IOptimizeResponse { result: number[] }
+            interface IOptimizeResponse {
+                result: number[]
+            }
 
             if (!response.ok) {
                 this.setState({
@@ -298,9 +295,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             }
 
             const jsonResponse: IOptimizeResponse = await response.json()
-            const optimalOrdering = startPoint ?
-                jsonResponse.result.slice(1, -1).map(i => i - 1) :
-                jsonResponse.result
+            const optimalOrdering = startPoint ? jsonResponse.result.slice(1, -1).map(i => i - 1) : jsonResponse.result
 
             this.props.createAndReplaceWaypoints(optimalOrdering.map(i => this.props.waypoints[i].address))
 
@@ -311,73 +306,88 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 errorMessage: `Failed to optimize route (ERROR: '${e}')`,
             })
         }
-
     }
 
     async getCostMatrix(waypoints: string[], optimizationParameter: 'DISTANCE' | 'TIME'): Promise<number[][]> {
         const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
         const directions = new mapkit.Directions()
 
-        return await Promise.all(waypoints.map(async waypointA =>
-            await Promise.all(waypoints.map(waypointB => new Promise<number>(async (resolve, reject) => {
-                if (waypointA === waypointB) return resolve(0)
+        return await Promise.all(
+            waypoints.map(
+                async waypointA =>
+                    await Promise.all(
+                        waypoints.map(
+                            waypointB =>
+                                new Promise<number>(async (resolve, reject) => {
+                                    if (waypointA === waypointB) return resolve(0)
 
-                let placeA: mapkit.Place
-                let placeB: mapkit.Place
+                                    let placeA: mapkit.Place
+                                    let placeB: mapkit.Place
 
-                const fetchedPlaceA = this.props.fetchedPlaces.get(waypointA)
+                                    const fetchedPlaceA = this.props.fetchedPlaces.get(waypointA)
 
-                if (fetchedPlaceA && fetchedPlaceA.status === 'SUCCESS') {
-                    placeA = fetchedPlaceA.result
-                } else {
-                    placeA = await new Promise((resolvePlace, rejectPlace) => {
-                        geocoder.lookup(waypointA, (error, data) => {
-                            if (error) return rejectPlace(error)
+                                    if (fetchedPlaceA && fetchedPlaceA.status === 'SUCCESS') {
+                                        placeA = fetchedPlaceA.result
+                                    } else {
+                                        placeA = await new Promise((resolvePlace, rejectPlace) => {
+                                            geocoder.lookup(waypointA, (error, data) => {
+                                                if (error) return rejectPlace(error)
 
-                            const place = data.results[0]
-                            if (!place) return rejectPlace(new Error(`Place '${waypointA}' not found`))
+                                                const place = data.results[0]
+                                                if (!place) {
+                                                    return rejectPlace(new Error(`Place '${waypointA}' not found`))
+                                                }
 
-                            resolvePlace(place)
-                        })
-                    })
-                }
+                                                resolvePlace(place)
+                                            })
+                                        })
+                                    }
 
-                const fetchedPlaceB = this.props.fetchedPlaces.get(waypointB)
+                                    const fetchedPlaceB = this.props.fetchedPlaces.get(waypointB)
 
-                if (fetchedPlaceB && fetchedPlaceB.status === 'SUCCESS') {
-                    placeB = fetchedPlaceB.result
-                } else {
-                    placeB = await new Promise((resolvePlace, rejectPlace) => {
-                        geocoder.lookup(waypointB, (error, data) => {
-                            if (error) return rejectPlace(error)
+                                    if (fetchedPlaceB && fetchedPlaceB.status === 'SUCCESS') {
+                                        placeB = fetchedPlaceB.result
+                                    } else {
+                                        placeB = await new Promise((resolvePlace, rejectPlace) => {
+                                            geocoder.lookup(waypointB, (error, data) => {
+                                                if (error) return rejectPlace(error)
 
-                            const place = data.results[0]
-                            if (!place) return rejectPlace(new Error(`Place '${waypointB}' not found`))
+                                                const place = data.results[0]
+                                                if (!place) {
+                                                    return rejectPlace(new Error(`Place '${waypointB}' not found`))
+                                                }
 
-                            resolvePlace(place)
-                        })
-                    })
-                }
+                                                resolvePlace(place)
+                                            })
+                                        })
+                                    }
 
-                directions.route({ origin: placeA, destination: placeB }, (error, data) => {
-                    if (error) return reject(error)
+                                    directions.route({ origin: placeA, destination: placeB }, (error, data) => {
+                                        if (error) return reject(error)
 
-                    const route = data.routes[0]
+                                        const route = data.routes[0]
 
-                    if (!route) {
-                        return reject(new Error(`No routes returned: ` +
-                            `origin = '${waypointA}', destination = '${waypointB}'`))
-                    }
+                                        if (!route) {
+                                            return reject(
+                                                new Error(
+                                                    `No routes returned: ` +
+                                                        `origin = '${waypointA}', destination = '${waypointB}'`,
+                                                ),
+                                            )
+                                        }
 
-                    switch (optimizationParameter) {
-                        case 'DISTANCE':
-                            return resolve(route.distance)
-                        case 'TIME':
-                            return resolve(route.expectedTravelTime)
-                    }
-                })
-            }))),
-        ))
+                                        switch (optimizationParameter) {
+                                            case 'DISTANCE':
+                                                return resolve(route.distance)
+                                            case 'TIME':
+                                                return resolve(route.expectedTravelTime)
+                                        }
+                                    })
+                                }),
+                        ),
+                    ),
+            ),
+        )
     }
 
     // Content Helper Functions
@@ -411,18 +421,10 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         >
                             Route could not be found
                         </div>
-                        <div
-                            className="alert alert-info"
-                            role="alert"
-                            hidden={this.props.waypoints.length > 0}
-                        >
+                        <div className="alert alert-info" role="alert" hidden={this.props.waypoints.length > 0}>
                             Enter an address to begin
                         </div>
-                        <div
-                            className="alert alert-info"
-                            role="alert"
-                            hidden={this.props.waypoints.length !== 1}
-                        >
+                        <div className="alert alert-info" role="alert" hidden={this.props.waypoints.length !== 1}>
                             Enter another address to show route information
                         </div>
                         <WaypointList />
@@ -466,10 +468,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'IMPORTING':
                 return (
                     <>
-                        <div
-                            className="alert alert-info"
-                            role="alert"
-                        >
+                        <div className="alert alert-info" role="alert">
                             Waypoints are imported from Atripco
                         </div>
                         <div className="input-row">
@@ -488,21 +487,11 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'SHOW_URLS':
                 return this.navigationUrls.map((url, index) => (
                     <div key={url} className="input-row">
-                        <input
-                            type="text"
-                            value={url}
-                            readOnly={true}
-                        />
-                        <button
-                            onClick={this.copyUrl(index)}
-                            className="btn btn-primary"
-                        >
+                        <input type="text" value={url} readOnly={true} />
+                        <button onClick={this.copyUrl(index)} className="btn btn-primary">
                             <i className="far fa-clipboard" />
                         </button>
-                        <button
-                            onClick={this.openUrl(index)}
-                            className="btn btn-primary"
-                        >
+                        <button onClick={this.openUrl(index)} className="btn btn-primary">
                             <i className="fas fa-external-link-alt" />
                         </button>
                     </div>
@@ -511,10 +500,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'OPTIMIZING':
                 return (
                     <>
-                        <div
-                            className="alert alert-info"
-                            role="alert"
-                        >
+                        <div className="alert alert-info" role="alert">
                             Note that the route found will be the most optimal route from start point to end point
                             passing through all waypoints along the way.
                         </div>
@@ -550,10 +536,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         <button className="btn btn-primary" onClick={this.beginBulkEdit}>
                             <i className="fas fa-list-alt" /> Bulk Edit
                         </button>
-                        <button
-                            className="btn btn-primary"
-                            onClick={this.beginImportMode}
-                        >
+                        <button className="btn btn-primary" onClick={this.beginImportMode}>
                             <i className="fas fa-cloud-download-alt" /> Import Waypoints
                         </button>
                         <button
@@ -585,15 +568,12 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                             <i className="fas fa-star" /> Optimize
                         </button>
                         <EditorVisibilityContext.Consumer>
-                            {context =>
+                            {context => (
                                 // tslint:disable-next-line:jsx-no-multiline-js
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={context.hideEditor}
-                                >
+                                <button className="btn btn-primary" onClick={context.hideEditor}>
                                     <i className="far fa-window-maximize" /> Hide Editor
                                 </button>
-                            }
+                            )}
                         </EditorVisibilityContext.Consumer>
                     </>
                 )
@@ -616,7 +596,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         </button>
                         <button className="btn btn-secondary" onClick={this.cancelImportMode}>
                             <i className="fas fa-chevron-left" /> Back
-                    </button>
+                        </button>
                     </>
                 )
             case 'IMPORTING':
@@ -652,7 +632,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         </button>
                         <button className="btn btn-secondary" onClick={this.hideOptimizer}>
                             <i className="fas fa-chevron-left" /> Back
-                    </button>
+                        </button>
                     </>
                 )
             case 'OPTIMIZING':
@@ -676,18 +656,12 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     <div id="waypoint-editor-title">{this.headerTitle}</div>
                 </div>
                 <div>
-                    <div
-                        className="alert alert-danger"
-                        role="alert"
-                        hidden={!this.state.errorMessage}
-                    >
+                    <div className="alert alert-danger" role="alert" hidden={!this.state.errorMessage}>
                         {this.state.errorMessage}
                     </div>
                     {this.bodyItems}
                 </div>
-                <div id="waypoint-editor-footer">
-                    {this.footerItems}
-                </div>
+                <div id="waypoint-editor-footer">{this.footerItems}</div>
             </div>
         )
     }
@@ -705,4 +679,7 @@ const mapDispatchToProps = (dispatch: React.Dispatch<AppAction>): WaypointEditor
     reverseWaypoints: () => dispatch(reverseWaypoints()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(WaypointEditor)
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(WaypointEditor)

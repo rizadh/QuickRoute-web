@@ -1,10 +1,11 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 .alert {
     margin: $standardMargin;
 }
 
-.alert-info, .alert-primary  {
+.alert-info,
+.alert-primary {
     color: var(--app-secondary-text-color);
 }
 

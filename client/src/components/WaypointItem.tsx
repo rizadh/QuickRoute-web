@@ -4,15 +4,15 @@ import { PlaceFetchResult, RouteFetchResult, Waypoint } from '../redux/state'
 import { isValidAddress } from '../redux/validator'
 
 type WaypointItemProps = {
-    index: number
-    waypoint: Waypoint
-    setAddress: (address: string) => void
-    deleteWaypoint: () => void
-    placeFetchResult?: PlaceFetchResult
-    outgoingRouteFetchResult?: RouteFetchResult
-    incomingRouteFetchResult?: RouteFetchResult
-    isBeingDragged: boolean
-    itemWasClicked: (e: React.MouseEvent) => void
+    index: number;
+    waypoint: Waypoint;
+    setAddress: (address: string) => void;
+    deleteWaypoint: () => void;
+    placeFetchResult?: PlaceFetchResult;
+    outgoingRouteFetchResult?: RouteFetchResult;
+    incomingRouteFetchResult?: RouteFetchResult;
+    isBeingDragged: boolean;
+    itemWasClicked: (e: React.MouseEvent) => void;
 }
 
 export const WaypointItem = (props: WaypointItemProps) => {
@@ -33,14 +33,14 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const fieldWasEdited = waypointFieldValue !== props.waypoint.address
 
     const fetchIsInProgress =
-        props.placeFetchResult && props.placeFetchResult.status === 'IN_PROGRESS' ||
-        props.incomingRouteFetchResult && props.incomingRouteFetchResult.status === 'IN_PROGRESS' ||
-        props.outgoingRouteFetchResult && props.outgoingRouteFetchResult.status === 'IN_PROGRESS'
+        (props.placeFetchResult && props.placeFetchResult.status === 'IN_PROGRESS') ||
+        (props.incomingRouteFetchResult && props.incomingRouteFetchResult.status === 'IN_PROGRESS') ||
+        (props.outgoingRouteFetchResult && props.outgoingRouteFetchResult.status === 'IN_PROGRESS')
 
     const fetchFailed =
-        props.placeFetchResult && props.placeFetchResult.status === 'FAILED' ||
-        props.incomingRouteFetchResult && props.incomingRouteFetchResult.status === 'FAILED' ||
-        props.outgoingRouteFetchResult && props.outgoingRouteFetchResult.status === 'FAILED'
+        (props.placeFetchResult && props.placeFetchResult.status === 'FAILED') ||
+        (props.incomingRouteFetchResult && props.incomingRouteFetchResult.status === 'FAILED') ||
+        (props.outgoingRouteFetchResult && props.outgoingRouteFetchResult.status === 'FAILED')
 
     const renderItem = (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
         <div
@@ -58,11 +58,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                 onKeyPress={handleWaypointFieldKeyPress}
                 disabled={props.isBeingDragged && !snapshot.isDragging}
             />
-            <button
-                onClick={resetWaypointField}
-                className="btn btn-secondary"
-                hidden={!fieldWasEdited}
-            >
+            <button onClick={resetWaypointField} className="btn btn-secondary" hidden={!fieldWasEdited}>
                 <i className="fas fa-undo-alt" />
             </button>
             <span>{props.index + 1}</span>

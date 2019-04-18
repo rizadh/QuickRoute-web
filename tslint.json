@@ -1,38 +1,17 @@
 {
     "defaultSeverity": "warning",
-    "extends": [
-        "tslint:recommended",
-        "tslint-react"
-    ],
-    "jsRules": {},
+    "extends": ["tslint:recommended", "tslint-react", "tslint-react-hooks"],
     "rules": {
-        "quotemark": [
-            true,
-            "single",
-            "jsx-double"
-        ],
-        "semicolon": [
-            true,
-            "never"
-        ],
+        "quotemark": [true, "single", "jsx-double"],
+        "semicolon": [true, "never"],
+        "type-literal-delimiter": true,
         "interface-over-type-literal": false,
-        "member-access": [
-            true,
-            "no-public"
-        ],
-        "curly": [
-            true,
-            "ignore-same-line"
-        ],
+        "member-access": [true, "no-public"],
+        "curly": [true, "ignore-same-line"],
         "trailing-comma": {
             "options": {
                 "esSpecCompliant": true,
-                "multiline": {
-                    "objects": "always",
-                    "arrays": "always",
-                    "functions": "always",
-                    "typeLiterals": "never"
-                },
+                "multiline": "always",
                 "singleline": "never"
             }
         },

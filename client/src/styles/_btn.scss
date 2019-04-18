@@ -1,5 +1,5 @@
-@import './variables.scss';
-@import './mixins.scss';
+@import "./variables.scss";
+@import "./mixins.scss";
 
 .btn {
     --local-btn-background-color: transparent;
@@ -15,13 +15,13 @@
 
     color: var(--local-btn-text-color);
 
-    transition: transform .1s;
+    transition: transform 0.1s;
 
     position: relative;
     overflow: hidden;
 
     &::after {
-        content: '';
+        content: "";
 
         position: absolute;
         top: 0;
@@ -29,7 +29,7 @@
         width: 100%;
         height: 100%;
 
-        transition: background-color .1s;
+        transition: background-color 0.1s;
     }
 
     &:enabled {

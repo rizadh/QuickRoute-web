@@ -11,7 +11,7 @@ import MapViewStatusbar from './MapViewStatusbar'
 import WaypointEditor from './WaypointEditor'
 
 type AppProps = {
-    store: Store<AppState, AppAction>
+    store: Store<AppState, AppAction>;
 }
 
 export const App = (props: AppProps) => (

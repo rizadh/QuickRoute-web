@@ -8,13 +8,7 @@ import { AppState } from './state'
 
 const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>()
 
-const store = createStore(
-    reducer,
-    applyMiddleware(
-        epicMiddleware,
-        logger,
-    ),
-)
+const store = createStore(reducer, applyMiddleware(epicMiddleware, logger))
 
 epicMiddleware.run(epic)
 

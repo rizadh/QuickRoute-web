@@ -1,8 +1,8 @@
 import * as React from 'react'
 
 type StatViewProps = {
-    title: string
-    value: string
+    title: string;
+    value: string;
 }
 
 const StatView = (props: StatViewProps) => (

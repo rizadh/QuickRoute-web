@@ -1,14 +1,11 @@
-
 declare namespace mapkit {
-
     class Coordinate {
-        constructor(latitude: number, longitude: number)
-
         /** The latitude in degrees. */
         latitude: number
 
         /** The longitude in degrees. */
         longitude: number
+        constructor(latitude: number, longitude: number);
 
         /** Returns a copy of the coordinate. */
         copy(): Coordinate
@@ -24,16 +21,16 @@ declare namespace mapkit {
     }
 
     interface MapKitInitOptions {
-        /** 
-         * The callback function MapKit JS will invoke to asynchronously obtain an authorization token. 
+        /**
+         * The callback function MapKit JS will invoke to asynchronously obtain an authorization token.
          * authorizationCallback will be invoked by MapKit JS throughout a session and should be prepared to obtain a new token and pass it to the done function, which will be provided my MapKit JS as the sole argument each time the authorizationCallback function is called.
          */
-        authorizationCallback: (done: (token: string) => void) => void;
+        authorizationCallback: (done: (token: string) => void) => void
 
         language?: string
     }
 
-    function init(options: MapKitInitOptions): void;
+    function init(options: MapKitInitOptions): void
 
     namespace Map {
         enum ColorSchemes {
@@ -55,7 +52,7 @@ declare namespace mapkit {
             Standard = 'Standard',
 
             /** A street map where your data is emphasized over the underlying map details. */
-            MutedStandard = 'MutedStandard'
+            MutedStandard = 'MutedStandard',
         }
     }
 
@@ -131,19 +128,10 @@ declare namespace mapkit {
 
         /** A Boolean value that determines whether the user location control is visible. */
         showsUserLocationControl?: boolean
-
     }
 
     /** An embeddable interactive map that you add to a webpage. */
     class Map {
-        constructor(parent?: string | Element, options?: MapConstructorOptions)
-
-        /** Adds an event listener to handle events triggered by user interactions and the framework. */
-        addEventListener(type: string, listener: (m: Map) => void, thisObject?: any): void;
-
-        /** Removes an event listener. */
-        removeEventListener(type: string, listener: (m: Map) => void, thisObject?: any): void;
-
         /** A Boolean value that indicates if map rotation is available. */
         isRotationAvailable: boolean
 
@@ -159,26 +147,14 @@ declare namespace mapkit {
         /** The map coordinate at the center of the map view. */
         center: Coordinate
 
-        /** Centers the map to the provided coordinate, with optional animation. */
-        setCenterAnimated(coordinate: Coordinate, animate?: boolean): Map;
-
         /** The area currently displayed by the map. */
         region: CoordinateRegion
-
-        /** Changes the map's region to the region provided, with optional animation. */
-        setRegionAnimated(egion: CoordinateRegion, animate?: boolean): Map;
 
         /** The map's rotation, in degrees. */
         rotation: number
 
-        /** Changes the map's rotation setting to the number of degrees specified. */
-        setRotationAnimated(degrees: number, animate?: boolean): Map;
-
         /** The visible area of the map defined in map units. */
         visibleMapRect: MapRect
-
-        /** Changes the map's visible map rectangle to the specified map rectangle. */
-        setVisibleMapRectAnimated(mapRect: MapRect, animate?: boolean): Map;
 
         /** The type of data displayed by the map view. */
         mapType: Map.MapTypes
@@ -210,9 +186,6 @@ declare namespace mapkit {
         /** The CSS color that is used to paint the user interface controls on the map. */
         tintColor: string
 
-        /** Adjusts the maps visible region to bring the specified overlays and annotations into view. */
-        showItems(items: (Annotation | Overlay)[], options?: MapShowItemsOptions): void;
-
         /** A delegate method for modifying cluster annotations. */
         annotationForCluster?: Annotation
 
@@ -221,6 +194,49 @@ declare namespace mapkit {
 
         /** The annotation on the map that is selected. */
         selectedAnnotation?: Annotation | null
+
+        /** An array of all of the map's overlays. */
+        overlays: Overlay[]
+
+        /** The overlay on the map that is selected. */
+        selectedOverlay: Overlay | null
+
+        /** An array of all of the map's tile overlays. */
+        tileOverlays: TileOverlay[]
+
+        /** A Boolean value that determines whether to show the user's location on the map. */
+        showsUserLocation: boolean
+
+        /** A Boolean value that determines whether to center the map on the user's location. */
+        tracksUserLocation: boolean
+
+        /** An annotation that indicates the user's location on the map. */
+        userLocationAnnotation: Annotation | null
+
+        /** The map's DOM element. */
+        element: Element
+        constructor(parent?: string | Element, options?: MapConstructorOptions);
+
+        /** Adds an event listener to handle events triggered by user interactions and the framework. */
+        addEventListener(type: string, listener: (m: Map) => void, thisObject?: any): void
+
+        /** Removes an event listener. */
+        removeEventListener(type: string, listener: (m: Map) => void, thisObject?: any): void
+
+        /** Centers the map to the provided coordinate, with optional animation. */
+        setCenterAnimated(coordinate: Coordinate, animate?: boolean): Map
+
+        /** Changes the map's region to the region provided, with optional animation. */
+        setRegionAnimated(egion: CoordinateRegion, animate?: boolean): Map
+
+        /** Changes the map's rotation setting to the number of degrees specified. */
+        setRotationAnimated(degrees: number, animate?: boolean): Map
+
+        /** Changes the map's visible map rectangle to the specified map rectangle. */
+        setVisibleMapRectAnimated(mapRect: MapRect, animate?: boolean): Map
+
+        /** Adjusts the maps visible region to bring the specified overlays and annotations into view. */
+        showItems(items: Array<Annotation | Overlay>, options?: MapShowItemsOptions): void
 
         /** Returns the list of annotation objects located in the specified map rectangle. */
         annotationsInMapRect(mapRect: MapRect): Annotation[]
@@ -237,53 +253,35 @@ declare namespace mapkit {
         /** Removes multiple annotations from the map. */
         removeAnnotations(annotations: Annotation[]): void
 
-        /** An array of all of the map's overlays. */
-        overlays: Overlay[]
-
-        /** The overlay on the map that is selected. */
-        selectedOverlay: Overlay | null
-
         /** Returns an array of overlays at a given point on the webpage. */
         overlaysAtPoint(point: DOMPoint): Overlay[]
 
         /** Adds an overlay to the map. */
-        addOverlay(overlay: Overlay): void;
+        addOverlay(overlay: Overlay): void
 
         /** Adds multiple overlays to the map. */
-        addOverlays(overlays: Overlay[]): void;
+        addOverlays(overlays: Overlay[]): void
 
         /** Removes an overlay from the map. */
-        removeOverlay(overlay: Overlay): void;
+        removeOverlay(overlay: Overlay): void
 
         /** Removes multiple overlays from the map. */
-        removeOverlays(overlays: Overlay[]): void;
+        removeOverlays(overlays: Overlay[]): void
 
         /** Returns the topmost overlay at a given point on the webpage. */
         topOverlayAtPoint(point: DOMPoint): Overlay
 
-        /** An array of all of the map's tile overlays. */
-        tileOverlays: TileOverlay[]
-
         /** Adds a tile overlay to the map. */
-        addTileOverlay(overlay: TileOverlay): void;
+        addTileOverlay(overlay: TileOverlay): void
 
         /** Adds an array of tile overlays to the map. */
-        addTileOverlays(overlays: TileOverlay[]): void;
+        addTileOverlays(overlays: TileOverlay[]): void
 
         /** Removes a tile overlay from the map. */
-        removeTileOverlay(overlay: TileOverlay): void;
+        removeTileOverlay(overlay: TileOverlay): void
 
         /** Removes an array of tile overlays from the map. */
-        removeTileOverlays(overlays: TileOverlay[]): void;
-
-        /** A Boolean value that determines whether to show the user's location on the map. */
-        showsUserLocation: boolean
-
-        /** A Boolean value that determines whether to center the map on the user's location. */
-        tracksUserLocation: boolean
-
-        /** An annotation that indicates the user's location on the map. */
-        userLocationAnnotation: Annotation | null
+        removeTileOverlays(overlays: TileOverlay[]): void
 
         /** Converts a coordinate on the map to a point in the page's coordinate system. */
         convertCoordinateToPointOnPage(coordinate: Coordinate): DOMPoint
@@ -293,12 +291,7 @@ declare namespace mapkit {
 
         /** Removes the map's element from the DOM and releases internal references to this map to free up memory. */
         destroy(): void
-
-        /** The map's DOM element. */
-        element: Element
-
     }
-
 
     interface MapShowItemsOptions {
         /** A Boolean value that determines whether the map is animated as the map region changes to show the items. */
@@ -309,12 +302,9 @@ declare namespace mapkit {
 
         /** Spacing that is added around the computed map region when showing items. */
         padding: Padding
-
     }
 
     class MapPoint {
-        constructor(x: number, y: number)
-
         /** The location of the point along the x-axis of the map. */
         x: number
 
@@ -323,27 +313,24 @@ declare namespace mapkit {
 
         /** Returns a copy of a map point. */
         copy: MapPoint
+        constructor(x: number, y: number);
 
         /** Indicates whether two map points are equal. */
         equals(other: MapPoint): boolean
 
         /** Returns a coorindate containing the latitude and longitude corresponding to a map point. */
         toCoordinate(): Coordinate
-
     }
 
     /** A pair of values in map units that define the width and height of a projected coordinate span. */
     class MapSize {
-        constructor(width: number, height: number)
-
         width: number
         height: number
+        constructor(width: number, height: number);
     }
 
     /** A rectangular area on a two-dimensional map projection. */
     class MapRect {
-        constructor(x: number, y: number, width: number, height: number);
-
         /** The origin point of a rectangle. */
         origin: MapPoint
 
@@ -367,6 +354,7 @@ declare namespace mapkit {
 
         /** The minimum y-axis value of a rectangle. */
         minY: number
+        constructor(x: number, y: number, width: number, height: number);
 
         /** Returns a copy of a map rectangle. */
         copy(): MapRect
@@ -374,22 +362,20 @@ declare namespace mapkit {
         /** Indicates whether two map rectangles are equal. */
         equals(other: MapRect): boolean
 
-        scale(scaleFactor: number, scaleCenter: MapPoint): void;
+        scale(scaleFactor: number, scaleCenter: MapPoint): void
 
         /**  Returns the region that corresponds to a map rectangle. */
         toCoordinateRegion(): CoordinateRegion
-
     }
 
     /** A rectangular area on a map defined by a center coordinate and a span, expressed in degrees of latitude and longitude. */
     class CoordinateRegion {
-        constructor(center: Coordinate, span: CoordinateSpan);
-
         /** The center point of the region. */
         center: Coordinate
 
         /** The horizontal and vertical span representing the amount of map to display. */
         span: CoordinateSpan
+        constructor(center: Coordinate, span: CoordinateSpan);
 
         /**  Returns a copy of this region. */
         copy(): CoordinateRegion
@@ -406,13 +392,12 @@ declare namespace mapkit {
 
     /** The width and height of a map region. */
     class CoordinateSpan {
-        constructor(latitudeDelta: number, longitudeDelta: number);
-
         /** The amount of north-to-south distance (measured in degrees) to display on the map. */
         latitudeDelta: number
 
         /** The amount of east-to-west distance (measured in degrees) to display for the map region. */
         longitudeDelta: number
+        constructor(latitudeDelta: number, longitudeDelta: number);
 
         copy(): CoordinateSpan
 
@@ -421,12 +406,11 @@ declare namespace mapkit {
 
     /** A rectangular area on a map, defined by coordinates of the rectangle's northeast and southwest corners. */
     class BoundingRegion {
-        constructor(northLatitude: number, eastLongitude: number, southLatitude: number, westLongitude: number);
-
         northLatitude: number
         eastLongitude: number
         southLatitude: number
         westLongitude: number
+        constructor(northLatitude: number, eastLongitude: number, southLatitude: number, westLongitude: number);
 
         copy(): BoundingRegion
 
@@ -441,11 +425,11 @@ declare namespace mapkit {
     }
 
     class Padding {
-        constructor(options?: PaddingConstructorOptions | number[])
         bottom: number
         left: number
         right: number
         top: number
+        constructor(options?: PaddingConstructorOptions | number[]);
     }
 
     interface AnnotationConstructorOptions {
@@ -494,7 +478,6 @@ declare namespace mapkit {
         /** The offset in CSS pixels of a callout from the top center of the element. */
         calloutOffset?: DOMPoint
 
-
         clusteringIdentifier?: string
 
         collisionMode?: string
@@ -506,13 +489,6 @@ declare namespace mapkit {
      * The base object for annotations, used when creating custom annotations.
      */
     class Annotation {
-        constructor(coordinate: Coordinate, factory: Function, options?: AnnotationConstructorOptions);
-
-        addEventListener(type: string, listener: (a: Annotation) => void, thisObject?: any): void;
-
-        /** Removes an event listener. */
-        removeEventListener(type: string, listener: (a: Annotation) => void, thisObject?: any): void;
-
         /** The annotation's coordinate. */
         coordinate: Coordinate
 
@@ -524,7 +500,6 @@ declare namespace mapkit {
 
         /** The text to display as a subtitle, on the second line of an annotation's callout. */
         subtitle: string
-
 
         anchorOffset: DOMPoint
         appearanceAnimation: string
@@ -555,11 +530,15 @@ declare namespace mapkit {
         collisionMode: string
 
         accessibilityLabel: string
+        constructor(coordinate: Coordinate, factory: Function, options?: AnnotationConstructorOptions);
+
+        addEventListener(type: string, listener: (a: Annotation) => void, thisObject?: any): void
+
+        /** Removes an event listener. */
+        removeEventListener(type: string, listener: (a: Annotation) => void, thisObject?: any): void
     }
 
     class MarkerAnnotation extends Annotation {
-        constructor(coordinate: Coordinate, options?: MarkerAnnotationConstructorOptions)
-
         /** The fill color of the marker. */
         color: string
 
@@ -580,6 +559,7 @@ declare namespace mapkit {
 
         /** A value that determines when the title is visible. */
         titleVisibility: FeatureVisibility
+        constructor(coordinate: Coordinate, options?: MarkerAnnotationConstructorOptions);
     }
 
     interface MarkerAnnotationConstructorOptions extends AnnotationConstructorOptions {
@@ -603,33 +583,31 @@ declare namespace mapkit {
 
         /** A value that determines when the title is visible. */
         titleVisibility?: FeatureVisibility
-
     }
 
     /** A customized annotation with image resources that you provide. */
     class ImageAnnotation extends Annotation {
-        constructor(coordinate: Coordinate, options?: ImageAnnotationConstructorOptions)
-
-        /** An object containing URLs for the image assets in multiple resolutions. 
+        /** An object containing URLs for the image assets in multiple resolutions.
          * eg:
          *     url: {
          *          1: "foo.png",
          *          2: "foo_2x.png",
          *          3: "foo_3x.png"
          *     }
-        */
+         */
         url: any
+        constructor(coordinate: Coordinate, options?: ImageAnnotationConstructorOptions);
     }
 
     interface ImageAnnotationConstructorOptions extends AnnotationConstructorOptions {
-        /** An object containing URLs for the image assets in multiple resolutions. 
+        /** An object containing URLs for the image assets in multiple resolutions.
          * eg:
          *     url: {
          *          1: "foo.png",
          *          2: "foo_2x.png",
          *          3: "foo_3x.png"
          *     }
-        */
+         */
         url: any
     }
 
@@ -641,12 +619,11 @@ declare namespace mapkit {
         Hidden = 'Hidden',
 
         /** Indicates that a map feature is always visible.n */
-        Visible = 'Visible'
-
+        Visible = 'Visible',
     }
 
     interface AnnotationCalloutDelegate {
-        // TODO: 
+        // TODO:
         /*
         Customizing Callout Appearance
 calloutAnchorOffsetForAnnotation
@@ -670,13 +647,11 @@ calloutRightAccessoryForAnnotation
     }
 
     class PolylineOverlay extends Overlay {
-        constructor(points: Coordinate[], options?: StylesOverlayOptions)
-
         points: Coordinate[]
+        constructor(points: Coordinate[], options?: StylesOverlayOptions);
     }
 
-    class PolygonOverlay extends Overlay {
-    }
+    class PolygonOverlay extends Overlay {}
 
     interface StylesOverlayOptions {
         style: Style
@@ -686,23 +661,23 @@ calloutRightAccessoryForAnnotation
         strokeColor: string
         strokeOpacity: number
         lineWidth: number
-        lineCap: "butt" | "round" | "square"
-        lineJoin: "miter" | "round" | "bevel"
+        lineCap: 'butt' | 'round' | 'square'
+        lineJoin: 'miter' | 'round' | 'bevel'
         lineDash: number[]
         lineDashOffset: number
         fillColor: number
         fillOpacity: number
         fillRule: string
 
-        constructor(style: Partial<StyleOptions>)
+        constructor(style: Partial<StyleOptions>);
     }
 
     interface StyleOptions {
         strokeColor: string
         strokeOpacity: number
         lineWidth: number
-        lineCap: "butt" | "round" | "square"
-        lineJoin: "miter" | "round" | "bevel"
+        lineCap: 'butt' | 'round' | 'square'
+        lineJoin: 'miter' | 'round' | 'bevel'
         lineDash: number[]
         lineDashOffset: number
         fillColor: number
@@ -754,17 +729,24 @@ calloutRightAccessoryForAnnotation
     }
 
     class Geocoder {
-        constructor(options?: GeocoderConstructorOptions);
-
         getsUserLocation: boolean
         language: string
+        constructor(options?: GeocoderConstructorOptions);
 
-        lookup(place: string, callback: (error: any, data: GeocodeResponse) => void, options?: GeocoderLookupOptions): number;
+        lookup(
+            place: string,
+            callback: (error: any, data: GeocodeResponse) => void,
+            options?: GeocoderLookupOptions,
+        ): number
 
-        reverseLookup(coordinate: Coordinate, callback: (error: any, data: GeocodeResponse) => void, options?: GeocoderReverseLookupOptions): void;
+        reverseLookup(
+            coordinate: Coordinate,
+            callback: (error: any, data: GeocodeResponse) => void,
+            options?: GeocoderReverseLookupOptions,
+        ): void
 
         /**  A geocoding request can be cancelled by ID. */
-        cancel(id: number): void;
+        cancel(id: number): void
     }
 
     interface SearchConstructorOptions {
@@ -779,7 +761,6 @@ calloutRightAccessoryForAnnotation
 
         /** A map region that provides a hint for the geographic area to search. In a map application, this is typically the region displayed in the map. */
         region?: CoordinateRegion
-
     }
 
     interface SearchResponse {
@@ -817,31 +798,38 @@ calloutRightAccessoryForAnnotation
     /** An object or callback function you provide that is called when performing a search or autocomplete request. */
     interface SearchDelegate {
         /** Tells the delegate that the autocomplete request completed. */
-        autocompleteDidComplete?(data: SearchAutocompleteResponse): void;
+        autocompleteDidComplete?(data: SearchAutocompleteResponse): void
 
         /** Tells the delegate that the autocomplete request failed due to an error. */
-        autocompleteDidError?(error: Error): void;
+        autocompleteDidError?(error: Error): void
 
         /** Tells the delegate that the search completed. */
-        searchDidComplete?(data: SearchResponse): void;
+        searchDidComplete?(data: SearchResponse): void
 
         /** Tells the delegate that the search failed due to an error. */
-        searchDidError?(error: Error): void;
-
+        searchDidError?(error: Error): void
     }
 
     /**  A geocoding request can be cancelled by ID. */
     class Search {
-        constructor(options?: SearchConstructorOptions)
+        constructor(options?: SearchConstructorOptions);
 
         /** Retrieves the results of a search query. */
-        search(query: string | SearchAutocompleteResult, callback: SearchDelegate | ((error: any, data: SearchResponse) => void), options?: SearchOptions): void;
+        search(
+            query: string | SearchAutocompleteResult,
+            callback: SearchDelegate | ((error: any, data: SearchResponse) => void),
+            options?: SearchOptions,
+        ): void
 
-        autocomplete(query: string, callback: SearchDelegate | ((error: any, data: SearchAutocompleteResponse) => void), options?: SearchOptions): void;
+        autocomplete(
+            query: string,
+            callback: SearchDelegate | ((error: any, data: SearchAutocompleteResponse) => void),
+            options?: SearchOptions,
+        ): void
     }
 
     class Directions {
-        constructor(options?: DirectionsConstructorOptions)
+        constructor(options?: DirectionsConstructorOptions);
 
         /** Retrieves directions and estimated travel time for the specified start and end points. */
         route(request: DirectionsRequest, callback: (error: any, data: DirectionsResponse) => void): number
