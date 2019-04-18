@@ -487,7 +487,7 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                 )
             case 'SHOW_URLS':
                 return this.navigationUrls.map((url, index) => (
-                    <div className="input-row">
+                    <div key={url} className="input-row">
                         <input
                             type="text"
                             value={url}
