@@ -12,9 +12,10 @@ export const appVersion = 'v2019.04.17'
 // tslint:disable-next-line:no-var-requires
 require('babel-polyfill')
 
-render(
+const app = (
     <Provider store={store}>
         <App store={store} />
-    </Provider>,
-    document.getElementById('root'),
+    </Provider>
 )
+
+render(app, document.getElementById('root'))
