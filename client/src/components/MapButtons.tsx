@@ -15,12 +15,16 @@ const MapButtons = (props: MapButtonsProps) => {
 
     return (
         <div id="map-buttons">
-            <button className="btn btn-warning" hidden={props.autofitIsEnabled} onClick={props.enableAutofit}>
-                <i className="fas fa-expand" /> Auto-Fit
-            </button>
-            <button className="btn btn-primary" hidden={!editorIsHidden} onClick={showEditor}>
-                <i className="fas fa-columns" /> Show Editor
-            </button>
+            {!props.autofitIsEnabled && (
+                <button className="btn btn-warning" onClick={props.enableAutofit}>
+                    <i className="fas fa-expand" /> Auto-Fit
+                </button>
+            )}
+            {editorIsHidden && (
+                <button className="btn btn-primary" onClick={showEditor}>
+                    <i className="fas fa-columns" /> Show Editor
+                </button>
+            )}
         </div>
     )
 }

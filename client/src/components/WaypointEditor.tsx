@@ -414,19 +414,21 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
             case 'REGULAR':
                 return (
                     <>
-                        <div
-                            className="alert alert-danger"
-                            role="alert"
-                            hidden={this.props.routeInformation.status !== 'FAILED'}
-                        >
-                            Route could not be found
-                        </div>
-                        <div className="alert alert-info" role="alert" hidden={this.props.waypoints.length > 0}>
-                            Enter an address to begin
-                        </div>
-                        <div className="alert alert-info" role="alert" hidden={this.props.waypoints.length !== 1}>
-                            Enter another address to show route information
-                        </div>
+                        {this.props.routeInformation.status === 'FAILED' && (
+                            <div className="alert alert-danger" role="alert">
+                                Route could not be found
+                            </div>
+                        )}
+                        {this.props.waypoints.length === 0 && (
+                            <div className="alert alert-info" role="alert">
+                                Enter an address to begin
+                            </div>
+                        )}
+                        {this.props.waypoints.length === 1 && (
+                            <div className="alert alert-info" role="alert">
+                                Enter another address to show route information
+                            </div>
+                        )}
                         <WaypointList />
                         <div className="input-row">
                             <input
@@ -569,7 +571,6 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                         </button>
                         <EditorVisibilityContext.Consumer>
                             {context => (
-                                // tslint:disable-next-line:jsx-no-multiline-js
                                 <button className="btn btn-primary" onClick={context.hideEditor}>
                                     <i className="far fa-window-maximize" /> Hide Editor
                                 </button>
@@ -656,9 +657,11 @@ class WaypointEditor extends React.Component<WaypointEditorProps, WaypointEditor
                     <div id="waypoint-editor-title">{this.headerTitle}</div>
                 </div>
                 <div>
-                    <div className="alert alert-danger" role="alert" hidden={!this.state.errorMessage}>
-                        {this.state.errorMessage}
-                    </div>
+                    {this.state.errorMessage && (
+                        <div className="alert alert-danger" role="alert">
+                            {this.state.errorMessage}
+                        </div>
+                    )}
                     {this.bodyItems}
                 </div>
                 <div id="waypoint-editor-footer">{this.footerItems}</div>

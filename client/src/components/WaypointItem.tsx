@@ -58,16 +58,22 @@ export const WaypointItem = (props: WaypointItemProps) => {
                 onKeyPress={handleWaypointFieldKeyPress}
                 disabled={props.isBeingDragged && !snapshot.isDragging}
             />
-            <button onClick={resetWaypointField} className="btn btn-secondary" hidden={!fieldWasEdited}>
-                <i className="fas fa-undo-alt" />
-            </button>
+            {fieldWasEdited && (
+                <button onClick={resetWaypointField} className="btn btn-secondary">
+                    <i className="fas fa-undo-alt" />
+                </button>
+            )}
             <span>{props.index + 1}</span>
-            <span className="text-danger" hidden={!fetchFailed}>
-                <i className="fas fa-exclamation-circle" />
-            </span>
-            <span className="text-muted" hidden={!fetchIsInProgress}>
-                <i className="fas fa-circle-notch fa-spin" />
-            </span>
+            {fetchFailed && (
+                <span className="text-danger">
+                    <i className="fas fa-exclamation-circle" />
+                </span>
+            )}
+            {fetchIsInProgress && (
+                <span className="text-muted">
+                    <i className="fas fa-circle-notch fa-spin" />
+                </span>
+            )}
             <span onClick={props.itemWasClicked} {...provided.dragHandleProps}>
                 <i className="fas fa-grip-lines-vertical" />
             </span>
