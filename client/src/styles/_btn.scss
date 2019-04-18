@@ -42,10 +42,10 @@
         &:active::after {
             background-color: var(--app-button-active-highlight-color);
         }
+    }
 
-        &:active {
-            transform: scale(0.98);
-        }
+    &:focus {
+        outline: none;
     }
 
     &:disabled {
