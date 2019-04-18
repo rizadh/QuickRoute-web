@@ -1,5 +1,5 @@
 import { Line } from 'rc-progress'
-import * as React from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { useMedia } from '../hooks/useMedia'
 import { RouteInformation, routeInformation } from '../redux/selectors'

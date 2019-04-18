@@ -1,7 +1,7 @@
 import copyToClipboard from 'copy-text-to-clipboard'
 import { chunk } from 'lodash'
 import { stringify } from 'query-string'
-import * as React from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import { appVersion } from '..'

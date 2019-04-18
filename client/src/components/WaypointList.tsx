@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
 import {
