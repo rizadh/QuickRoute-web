@@ -12,7 +12,7 @@ import {
 } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { AppState, FetchedPlaces, FetchedRoutes, PlaceFetchResult, RouteFetchResult, Waypoint } from '../redux/state'
-import WaypointItem from './WaypointItem'
+import { WaypointItem } from './WaypointItem'
 
 type WaypointListStateProps = {
     waypoints: ReadonlyArray<Waypoint>
