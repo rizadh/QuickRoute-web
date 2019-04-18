@@ -79,10 +79,8 @@ class WaypointList extends React.Component<WaypointListProps> {
             <DragDropContext onDragEnd={this.onDragEnd}>
                 <Droppable droppableId="waypointlist">
                     {(provided, snapshot) => (
-                        // tslint:disable-next-line: jsx-no-multiline-js
                         <div ref={provided.innerRef} {...provided.droppableProps}>
                             {this.props.waypoints.map((waypoint, index) => (
-                                // tslint:disable-next-line: jsx-no-multiline-js
                                 <WaypointItem
                                     key={waypoint.uuid}
                                     index={index}
