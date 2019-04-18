@@ -31,78 +31,75 @@ type WaypointListDispatchProps = {
 }
 
 type WaypointListProps = WaypointListStateProps & WaypointListDispatchProps
-class WaypointList extends React.Component<WaypointListProps> {
-    placeFetchResult = (address: string): PlaceFetchResult | undefined => this.props.fetchedPlaces.get(address)
 
-    incomingRouteFetchResult = (index: number): RouteFetchResult | undefined => {
+const WaypointList = (props: WaypointListProps) => {
+    const placeFetchResult = (address: string): PlaceFetchResult | undefined => props.fetchedPlaces.get(address)
+
+    const incomingRouteFetchResult = (index: number): RouteFetchResult | undefined => {
         if (index === 0) return
 
-        return this.routeFetchResult(this.props.waypoints[index - 1].address, this.props.waypoints[index].address)
+        return routeFetchResult(props.waypoints[index - 1].address, props.waypoints[index].address)
     }
 
-    outgoingRouteFetchResult = (index: number): RouteFetchResult | undefined => {
-        if (index === this.props.waypoints.length - 1) return
+    const outgoingRouteFetchResult = (index: number): RouteFetchResult | undefined => {
+        if (index === props.waypoints.length - 1) return
 
-        return this.routeFetchResult(this.props.waypoints[index].address, this.props.waypoints[index + 1].address)
+        return routeFetchResult(props.waypoints[index].address, props.waypoints[index + 1].address)
     }
 
-    routeFetchResult = (origin: string, destination: string): RouteFetchResult | undefined => {
-        const routesFromOrigin = this.props.fetchedRoutes.get(origin)
+    const routeFetchResult = (origin: string, destination: string): RouteFetchResult | undefined => {
+        const routesFromOrigin = props.fetchedRoutes.get(origin)
 
         return routesFromOrigin ? routesFromOrigin.get(destination) : undefined
     }
 
-    onDragEnd = (result: DropResult) => {
+    const onDragEnd = (result: DropResult) => {
         if (!result.destination) return
         if (result.destination.index === result.source.index) return
 
-        if (this.props.waypoints[result.source.index].isSelected) {
-            this.props.moveSelectedWaypoints(result.destination.index)
+        if (props.waypoints[result.source.index].isSelected) {
+            props.moveSelectedWaypoints(result.destination.index)
         } else {
-            this.props.moveWaypoint(result.source.index, result.destination.index)
+            props.moveWaypoint(result.source.index, result.destination.index)
         }
     }
 
-    itemWasClicked = (index: number) => (e: React.MouseEvent) => {
+    const itemWasClicked = (index: number) => (e: React.MouseEvent) => {
         if (e.shiftKey) {
             e.preventDefault()
-            this.props.selectWaypointRange(index)
+            props.selectWaypointRange(index)
         } else if (e.ctrlKey || e.metaKey) {
-            this.props.toggleWaypointSelection(index)
+            props.toggleWaypointSelection(index)
         } else {
-            this.props.selectWaypoint(index)
+            props.selectWaypoint(index)
         }
     }
 
-    render() {
-        return (
-            <DragDropContext onDragEnd={this.onDragEnd}>
-                <Droppable droppableId="waypointlist">
-                    {(provided, snapshot) => (
-                        <div ref={provided.innerRef} {...provided.droppableProps}>
-                            {this.props.waypoints.map((waypoint, index) => (
-                                <WaypointItem
-                                    key={waypoint.uuid}
-                                    index={index}
-                                    waypoint={waypoint}
-                                    isBeingDragged={snapshot.isDraggingOver && waypoint.isSelected}
-                                    placeFetchResult={this.placeFetchResult(waypoint.address)}
-                                    outgoingRouteFetchResult={this.outgoingRouteFetchResult(index)}
-                                    incomingRouteFetchResult={this.incomingRouteFetchResult(index)}
-                                    itemWasClicked={this.itemWasClicked(index)}
-                                    // tslint:disable-next-line:jsx-no-lambda
-                                    deleteWaypoint={() => this.props.deleteWaypoint(index)}
-                                    // tslint:disable-next-line:jsx-no-lambda
-                                    setAddress={newWaypoint => this.props.setWaypoint(index, newWaypoint)}
-                                />
-                            ))}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
-        )
-    }
+    return (
+        <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="waypointlist">
+                {(provided, snapshot) => (
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                        {props.waypoints.map((waypoint, index) => (
+                            <WaypointItem
+                                key={waypoint.uuid}
+                                index={index}
+                                waypoint={waypoint}
+                                isBeingDragged={snapshot.isDraggingOver && waypoint.isSelected}
+                                placeFetchResult={placeFetchResult(waypoint.address)}
+                                outgoingRouteFetchResult={outgoingRouteFetchResult(index)}
+                                incomingRouteFetchResult={incomingRouteFetchResult(index)}
+                                itemWasClicked={itemWasClicked(index)}
+                                deleteWaypoint={() => props.deleteWaypoint(index)}
+                                setAddress={newWaypoint => props.setWaypoint(index, newWaypoint)}
+                            />
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </DragDropContext>
+    )
 }
 
 const mapStateToProps = (state: AppState): WaypointListStateProps => ({
