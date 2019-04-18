@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Store } from 'redux'
 import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
 import { useMedia } from '../hooks/useMedia'
+import { useWindowSize } from '../hooks/useWindowSize'
 import { disableAutofit } from '../redux/actions'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
@@ -22,23 +23,23 @@ const MapView = (props: MapViewProps) => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const [appState, setAppState] = useState(props.store.getState())
-    const darkMode = useMedia('(prefers-color-scheme: dark)')
-    const { editorIsHidden: editorIsVisible } = useContext(EditorVisibilityContext)
     const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = appState
-    const status = routeInformation(appState).status
+    const status = useMemo(() => routeInformation(appState).status, [appState])
+    const darkMode = useMedia('(prefers-color-scheme: dark)')
+    const windowSize = useWindowSize()
+    const { editorIsHidden } = useContext(EditorVisibilityContext)
+    const centerMap = (animated: boolean) => {
+        if (!autofitIsEnabled || !map) return
 
-    const centerMap = () => {
-        if (autofitIsEnabled && map) {
-            map.showItems([...(map.annotations || []), ...map.overlays], {
-                animate: true,
-                padding: new mapkit.Padding({
-                    top: 16,
-                    right: 16,
-                    bottom: 16,
-                    left: 16,
-                }),
-            })
-        }
+        map.showItems([...(map.annotations || []), ...map.overlays], {
+            animate: animated,
+            padding: new mapkit.Padding({
+                top: editorIsHidden ? 16 + 42 + 16 : 16,
+                right: 16,
+                bottom: 16,
+                left: 16,
+            }),
+        })
     }
 
     useEffect(() => {
@@ -75,18 +76,18 @@ const MapView = (props: MapViewProps) => {
     useEffect(() => {
         if (!map) return
 
-        map.padding = editorIsVisible
+        map.padding = editorIsHidden
             ? new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 0 })
             : new mapkit.Padding({ top: 16, left: 16 + 420 + 16, right: 16, bottom: 16 + 48 })
-    }, [editorIsVisible, map])
+    }, [editorIsHidden, map])
 
     useEffect(() => {
         if (!mapviewRef.current) return
 
-        if (status === 'FETCHING') {
-            mapviewRef.current.classList.add('updating')
-        } else {
-            mapviewRef.current.classList.remove('updating')
+        if (status === 'FETCHING') mapviewRef.current.classList.add('updating')
+
+        return () => {
+            if (mapviewRef.current) mapviewRef.current.classList.remove('updating')
         }
     }, [status])
 
@@ -127,16 +128,19 @@ const MapView = (props: MapViewProps) => {
                     }),
             )
 
-        if (map.annotations) map.removeAnnotations(map.annotations)
-        if (map.overlays) map.removeOverlays(map.overlays)
-
         map.addAnnotations(annotations)
         map.addOverlays(overlays)
 
-        centerMap()
+        centerMap(true)
+
+        return () => {
+            if (map.annotations) map.removeAnnotations(map.annotations)
+            if (map.overlays) map.removeOverlays(map.overlays)
+        }
     }, [map, waypoints, fetchedPlaces, fetchedRoutes])
 
-    useEffect(centerMap, [map, autofitIsEnabled])
+    useEffect(() => centerMap(true), [map, autofitIsEnabled])
+    useEffect(() => centerMap(false), [windowSize.width, windowSize.height, editorIsHidden])
 
     useEffect(() => {
         if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light

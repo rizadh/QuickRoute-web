@@ -6,6 +6,7 @@ export const useMedia = (query: string) => {
     useEffect(() => {
         const queryList = window.matchMedia(query)
         if (queryList.matches !== result) setResult(queryList.matches)
+
         const handleChange = () => setResult(queryList.matches)
         queryList.addListener(handleChange)
         return () => queryList.removeListener(handleChange)
