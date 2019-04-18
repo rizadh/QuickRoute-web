@@ -83,7 +83,7 @@ textarea {
     position: sticky;
     top: 0;
 
-    z-index: 1;
+    z-index: 2;
 
     @include frosted();
 
@@ -211,6 +211,8 @@ a:hover {
     width: calc(100% - #{$editorWidth + 3 * $standardMargin});
     height: $statusbarHeight;
 
+    z-index: 2;
+
     @include frosted();
 
     display: flex;
@@ -258,5 +260,5 @@ a:hover {
     width: 100%;
     height: 6px;
     overflow: hidden;
-    z-index: 2;
+    z-index: 4;
 }
