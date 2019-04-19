@@ -1,22 +1,19 @@
 import React, { useContext } from 'react'
-import { connect } from 'react-redux'
+import { AppStateContext } from '../context/AppStateContext'
 import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
 import { enableAutofit } from '../redux/actions'
-import { AppAction } from '../redux/actionTypes'
-import { AppState } from '../redux/state'
 
-type MapButtonsProps = {
-    autofitIsEnabled: boolean;
-    enableAutofit: () => void;
-}
-
-const MapButtons = (props: MapButtonsProps) => {
+export const MapButtons = () => {
     const { editorIsHidden, showEditor } = useContext(EditorVisibilityContext)
+    const {
+        state: { autofitIsEnabled },
+        dispatch,
+    } = useContext(AppStateContext)
 
     return (
         <div id="map-buttons">
-            {!props.autofitIsEnabled && (
-                <button className="btn btn-warning" onClick={props.enableAutofit}>
+            {!autofitIsEnabled && (
+                <button className="btn btn-warning" onClick={() => dispatch(enableAutofit())}>
                     <i className="fas fa-expand" /> Auto-Fit
                 </button>
             )}
@@ -28,16 +25,3 @@ const MapButtons = (props: MapButtonsProps) => {
         </div>
     )
 }
-
-const mapStateToProps = (state: AppState) => ({
-    autofitIsEnabled: state.autofitIsEnabled,
-})
-
-const mapDispatchToProps = (dispatch: React.Dispatch<AppAction>) => ({
-    enableAutofit: () => dispatch(enableAutofit()),
-})
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(MapButtons)

@@ -1,28 +1,26 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { routeInformation, RouteInformation } from '../redux/selectors'
-import { AppState } from '../redux/state'
+import React, { useContext } from 'react'
+import { AppStateContext } from '../context/AppStateContext'
+import { routeInformation } from '../redux/selectors'
 import StatView from './StatView'
 
-type MapViewStatusbarProps = {
-    routeInformation: RouteInformation;
-}
+export const MapViewStatusbar = () => {
+    const { state } = useContext(AppStateContext)
+    const currentRouteInformation = routeInformation(state)
 
-const MapViewStatusbar = (props: MapViewStatusbarProps) => {
     let statusbarItems: JSX.Element | string
-    switch (props.routeInformation.status) {
+    switch (currentRouteInformation.status) {
         case 'FETCHING':
             statusbarItems = (
                 <>
-                    <StatView title="Routing" value={stringForUpdateProgress(props.routeInformation.fetchProgress)} />
+                    <StatView title="Routing" value={stringForUpdateProgress(currentRouteInformation.fetchProgress)} />
                 </>
             )
             break
         case 'FETCHED':
             statusbarItems = (
                 <>
-                    <StatView title="Distance" value={stringForDistance(props.routeInformation.totalDistance)} />
-                    <StatView title="Time" value={stringForTime(props.routeInformation.totalTime)} />
+                    <StatView title="Distance" value={stringForDistance(currentRouteInformation.totalDistance)} />
+                    <StatView title="Time" value={stringForTime(currentRouteInformation.totalTime)} />
                 </>
             )
             break
@@ -62,9 +60,3 @@ function stringForDistance(metres: number) {
 function stringForUpdateProgress(progress: number): string {
     return `${Math.floor(progress * 1000) / 10} %`
 }
-
-const mapStateToProps = (state: AppState) => ({
-    routeInformation: routeInformation(state),
-})
-
-export default connect(mapStateToProps)(MapViewStatusbar)

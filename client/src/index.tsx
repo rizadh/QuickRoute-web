@@ -14,7 +14,7 @@ require('babel-polyfill')
 
 const app = (
     <Provider store={store}>
-        <App store={store} />
+        <App />
     </Provider>
 )
 

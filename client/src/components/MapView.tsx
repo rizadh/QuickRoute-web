@@ -1,16 +1,11 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Store } from 'redux'
+import { AppStateContext } from '../context/AppStateContext'
 import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
 import { useMedia } from '../hooks/useMedia'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { disableAutofit } from '../redux/actions'
-import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
-import { AppState, FetchSuccess } from '../redux/state'
-
-type MapViewProps = {
-    store: Store<AppState, AppAction>;
-}
+import { FetchSuccess } from '../redux/state'
 
 mapkit.init({
     authorizationCallback: done =>
@@ -19,12 +14,12 @@ mapkit.init({
             .then(done),
 })
 
-const MapView = (props: MapViewProps) => {
+export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
-    const [appState, setAppState] = useState(props.store.getState())
-    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = appState
-    const status = useMemo(() => routeInformation(appState).status, [appState])
+    const { state, dispatch } = useContext(AppStateContext)
+    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = state
+    const status = useMemo(() => routeInformation(state).status, [state])
     const darkMode = useMedia('(prefers-color-scheme: dark)')
     const windowSize = useWindowSize()
     const { editorIsHidden } = useContext(EditorVisibilityContext)
@@ -56,21 +51,16 @@ const MapView = (props: MapViewProps) => {
                 (newMap.annotations && newMap.annotations.length > 0) ||
                 (newMap.overlays && newMap.overlays.length > 0)
             ) {
-                props.store.dispatch(disableAutofit())
+                dispatch(disableAutofit())
             }
         }
 
         newMap.addEventListener('zoom-start', mapDidMove)
         newMap.addEventListener('scroll-start', mapDidMove)
 
-        const unsubscribeCallback = props.store.subscribe(() => setAppState(props.store.getState()))
-
         setMap(newMap)
 
-        return () => {
-            newMap.destroy()
-            unsubscribeCallback()
-        }
+        return () => newMap.destroy()
     }, [])
 
     useEffect(() => {
@@ -148,5 +138,3 @@ const MapView = (props: MapViewProps) => {
 
     return <div ref={mapviewRef} id="mapview" />
 }
-
-export default MapView
