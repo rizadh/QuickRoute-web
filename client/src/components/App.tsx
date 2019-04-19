@@ -8,10 +8,11 @@ import store from '../redux/store'
 import { MapButtons } from './MapButtons'
 import { MapView } from './MapView'
 import { MapViewStatusbar } from './MapViewStatusbar'
-import WaypointEditor from './WaypointEditor'
+import { WaypointEditor } from './WaypointEditor'
 
 export const App = () => {
     const editorVisibility = useEditorVisibility()
+    // TODO: Replace with useReducer() - Need to handle redux-observable epics
     const [state, dispatch] = useAppState(store)
 
     return (

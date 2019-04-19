@@ -1,5 +1,4 @@
-import { createContext } from 'react'
-import { Dispatch } from 'redux'
+import { createContext, Dispatch } from 'react'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 
