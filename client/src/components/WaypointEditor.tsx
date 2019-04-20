@@ -455,7 +455,7 @@ export const WaypointEditor = () => {
                         <div className="input-row">
                             <input
                                 type="text"
-                                placeholder={`Start Point (default: ${defaultStartPoint})`}
+                                placeholder={`Start Point (default: ${defaultStartPoint()})`}
                                 value={startPointFieldValue}
                                 onChange={handleStartPointFieldChange}
                                 disabled={editorMode === 'OPTIMIZING'}
@@ -465,7 +465,7 @@ export const WaypointEditor = () => {
                         <div className="input-row">
                             <input
                                 type="text"
-                                placeholder={`End Point (default: ${defaultEndPoint})`}
+                                placeholder={`End Point (default: ${defaultEndPoint()})`}
                                 value={endPointFieldValue}
                                 onChange={handleEndPointFieldChange}
                                 disabled={editorMode === 'OPTIMIZING'}
