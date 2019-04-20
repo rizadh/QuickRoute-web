@@ -241,6 +241,59 @@ export const WaypointEditor = () => {
         setEditorMode('OPTIMIZING')
         setErrorMessage('')
 
+        const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
+        const directions = new mapkit.Directions()
+
+        const lookupPromise = (place: string) =>
+            new Promise<mapkit.GeocodeResponse>((resolve, reject) => {
+                geocoder.lookup(place, (error, data) => (error ? reject(error) : resolve(data)))
+            })
+        const fetchPlace = async (waypoint: string) => {
+            const fetchedPlace = state.fetchedPlaces.get(waypoint)
+
+            if (fetchedPlace && fetchedPlace.status === 'SUCCESS') {
+                return fetchedPlace.result
+            } else {
+                const response = await lookupPromise(waypoint)
+
+                const place = response.results[0]
+                if (!place) {
+                    throw new Error(`Place '${waypoint}' not found`)
+                }
+
+                return place
+            }
+        }
+        const routePromise = (request: mapkit.DirectionsRequest) =>
+            new Promise<mapkit.DirectionsResponse>(async (resolve, reject) => {
+                directions.route(request, (error, data) => (error ? reject(error) : resolve(data)))
+            })
+        const getRoute = async (waypointA: string, waypointB: string) => {
+            const placeA = await fetchPlace(waypointA)
+            const placeB = await fetchPlace(waypointB)
+
+            const response = await routePromise({ origin: placeA, destination: placeB })
+            const route = response.routes[0]
+
+            if (!route) {
+                throw new Error(`No routes returned: origin = '${waypointA}', destination = '${waypointB}'`)
+            }
+
+            return route
+        }
+        const getCost = async (waypointA: string, waypointB: string) => {
+            if (waypointA === waypointB) return 0
+
+            const route = await getRoute(waypointA, waypointB)
+
+            switch (optimizationParameter) {
+                case 'DISTANCE':
+                    return route.distance
+                case 'TIME':
+                    return route.expectedTravelTime
+            }
+        }
+
         const startPoint = startPointFieldValue || endPointFieldValue
         const endPoint = endPointFieldValue || startPointFieldValue
 
@@ -250,7 +303,11 @@ export const WaypointEditor = () => {
         } else waypoints = state.waypoints.map(w => w.address)
 
         try {
-            const costMatrix = await getCostMatrix(waypoints, optimizationParameter)
+            const costMatrix = await Promise.all(
+                waypoints.map(
+                    async waypointA => await Promise.all(waypoints.map(waypointB => getCost(waypointA, waypointB))),
+                ),
+            )
 
             const response = await fetch('/optimize', {
                 method: 'POST',
@@ -281,88 +338,6 @@ export const WaypointEditor = () => {
             setEditorMode('REGULAR')
             setErrorMessage(`Failed to optimize route (ERROR: '${e}')`)
         }
-    }
-
-    async function getCostMatrix(waypoints: string[], optimizationParameter: 'DISTANCE' | 'TIME'): Promise<number[][]> {
-        const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
-        const directions = new mapkit.Directions()
-
-        return await Promise.all(
-            waypoints.map(
-                async waypointA =>
-                    await Promise.all(
-                        waypoints.map(
-                            waypointB =>
-                                new Promise<number>(async (resolve, reject) => {
-                                    if (waypointA === waypointB) return resolve(0)
-
-                                    let placeA: mapkit.Place
-                                    let placeB: mapkit.Place
-
-                                    const fetchedPlaceA = state.fetchedPlaces.get(waypointA)
-
-                                    if (fetchedPlaceA && fetchedPlaceA.status === 'SUCCESS') {
-                                        placeA = fetchedPlaceA.result
-                                    } else {
-                                        placeA = await new Promise((resolvePlace, rejectPlace) => {
-                                            geocoder.lookup(waypointA, (error, data) => {
-                                                if (error) return rejectPlace(error)
-
-                                                const place = data.results[0]
-                                                if (!place) {
-                                                    return rejectPlace(new Error(`Place '${waypointA}' not found`))
-                                                }
-
-                                                resolvePlace(place)
-                                            })
-                                        })
-                                    }
-
-                                    const fetchedPlaceB = state.fetchedPlaces.get(waypointB)
-
-                                    if (fetchedPlaceB && fetchedPlaceB.status === 'SUCCESS') {
-                                        placeB = fetchedPlaceB.result
-                                    } else {
-                                        placeB = await new Promise((resolvePlace, rejectPlace) => {
-                                            geocoder.lookup(waypointB, (error, data) => {
-                                                if (error) return rejectPlace(error)
-
-                                                const place = data.results[0]
-                                                if (!place) {
-                                                    return rejectPlace(new Error(`Place '${waypointB}' not found`))
-                                                }
-
-                                                resolvePlace(place)
-                                            })
-                                        })
-                                    }
-
-                                    directions.route({ origin: placeA, destination: placeB }, (error, data) => {
-                                        if (error) return reject(error)
-
-                                        const route = data.routes[0]
-
-                                        if (!route) {
-                                            return reject(
-                                                new Error(
-                                                    `No routes returned: ` +
-                                                        `origin = '${waypointA}', destination = '${waypointB}'`,
-                                                ),
-                                            )
-                                        }
-
-                                        switch (optimizationParameter) {
-                                            case 'DISTANCE':
-                                                return resolve(route.distance)
-                                            case 'TIME':
-                                                return resolve(route.expectedTravelTime)
-                                        }
-                                    })
-                                }),
-                        ),
-                    ),
-            ),
-        )
     }
 
     // Content Helper Functions
