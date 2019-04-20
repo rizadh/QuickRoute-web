@@ -11,10 +11,18 @@ import { routeInformation } from '../redux/selectors'
 import { isValidAddress, parseAddress } from '../redux/validator'
 import { WaypointList } from './WaypointList'
 
-type EditorMode = 'REGULAR' | 'BULK' | 'IMPORT' | 'IMPORTING' | 'SHOW_URLS' | 'OPTIMIZER' | 'OPTIMIZING'
+enum EditorMode {
+    Regular,
+    Bulk,
+    Import,
+    Importing,
+    ShowUrls,
+    Optimizer,
+    Optimizing,
+}
 
 export const WaypointEditor = () => {
-    const [editorMode, setEditorMode] = useState<EditorMode>('REGULAR')
+    const [editorMode, setEditorMode] = useState<EditorMode>(EditorMode.Regular)
     const [errorMessage, setErrorMessage] = useState('')
     const [bulkEditFieldValue, setBulkEditFieldValue] = useState('')
     const [newWaypointFieldValue, setNewWaypointFieldValue] = useState('')
@@ -48,7 +56,7 @@ export const WaypointEditor = () => {
     // Bulk Edit Functions
 
     const beginBulkEdit = () => {
-        setEditorMode('BULK')
+        setEditorMode(EditorMode.Bulk)
         setErrorMessage('')
         setBulkEditFieldValue(state.waypoints.map(w => w.address).join('\n'))
     }
@@ -61,12 +69,12 @@ export const WaypointEditor = () => {
 
         dispatch(createAndReplaceWaypoints(waypoints))
 
-        setEditorMode('REGULAR')
+        setEditorMode(EditorMode.Regular)
         setErrorMessage('')
     }
 
     const cancelBulkEdit = () => {
-        setEditorMode('REGULAR')
+        setEditorMode(EditorMode.Regular)
         setErrorMessage('')
     }
 
@@ -81,12 +89,12 @@ export const WaypointEditor = () => {
     // Import Functions
 
     const beginImportMode = () => {
-        setEditorMode('IMPORT')
+        setEditorMode(EditorMode.Import)
         setErrorMessage('')
     }
 
     const executeImport = async () => {
-        setEditorMode('IMPORTING')
+        setEditorMode(EditorMode.Importing)
         setErrorMessage('')
 
         type FetchedWaypoint = { address: string; city: string; postalCode: string }
@@ -102,7 +110,7 @@ export const WaypointEditor = () => {
         const url = '/waypoints/' + driverNumberFieldValue
         const httpResponse = await fetch(url)
         if (!httpResponse.ok) {
-            setEditorMode('REGULAR')
+            setEditorMode(EditorMode.Regular)
             setErrorMessage(
                 `Failed to import waypoints for driver ${driverNumberFieldValue} ` +
                     `(ERROR: '${await httpResponse.text()}')`,
@@ -115,12 +123,12 @@ export const WaypointEditor = () => {
         const addresses = waypoints.map(w => `${w.address} ${w.postalCode}`)
         dispatch(createAndReplaceWaypoints(addresses))
 
-        setEditorMode('REGULAR')
+        setEditorMode(EditorMode.Regular)
         setErrorMessage('')
     }
 
     const cancelImportMode = () => {
-        setEditorMode('REGULAR')
+        setEditorMode(EditorMode.Regular)
         setErrorMessage('')
     }
 
@@ -135,12 +143,12 @@ export const WaypointEditor = () => {
     // URLs Functions
 
     const showUrls = () => {
-        setEditorMode('SHOW_URLS')
+        setEditorMode(EditorMode.ShowUrls)
         setErrorMessage('')
     }
 
     const hideUrls = () => {
-        setEditorMode('REGULAR')
+        setEditorMode(EditorMode.Regular)
         setErrorMessage('')
     }
 
@@ -188,7 +196,7 @@ export const WaypointEditor = () => {
         })
 
         if (!response.ok) {
-            setEditorMode('REGULAR')
+            setEditorMode(EditorMode.Regular)
             setErrorMessage(`Failed to generate PDF (ERROR: '${await response.text()}')`)
             return
         }
@@ -209,12 +217,12 @@ export const WaypointEditor = () => {
     // Optimizer Functions
 
     const showOptimizer = () => {
-        setEditorMode('OPTIMIZER')
+        setEditorMode(EditorMode.Optimizer)
         setErrorMessage('')
     }
 
     const hideOptimizer = () => {
-        setEditorMode('REGULAR')
+        setEditorMode(EditorMode.Regular)
         setErrorMessage('')
     }
 
@@ -238,7 +246,7 @@ export const WaypointEditor = () => {
     const optimizeDistance = () => optimize('DISTANCE')
 
     const optimize = async (optimizationParameter: 'TIME' | 'DISTANCE') => {
-        setEditorMode('OPTIMIZING')
+        setEditorMode(EditorMode.Optimizing)
         setErrorMessage('')
 
         const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
@@ -322,7 +330,7 @@ export const WaypointEditor = () => {
             }
 
             if (!response.ok) {
-                setEditorMode('REGULAR')
+                setEditorMode(EditorMode.Regular)
                 setErrorMessage(`Failed to optimize route (ERROR: '${await response.text()}')`)
                 return
             }
@@ -332,10 +340,10 @@ export const WaypointEditor = () => {
 
             dispatch(createAndReplaceWaypoints(optimalOrdering.map(i => state.waypoints[i].address)))
 
-            setEditorMode('REGULAR')
+            setEditorMode(EditorMode.Regular)
             setErrorMessage('')
         } catch (e) {
-            setEditorMode('REGULAR')
+            setEditorMode(EditorMode.Regular)
             setErrorMessage(`Failed to optimize route (ERROR: '${e}')`)
         }
     }
@@ -344,24 +352,24 @@ export const WaypointEditor = () => {
 
     const headerTitle = (): string => {
         switch (editorMode) {
-            case 'REGULAR':
+            case EditorMode.Regular:
                 return 'Waypoints'
-            case 'BULK':
+            case EditorMode.Bulk:
                 return 'Bulk Edit'
-            case 'IMPORT':
-            case 'IMPORTING':
+            case EditorMode.Import:
+            case EditorMode.Importing:
                 return 'Import Waypoints'
-            case 'SHOW_URLS':
+            case EditorMode.ShowUrls:
                 return 'Show Links'
-            case 'OPTIMIZER':
-            case 'OPTIMIZING':
+            case EditorMode.Optimizer:
+            case EditorMode.Optimizing:
                 return 'Optimizer'
         }
     }
 
     const bodyItems = (): JSX.Element | JSX.Element[] => {
         switch (editorMode) {
-            case 'REGULAR':
+            case EditorMode.Regular:
                 return (
                     <>
                         {currentRouteInformation.status === 'FAILED' && (
@@ -395,7 +403,7 @@ export const WaypointEditor = () => {
                         </div>
                     </>
                 )
-            case 'BULK':
+            case EditorMode.Bulk:
                 return (
                     <>
                         <div className="alert alert-info" role="alert">
@@ -412,8 +420,8 @@ export const WaypointEditor = () => {
                         </div>
                     </>
                 )
-            case 'IMPORT':
-            case 'IMPORTING':
+            case EditorMode.Import:
+            case EditorMode.Importing:
                 return (
                     <>
                         <div className="alert alert-info" role="alert">
@@ -426,13 +434,13 @@ export const WaypointEditor = () => {
                                 value={driverNumberFieldValue}
                                 onChange={handleDriverNumberFieldChange}
                                 onKeyPress={handleDriverNumberFieldKeyPress}
-                                disabled={editorMode === 'IMPORTING'}
+                                disabled={editorMode === EditorMode.Importing}
                                 autoFocus={true}
                             />
                         </div>
                     </>
                 )
-            case 'SHOW_URLS':
+            case EditorMode.ShowUrls:
                 return navigationUrls().map((url, index) => (
                     <div key={url} className="input-row">
                         <input type="text" value={url} readOnly={true} />
@@ -444,8 +452,8 @@ export const WaypointEditor = () => {
                         </button>
                     </div>
                 ))
-            case 'OPTIMIZER':
-            case 'OPTIMIZING':
+            case EditorMode.Optimizer:
+            case EditorMode.Optimizing:
                 return (
                     <>
                         <div className="alert alert-info" role="alert">
@@ -458,7 +466,7 @@ export const WaypointEditor = () => {
                                 placeholder={`Start Point (default: ${defaultStartPoint()})`}
                                 value={startPointFieldValue}
                                 onChange={handleStartPointFieldChange}
-                                disabled={editorMode === 'OPTIMIZING'}
+                                disabled={editorMode === EditorMode.Optimizing}
                                 autoFocus={true}
                             />
                         </div>
@@ -468,7 +476,7 @@ export const WaypointEditor = () => {
                                 placeholder={`End Point (default: ${defaultEndPoint()})`}
                                 value={endPointFieldValue}
                                 onChange={handleEndPointFieldChange}
-                                disabled={editorMode === 'OPTIMIZING'}
+                                disabled={editorMode === EditorMode.Optimizing}
                             />
                         </div>
                     </>
@@ -478,7 +486,7 @@ export const WaypointEditor = () => {
 
     const footerItems = (): JSX.Element => {
         switch (editorMode) {
-            case 'REGULAR':
+            case EditorMode.Regular:
                 return (
                     <>
                         <button className="btn btn-primary" onClick={beginBulkEdit}>
@@ -520,7 +528,7 @@ export const WaypointEditor = () => {
                         </EditorVisibilityContext.Consumer>
                     </>
                 )
-            case 'BULK':
+            case EditorMode.Bulk:
                 return (
                     <>
                         <button className="btn btn-primary" onClick={commitBulkEdit}>
@@ -531,7 +539,7 @@ export const WaypointEditor = () => {
                         </button>
                     </>
                 )
-            case 'IMPORT':
+            case EditorMode.Import:
                 return (
                     <>
                         <button className="btn btn-primary" onClick={executeImport}>
@@ -542,7 +550,7 @@ export const WaypointEditor = () => {
                         </button>
                     </>
                 )
-            case 'IMPORTING':
+            case EditorMode.Importing:
                 return (
                     <>
                         <button className="btn btn-primary" disabled={true}>
@@ -550,7 +558,7 @@ export const WaypointEditor = () => {
                         </button>
                     </>
                 )
-            case 'SHOW_URLS':
+            case EditorMode.ShowUrls:
                 return (
                     <>
                         <button className="btn btn-primary" onClick={openAllUrls}>
@@ -564,7 +572,7 @@ export const WaypointEditor = () => {
                         </button>
                     </>
                 )
-            case 'OPTIMIZER':
+            case EditorMode.Optimizer:
                 return (
                     <>
                         <button className="btn btn-primary" onClick={optimizeDistance}>
@@ -578,7 +586,7 @@ export const WaypointEditor = () => {
                         </button>
                     </>
                 )
-            case 'OPTIMIZING':
+            case EditorMode.Optimizing:
                 return (
                     <>
                         <button className="btn btn-primary" disabled={true}>
