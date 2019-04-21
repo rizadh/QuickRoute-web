@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
 import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
-import { enableAutofit } from '../redux/actions'
+import { enableAutofit as enableAutofitActionCreator } from '../redux/actions'
 
 export const MapButtons = () => {
     const { editorIsHidden, showEditor } = useContext(EditorVisibilityContext)
@@ -10,10 +10,12 @@ export const MapButtons = () => {
         dispatch,
     } = useContext(AppStateContext)
 
+    const enableAutofit = useCallback(() => dispatch(enableAutofitActionCreator()), [])
+
     return (
         <div id="map-buttons">
             {!autofitIsEnabled && (
-                <button className="btn btn-warning" onClick={() => dispatch(enableAutofit())}>
+                <button className="btn btn-warning" onClick={enableAutofit}>
                     <i className="fas fa-expand" /> Auto-Fit
                 </button>
             )}
