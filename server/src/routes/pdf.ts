@@ -1,4 +1,5 @@
 import { spawnSync } from 'child_process'
+import lescape from 'escape-latex'
 import { createReadStream, readFileSync } from 'fs'
 import { IMiddleware } from 'koa-router'
 import { join } from 'path'
@@ -11,7 +12,7 @@ const pdfRoute: IMiddleware = async ctx => {
     if (waypoints) {
         // Create tex file from template
         const template = readFileSync('latex/waypoints.tex').toString()
-        const formattedWaypoints = waypoints.map(w => `\\waypoint{${w}}`).join('\n')
+        const formattedWaypoints = waypoints.map(w => `\\waypoint{${lescape(w)}}`).join('\n')
         const input = template.replace('__WAYPOINTS__', formattedWaypoints)
 
         // Compile tex file

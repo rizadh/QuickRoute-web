@@ -24,6 +24,7 @@
     "license": "ISC",
     "dependencies": {
         "@koa/cors": "^3.0.0",
+        "@types/escape-latex": "^0.1.30",
         "@types/jsonwebtoken": "^8.3.2",
         "@types/koa": "^2.0.48",
         "@types/koa-bodyparser": "^4.2.2",
@@ -47,6 +48,7 @@
         "@types/uuid": "^3.4.4",
         "babel-polyfill": "^6.26.0",
         "copy-text-to-clipboard": "^2.1.0",
+        "escape-latex": "^1.2.0",
         "jsonwebtoken": "^8.5.1",
         "koa": "^2.7.0",
         "koa-bodyparser": "^4.2.1",
