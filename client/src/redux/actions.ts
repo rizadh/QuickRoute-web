@@ -14,12 +14,14 @@ import {
     FetchRouteSuccessAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
+    MuteMapAction,
     ReplaceWaypointsAction,
     ReverseWaypointsAction,
     SelectWaypointAction,
     SelectWaypointRangeAction,
     SetAddressAction,
     ToggleWaypointSelectionAction,
+    UnmuteMapAction,
 } from './actionTypes'
 import { Waypoint } from './state'
 
@@ -149,4 +151,12 @@ export const enableAutofit = (): EnableAutofitAction => ({
 
 export const disableAutofit = (): DisableAutofitAction => ({
     type: 'DISABLE_AUTOFIT',
+})
+
+export const muteMap = (): MuteMapAction => ({
+    type: 'MUTE_MAP',
+})
+
+export const unmuteMap = (): UnmuteMapAction => ({
+    type: 'UNMUTE_MAP',
 })

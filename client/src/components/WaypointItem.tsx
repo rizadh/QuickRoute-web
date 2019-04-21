@@ -52,10 +52,10 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const placeFetchResult = fetchedPlaces.get(waypoint.address)
 
     const incomingRouteFetchResult =
-        index === 0 && routeFetchResult(waypoints[index - 1].address, waypoints[index].address)
+        index !== 0 && routeFetchResult(waypoints[index - 1].address, waypoints[index].address)
 
     const outgoingRouteFetchResult =
-        index === waypoints.length - 1 && routeFetchResult(waypoints[index].address, waypoints[index + 1].address)
+        index !== waypoints.length - 1 && routeFetchResult(waypoints[index].address, waypoints[index + 1].address)
 
     const itemWasClicked = (e: React.MouseEvent) => {
         if (e.shiftKey) {

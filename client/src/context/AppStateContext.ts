@@ -12,6 +12,7 @@ export const AppStateContext = createContext<{
         fetchedPlaces: new Map(),
         fetchedRoutes: new Map(),
         autofitIsEnabled: true,
+        mutedMapIsEnabled: false,
     },
     dispatch: _ => _,
 })

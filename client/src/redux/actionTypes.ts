@@ -109,6 +109,14 @@ export type DisableAutofitAction = Readonly<{
     type: 'DISABLE_AUTOFIT';
 }>
 
+export type MuteMapAction = Readonly<{
+    type: 'MUTE_MAP';
+}>
+
+export type UnmuteMapAction = Readonly<{
+    type: 'UNMUTE_MAP';
+}>
+
 export type AppAction =
     | ReplaceWaypointsAction
     | AddWaypointAction
@@ -130,3 +138,5 @@ export type AppAction =
     | FetchRouteFailedAction
     | EnableAutofitAction
     | DisableAutofitAction
+    | MuteMapAction
+    | UnmuteMapAction

@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import { AppStateContext } from '../context/AppStateContext'
 import { moveSelectedWaypoints, moveWaypoint } from '../redux/actions'
-import { Waypoint } from '../redux/state'
 import { WaypointItem } from './WaypointItem'
 
 export const WaypointList = () => {
@@ -27,7 +26,7 @@ export const WaypointList = () => {
             <Droppable droppableId="waypointlist">
                 {(provided, snapshot) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
-                        {waypoints.map((waypoint: Waypoint, index: number) => (
+                        {waypoints.map((waypoint, index) => (
                             <WaypointItem
                                 key={waypoint.uuid}
                                 index={index}

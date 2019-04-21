@@ -2,7 +2,12 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { EditorVisibilityContext } from '../../context/EditorVisibilityContext'
 import { useInputField } from '../../hooks/useInputField'
-import { createWaypoint, reverseWaypoints as reverseWaypointsCreator } from '../../redux/actions'
+import {
+    createWaypoint,
+    muteMap as muteMapActionCreator,
+    reverseWaypoints as reverseWaypointsActionCreator,
+    unmuteMap as unmuteMapActionCreator,
+} from '../../redux/actions'
 import { routeInformation } from '../../redux/selectors'
 import { isValidAddress } from '../../redux/validator'
 import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
@@ -28,11 +33,13 @@ export const ListPane = () => {
     const setEditorModeShowUrls = useCallback(() => setEditorMode(EditorPane.Urls), [])
     const setEditorModeImport = useCallback(() => setEditorMode(EditorPane.Import), [])
 
-    const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsCreator()), [])
+    const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsActionCreator()), [])
     const addNewWaypoint = useCallback(() => {
         dispatch(createWaypoint(newWaypointFieldValue))
         setNewWaypointFieldValue('')
     }, [newWaypointFieldValue])
+    const muteMap = useCallback(() => dispatch(muteMapActionCreator()), [])
+    const unmuteMap = useCallback(() => dispatch(unmuteMapActionCreator()), [])
 
     const generatePdf = useCallback(async () => {
         setErrorMessage('')
@@ -139,6 +146,15 @@ export const ListPane = () => {
                     <button className="btn btn-primary" onClick={hideEditor}>
                         <i className="far fa-window-maximize" /> Hide Editor
                     </button>
+                    {state.mutedMapIsEnabled ? (
+                        <button className="btn btn-primary" onClick={unmuteMap}>
+                            <i className="fas fa-map-marked" /> Use Regular Map
+                        </button>
+                    ) : (
+                        <button className="btn btn-primary" onClick={muteMap}>
+                            <i className="fas fa-map" /> Use Muted Map
+                        </button>
+                    )}
                 </>
             }
         />

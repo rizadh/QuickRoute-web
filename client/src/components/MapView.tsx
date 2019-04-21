@@ -18,7 +18,7 @@ export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const { state, dispatch } = useContext(AppStateContext)
-    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled } = state
+    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled, mutedMapIsEnabled } = state
     const status = useMemo(() => routeInformation(state).status, [state])
     const darkMode = useMedia('(prefers-color-scheme: dark)')
     const windowSize = useWindowSize()
@@ -135,6 +135,13 @@ export const MapView = () => {
     useEffect(() => {
         if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light
     }, [map, darkMode])
+
+    useEffect(() => {
+        if (map) {
+            map.mapType = mutedMapIsEnabled ? mapkit.Map.MapTypes.MutedStandard : mapkit.Map.MapTypes.Standard
+            map.showsPointsOfInterest = !mutedMapIsEnabled
+        }
+    }, [map, mutedMapIsEnabled])
 
     return <div ref={mapviewRef} id="mapview" />
 }
