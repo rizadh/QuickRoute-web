@@ -1,6 +1,7 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext } from 'react'
 import Textarea from 'react-textarea-autosize'
 import { AppStateContext } from '../../context/AppStateContext'
+import { useInputField } from '../../hooks/useInputField'
 import { createAndReplaceWaypoints } from '../../redux/actions'
 import { isValidAddress, parseAddress } from '../../redux/validator'
 import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
@@ -8,7 +9,12 @@ import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../Wa
 export const BulkEditPane = () => {
     const { state, dispatch } = useContext(AppStateContext)
     const setEditorMode = useContext(WaypointEditorContext)
-    const [bulkEditFieldValue, setBulkEditFieldValue] = useState(state.waypoints.map(w => w.address).join('\n'))
+
+    const {
+        value: bulkEditFieldValue,
+        changeHandler: handleBulkEditFieldChange,
+        keyPressHandler: handleBulkEditFieldKeyPress,
+    } = useInputField(state.waypoints.map(w => w.address).join('\n'), event => event.shiftKey && commitBulkEdit())
 
     const commitBulkEdit = useCallback(() => {
         const waypoints = bulkEditFieldValue
@@ -19,23 +25,12 @@ export const BulkEditPane = () => {
         dispatch(createAndReplaceWaypoints(waypoints))
 
         setEditorMode(EditorPane.List)
-    }, [dispatch, bulkEditFieldValue])
-
-    const cancelBulkEdit = useCallback(() => {
-        setEditorMode(EditorPane.List)
-    }, [])
-
-    const handleBulkEditFieldChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setBulkEditFieldValue(e.currentTarget.value)
-    }
-
-    const handleBulkEditFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && e.shiftKey) commitBulkEdit()
-    }
+    }, [bulkEditFieldValue])
+    const cancelBulkEdit = useCallback(() => setEditorMode(EditorPane.List), [])
 
     return (
         <WaypointEditorTemplate
-            title="Bulk Edit 2"
+            title="Bulk Edit"
             errorMessage=""
             body={
                 <>

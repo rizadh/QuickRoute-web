@@ -1,14 +1,19 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
+import { useInputField } from '../../hooks/useInputField'
 import { createAndReplaceWaypoints } from '../../redux/actions'
 import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
 
 export const ImportPane = () => {
     const { dispatch } = useContext(AppStateContext)
     const [errorMessage, setErrorMessage] = useState('')
-    const [driverNumberFieldValue, setDriverNumberFieldValue] = useState('')
+    const {
+        value: driverNumberFieldValue,
+        changeHandler: handleDriverNumberFieldChange,
+        keyPressHandler: handleDriverNumberFieldKeyPress,
+    } = useInputField('', () => executeImport())
     const setEditorMode = useContext(WaypointEditorContext)
-    const setEditorModeWaypointList = useCallback(() => setEditorMode(EditorPane.List), [setEditorMode])
+    const setEditorModeWaypointList = useCallback(() => setEditorMode(EditorPane.List), [])
     const [importInProgress, setImportInProgress] = useState(false)
 
     const executeImport = useCallback(async () => {
@@ -42,15 +47,7 @@ export const ImportPane = () => {
         dispatch(createAndReplaceWaypoints(addresses))
 
         setEditorMode(EditorPane.List)
-    }, [setEditorMode, driverNumberFieldValue])
-
-    const handleDriverNumberFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') executeImport()
-    }
-
-    const handleDriverNumberFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDriverNumberFieldValue(e.currentTarget.value)
-    }
+    }, [driverNumberFieldValue])
 
     return (
         <WaypointEditorTemplate

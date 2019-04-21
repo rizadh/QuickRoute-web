@@ -1,32 +1,16 @@
 import copyToClipboard from 'copy-text-to-clipboard'
 import { chunk } from 'lodash'
 import { stringify } from 'query-string'
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
 
 export const UrlsPane = () => {
     const { state } = useContext(AppStateContext)
     const setEditorMode = useContext(WaypointEditorContext)
-    const setEditorModeWaypointList = useCallback(() => setEditorMode(EditorPane.List), [setEditorMode])
+    const setEditorModeWaypointList = useCallback(() => setEditorMode(EditorPane.List), [])
 
-    const openUrl = (index: number) => () => {
-        window.open(navigationUrls()[index])
-    }
-
-    const openAllUrls = () => {
-        navigationUrls().forEach(url => window.open(url))
-    }
-
-    const copyUrl = (index: number) => () => {
-        copyToClipboard(navigationUrls()[index])
-    }
-
-    const copyAllUrls = () => {
-        copyToClipboard(navigationUrls().join('\n'))
-    }
-
-    const navigationUrls = () => {
+    const navigationUrls = useMemo(() => {
         return chunk(state.waypoints, 10)
             .map(waypoints => waypoints.map(w => w.address))
             .map(addresses => {
@@ -40,7 +24,29 @@ export const UrlsPane = () => {
 
                 return 'https://www.google.com/maps/dir/?' + stringify(parameters)
             })
-    }
+    }, [state])
+
+    const openUrl = useCallback(
+        (index: number) => () => {
+            window.open(navigationUrls[index])
+        },
+        [navigationUrls],
+    )
+
+    const openAllUrls = useCallback(() => {
+        navigationUrls.forEach(url => window.open(url))
+    }, [navigationUrls])
+
+    const copyUrl = useCallback(
+        (index: number) => () => {
+            copyToClipboard(navigationUrls[index])
+        },
+        [navigationUrls],
+    )
+
+    const copyAllUrls = useCallback(() => {
+        copyToClipboard(navigationUrls.join('\n'))
+    }, [navigationUrls])
 
     return (
         <WaypointEditorTemplate
@@ -48,7 +54,7 @@ export const UrlsPane = () => {
             errorMessage=""
             body={
                 <>
-                    {navigationUrls().map((url, index) => (
+                    {navigationUrls.map((url, index) => (
                         <div key={url} className="input-row">
                             <input type="text" value={url} readOnly={true} />
                             <button onClick={copyUrl(index)} className="btn btn-primary">

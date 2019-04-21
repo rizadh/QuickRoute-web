@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { EditorVisibilityContext } from '../../context/EditorVisibilityContext'
+import { useInputField } from '../../hooks/useInputField'
 import { createWaypoint, reverseWaypoints as reverseWaypointsCreator } from '../../redux/actions'
 import { routeInformation } from '../../redux/selectors'
 import { isValidAddress } from '../../redux/validator'
@@ -9,33 +10,33 @@ import { WaypointList } from '../WaypointList'
 
 export const ListPane = () => {
     const [errorMessage, setErrorMessage] = useState('')
-    const [newWaypointFieldValue, setNewWaypointFieldValue] = useState('')
+    const {
+        value: newWaypointFieldValue,
+        setValue: setNewWaypointFieldValue,
+        changeHandler: handleNewWaypointFieldChange,
+        keyPressHandler: handleNewWaypointFieldKeyPress,
+    } = useInputField('', () => isValidAddress(newWaypointFieldValue) && addNewWaypoint())
+
     const { state, dispatch } = useContext(AppStateContext)
     const { hideEditor } = useContext(EditorVisibilityContext)
     const setEditorMode = useContext(WaypointEditorContext)
-    const currentRouteInformation = useMemo(() => routeInformation(state), [state])
-    const setEditorModeBulk = useCallback(() => setEditorMode(EditorPane.BulkEdit), [setEditorMode])
-    const setEditorModeOptimizer = useCallback(() => setEditorMode(EditorPane.Optimizer), [setEditorMode])
-    const setEditorModeShowUrls = useCallback(() => setEditorMode(EditorPane.Urls), [setEditorMode])
-    const setEditorModeImport = useCallback(() => setEditorMode(EditorPane.Import), [setEditorMode])
-    const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsCreator()), [dispatch])
 
-    const addNewWaypoint = () => {
+    const currentRouteInformation = useMemo(() => routeInformation(state), [state])
+
+    const setEditorModeBulk = useCallback(() => setEditorMode(EditorPane.BulkEdit), [])
+    const setEditorModeOptimizer = useCallback(() => setEditorMode(EditorPane.Optimizer), [])
+    const setEditorModeShowUrls = useCallback(() => setEditorMode(EditorPane.Urls), [])
+    const setEditorModeImport = useCallback(() => setEditorMode(EditorPane.Import), [])
+
+    const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsCreator()), [])
+    const addNewWaypoint = useCallback(() => {
         dispatch(createWaypoint(newWaypointFieldValue))
         setNewWaypointFieldValue('')
-    }
+    }, [newWaypointFieldValue])
 
-    const handleNewWaypointFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewWaypointFieldValue(e.currentTarget.value)
-    }
+    const generatePdf = useCallback(async () => {
+        setErrorMessage('')
 
-    const handleNewWaypointFieldKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && isValidAddress(newWaypointFieldValue)) {
-            addNewWaypoint()
-        }
-    }
-
-    const generatePdf = async () => {
         const response = await fetch('/pdf', {
             method: 'POST',
             headers: {
@@ -60,7 +61,7 @@ export const ListPane = () => {
         a.remove()
 
         window.URL.revokeObjectURL(url)
-    }
+    }, [state])
 
     return (
         <WaypointEditorTemplate
