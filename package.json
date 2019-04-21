@@ -15,8 +15,8 @@
         "start": "npm run clean && npm run build && npm run serve",
         "start:server": "npm run clean:server && npm run build:server && npm run serve",
         "lint": "npm run lint:client && npm run lint:server",
-        "lint:client": "tslint --project client --format verbose -c tslint.json",
-        "lint:server": "tslint --project server --format verbose -c tslint.json",
+        "lint:client": "tsc -p client -noEmit && tslint --project client --format verbose -c tslint.json",
+        "lint:server": "tsc -p server -noEmit && tslint --project server --format verbose -c tslint.json",
         "serve": "node server/out/server.js",
         "serve:watch": "nodemon server/out/server.js"
     },
