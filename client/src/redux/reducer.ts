@@ -17,7 +17,7 @@ import {
     SetAddressAction,
     ToggleWaypointSelectionAction,
 } from './actionTypes'
-import { AppState, fetchFailed, fetchInProgress, fetchSuccess } from './state'
+import { AppState, EditorPane, fetchFailed, fetchInProgress, fetchSuccess } from './state'
 
 const initialState: AppState = {
     waypoints: [],
@@ -26,6 +26,7 @@ const initialState: AppState = {
     fetchedRoutes: new Map(),
     autofitIsEnabled: true,
     mutedMapIsEnabled: false,
+    editorPane: EditorPane.List,
 }
 
 export default (state: AppState = initialState, action: AppAction): AppState => {
@@ -70,6 +71,8 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return { ...state, mutedMapIsEnabled: true }
         case 'UNMUTE_MAP':
             return { ...state, mutedMapIsEnabled: false }
+        case 'SET_EDITOR_PANE':
+            return { ...state, editorPane: action.editorPane }
     }
 
     return state

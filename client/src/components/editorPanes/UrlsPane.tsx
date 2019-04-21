@@ -3,12 +3,13 @@ import { chunk } from 'lodash'
 import { stringify } from 'query-string'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
-import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
+import { setEditorPane } from '../../redux/actions'
+import { EditorPane } from '../../redux/state'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const UrlsPane = () => {
-    const { state } = useContext(AppStateContext)
-    const setEditorMode = useContext(WaypointEditorContext)
-    const setEditorModeWaypointList = useCallback(() => setEditorMode(EditorPane.List), [])
+    const { state, dispatch } = useContext(AppStateContext)
+    const setEditorPaneWaypointList = useCallback(() => dispatch(setEditorPane(EditorPane.List)), [])
 
     const navigationUrls = useMemo(() => {
         return chunk(state.waypoints, 10)
@@ -75,7 +76,7 @@ export const UrlsPane = () => {
                     <button className="btn btn-primary" onClick={copyAllUrls}>
                         <i className="far fa-clipboard" /> Copy All
                     </button>
-                    <button className="btn btn-secondary" onClick={setEditorModeWaypointList}>
+                    <button className="btn btn-secondary" onClick={setEditorPaneWaypointList}>
                         <i className="fas fa-chevron-left" /> Back
                     </button>
                 </>

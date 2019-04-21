@@ -20,10 +20,11 @@ import {
     SelectWaypointAction,
     SelectWaypointRangeAction,
     SetAddressAction,
+    SetEditorPaneAction,
     ToggleWaypointSelectionAction,
     UnmuteMapAction,
 } from './actionTypes'
-import { Waypoint } from './state'
+import { EditorPane, Waypoint } from './state'
 
 const createWaypointFromAddress = (address: string): Waypoint => ({
     address,
@@ -159,4 +160,9 @@ export const muteMap = (): MuteMapAction => ({
 
 export const unmuteMap = (): UnmuteMapAction => ({
     type: 'UNMUTE_MAP',
+})
+
+export const setEditorPane = (editorPane: EditorPane): SetEditorPaneAction => ({
+    type: 'SET_EDITOR_PANE',
+    editorPane,
 })

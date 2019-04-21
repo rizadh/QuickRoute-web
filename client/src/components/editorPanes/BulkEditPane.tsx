@@ -2,13 +2,14 @@ import React, { useCallback, useContext } from 'react'
 import Textarea from 'react-textarea-autosize'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { createAndReplaceWaypoints } from '../../redux/actions'
+import { createAndReplaceWaypoints, setEditorPane as setEditorPaneActionCreator } from '../../redux/actions'
+import { EditorPane } from '../../redux/state'
 import { isValidAddress, parseAddress } from '../../redux/validator'
-import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const BulkEditPane = () => {
     const { state, dispatch } = useContext(AppStateContext)
-    const setEditorMode = useContext(WaypointEditorContext)
+    const setEditorPane = useCallback(editorPane => dispatch(setEditorPaneActionCreator(editorPane)), [])
 
     const {
         value: bulkEditFieldValue,
@@ -23,10 +24,9 @@ export const BulkEditPane = () => {
             .map(parseAddress)
 
         dispatch(createAndReplaceWaypoints(waypoints))
-
-        setEditorMode(EditorPane.List)
+        dispatch(setEditorPaneActionCreator(EditorPane.List))
     }, [bulkEditFieldValue])
-    const cancelBulkEdit = useCallback(() => setEditorMode(EditorPane.List), [])
+    const cancelBulkEdit = useCallback(() => setEditorPane(EditorPane.List), [])
 
     return (
         <WaypointEditorTemplate

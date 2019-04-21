@@ -6,11 +6,13 @@ import {
     createWaypoint,
     muteMap as muteMapActionCreator,
     reverseWaypoints as reverseWaypointsActionCreator,
+    setEditorPane,
     unmuteMap as unmuteMapActionCreator,
 } from '../../redux/actions'
 import { routeInformation } from '../../redux/selectors'
+import { EditorPane } from '../../redux/state'
 import { isValidAddress } from '../../redux/validator'
-import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 import { WaypointList } from '../WaypointList'
 
 export const ListPane = () => {
@@ -24,14 +26,13 @@ export const ListPane = () => {
 
     const { state, dispatch } = useContext(AppStateContext)
     const { hideEditor } = useContext(EditorVisibilityContext)
-    const setEditorMode = useContext(WaypointEditorContext)
 
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
-    const setEditorModeBulk = useCallback(() => setEditorMode(EditorPane.BulkEdit), [])
-    const setEditorModeOptimizer = useCallback(() => setEditorMode(EditorPane.Optimizer), [])
-    const setEditorModeShowUrls = useCallback(() => setEditorMode(EditorPane.Urls), [])
-    const setEditorModeImport = useCallback(() => setEditorMode(EditorPane.Import), [])
+    const setEditorPaneBulk = useCallback(() => dispatch(setEditorPane(EditorPane.BulkEdit)), [])
+    const setEditorPaneOptimizer = useCallback(() => dispatch(setEditorPane(EditorPane.Optimizer)), [])
+    const setEditorPaneShowUrls = useCallback(() => dispatch(setEditorPane(EditorPane.Urls)), [])
+    const setEditorPaneImport = useCallback(() => dispatch(setEditorPane(EditorPane.Import)), [])
 
     const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsActionCreator()), [])
     const addNewWaypoint = useCallback(() => {
@@ -113,15 +114,15 @@ export const ListPane = () => {
             }
             footer={
                 <>
-                    <button className="btn btn-primary" onClick={setEditorModeBulk}>
+                    <button className="btn btn-primary" onClick={setEditorPaneBulk}>
                         <i className="fas fa-list-alt" /> Bulk Edit
                     </button>
-                    <button className="btn btn-primary" onClick={setEditorModeImport}>
+                    <button className="btn btn-primary" onClick={setEditorPaneImport}>
                         <i className="fas fa-cloud-download-alt" /> Import Waypoints
                     </button>
                     <button
                         className="btn btn-primary"
-                        onClick={setEditorModeShowUrls}
+                        onClick={setEditorPaneShowUrls}
                         disabled={state.waypoints.length === 0}
                     >
                         <i className="fas fa-link" /> Show Links
@@ -138,7 +139,7 @@ export const ListPane = () => {
                     </button>
                     <button
                         className="btn btn-primary"
-                        onClick={setEditorModeOptimizer}
+                        onClick={setEditorPaneOptimizer}
                         disabled={state.waypoints.length < 3}
                     >
                         <i className="fas fa-star" /> Optimize

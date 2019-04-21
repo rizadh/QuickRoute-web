@@ -42,6 +42,14 @@ export type Waypoint = Readonly<{
     isSelected: boolean;
 }>
 
+export enum EditorPane {
+    List = 'list',
+    BulkEdit = 'bulkEdit',
+    Import = 'import',
+    Urls = 'urls',
+    Optimizer = 'optimizer',
+}
+
 export type AppState = Readonly<{
     waypoints: ReadonlyArray<Waypoint>;
     lastSelectedWaypointIndex: number;
@@ -49,4 +57,5 @@ export type AppState = Readonly<{
     fetchedRoutes: FetchedRoutes;
     autofitIsEnabled: boolean;
     mutedMapIsEnabled: boolean;
+    editorPane: EditorPane;
 }>

@@ -1,8 +1,9 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { createAndReplaceWaypoints } from '../../redux/actions'
-import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
+import { createAndReplaceWaypoints, setEditorPane as setEditorPaneActionCreator } from '../../redux/actions'
+import { EditorPane } from '../../redux/state'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const ImportPane = () => {
     const { dispatch } = useContext(AppStateContext)
@@ -12,8 +13,7 @@ export const ImportPane = () => {
         changeHandler: handleDriverNumberFieldChange,
         keyPressHandler: handleDriverNumberFieldKeyPress,
     } = useInputField('', () => executeImport())
-    const setEditorMode = useContext(WaypointEditorContext)
-    const setEditorModeWaypointList = useCallback(() => setEditorMode(EditorPane.List), [])
+    const setEditorPaneWaypointList = useCallback(() => dispatch(setEditorPaneActionCreator(EditorPane.List)), [])
     const [importInProgress, setImportInProgress] = useState(false)
 
     const executeImport = useCallback(async () => {
@@ -45,8 +45,7 @@ export const ImportPane = () => {
         const waypoints = [...response.waypoints.dispatched, ...response.waypoints.inprogress]
         const addresses = waypoints.map(w => `${w.address} ${w.postalCode}`)
         dispatch(createAndReplaceWaypoints(addresses))
-
-        setEditorMode(EditorPane.List)
+        dispatch(setEditorPaneActionCreator(EditorPane.List))
     }, [driverNumberFieldValue])
 
     return (
@@ -81,7 +80,7 @@ export const ImportPane = () => {
                         <button className="btn btn-primary" onClick={executeImport}>
                             <i className="fas fa-cloud-download-alt" /> Import
                         </button>
-                        <button className="btn btn-secondary" onClick={setEditorModeWaypointList}>
+                        <button className="btn btn-secondary" onClick={setEditorPaneWaypointList}>
                             <i className="fas fa-chevron-left" /> Back
                         </button>
                     </>

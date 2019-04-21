@@ -1,12 +1,13 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { createAndReplaceWaypoints } from '../../redux/actions'
-import { EditorPane, WaypointEditorContext, WaypointEditorTemplate } from '../WaypointEditor'
+import { createAndReplaceWaypoints, setEditorPane } from '../../redux/actions'
+import { EditorPane } from '../../redux/state'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 
 enum OptimizationParameter {
-    Time,
-    Distance,
+    Time = 'time',
+    Distance = 'distance',
 }
 
 const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
@@ -23,14 +24,16 @@ const routePromise = (request: mapkit.DirectionsRequest) =>
 
 export const OptimizerPane = () => {
     const { state, dispatch } = useContext(AppStateContext)
-    const setEditorMode = useContext(WaypointEditorContext)
 
     const [errorMessage, setErrorMessage] = useState('')
     const [optimizationInProgress, setOptimizationInProgress] = useState(false)
     const { value: startPointFieldValue, setValue: setStartPointFieldValue } = useInputField('', () => undefined)
     const { value: endPointFieldValue, setValue: setEndPointFieldValue } = useInputField('', () => undefined)
 
-    const setEditorModeWaypointList = useCallback(() => setEditorMode(EditorPane.List), [])
+    const setEditorPaneWaypointList = useCallback(
+        () => useCallback(() => dispatch(setEditorPane(EditorPane.List)), []),
+        [],
+    )
     const handleStartPointFieldChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => setStartPointFieldValue(e.currentTarget.value),
         [],
@@ -122,7 +125,7 @@ export const OptimizerPane = () => {
             }
 
             if (!response.ok) {
-                setEditorMode(EditorPane.List)
+                dispatch(setEditorPane(EditorPane.List))
                 setErrorMessage(`Failed to optimize route (ERROR: '${await response.text()}')`)
                 return
             }
@@ -132,9 +135,9 @@ export const OptimizerPane = () => {
 
             dispatch(createAndReplaceWaypoints(optimalOrdering.map(i => state.waypoints[i].address)))
 
-            setEditorMode(EditorPane.List)
+            dispatch(setEditorPane(EditorPane.List))
         } catch (e) {
-            setEditorMode(EditorPane.List)
+            dispatch(setEditorPane(EditorPane.List))
             setErrorMessage(`Failed to optimize route (ERROR: '${e}')`)
         }
     }
@@ -188,7 +191,7 @@ export const OptimizerPane = () => {
                         <button className="btn btn-primary" onClick={optimizeTime}>
                             <i className="fas fa-clock" /> Optimize Time
                         </button>
-                        <button className="btn btn-secondary" onClick={setEditorModeWaypointList}>
+                        <button className="btn btn-secondary" onClick={setEditorPaneWaypointList}>
                             <i className="fas fa-chevron-left" /> Back
                         </button>
                     </>

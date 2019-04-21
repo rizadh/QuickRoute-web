@@ -1,6 +1,6 @@
 import { createContext, Dispatch } from 'react'
 import { AppAction } from '../redux/actionTypes'
-import { AppState } from '../redux/state'
+import { AppState, EditorPane } from '../redux/state'
 
 export const AppStateContext = createContext<{
     state: AppState;
@@ -13,6 +13,7 @@ export const AppStateContext = createContext<{
         fetchedRoutes: new Map(),
         autofitIsEnabled: true,
         mutedMapIsEnabled: false,
+        editorPane: EditorPane.List,
     },
     dispatch: _ => _,
 })

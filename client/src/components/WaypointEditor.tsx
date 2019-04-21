@@ -1,18 +1,12 @@
-import React, { createContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { appVersion } from '..'
+import { AppStateContext } from '../context/AppStateContext'
+import { EditorPane } from '../redux/state'
 import { BulkEditPane } from './editorPanes/BulkEditPane'
 import { ImportPane } from './editorPanes/ImportPane'
 import { ListPane } from './editorPanes/ListPane'
 import { OptimizerPane } from './editorPanes/OptimizerPane'
 import { UrlsPane } from './editorPanes/UrlsPane'
-
-export enum EditorPane {
-    List,
-    BulkEdit,
-    Import,
-    Urls,
-    Optimizer,
-}
 
 type WaypointEditorTemplateProps = {
     title: string;
@@ -20,8 +14,6 @@ type WaypointEditorTemplateProps = {
     body: JSX.Element;
     footer: JSX.Element;
 }
-
-export const WaypointEditorContext = createContext<(mode: EditorPane) => any>(m => m)
 
 export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => (
     <div id="waypoint-editor">
@@ -44,38 +36,20 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => (
 )
 
 export const WaypointEditor = () => {
-    const [editorMode, setEditorMode] = useState<EditorPane>(EditorPane.List)
+    const {
+        state: { editorPane },
+    } = useContext(AppStateContext)
 
-    switch (editorMode) {
+    switch (editorPane) {
         case EditorPane.List:
-            return (
-                <WaypointEditorContext.Provider value={setEditorMode}>
-                    <ListPane />
-                </WaypointEditorContext.Provider>
-            )
+            return <ListPane />
         case EditorPane.Urls:
-            return (
-                <WaypointEditorContext.Provider value={setEditorMode}>
-                    <UrlsPane />
-                </WaypointEditorContext.Provider>
-            )
+            return <UrlsPane />
         case EditorPane.BulkEdit:
-            return (
-                <WaypointEditorContext.Provider value={setEditorMode}>
-                    <BulkEditPane />
-                </WaypointEditorContext.Provider>
-            )
+            return <BulkEditPane />
         case EditorPane.Import:
-            return (
-                <WaypointEditorContext.Provider value={setEditorMode}>
-                    <ImportPane />
-                </WaypointEditorContext.Provider>
-            )
+            return <ImportPane />
         case EditorPane.Optimizer:
-            return (
-                <WaypointEditorContext.Provider value={setEditorMode}>
-                    <OptimizerPane />
-                </WaypointEditorContext.Provider>
-            )
+            return <OptimizerPane />
     }
 }

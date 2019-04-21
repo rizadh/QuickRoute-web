@@ -1,4 +1,4 @@
-import { Waypoint } from './state'
+import { EditorPane, Waypoint } from './state'
 
 export type ReplaceWaypointsAction = Readonly<{
     type: 'REPLACE_WAYPOINTS';
@@ -117,6 +117,11 @@ export type UnmuteMapAction = Readonly<{
     type: 'UNMUTE_MAP';
 }>
 
+export type SetEditorPaneAction = Readonly<{
+    type: 'SET_EDITOR_PANE';
+    editorPane: EditorPane;
+}>
+
 export type AppAction =
     | ReplaceWaypointsAction
     | AddWaypointAction
@@ -140,3 +145,4 @@ export type AppAction =
     | DisableAutofitAction
     | MuteMapAction
     | UnmuteMapAction
+    | SetEditorPaneAction
