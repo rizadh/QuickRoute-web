@@ -30,7 +30,6 @@ export const OptimizerPane = () => {
     const { value: startPointFieldValue, setValue: setStartPointFieldValue } = useInputField('', () => undefined)
     const { value: endPointFieldValue, setValue: setEndPointFieldValue } = useInputField('', () => undefined)
 
-    const setEditorPaneWaypointList = useCallback(() => dispatch(setEditorPane(EditorPane.List)), [])
     const handleStartPointFieldChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => setStartPointFieldValue(e.currentTarget.value),
         [],
@@ -39,11 +38,16 @@ export const OptimizerPane = () => {
         setEndPointFieldValue(e.currentTarget.value)
     }, [])
 
-    const defaultStartPoint = endPointFieldValue || state.waypoints[0].address
-    const defaultEndPoint =
+    const optimizeDistance = useCallback(() => optimize(OptimizationParameter.Distance), [optimize])
+    const optimizeTime = useCallback(() => optimize(OptimizationParameter.Time), [optimize])
+
+    const insufficientWaypoints = state.waypoints.length < 3
+
+    const defaultStartPoint = () => endPointFieldValue || state.waypoints[0].address
+    const defaultEndPoint = () =>
         endPointFieldValue || startPointFieldValue || state.waypoints[state.waypoints.length - 1].address
 
-    const fetchPlace = async (waypoint: string) => {
+    async function fetchPlace(waypoint: string) {
         const fetchedPlace = state.fetchedPlaces.get(waypoint)
 
         if (fetchedPlace && fetchedPlace.status === 'SUCCESS') {
@@ -74,7 +78,7 @@ export const OptimizerPane = () => {
         return route
     }
 
-    const getCost = async (waypointA: string, waypointB: string, optimizationParameter: OptimizationParameter) => {
+    async function getCost(waypointA: string, waypointB: string, optimizationParameter: OptimizationParameter) {
         if (waypointA === waypointB) return 0
 
         const route = await getRoute(waypointA, waypointB)
@@ -90,7 +94,7 @@ export const OptimizerPane = () => {
     const startPoint = startPointFieldValue || endPointFieldValue
     const endPoint = endPointFieldValue || startPointFieldValue
 
-    const optimize = async (optimizationParameter: OptimizationParameter) => {
+    async function optimize(optimizationParameter: OptimizationParameter) {
         setOptimizationInProgress(true)
         setErrorMessage('')
 
@@ -139,39 +143,42 @@ export const OptimizerPane = () => {
         }
     }
 
-    const optimizeDistance = useCallback(() => optimize(OptimizationParameter.Distance), [optimize])
-    const optimizeTime = useCallback(() => optimize(OptimizationParameter.Time), [optimize])
-
     return (
         <WaypointEditorTemplate
-            title="Optimizer"
+            paneIsBusy={optimizationInProgress}
             errorMessage={errorMessage}
             body={
-                <>
-                    <div className="alert alert-info" role="alert">
-                        Note that the route found will be the most optimal route from start point to end point passing
-                        through all waypoints along the way.
+                insufficientWaypoints ? (
+                    <div className="alert alert-warning" role="alert">
+                        Add three or more waypoints to optimize routes
                     </div>
-                    <div className="input-row">
-                        <input
-                            type="text"
-                            placeholder={`Start Point (default: ${defaultStartPoint})`}
-                            value={startPointFieldValue}
-                            onChange={handleStartPointFieldChange}
-                            disabled={optimizationInProgress}
-                            autoFocus={true}
-                        />
-                    </div>
-                    <div className="input-row">
-                        <input
-                            type="text"
-                            placeholder={`End Point (default: ${defaultEndPoint})`}
-                            value={endPointFieldValue}
-                            onChange={handleEndPointFieldChange}
-                            disabled={optimizationInProgress}
-                        />
-                    </div>
-                </>
+                ) : (
+                    <>
+                        <div className="alert alert-info" role="alert">
+                            Note that the route found will be the most optimal route from start point to end point
+                            passing through all waypoints along the way.
+                        </div>
+                        <div className="input-row">
+                            <input
+                                type="text"
+                                placeholder={`Start Point (default: ${defaultStartPoint()})`}
+                                value={startPointFieldValue}
+                                onChange={handleStartPointFieldChange}
+                                disabled={optimizationInProgress}
+                                autoFocus={true}
+                            />
+                        </div>
+                        <div className="input-row">
+                            <input
+                                type="text"
+                                placeholder={`End Point (default: ${defaultEndPoint()})`}
+                                value={endPointFieldValue}
+                                onChange={handleEndPointFieldChange}
+                                disabled={optimizationInProgress}
+                            />
+                        </div>
+                    </>
+                )
             }
             footer={
                 optimizationInProgress ? (
@@ -182,14 +189,11 @@ export const OptimizerPane = () => {
                     </>
                 ) : (
                     <>
-                        <button className="btn btn-primary" onClick={optimizeDistance}>
+                        <button className="btn btn-primary" onClick={optimizeDistance} disabled={insufficientWaypoints}>
                             <i className="fas fa-ruler-combined" /> Optimize Distance
                         </button>
-                        <button className="btn btn-primary" onClick={optimizeTime}>
+                        <button className="btn btn-primary" onClick={optimizeTime} disabled={insufficientWaypoints}>
                             <i className="fas fa-clock" /> Optimize Time
-                        </button>
-                        <button className="btn btn-secondary" onClick={setEditorPaneWaypointList}>
-                            <i className="fas fa-chevron-left" /> Back
                         </button>
                     </>
                 )

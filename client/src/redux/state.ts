@@ -46,7 +46,7 @@ export enum EditorPane {
     List = 'list',
     BulkEdit = 'bulkEdit',
     Import = 'import',
-    Urls = 'urls',
+    Links = 'urls',
     Optimizer = 'optimizer',
 }
 

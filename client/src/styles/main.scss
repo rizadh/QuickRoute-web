@@ -11,6 +11,45 @@ html {
     -webkit-tap-highlight-color: transparent;
 }
 
+a {
+    color: var(--apple-system-blue);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+input,
+textarea {
+    border: none;
+    padding: $standardPadding;
+    border-radius: $standardBorderRadius;
+
+    appearance: none;
+    outline: none;
+
+    box-shadow: none;
+
+    line-height: 1.5;
+
+    color: var(--app-primary-text-color);
+
+    transition: background-color 0.2s, border 0.2s;
+    background-color: var(--app-form-control-color);
+    @include bordered(var(--app-heavy-border-color));
+
+    &::placeholder {
+        color: var(--app-secondary-text-color);
+    }
+
+    &:focus {
+        background-color: var(--app-form-control-focus-color);
+
+        @include bordered(var(--apple-system-blue));
+    }
+}
+
 #root {
     position: fixed;
     left: 0;
@@ -48,36 +87,6 @@ html {
     }
 }
 
-input,
-textarea {
-    border: none;
-    padding: $standardPadding;
-    border-radius: $standardBorderRadius;
-
-    appearance: none;
-    outline: none;
-
-    box-shadow: none;
-
-    line-height: 1.5;
-
-    color: var(--app-primary-text-color);
-
-    transition: background-color 0.2s, border 0.2s;
-    background-color: var(--app-form-control-color);
-    @include bordered(var(--app-heavy-border-color));
-
-    &::placeholder {
-        color: var(--app-secondary-text-color);
-    }
-
-    &:focus {
-        background-color: var(--app-form-control-focus-color);
-
-        @include bordered(var(--apple-system-blue));
-    }
-}
-
 #waypoint-editor-header {
     padding: $standardMargin;
     position: sticky;
@@ -90,26 +99,34 @@ textarea {
     border-bottom: 1px solid var(--app-border-color);
 }
 
-a {
-    color: var(--apple-system-blue);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 #app-title {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+#app-version {
     font-size: 1rem;
     font-weight: 500;
     color: var(--app-secondary-text-color);
 }
 
-#waypoint-editor-title {
-    margin-top: $standardMargin;
+#pane-selector {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-top: $standardMargin / 2;
 
-    font-size: 2rem;
-    font-weight: 500;
+    .btn {
+        margin-right: $standardMargin / 2;
+        margin-top: $standardMargin / 2;
+
+        line-height: 1;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
 }
 
 #waypoint-editor-footer {
@@ -274,12 +291,6 @@ a:hover {
     & > button {
         flex-shrink: 0;
         margin-right: $standardMargin / 2;
-    }
-}
-
-.hide-editor-button {
-    @media (min-width: $compactBreakpoint) {
-        visibility: hidden;
     }
 }
 

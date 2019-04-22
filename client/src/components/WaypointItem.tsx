@@ -108,7 +108,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         </span>
                     )}
                     {fetchIsInProgress && (
-                        <span className="text-muted">
+                        <span className="text-secondary">
                             <i className="fas fa-circle-notch fa-spin" />
                         </span>
                     )}

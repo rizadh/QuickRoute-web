@@ -9,7 +9,6 @@ import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const BulkEditPane = () => {
     const { state, dispatch } = useContext(AppStateContext)
-    const setEditorPane = useCallback(editorPane => dispatch(setEditorPaneActionCreator(editorPane)), [])
 
     const {
         value: bulkEditFieldValue,
@@ -26,11 +25,10 @@ export const BulkEditPane = () => {
         dispatch(createAndReplaceWaypoints(waypoints))
         dispatch(setEditorPaneActionCreator(EditorPane.List))
     }, [bulkEditFieldValue])
-    const cancelBulkEdit = useCallback(() => setEditorPane(EditorPane.List), [])
 
     return (
         <WaypointEditorTemplate
-            title="Bulk Edit"
+            paneIsBusy={false}
             errorMessage=""
             body={
                 <>
@@ -49,14 +47,9 @@ export const BulkEditPane = () => {
                 </>
             }
             footer={
-                <>
-                    <button className="btn btn-primary" onClick={commitBulkEdit}>
-                        <i className="fas fa-save" /> Save
-                    </button>
-                    <button className="btn btn-secondary" onClick={cancelBulkEdit}>
-                        <i className="fas fa-chevron-left" /> Back
-                    </button>
-                </>
+                <button className="btn btn-primary" onClick={commitBulkEdit}>
+                    <i className="fas fa-save" /> Save
+                </button>
             }
         />
     )

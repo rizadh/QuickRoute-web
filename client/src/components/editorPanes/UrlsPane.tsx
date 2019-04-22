@@ -3,13 +3,10 @@ import { chunk } from 'lodash'
 import { stringify } from 'query-string'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
-import { setEditorPane } from '../../redux/actions'
-import { EditorPane } from '../../redux/state'
 import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const UrlsPane = () => {
-    const { state, dispatch } = useContext(AppStateContext)
-    const setEditorPaneWaypointList = useCallback(() => dispatch(setEditorPane(EditorPane.List)), [])
+    const { state } = useContext(AppStateContext)
 
     const navigationUrls = useMemo(() => {
         return chunk(state.waypoints, 10)
@@ -49,35 +46,40 @@ export const UrlsPane = () => {
         copyToClipboard(navigationUrls.join('\n'))
     }, [navigationUrls])
 
+    const insufficientWaypoints = state.waypoints.length === 0
+
     return (
         <WaypointEditorTemplate
-            title="Links"
+            paneIsBusy={false}
             errorMessage=""
             body={
-                <>
-                    {navigationUrls.map((url, index) => (
-                        <div key={url} className="input-row">
-                            <input type="text" value={url} readOnly={true} />
-                            <button onClick={copyUrl(index)} className="btn btn-primary">
-                                <i className="far fa-clipboard" />
-                            </button>
-                            <button onClick={openUrl(index)} className="btn btn-primary">
-                                <i className="fas fa-external-link-alt" />
-                            </button>
-                        </div>
-                    ))}
-                </>
+                insufficientWaypoints ? (
+                    <div className="alert alert-warning" role="alert">
+                        Add one or more waypoints to generate links
+                    </div>
+                ) : (
+                    <>
+                        {navigationUrls.map((url, index) => (
+                            <div key={url} className="input-row">
+                                <input type="text" value={url} readOnly={true} />
+                                <button onClick={copyUrl(index)} className="btn btn-primary">
+                                    <i className="far fa-fw fa-clipboard" />
+                                </button>
+                                <button onClick={openUrl(index)} className="btn btn-primary">
+                                    <i className="fas fa-fw fa-external-link-alt" />
+                                </button>
+                            </div>
+                        ))}
+                    </>
+                )
             }
             footer={
                 <>
-                    <button className="btn btn-primary" onClick={openAllUrls}>
+                    <button className="btn btn-primary" onClick={openAllUrls} disabled={insufficientWaypoints}>
                         <i className="fas fa-external-link-alt" /> Open All
                     </button>
-                    <button className="btn btn-primary" onClick={copyAllUrls}>
+                    <button className="btn btn-primary" onClick={copyAllUrls} disabled={insufficientWaypoints}>
                         <i className="far fa-clipboard" /> Copy All
-                    </button>
-                    <button className="btn btn-secondary" onClick={setEditorPaneWaypointList}>
-                        <i className="fas fa-chevron-left" /> Back
                     </button>
                 </>
             }

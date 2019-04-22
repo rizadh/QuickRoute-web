@@ -13,7 +13,6 @@ export const ImportPane = () => {
         changeHandler: handleDriverNumberFieldChange,
         keyPressHandler: handleDriverNumberFieldKeyPress,
     } = useInputField('', () => executeImport())
-    const setEditorPaneWaypointList = useCallback(() => dispatch(setEditorPaneActionCreator(EditorPane.List)), [])
     const [importInProgress, setImportInProgress] = useState(false)
 
     const executeImport = useCallback(async () => {
@@ -50,13 +49,10 @@ export const ImportPane = () => {
 
     return (
         <WaypointEditorTemplate
-            title="Import Waypoints"
+            paneIsBusy={importInProgress}
             errorMessage={errorMessage}
             body={
                 <>
-                    <div className="alert alert-info" role="alert">
-                        Waypoints are imported from Atripco
-                    </div>
                     <div className="input-row">
                         <input
                             type="text"
@@ -68,6 +64,12 @@ export const ImportPane = () => {
                             autoFocus={true}
                         />
                     </div>
+                    <div className="alert alert-info" role="alert">
+                        Waypoints are imported from Atripco
+                    </div>
+                    <div className="alert alert-info" role="alert">
+                        All existing waypoints will be replaced
+                    </div>
                 </>
             }
             footer={
@@ -76,14 +78,9 @@ export const ImportPane = () => {
                         <i className="fas fa-spin fa-circle-notch" /> Importing
                     </button>
                 ) : (
-                    <>
-                        <button className="btn btn-primary" onClick={executeImport}>
-                            <i className="fas fa-cloud-download-alt" /> Import
-                        </button>
-                        <button className="btn btn-secondary" onClick={setEditorPaneWaypointList}>
-                            <i className="fas fa-chevron-left" /> Back
-                        </button>
-                    </>
+                    <button className="btn btn-primary" onClick={executeImport}>
+                        <i className="fas fa-cloud-download-alt" /> Import
+                    </button>
                 )
             }
         />
