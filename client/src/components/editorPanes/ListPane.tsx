@@ -2,13 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { EditorVisibilityContext } from '../../context/EditorVisibilityContext'
 import { useInputField } from '../../hooks/useInputField'
-import {
-    createWaypoint,
-    muteMap as muteMapActionCreator,
-    reverseWaypoints as reverseWaypointsActionCreator,
-    setEditorPane,
-    unmuteMap as unmuteMapActionCreator,
-} from '../../redux/actions'
+import { createWaypoint, reverseWaypoints as reverseWaypointsActionCreator, setEditorPane } from '../../redux/actions'
 import { routeInformation } from '../../redux/selectors'
 import { EditorPane } from '../../redux/state'
 import { isValidAddress } from '../../redux/validator'
@@ -39,8 +33,6 @@ export const ListPane = () => {
         dispatch(createWaypoint(newWaypointFieldValue))
         setNewWaypointFieldValue('')
     }, [newWaypointFieldValue])
-    const muteMap = useCallback(() => dispatch(muteMapActionCreator()), [])
-    const unmuteMap = useCallback(() => dispatch(unmuteMapActionCreator()), [])
 
     const generatePdf = useCallback(async () => {
         setErrorMessage('')
@@ -147,15 +139,6 @@ export const ListPane = () => {
                     <button className="btn btn-primary" onClick={hideEditor}>
                         <i className="far fa-window-maximize" /> Hide Editor
                     </button>
-                    {state.mutedMapIsEnabled ? (
-                        <button className="btn btn-primary" onClick={unmuteMap}>
-                            <i className="fas fa-map-marked" /> Use Regular Map
-                        </button>
-                    ) : (
-                        <button className="btn btn-primary" onClick={muteMap}>
-                            <i className="fas fa-map" /> Use Muted Map
-                        </button>
-                    )}
                 </>
             }
         />

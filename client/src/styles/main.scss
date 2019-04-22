@@ -244,12 +244,13 @@ a:hover {
 
 #map-buttons {
     position: absolute;
-    top: $standardMargin;
+    top: $standardMargin / 2;
     right: $standardMargin;
 
     & > button {
         float: right;
         margin-left: $standardMargin / 2;
+        margin-top: $standardMargin / 2;
     }
 }
 
