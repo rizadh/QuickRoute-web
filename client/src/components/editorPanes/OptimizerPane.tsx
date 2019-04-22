@@ -30,10 +30,7 @@ export const OptimizerPane = () => {
     const { value: startPointFieldValue, setValue: setStartPointFieldValue } = useInputField('', () => undefined)
     const { value: endPointFieldValue, setValue: setEndPointFieldValue } = useInputField('', () => undefined)
 
-    const setEditorPaneWaypointList = useCallback(
-        () => useCallback(() => dispatch(setEditorPane(EditorPane.List)), []),
-        [],
-    )
+    const setEditorPaneWaypointList = useCallback(() => dispatch(setEditorPane(EditorPane.List)), [])
     const handleStartPointFieldChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => setStartPointFieldValue(e.currentTarget.value),
         [],
