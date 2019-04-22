@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { appVersion } from '..'
 import { AppStateContext } from '../context/AppStateContext'
 import { EditorPane } from '../redux/state'
@@ -39,6 +39,19 @@ export const WaypointEditor = () => {
     const {
         state: { editorPane },
     } = useContext(AppStateContext)
+
+    useEffect(() => {
+        const root = document.getElementById('root')
+        if (!root) return
+
+        if (editorPane) {
+            root.classList.remove('editor-hidden')
+        } else {
+            root.classList.add('editor-hidden')
+        }
+    }, [editorPane])
+
+    if (!editorPane) return null
 
     switch (editorPane) {
         case EditorPane.List:

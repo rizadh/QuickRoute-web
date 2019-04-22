@@ -1,25 +1,37 @@
 import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
-import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
 import {
     enableAutofit as enableAutofitActionCreator,
     muteMap as muteMapActionCreator,
+    setEditorPane,
     unmuteMap as unmuteMapActionCreator,
 } from '../redux/actions'
+import { EditorPane } from '../redux/state'
 
 export const MapButtons = () => {
-    const { editorIsHidden, showEditor } = useContext(EditorVisibilityContext)
     const {
-        state: { autofitIsEnabled, mutedMapIsEnabled },
+        state: { autofitIsEnabled, mutedMapIsEnabled, editorPane },
         dispatch,
     } = useContext(AppStateContext)
+    const editorIsHidden = !editorPane
 
     const enableAutofit = useCallback(() => dispatch(enableAutofitActionCreator()), [])
     const muteMap = useCallback(() => dispatch(muteMapActionCreator()), [])
     const unmuteMap = useCallback(() => dispatch(unmuteMapActionCreator()), [])
+    const setEditorPaneList = useCallback(() => dispatch(setEditorPane(EditorPane.List)), [])
+    const setEditorPaneNone = useCallback(() => dispatch(setEditorPane()), [])
 
     return (
         <div id="map-buttons">
+            {editorIsHidden ? (
+                <button className="btn btn-primary" onClick={setEditorPaneList}>
+                    <i className="fas fa-columns" /> Show Editor
+                </button>
+            ) : (
+                <button className="btn btn-primary" onClick={setEditorPaneNone}>
+                    <i className="far fa-window-maximize" /> Hide Editor
+                </button>
+            )}
             {mutedMapIsEnabled ? (
                 <button className="btn btn-primary" onClick={unmuteMap}>
                     <i className="fas fa-map-marked" /> Use Regular Map
@@ -27,11 +39,6 @@ export const MapButtons = () => {
             ) : (
                 <button className="btn btn-primary" onClick={muteMap}>
                     <i className="fas fa-map" /> Use Muted Map
-                </button>
-            )}
-            {editorIsHidden && (
-                <button className="btn btn-primary" onClick={showEditor}>
-                    <i className="fas fa-columns" /> Show Editor
                 </button>
             )}
             {!autofitIsEnabled && (

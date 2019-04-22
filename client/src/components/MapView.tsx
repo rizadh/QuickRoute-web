@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
-import { EditorVisibilityContext } from '../context/EditorVisibilityContext'
 import { useMedia } from '../hooks/useMedia'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { disableAutofit } from '../redux/actions'
@@ -18,18 +17,19 @@ export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const { state, dispatch } = useContext(AppStateContext)
-    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled, mutedMapIsEnabled } = state
+    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled, mutedMapIsEnabled, editorPane } = state
+    const editorIsHidden = !editorPane
     const status = useMemo(() => routeInformation(state).status, [state])
     const darkMode = useMedia('(prefers-color-scheme: dark)')
+    const compactMode = useMedia('(max-width: 800px)')
     const windowSize = useWindowSize()
-    const { editorIsHidden } = useContext(EditorVisibilityContext)
     const centerMap = (animated: boolean) => {
         if (!autofitIsEnabled || !map) return
 
         map.showItems([...(map.annotations || []), ...map.overlays], {
             animate: animated,
             padding: new mapkit.Padding({
-                top: editorIsHidden ? 16 + 42 + 16 : 16,
+                top: 16,
                 right: 16,
                 bottom: 16,
                 left: 16,
@@ -43,7 +43,6 @@ export const MapView = () => {
         const newMap = new mapkit.Map(mapviewRef.current, {
             showsMapTypeControl: false,
             showsScale: mapkit.FeatureVisibility.Visible,
-            padding: new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 48 }),
         })
 
         const mapDidMove = () => {
@@ -66,10 +65,14 @@ export const MapView = () => {
     useEffect(() => {
         if (!map) return
 
-        map.padding = editorIsHidden
-            ? new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 0 })
-            : new mapkit.Padding({ top: 16, left: 16 + 420 + 16, right: 16, bottom: 16 + 48 })
-    }, [editorIsHidden, map])
+        if (compactMode) {
+            map.padding = new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 16 + 42 })
+        } else if (editorIsHidden) {
+            map.padding = new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 })
+        } else {
+            map.padding = new mapkit.Padding({ top: 16 + 42, left: 16 + 420 + 16, right: 16, bottom: 16 + 48 })
+        }
+    }, [editorIsHidden, map, compactMode])
 
     useEffect(() => {
         if (!mapviewRef.current) return

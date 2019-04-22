@@ -57,5 +57,5 @@ export type AppState = Readonly<{
     fetchedRoutes: FetchedRoutes;
     autofitIsEnabled: boolean;
     mutedMapIsEnabled: boolean;
-    editorPane: EditorPane;
+    editorPane?: EditorPane;
 }>

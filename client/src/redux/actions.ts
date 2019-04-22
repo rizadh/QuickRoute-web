@@ -162,7 +162,7 @@ export const unmuteMap = (): UnmuteMapAction => ({
     type: 'UNMUTE_MAP',
 })
 
-export const setEditorPane = (editorPane: EditorPane): SetEditorPaneAction => ({
+export const setEditorPane = (editorPane?: EditorPane): SetEditorPaneAction => ({
     type: 'SET_EDITOR_PANE',
     editorPane,
 })

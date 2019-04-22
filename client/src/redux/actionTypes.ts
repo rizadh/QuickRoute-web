@@ -119,7 +119,7 @@ export type UnmuteMapAction = Readonly<{
 
 export type SetEditorPaneAction = Readonly<{
     type: 'SET_EDITOR_PANE';
-    editorPane: EditorPane;
+    editorPane?: EditorPane;
 }>
 
 export type AppAction =

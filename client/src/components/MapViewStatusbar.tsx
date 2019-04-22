@@ -7,6 +7,8 @@ export const MapViewStatusbar = () => {
     const { state } = useContext(AppStateContext)
     const currentRouteInformation = routeInformation(state)
 
+    if (!state.editorPane) return null
+
     let statusbarItems: JSX.Element | string
     switch (currentRouteInformation.status) {
         case 'FETCHING':

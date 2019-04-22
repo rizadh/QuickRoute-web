@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
-import { EditorVisibilityContext } from '../../context/EditorVisibilityContext'
 import { useInputField } from '../../hooks/useInputField'
 import { createWaypoint, reverseWaypoints as reverseWaypointsActionCreator, setEditorPane } from '../../redux/actions'
 import { routeInformation } from '../../redux/selectors'
@@ -19,7 +18,6 @@ export const ListPane = () => {
     } = useInputField('', () => isValidAddress(newWaypointFieldValue) && addNewWaypoint())
 
     const { state, dispatch } = useContext(AppStateContext)
-    const { hideEditor } = useContext(EditorVisibilityContext)
 
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
@@ -27,6 +25,7 @@ export const ListPane = () => {
     const setEditorPaneOptimizer = useCallback(() => dispatch(setEditorPane(EditorPane.Optimizer)), [])
     const setEditorPaneShowUrls = useCallback(() => dispatch(setEditorPane(EditorPane.Urls)), [])
     const setEditorPaneImport = useCallback(() => dispatch(setEditorPane(EditorPane.Import)), [])
+    const setEditorPaneNone = useCallback(() => dispatch(setEditorPane()), [])
 
     const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsActionCreator()), [])
     const addNewWaypoint = useCallback(() => {
@@ -136,7 +135,7 @@ export const ListPane = () => {
                     >
                         <i className="fas fa-star" /> Optimize
                     </button>
-                    <button className="btn btn-primary" onClick={hideEditor}>
+                    <button className="hide-editor-button btn btn-primary" onClick={setEditorPaneNone}>
                         <i className="far fa-window-maximize" /> Hide Editor
                     </button>
                 </>
