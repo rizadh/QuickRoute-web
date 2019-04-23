@@ -1,5 +1,4 @@
 @import "./variables.scss";
-@import "./mixins.scss";
 
 .btn {
     --local-btn-background-color: transparent;
@@ -7,7 +6,7 @@
 
     padding: $standardPadding;
     border-radius: $standardBorderRadius;
-    @include bordered();
+    border: 1px solid var(--app-border-color);
 
     line-height: 1.5;
 

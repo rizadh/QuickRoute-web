@@ -2,7 +2,6 @@
 @import "./btn.scss";
 @import "./alert.scss";
 @import "./colors.scss";
-@import "./mixins.scss";
 
 html {
     background-color: var(--app-background-color);
@@ -37,7 +36,7 @@ textarea {
 
     transition: background-color 0.2s, border 0.2s;
     background-color: var(--app-form-control-color);
-    @include bordered(var(--app-heavy-border-color));
+    border: 1px solid var(--app-heavy-border-color);
 
     &::placeholder {
         color: var(--app-secondary-text-color);
@@ -46,7 +45,7 @@ textarea {
     &:focus {
         background-color: var(--app-form-control-focus-color);
 
-        @include bordered(var(--apple-system-blue));
+        border: 1px solid var(--apple-system-blue);
     }
 }
 
@@ -69,8 +68,7 @@ textarea {
 
     border-radius: $standardBorderRadius;
 
-    @include bordered();
-    @include frosted();
+    border: 1px solid var(--app-border-color);
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
@@ -93,8 +91,6 @@ textarea {
     top: 0;
 
     z-index: 2;
-
-    @include frosted();
 
     border-bottom: 1px solid var(--app-border-color);
 }
@@ -136,8 +132,6 @@ textarea {
     overflow: auto;
     z-index: 1;
 
-    @include frosted();
-
     border-top: 1px solid var(--app-border-color);
 
     & button {
@@ -178,7 +172,7 @@ textarea {
 
     & > span {
         background-color: var(--app-input-row-span-color);
-        @include bordered(var(--app-heavy-border-color));
+        border: 1px solid var(--app-heavy-border-color);
     }
 
     &.waypoint-item-selected > span {
@@ -230,13 +224,11 @@ textarea {
 
     z-index: 2;
 
-    @include frosted();
-
     display: flex;
     align-items: center;
     justify-content: space-evenly;
 
-    @include bordered();
+    border: 1px solid var(--app-border-color);
     border-radius: $standardBorderRadius;
 
     @media (max-width: $compactBreakpoint) {
@@ -302,4 +294,19 @@ textarea {
     height: 6px;
     overflow: hidden;
     z-index: 4;
+}
+
+$frostedBlurRadius: 64px;
+
+.frosted {
+    background-color: var(--app-frost-fallback-color);
+
+    @supports (backdrop-filter: blur($frostedBlurRadius)) {
+        backdrop-filter: blur($frostedBlurRadius);
+        background-color: var(--app-frost-color);
+
+        .frosted & {
+            background-color: initial;
+        }
+    }
 }

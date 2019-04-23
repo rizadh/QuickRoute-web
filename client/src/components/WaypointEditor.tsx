@@ -31,8 +31,8 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
     const setEditorPaneOptimizer = useCallback(() => dispatch(setEditorPane(EditorPane.Optimizer)), [])
 
     return (
-        <div id="waypoint-editor">
-            <div id="waypoint-editor-header">
+        <div id="waypoint-editor" className="frosted">
+            <div id="waypoint-editor-header" className="frosted">
                 <div id="app-title">Route Planner</div>
                 <div id="app-version">
                     {appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
@@ -83,7 +83,9 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                 )}
                 {body}
             </div>
-            <div id="waypoint-editor-footer">{footer}</div>
+            <div id="waypoint-editor-footer" className="frosted">
+                {footer}
+            </div>
         </div>
     )
 }

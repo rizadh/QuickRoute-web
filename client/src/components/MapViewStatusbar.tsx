@@ -36,7 +36,11 @@ export const MapViewStatusbar = () => {
             throw new Error('Invalid route information')
     }
 
-    return <div id="mapview-statusbar">{statusbarItems}</div>
+    return (
+        <div id="mapview-statusbar" className="frosted">
+            {statusbarItems}
+        </div>
+    )
 }
 
 function stringForTime(seconds: number) {
