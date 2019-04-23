@@ -23,7 +23,10 @@ const routePromise = (request: mapkit.DirectionsRequest) =>
     })
 
 export const OptimizerPane = () => {
-    const { state, dispatch } = useContext(AppStateContext)
+    const {
+        state: { waypoints, fetchedPlaces, fetchedRoutes },
+        dispatch,
+    } = useContext(AppStateContext)
 
     const [errorMessage, setErrorMessage] = useState('')
     const [optimizationInProgress, setOptimizationInProgress] = useState(false)
@@ -41,30 +44,33 @@ export const OptimizerPane = () => {
     const optimizeDistance = useCallback(() => optimize(OptimizationParameter.Distance), [optimize])
     const optimizeTime = useCallback(() => optimize(OptimizationParameter.Time), [optimize])
 
-    const insufficientWaypoints = state.waypoints.length < 3
+    const insufficientWaypoints = waypoints.length < 3
 
-    const defaultStartPoint = () => endPointFieldValue || state.waypoints[0].address
-    const defaultEndPoint = () =>
-        endPointFieldValue || startPointFieldValue || state.waypoints[state.waypoints.length - 1].address
+    const defaultStartPoint = () => endPointFieldValue || waypoints[0].address
+    const defaultEndPoint = () => endPointFieldValue || startPointFieldValue || waypoints[waypoints.length - 1].address
 
     async function fetchPlace(waypoint: string) {
-        const fetchedPlace = state.fetchedPlaces.get(waypoint)
+        const fetchedPlace = fetchedPlaces.get(waypoint)
 
-        if (fetchedPlace && fetchedPlace.status === 'SUCCESS') {
-            return fetchedPlace.result
-        } else {
-            const response = await lookupPromise(waypoint)
+        if (fetchedPlace && fetchedPlace.status === 'SUCCESS') return fetchedPlace.result
 
-            const place = response.results[0]
-            if (!place) {
-                throw new Error(`Place '${waypoint}' not found`)
-            }
+        const response = await lookupPromise(waypoint)
 
-            return place
+        const place = response.results[0]
+        if (!place) {
+            throw new Error(`Place '${waypoint}' not found`)
         }
+
+        return place
     }
 
     const getRoute = async (waypointA: string, waypointB: string) => {
+        const routesFromWaypointA = fetchedRoutes.get(waypointA)
+        if (routesFromWaypointA) {
+            const fetchedRoute = routesFromWaypointA.get(waypointB)
+            if (fetchedRoute && fetchedRoute.status === 'SUCCESS') return fetchedRoute.result
+        }
+
         const placeA = await fetchPlace(waypointA)
         const placeB = await fetchPlace(waypointB)
 
@@ -98,17 +104,17 @@ export const OptimizerPane = () => {
         setOptimizationInProgress(true)
         setErrorMessage('')
 
-        let waypoints: string[]
+        let optimizationWaypoints: string[]
         if (startPoint) {
-            waypoints = [startPoint, ...state.waypoints.map(w => w.address), endPoint]
-        } else waypoints = state.waypoints.map(w => w.address)
+            optimizationWaypoints = [startPoint, ...waypoints.map(w => w.address), endPoint]
+        } else optimizationWaypoints = waypoints.map(w => w.address)
 
         try {
             const costMatrix = await Promise.all(
-                waypoints.map(
+                optimizationWaypoints.map(
                     async waypointA =>
                         await Promise.all(
-                            waypoints.map(waypointB => getCost(waypointA, waypointB, optimizationParameter)),
+                            optimizationWaypoints.map(waypointB => getCost(waypointA, waypointB, optimizationParameter)),
                         ),
                 ),
             )
@@ -134,8 +140,7 @@ export const OptimizerPane = () => {
             const jsonResponse: IOptimizeResponse = await response.json()
             const optimalOrdering = startPoint ? jsonResponse.result.slice(1, -1).map(i => i - 1) : jsonResponse.result
 
-            dispatch(createAndReplaceWaypoints(optimalOrdering.map(i => state.waypoints[i].address)))
-
+            dispatch(createAndReplaceWaypoints(optimalOrdering.map(i => waypoints[i].address)))
             dispatch(setEditorPane(EditorPane.List))
         } catch (e) {
             dispatch(setEditorPane(EditorPane.List))

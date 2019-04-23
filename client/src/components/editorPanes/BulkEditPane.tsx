@@ -8,21 +8,24 @@ import { isValidAddress, parseAddress } from '../../redux/validator'
 import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const BulkEditPane = () => {
-    const { state, dispatch } = useContext(AppStateContext)
+    const {
+        state: { waypoints },
+        dispatch,
+    } = useContext(AppStateContext)
 
     const {
         value: bulkEditFieldValue,
         changeHandler: handleBulkEditFieldChange,
         keyPressHandler: handleBulkEditFieldKeyPress,
-    } = useInputField(state.waypoints.map(w => w.address).join('\n'), event => event.shiftKey && commitBulkEdit())
+    } = useInputField(waypoints.map(w => w.address).join('\n'), event => event.shiftKey && commitBulkEdit())
 
     const commitBulkEdit = useCallback(() => {
-        const waypoints = bulkEditFieldValue
+        const validAddresses = bulkEditFieldValue
             .split('\n')
             .filter(isValidAddress)
             .map(parseAddress)
 
-        dispatch(createAndReplaceWaypoints(waypoints))
+        dispatch(createAndReplaceWaypoints(validAddresses))
         dispatch(setEditorPaneActionCreator(EditorPane.List))
     }, [bulkEditFieldValue])
 

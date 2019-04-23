@@ -18,6 +18,7 @@ export const ListPane = () => {
     } = useInputField('', () => isValidAddress(newWaypointFieldValue) && addNewWaypoint())
 
     const { state, dispatch } = useContext(AppStateContext)
+    const { waypoints } = state
 
     const compactMode = useMedia('(max-width: 800px)')
 
@@ -39,7 +40,7 @@ export const ListPane = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ waypoints: state.waypoints.map(w => w.address) }),
+            body: JSON.stringify({ waypoints: waypoints.map(w => w.address) }),
         })
 
         if (!response.ok) {
@@ -58,20 +59,20 @@ export const ListPane = () => {
         a.remove()
 
         window.URL.revokeObjectURL(url)
-    }, [state.waypoints])
+    }, [waypoints])
 
     const shareWaypoints = useCallback(async () => {
         try {
             await (navigator as INavigator).share({
                 title: 'Waypoints PDF',
-                text: state.waypoints.map(w => w.address).join('\n'),
+                text: waypoints.map(w => w.address).join('\n'),
             })
         } catch (e) {
             if (e instanceof Error && e.name !== 'AbortError') {
                 setErrorMessage(`Share failed: ${e.message}`)
             }
         }
-    }, [state.waypoints])
+    }, [waypoints])
 
     return (
         <WaypointEditorTemplate
@@ -84,12 +85,12 @@ export const ListPane = () => {
                             Route could not be found
                         </div>
                     )}
-                    {state.waypoints.length === 0 && (
+                    {waypoints.length === 0 && (
                         <div className="alert alert-info" role="alert">
                             Enter an address to begin
                         </div>
                     )}
-                    {state.waypoints.length === 1 && (
+                    {waypoints.length === 1 && (
                         <div className="alert alert-info" role="alert">
                             Enter another address to show route information
                         </div>
@@ -116,22 +117,14 @@ export const ListPane = () => {
             }
             footer={
                 <>
-                    <button className="btn btn-primary" onClick={generatePdf} disabled={state.waypoints.length === 0}>
+                    <button className="btn btn-primary" onClick={generatePdf} disabled={waypoints.length === 0}>
                         <i className="fas fa-file-pdf" /> Generate PDF
                     </button>
-                    <button
-                        className="btn btn-primary"
-                        onClick={reverseWaypoints}
-                        disabled={state.waypoints.length < 2}
-                    >
+                    <button className="btn btn-primary" onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                         <i className="fas fa-exchange-alt" /> Reverse
                     </button>
                     {(navigator as INavigator).share && (
-                        <button
-                            className="btn btn-primary"
-                            onClick={shareWaypoints}
-                            disabled={state.waypoints.length === 0}
-                        >
+                        <button className="btn btn-primary" onClick={shareWaypoints} disabled={waypoints.length === 0}>
                             <i className="fas fa-share" /> Share
                         </button>
                     )}
