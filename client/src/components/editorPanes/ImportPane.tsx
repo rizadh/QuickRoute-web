@@ -53,6 +53,9 @@ export const ImportPane = () => {
             errorMessage={errorMessage}
             body={
                 <>
+                    <div className="alert alert-info" role="alert">
+                        Waypoints are imported from Atripco
+                    </div>
                     <div className="input-row">
                         <input
                             type="text"
@@ -64,11 +67,8 @@ export const ImportPane = () => {
                             autoFocus={true}
                         />
                     </div>
-                    <div className="alert alert-info" role="alert">
-                        Waypoints are imported from Atripco
-                    </div>
-                    <div className="alert alert-info" role="alert">
-                        All existing waypoints will be replaced
+                    <div className="alert alert-warning" role="alert">
+                        Note: Any existing waypoints will be replaced
                     </div>
                 </>
             }
