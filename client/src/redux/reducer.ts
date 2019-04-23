@@ -27,6 +27,7 @@ const initialState: AppState = {
     autofitIsEnabled: true,
     mutedMapIsEnabled: false,
     editorPane: EditorPane.List,
+    editorIsHidden: false,
 }
 
 export default (state: AppState = initialState, action: AppAction): AppState => {
@@ -73,6 +74,10 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return { ...state, mutedMapIsEnabled: false }
         case 'SET_EDITOR_PANE':
             return { ...state, editorPane: action.editorPane }
+        case 'HIDE_EDITOR_PANE':
+            return { ...state, editorIsHidden: true }
+        case 'SHOW_EDITOR_PANE':
+            return { ...state, editorIsHidden: false }
     }
 
     return state

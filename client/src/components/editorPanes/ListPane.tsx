@@ -2,7 +2,11 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { useMedia } from '../../hooks/useMedia'
-import { createWaypoint, reverseWaypoints as reverseWaypointsActionCreator, setEditorPane } from '../../redux/actions'
+import {
+    createWaypoint,
+    hideEditorPane as hideEditorPaneActionCreator,
+    reverseWaypoints as reverseWaypointsActionCreator,
+} from '../../redux/actions'
 import { routeInformation } from '../../redux/selectors'
 import { isValidAddress } from '../../redux/validator'
 import { WaypointEditorTemplate } from '../WaypointEditor'
@@ -24,7 +28,7 @@ export const ListPane = () => {
 
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
-    const setEditorPaneNone = useCallback(() => dispatch(setEditorPane()), [])
+    const hideEditorPane = useCallback(() => dispatch(hideEditorPaneActionCreator()), [])
 
     const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsActionCreator()), [])
     const addNewWaypoint = useCallback(() => {
@@ -129,7 +133,7 @@ export const ListPane = () => {
                         </button>
                     )}
                     {compactMode && (
-                        <button className="btn btn-primary" onClick={setEditorPaneNone}>
+                        <button className="btn btn-primary" onClick={hideEditorPane}>
                             <i className="far fa-window-maximize" /> Hide Editor
                         </button>
                     )}

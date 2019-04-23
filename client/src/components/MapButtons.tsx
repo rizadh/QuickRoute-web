@@ -2,33 +2,32 @@ import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
 import {
     enableAutofit as enableAutofitActionCreator,
+    hideEditorPane as hideEditorPaneActionCreator,
     muteMap as muteMapActionCreator,
-    setEditorPane,
+    showEditorPane as showEditorPaneActionCreator,
     unmuteMap as unmuteMapActionCreator,
 } from '../redux/actions'
-import { EditorPane } from '../redux/state'
 
 export const MapButtons = () => {
     const {
-        state: { autofitIsEnabled, mutedMapIsEnabled, editorPane },
+        state: { autofitIsEnabled, mutedMapIsEnabled, editorIsHidden },
         dispatch,
     } = useContext(AppStateContext)
-    const editorIsHidden = !editorPane
 
     const enableAutofit = useCallback(() => dispatch(enableAutofitActionCreator()), [])
     const muteMap = useCallback(() => dispatch(muteMapActionCreator()), [])
     const unmuteMap = useCallback(() => dispatch(unmuteMapActionCreator()), [])
-    const setEditorPaneList = useCallback(() => dispatch(setEditorPane(EditorPane.List)), [])
-    const setEditorPaneNone = useCallback(() => dispatch(setEditorPane()), [])
+    const showEditorPane = useCallback(() => dispatch(showEditorPaneActionCreator()), [])
+    const hideEditorPane = useCallback(() => dispatch(hideEditorPaneActionCreator()), [])
 
     return (
         <div id="map-buttons">
             {editorIsHidden ? (
-                <button className="btn btn-primary" onClick={setEditorPaneList}>
+                <button className="btn btn-primary" onClick={showEditorPane}>
                     <i className="fas fa-columns" /> Show Editor
                 </button>
             ) : (
-                <button className="btn btn-primary" onClick={setEditorPaneNone}>
+                <button className="btn btn-primary" onClick={hideEditorPane}>
                     <i className="far fa-window-maximize" /> Hide Editor
                 </button>
             )}

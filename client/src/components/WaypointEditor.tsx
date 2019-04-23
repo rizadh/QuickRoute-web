@@ -92,21 +92,18 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
 
 export const WaypointEditor = () => {
     const {
-        state: { editorPane },
+        state: { editorPane, editorIsHidden },
     } = useContext(AppStateContext)
 
     useEffect(() => {
         const root = document.getElementById('root')
         if (!root) return
 
-        if (editorPane) {
-            root.classList.remove('editor-hidden')
-        } else {
-            root.classList.add('editor-hidden')
-        }
-    }, [editorPane])
+        if (editorIsHidden) root.classList.add('editor-hidden')
+        else root.classList.remove('editor-hidden')
+    }, [editorIsHidden])
 
-    if (!editorPane) return null
+    if (editorIsHidden) return null
 
     switch (editorPane) {
         case EditorPane.List:

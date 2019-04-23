@@ -12,6 +12,7 @@ import {
     FetchRouteFailedAction,
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
+    HideEditorPaneAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
     MuteMapAction,
@@ -21,6 +22,7 @@ import {
     SelectWaypointRangeAction,
     SetAddressAction,
     SetEditorPaneAction,
+    ShowEditorPaneAction,
     ToggleWaypointSelectionAction,
     UnmuteMapAction,
 } from './actionTypes'
@@ -162,7 +164,15 @@ export const unmuteMap = (): UnmuteMapAction => ({
     type: 'UNMUTE_MAP',
 })
 
-export const setEditorPane = (editorPane?: EditorPane): SetEditorPaneAction => ({
+export const setEditorPane = (editorPane: EditorPane): SetEditorPaneAction => ({
     type: 'SET_EDITOR_PANE',
     editorPane,
+})
+
+export const hideEditorPane = (): HideEditorPaneAction => ({
+    type: 'HIDE_EDITOR_PANE',
+})
+
+export const showEditorPane = (): ShowEditorPaneAction => ({
+    type: 'SHOW_EDITOR_PANE',
 })

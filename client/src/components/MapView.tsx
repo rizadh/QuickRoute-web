@@ -17,8 +17,7 @@ export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const { state, dispatch } = useContext(AppStateContext)
-    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled, mutedMapIsEnabled, editorPane } = state
-    const editorIsHidden = !editorPane
+    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled, mutedMapIsEnabled, editorIsHidden } = state
     const status = useMemo(() => routeInformation(state).status, [state])
     const darkMode = useMedia('(prefers-color-scheme: dark)')
     const compactMode = useMedia('(max-width: 800px)')

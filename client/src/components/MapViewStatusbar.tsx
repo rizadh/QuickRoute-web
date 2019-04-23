@@ -5,10 +5,10 @@ import StatView from './StatView'
 
 export const MapViewStatusbar = () => {
     const { state } = useContext(AppStateContext)
-    const { editorPane } = state
+    const { editorIsHidden } = state
     const currentRouteInformation = routeInformation(state)
 
-    if (!editorPane) return null
+    if (editorIsHidden) return null
 
     let statusbarItems: JSX.Element | string
     switch (currentRouteInformation.status) {

@@ -14,6 +14,7 @@ export const AppStateContext = createContext<{
         autofitIsEnabled: true,
         mutedMapIsEnabled: false,
         editorPane: EditorPane.List,
+        editorIsHidden: false,
     },
     dispatch: _ => _,
 })
