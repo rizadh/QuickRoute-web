@@ -87,7 +87,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                     className={'input-row ' + (waypoint.isSelected ? 'waypoint-item-selected' : '')}
                 >
                     <button onClick={deleteWaypoint} className="btn btn-sm btn-danger">
-                        <i className="fas fa-trash-alt" />
+                        <i className="fas fa-fw fa-trash-alt" />
                     </button>
                     <input
                         className="form-control"
@@ -98,22 +98,22 @@ export const WaypointItem = (props: WaypointItemProps) => {
                     />
                     {fieldWasEdited && (
                         <button onClick={resetWaypointField} className="btn btn-secondary">
-                            <i className="fas fa-undo-alt" />
+                            <i className="fas fa-fw fa-undo-alt" />
                         </button>
                     )}
                     <span>{index + 1}</span>
                     {fetchFailed && (
                         <span className="text-danger">
-                            <i className="fas fa-exclamation-circle" />
+                            <i className="fas fa-fw fa-exclamation-circle" />
                         </span>
                     )}
                     {fetchIsInProgress && (
                         <span className="text-secondary">
-                            <i className="fas fa-circle-notch fa-spin" />
+                            <i className="fas fa-fw fa-circle-notch fa-spin" />
                         </span>
                     )}
                     <span onClick={itemWasClicked} {...provided.dragHandleProps}>
-                        <i className="fas fa-grip-lines-vertical" />
+                        <i className="fas fa-fw fa-grip-lines-vertical" />
                     </span>
                 </div>
             )}

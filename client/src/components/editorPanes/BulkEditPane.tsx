@@ -51,7 +51,7 @@ export const BulkEditPane = () => {
             }
             footer={
                 <button className="btn btn-primary" onClick={commitBulkEdit}>
-                    <i className="fas fa-save" /> Save
+                    <i className="fas fa-fw fa-save" /> Save
                 </button>
             }
         />

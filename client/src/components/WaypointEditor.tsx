@@ -43,35 +43,35 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                         onClick={setEditorPaneList}
                         disabled={paneIsBusy}
                     >
-                        Waypoints
+                        <i className="fas fa-fw fa-th-list" /> Waypoints
                     </button>
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.BulkEdit ? 'primary' : 'secondary')}
                         onClick={setEditorPaneBulkEdit}
                         disabled={paneIsBusy}
                     >
-                        Bulk Edit
+                        <i className="fas fa-fw fa-list-alt" /> Bulk Edit
                     </button>
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Links ? 'primary' : 'secondary')}
                         onClick={setEditorPaneLinks}
                         disabled={paneIsBusy}
                     >
-                        Links
+                        <i className="fas fa-fw fa-link" /> Links
                     </button>
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Import ? 'primary' : 'secondary')}
                         onClick={setEditorPaneImport}
                         disabled={paneIsBusy}
                     >
-                        Import
+                        <i className="fas fa-fw fa-cloud-download-alt" /> Import
                     </button>
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Optimizer ? 'primary' : 'secondary')}
                         onClick={setEditorPaneOptimizer}
                         disabled={paneIsBusy}
                     >
-                        Optimize
+                        <i className="fas fa-fw fa-star" /> Optimize
                     </button>
                 </div>
             </div>

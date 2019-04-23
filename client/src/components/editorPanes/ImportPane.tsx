@@ -75,11 +75,11 @@ export const ImportPane = () => {
             footer={
                 importInProgress ? (
                     <button className="btn btn-primary" disabled={true}>
-                        <i className="fas fa-spin fa-circle-notch" /> Importing
+                        <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
                     </button>
                 ) : (
                     <button className="btn btn-primary" onClick={executeImport}>
-                        <i className="fas fa-cloud-download-alt" /> Import
+                        <i className="fas fa-fw fa-cloud-download-alt" /> Import
                     </button>
                 )
             }

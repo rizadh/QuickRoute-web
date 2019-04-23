@@ -189,16 +189,16 @@ export const OptimizerPane = () => {
                 optimizationInProgress ? (
                     <>
                         <button className="btn btn-primary" disabled={true}>
-                            <i className="fas fa-spin fa-circle-notch" /> Optimizing (this may take a while)
+                            <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing (this may take a while)
                         </button>
                     </>
                 ) : (
                     <>
                         <button className="btn btn-primary" onClick={optimizeDistance} disabled={insufficientWaypoints}>
-                            <i className="fas fa-ruler-combined" /> Optimize Distance
+                            <i className="fas fa-fw fa-ruler-combined" /> Optimize Distance
                         </button>
                         <button className="btn btn-primary" onClick={optimizeTime} disabled={insufficientWaypoints}>
-                            <i className="fas fa-clock" /> Optimize Time
+                            <i className="fas fa-fw fa-clock" /> Optimize Time
                         </button>
                     </>
                 )

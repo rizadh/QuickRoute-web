@@ -24,25 +24,25 @@ export const MapButtons = () => {
         <div id="map-buttons">
             {editorIsHidden ? (
                 <button className="btn btn-primary" onClick={showEditorPane}>
-                    <i className="fas fa-columns" /> Show Editor
+                    <i className="fas fa-fw fa-columns" /> Show Editor
                 </button>
             ) : (
                 <button className="btn btn-primary" onClick={hideEditorPane}>
-                    <i className="far fa-window-maximize" /> Hide Editor
+                    <i className="fas fa-fw fa-window-maximize" /> Hide Editor
                 </button>
             )}
             {mutedMapIsEnabled ? (
                 <button className="btn btn-primary" onClick={unmuteMap}>
-                    <i className="fas fa-map-marked" /> Use Regular Map
+                    <i className="fas fa-fw fa-map-marked" /> Use Regular Map
                 </button>
             ) : (
                 <button className="btn btn-primary" onClick={muteMap}>
-                    <i className="fas fa-map" /> Use Muted Map
+                    <i className="fas fa-fw fa-map" /> Use Muted Map
                 </button>
             )}
             {!autofitIsEnabled && (
                 <button className="btn btn-warning" onClick={enableAutofit}>
-                    <i className="fas fa-expand" /> Auto-Fit
+                    <i className="fas fa-fw fa-expand" /> Auto-Fit
                 </button>
             )}
         </div>

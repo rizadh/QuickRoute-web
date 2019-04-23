@@ -114,7 +114,7 @@ export const ListPane = () => {
                             disabled={!isValidAddress(newWaypointFieldValue)}
                             className="btn btn-primary"
                         >
-                            <i className="fas fa-plus" />
+                            <i className="fas fa-fw fa-plus" />
                         </button>
                     </div>
                 </>
@@ -122,19 +122,19 @@ export const ListPane = () => {
             footer={
                 <>
                     <button className="btn btn-primary" onClick={generatePdf} disabled={waypoints.length === 0}>
-                        <i className="fas fa-file-pdf" /> Generate PDF
+                        <i className="fas fa-fw fa-file-pdf" /> Generate PDF
                     </button>
                     <button className="btn btn-primary" onClick={reverseWaypoints} disabled={waypoints.length < 2}>
-                        <i className="fas fa-exchange-alt" /> Reverse
+                        <i className="fas fa-fw fa-exchange-alt" /> Reverse
                     </button>
                     {(navigator as INavigator).share && (
                         <button className="btn btn-primary" onClick={shareWaypoints} disabled={waypoints.length === 0}>
-                            <i className="fas fa-share" /> Share
+                            <i className="fas fa-fw fa-share" /> Share
                         </button>
                     )}
                     {compactMode && (
                         <button className="btn btn-primary" onClick={hideEditorPane}>
-                            <i className="far fa-window-maximize" /> Hide Editor
+                            <i className="fas fa-fw fa-window-maximize" /> Hide Editor
                         </button>
                     )}
                 </>

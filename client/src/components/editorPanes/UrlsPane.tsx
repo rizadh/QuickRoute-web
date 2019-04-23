@@ -101,7 +101,7 @@ export const UrlsPane = () => {
                                     </button>
                                 )}
                                 <button onClick={copyLink(index)} className="btn btn-primary">
-                                    <i className="far fa-fw fa-clipboard" />
+                                    <i className="fas fa-fw fa-clipboard" />
                                 </button>
                                 <button onClick={openUrl(index)} className="btn btn-primary">
                                     <i className="fas fa-fw fa-external-link-alt" />
@@ -114,14 +114,14 @@ export const UrlsPane = () => {
             footer={
                 <>
                     <button className="btn btn-primary" onClick={openAllLinks} disabled={insufficientWaypoints}>
-                        <i className="fas fa-external-link-alt" /> Open All
+                        <i className="fas fa-fw fa-external-link-alt" /> Open All
                     </button>
                     <button className="btn btn-primary" onClick={copyAllLinks} disabled={insufficientWaypoints}>
-                        <i className="far fa-clipboard" /> Copy All
+                        <i className="fas fa-fw fa-clipboard" /> Copy All
                     </button>
                     {(navigator as INavigator).share && (
                         <button className="btn btn-primary" onClick={shareAllLinks} disabled={insufficientWaypoints}>
-                            <i className="fas fa-share" /> Share All
+                            <i className="fas fa-fw fa-share" /> Share All
                         </button>
                     )}
                 </>
