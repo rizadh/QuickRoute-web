@@ -143,10 +143,6 @@ textarea {
             margin-bottom: $standardMargin;
         }
     }
-
-    @media (max-width: $compactBreakpoint) {
-        border-bottom: 1px solid var(--app-border-color);
-    }
 }
 
 .input-row {
