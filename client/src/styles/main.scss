@@ -42,7 +42,7 @@ textarea {
         color: var(--app-secondary-text-color);
     }
 
-    &:focus {
+    &:not(:read-only):focus {
         background-color: var(--app-form-control-focus-color);
 
         border: 1px solid var(--apple-system-blue);
