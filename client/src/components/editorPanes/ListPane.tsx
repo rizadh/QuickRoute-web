@@ -58,7 +58,20 @@ export const ListPane = () => {
         a.remove()
 
         window.URL.revokeObjectURL(url)
-    }, [state])
+    }, [state.waypoints])
+
+    const shareWaypoints = useCallback(async () => {
+        try {
+            await (navigator as INavigator).share({
+                title: 'Waypoints PDF',
+                text: state.waypoints.map(w => w.address).join('\n'),
+            })
+        } catch (e) {
+            if (e instanceof Error && e.name !== 'AbortError') {
+                setErrorMessage(`Share failed: ${e.message}`)
+            }
+        }
+    }, [state.waypoints])
 
     return (
         <WaypointEditorTemplate
@@ -113,6 +126,15 @@ export const ListPane = () => {
                     >
                         <i className="fas fa-exchange-alt" /> Reverse
                     </button>
+                    {(navigator as INavigator).share && (
+                        <button
+                            className="btn btn-primary"
+                            onClick={shareWaypoints}
+                            disabled={state.waypoints.length === 0}
+                        >
+                            <i className="fas fa-share" /> Share
+                        </button>
+                    )}
                     {compactMode && (
                         <button className="btn btn-primary" onClick={setEditorPaneNone}>
                             <i className="far fa-window-maximize" /> Hide Editor

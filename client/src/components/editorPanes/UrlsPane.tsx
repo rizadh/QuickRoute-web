@@ -1,16 +1,20 @@
 import copyToClipboard from 'copy-text-to-clipboard'
 import { chunk } from 'lodash'
 import { stringify } from 'query-string'
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const UrlsPane = () => {
-    const { state } = useContext(AppStateContext)
+    const {
+        state: { waypoints },
+    } = useContext(AppStateContext)
 
-    const navigationUrls = useMemo(() => {
-        return chunk(state.waypoints, 10)
-            .map(waypoints => waypoints.map(w => w.address))
+    const [errorMessage, setErrorMessage] = useState('')
+
+    const navigationLinks = useMemo(() => {
+        return chunk(waypoints, 10)
+            .map(chunkedWaypoints => chunkedWaypoints.map(w => w.address))
             .map(addresses => {
                 const destination = addresses.pop()
                 const parameters = {
@@ -22,36 +26,65 @@ export const UrlsPane = () => {
 
                 return 'https://www.google.com/maps/dir/?' + stringify(parameters)
             })
-    }, [state])
+    }, [waypoints])
 
     const openUrl = useCallback(
         (index: number) => () => {
-            window.open(navigationUrls[index])
+            window.open(navigationLinks[index])
         },
-        [navigationUrls],
+        [navigationLinks],
     )
 
-    const openAllUrls = useCallback(() => {
-        navigationUrls.forEach(url => window.open(url))
-    }, [navigationUrls])
+    const openAllLinks = useCallback(() => {
+        navigationLinks.forEach(url => window.open(url))
+    }, [navigationLinks])
 
-    const copyUrl = useCallback(
+    const copyLink = useCallback(
         (index: number) => () => {
-            copyToClipboard(navigationUrls[index])
+            copyToClipboard(navigationLinks[index])
         },
-        [navigationUrls],
+        [navigationLinks],
     )
 
-    const copyAllUrls = useCallback(() => {
-        copyToClipboard(navigationUrls.join('\n'))
-    }, [navigationUrls])
+    const copyAllLinks = useCallback(() => {
+        copyToClipboard(navigationLinks.join('\n'))
+    }, [navigationLinks])
 
-    const insufficientWaypoints = state.waypoints.length === 0
+    const shareLink = useCallback(
+        (index: number) => async () => {
+            try {
+                await (navigator as INavigator).share({
+                    title: `Navigation Links (${index + 1} out of ${navigationLinks.length})`,
+                    text: navigationLinks[index],
+                })
+            } catch (e) {
+                if (e instanceof Error && e.name !== 'AbortError') {
+                    setErrorMessage(`Share failed: ${e.message}`)
+                }
+            }
+        },
+        [navigationLinks],
+    )
+
+    const shareAllLinks = useCallback(async () => {
+        try {
+            await (navigator as INavigator).share({
+                title: 'Navigation Links',
+                text: navigationLinks.join('\n'),
+            })
+        } catch (e) {
+            if (e instanceof Error && e.name !== 'AbortError') {
+                setErrorMessage(`Share failed: ${e.message}`)
+            }
+        }
+    }, [navigationLinks])
+
+    const insufficientWaypoints = waypoints.length === 0
 
     return (
         <WaypointEditorTemplate
             paneIsBusy={false}
-            errorMessage=""
+            errorMessage={errorMessage}
             body={
                 insufficientWaypoints ? (
                     <div className="alert alert-warning" role="alert">
@@ -59,10 +92,15 @@ export const UrlsPane = () => {
                     </div>
                 ) : (
                     <>
-                        {navigationUrls.map((url, index) => (
+                        {navigationLinks.map((url, index) => (
                             <div key={url} className="input-row">
                                 <input type="text" value={url} readOnly={true} />
-                                <button onClick={copyUrl(index)} className="btn btn-primary">
+                                {(navigator as INavigator).share && (
+                                    <button onClick={shareLink(index)} className="btn btn-primary">
+                                        <i className="fas fa-fw fa-share" />
+                                    </button>
+                                )}
+                                <button onClick={copyLink(index)} className="btn btn-primary">
                                     <i className="far fa-fw fa-clipboard" />
                                 </button>
                                 <button onClick={openUrl(index)} className="btn btn-primary">
@@ -75,12 +113,17 @@ export const UrlsPane = () => {
             }
             footer={
                 <>
-                    <button className="btn btn-primary" onClick={openAllUrls} disabled={insufficientWaypoints}>
+                    <button className="btn btn-primary" onClick={openAllLinks} disabled={insufficientWaypoints}>
                         <i className="fas fa-external-link-alt" /> Open All
                     </button>
-                    <button className="btn btn-primary" onClick={copyAllUrls} disabled={insufficientWaypoints}>
+                    <button className="btn btn-primary" onClick={copyAllLinks} disabled={insufficientWaypoints}>
                         <i className="far fa-clipboard" /> Copy All
                     </button>
+                    {(navigator as INavigator).share && (
+                        <button className="btn btn-primary" onClick={shareAllLinks} disabled={insufficientWaypoints}>
+                            <i className="fas fa-share" /> Share All
+                        </button>
+                    )}
                 </>
             }
         />
