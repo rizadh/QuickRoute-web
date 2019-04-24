@@ -29,7 +29,7 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
                 waypoints: [...state.waypoints, action.waypoint],
             }
         case 'DELETE_WAYPOINT':
-            return { ...state, waypoints: state.waypoints.filter((_, i) => action.index === i) }
+            return { ...state, waypoints: state.waypoints.filter((_, i) => action.index !== i) }
         case 'REVERSE_WAYPOINTS':
             return {
                 ...state,
