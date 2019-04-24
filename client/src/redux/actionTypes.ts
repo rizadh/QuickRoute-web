@@ -151,21 +151,37 @@ export type ImportWaypointsFailedAction = Readonly<{
     error: Error;
 }>
 
+export enum OptimizationParameter {
+    Time = 'time',
+    Distance = 'distance',
+}
+
 export type OptimizeRouteAction = Readonly<{
     type: 'OPTIMIZE_ROUTE';
+    optimizationParameter: OptimizationParameter;
+    startPoint?: string;
+    endPoint?: string;
 }>
 
 export type OptimizeRouteInProgressAction = Readonly<{
     type: 'OPTIMIZE_ROUTE_IN_PROGRESS';
+    optimizationParameter: OptimizationParameter;
+    startPoint?: string;
+    endPoint?: string;
 }>
 
 export type OptimizeRouteSuccessAction = Readonly<{
     type: 'OPTIMIZE_ROUTE_SUCCESS';
-    result: number[];
+    optimizationParameter: OptimizationParameter;
+    startPoint?: string;
+    endPoint?: string;
 }>
 
 export type OptimizeRouteFailedAction = Readonly<{
     type: 'OPTIMIZE_ROUTE_FAILED';
+    optimizationParameter: OptimizationParameter;
+    startPoint?: string;
+    endPoint?: string;
     error: Error;
 }>
 

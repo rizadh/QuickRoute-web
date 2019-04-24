@@ -17,7 +17,17 @@ export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const { state, dispatch } = useContext(AppStateContext)
-    const { waypoints, fetchedPlaces, fetchedRoutes, autofitIsEnabled, mutedMapIsEnabled, editorIsHidden } = state
+    const {
+        waypoints,
+        fetchedPlaces,
+        fetchedRoutes,
+        autofitIsEnabled,
+        mutedMapIsEnabled,
+        editorIsHidden,
+        importInProgress,
+        optimizationInProgress,
+    } = state
+    const operationInProgress = importInProgress || optimizationInProgress
     const status = useMemo(() => routeInformation(state).status, [state])
     const darkMode = useMedia('(prefers-color-scheme: dark)')
     const compactMode = useMedia('(max-width: 800px)')
@@ -76,16 +86,17 @@ export const MapView = () => {
     useEffect(() => {
         if (!mapviewRef.current) return
 
-        if (status === 'FETCHING') mapviewRef.current.classList.add('updating')
+        if (status === 'FETCHING' || operationInProgress) mapviewRef.current.classList.add('updating')
 
         return () => {
             if (mapviewRef.current) mapviewRef.current.classList.remove('updating')
         }
-    }, [status])
+    }, [status, operationInProgress])
 
     useEffect(() => {
         if (!map) return
         if (status === 'FETCHING') return
+        if (operationInProgress) return
 
         const annotations = waypoints
             .map(({ address }) => fetchedPlaces.get(address))
@@ -120,15 +131,13 @@ export const MapView = () => {
                     }),
             )
 
+        if (map.annotations) map.removeAnnotations(map.annotations)
+        if (map.overlays) map.removeOverlays(map.overlays)
+
         map.addAnnotations(annotations)
         map.addOverlays(overlays)
 
         centerMap(true)
-
-        return () => {
-            if (map.annotations) map.removeAnnotations(map.annotations)
-            if (map.overlays) map.removeOverlays(map.overlays)
-        }
     }, [map, waypoints, fetchedPlaces, fetchedRoutes])
 
     useEffect(() => centerMap(true), [map, autofitIsEnabled])

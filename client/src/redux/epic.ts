@@ -1,5 +1,6 @@
+import { flatten } from 'lodash'
 import { combineEpics, Epic, ofType } from 'redux-observable'
-import { EMPTY, Observable, of, range } from 'rxjs'
+import { EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { filter, flatMap, map, mergeMap, take } from 'rxjs/operators'
 import {
     createWaypointFromAddress,
@@ -27,6 +28,8 @@ import {
     ImportWaypointsAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
+    OptimizationParameter,
+    OptimizeRouteAction,
     ReplaceWaypointsAction,
     ReverseWaypointsAction,
     SetAddressAction,
@@ -225,21 +228,25 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
             return !route || route.status === 'FAILED'
         }),
         mergeMap(({ origin, destination }) =>
-            state$.pipe(
-                mergeMap(state => {
-                    const fetchedOrigin = state.fetchedPlaces.get(origin)
-                    const fetchedDestination = state.fetchedPlaces.get(destination)
+            merge(
+                of<AppAction>({ type: 'FETCH_PLACE', address: origin }),
+                of<AppAction>({ type: 'FETCH_PLACE', address: destination }),
+                state$.pipe(
+                    mergeMap(state => {
+                        const fetchedOrigin = state.fetchedPlaces.get(origin)
+                        const fetchedDestination = state.fetchedPlaces.get(destination)
 
-                    if (!fetchedOrigin || fetchedOrigin.status !== 'SUCCESS') return EMPTY
-                    if (!fetchedDestination || fetchedDestination.status !== 'SUCCESS') return EMPTY
+                        if (!fetchedOrigin || fetchedOrigin.status !== 'SUCCESS') return EMPTY
+                        if (!fetchedDestination || fetchedDestination.status !== 'SUCCESS') return EMPTY
 
-                    return of([fetchedOrigin.result, fetchedDestination.result] as [mapkit.Place, mapkit.Place])
-                }),
-                take(1),
-                mergeMap(([originPlace, destinationPlace]) =>
-                    performRoute(
-                        { address: origin, place: originPlace },
-                        { address: destination, place: destinationPlace },
+                        return of([fetchedOrigin.result, fetchedDestination.result] as [mapkit.Place, mapkit.Place])
+                    }),
+                    take(1),
+                    mergeMap(([originPlace, destinationPlace]) =>
+                        performRoute(
+                            { address: origin, place: originPlace },
+                            { address: destination, place: destinationPlace },
+                        ),
                     ),
                 ),
             ),
@@ -280,8 +287,8 @@ const importWaypointsEpic: AppEpic = action$ =>
                     observer.next({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber })
                     importWaypoints(driverNumber)
                         .then(waypoints => {
-                            observer.next({ type: 'REPLACE_WAYPOINTS', waypoints })
                             observer.next({ type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber })
+                            observer.next({ type: 'REPLACE_WAYPOINTS', waypoints })
                             observer.next({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List })
                             observer.complete()
                         })
@@ -295,6 +302,101 @@ const importWaypointsEpic: AppEpic = action$ =>
         ),
     )
 
+interface IOptimizeResponse {
+    result: number[]
+}
+
+const optimizeRoute = async (costMatrix: number[][]) => {
+    const response = await fetch('/optimize', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ costMatrix }),
+    })
+
+    if (!response.ok) {
+        throw new Error(`Failed to optimize route ${await response.text()}`)
+    }
+
+    const jsonResponse: IOptimizeResponse = await response.json()
+    return jsonResponse.result
+}
+
+const optimizeRouteEpic: AppEpic = (action$, state$) =>
+    action$.pipe(
+        ofType<AppAction, OptimizeRouteAction>('OPTIMIZE_ROUTE'),
+        mergeMap<OptimizeRouteAction, ObservableInput<AppAction>>(({ optimizationParameter, startPoint, endPoint }) => {
+            const optimizationWaypoints = [...state$.value.waypoints.map(w => w.address)]
+            if (startPoint) optimizationWaypoints.splice(0, 0, startPoint)
+            if (endPoint) optimizationWaypoints.push(endPoint)
+
+            const waypointPairs: Array<[string, string]> = flatten(
+                optimizationWaypoints.map(origin => optimizationWaypoints.map(destination => [origin, destination])),
+            )
+
+            return merge(
+                of({ type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter }),
+                from<ObservableInput<FetchRouteAction>>(
+                    waypointPairs.map(([origin, destination]) => ({ type: 'FETCH_ROUTE', origin, destination })),
+                ),
+                state$.pipe(
+                    filter(state =>
+                        waypointPairs.every(([origin, destination]) => {
+                            const routesFromOrigin = state.fetchedRoutes.get(origin)
+                            const route = routesFromOrigin && routesFromOrigin.get(destination)
+                            return route !== undefined && route.status === 'SUCCESS'
+                        }),
+                    ),
+                    take(1),
+                    mergeMap(state => {
+                        const costMatrix = optimizationWaypoints.map(origin =>
+                            optimizationWaypoints.map(destination => {
+                                const routesFromOrigin = state.fetchedRoutes.get(origin)
+                                const route = routesFromOrigin && routesFromOrigin.get(destination)
+                                if (!route || route.status !== 'SUCCESS') {
+                                    throw new Error(
+                                        `Optimization failed: Route from ${origin} to ${destination} was not fetched`,
+                                    )
+                                }
+
+                                switch (optimizationParameter) {
+                                    case OptimizationParameter.Distance:
+                                        return route.result.distance
+                                    case OptimizationParameter.Time:
+                                        return route.result.expectedTravelTime
+                                }
+                            }),
+                        )
+
+                        return new Observable<AppAction>(observer => {
+                            optimizeRoute(costMatrix)
+                                .then(optimalOrdering => {
+                                    if (startPoint) optimalOrdering = optimalOrdering.slice(1, -1).map(i => i - 1)
+
+                                    observer.next({ type: 'OPTIMIZE_ROUTE_SUCCESS', optimizationParameter })
+                                    observer.next({
+                                        type: 'REPLACE_WAYPOINTS',
+                                        waypoints: optimalOrdering
+                                            .map(i => state.waypoints[i].address)
+                                            .map(createWaypointFromAddress),
+                                    })
+                                    observer.next({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List })
+                                    observer.complete()
+                                })
+                                .catch(error => {
+                                    if (error instanceof Error) {
+                                        observer.next({ type: 'OPTIMIZE_ROUTE_FAILED', optimizationParameter, error })
+                                    }
+                                    observer.complete()
+                                })
+                        })
+                    }),
+                ),
+            )
+        }),
+    )
+
 export default combineEpics(
     replaceWaypointsEpic,
     reverseWaypointsEpic,
@@ -306,4 +408,5 @@ export default combineEpics(
     fetchPlaceEpic,
     fetchRouteEpic,
     importWaypointsEpic,
+    optimizeRouteEpic,
 )

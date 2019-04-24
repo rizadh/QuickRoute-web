@@ -91,6 +91,12 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return { ...state, importInProgress: false }
         case 'IMPORT_WAYPOINTS_FAILED':
             return { ...state, importInProgress: false, error: action.error }
+        case 'OPTIMIZE_ROUTE_IN_PROGRESS':
+            return { ...state, optimizationInProgress: true }
+        case 'OPTIMIZE_ROUTE_SUCCESS':
+            return { ...state, optimizationInProgress: false }
+        case 'OPTIMIZE_ROUTE_FAILED':
+            return { ...state, optimizationInProgress: false, error: action.error }
     }
 
     return state
