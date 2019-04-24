@@ -28,7 +28,6 @@ export const OptimizerPane = () => {
         dispatch,
     } = useContext(AppStateContext)
 
-    const [errorMessage, setErrorMessage] = useState('')
     const [optimizationInProgress, setOptimizationInProgress] = useState(false)
     const { value: startPointFieldValue, setValue: setStartPointFieldValue } = useInputField('', () => undefined)
     const { value: endPointFieldValue, setValue: setEndPointFieldValue } = useInputField('', () => undefined)
@@ -102,7 +101,7 @@ export const OptimizerPane = () => {
 
     async function optimize(optimizationParameter: OptimizationParameter) {
         setOptimizationInProgress(true)
-        setErrorMessage('')
+        dispatch({ type: 'CLEAR_ERROR' })
 
         let optimizationWaypoints: string[]
         if (startPoint) {
@@ -132,8 +131,10 @@ export const OptimizerPane = () => {
             }
 
             if (!response.ok) {
-                dispatch(setEditorPane(EditorPane.List))
-                setErrorMessage(`Failed to optimize route (ERROR: '${await response.text()}')`)
+                dispatch({
+                    type: 'ERROR_OCCURED',
+                    error: new Error(`Failed to optimize route (ERROR: '${await response.text()}')`),
+                })
                 return
             }
 
@@ -143,8 +144,10 @@ export const OptimizerPane = () => {
             dispatch(replaceWaypoints(optimalOrdering.map(i => waypoints[i].address).map(createWaypointFromAddress)))
             dispatch(setEditorPane(EditorPane.List))
         } catch (e) {
-            dispatch(setEditorPane(EditorPane.List))
-            setErrorMessage(`Failed to optimize route (ERROR: '${e}')`)
+            dispatch({
+                type: 'ERROR_OCCURED',
+                error: new Error(`Failed to optimize route (ERROR: '${await e}')`),
+            })
         }
     }
 

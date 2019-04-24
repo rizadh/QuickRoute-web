@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { useMedia } from '../../hooks/useMedia'
@@ -13,7 +13,6 @@ import { WaypointEditorTemplate } from '../WaypointEditor'
 import { WaypointList } from '../WaypointList'
 
 export const ListPane = () => {
-    const [errorMessage, setErrorMessage] = useState('')
     const {
         value: newWaypointFieldValue,
         setValue: setNewWaypointFieldValue,
@@ -37,7 +36,7 @@ export const ListPane = () => {
     }, [newWaypointFieldValue])
 
     const generatePdf = useCallback(async () => {
-        setErrorMessage('')
+        dispatch({ type: 'CLEAR_ERROR' })
 
         const response = await fetch('/pdf', {
             method: 'POST',
@@ -48,7 +47,10 @@ export const ListPane = () => {
         })
 
         if (!response.ok) {
-            setErrorMessage(`Failed to generate PDF (ERROR: '${await response.text()}')`)
+            dispatch({
+                type: 'ERROR_OCCURED',
+                error: new Error(`Failed to generate PDF (ERROR: '${await response.text()}')`),
+            })
             return
         }
 
@@ -73,7 +75,10 @@ export const ListPane = () => {
             })
         } catch (e) {
             if (e instanceof Error && e.name !== 'AbortError') {
-                setErrorMessage(`Share failed: ${e.message}`)
+                dispatch({
+                    type: 'ERROR_OCCURED',
+                    error: new Error(`Share failed: ${e.message}`),
+                })
             }
         }
     }, [waypoints])

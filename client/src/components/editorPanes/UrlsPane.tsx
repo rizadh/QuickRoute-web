@@ -1,16 +1,15 @@
 import copyToClipboard from 'copy-text-to-clipboard'
 import { chunk } from 'lodash'
 import { stringify } from 'query-string'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const UrlsPane = () => {
     const {
         state: { waypoints },
+        dispatch,
     } = useContext(AppStateContext)
-
-    const [errorMessage, setErrorMessage] = useState('')
 
     const navigationLinks = useMemo(() => {
         return chunk(waypoints, 10)
@@ -59,7 +58,10 @@ export const UrlsPane = () => {
                 })
             } catch (e) {
                 if (e instanceof Error && e.name !== 'AbortError') {
-                    setErrorMessage(`Share failed: ${e.message}`)
+                    dispatch({
+                        type: 'ERROR_OCCURED',
+                        error: new Error(`Share failed: ${e.message}`),
+                    })
                 }
             }
         },
@@ -74,7 +76,10 @@ export const UrlsPane = () => {
             })
         } catch (e) {
             if (e instanceof Error && e.name !== 'AbortError') {
-                setErrorMessage(`Share failed: ${e.message}`)
+                dispatch({
+                    type: 'ERROR_OCCURED',
+                    error: new Error(`Share failed: ${e.message}`),
+                })
             }
         }
     }, [navigationLinks])
