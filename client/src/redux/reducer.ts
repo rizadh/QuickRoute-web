@@ -192,9 +192,9 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return { ...state, autofitIsEnabled: true }
         case 'DISABLE_AUTOFIT':
             return { ...state, autofitIsEnabled: false }
-        case 'MUTE_MAP':
+        case 'USE_MUTED_MAP':
             return { ...state, mutedMapIsEnabled: true }
-        case 'UNMUTE_MAP':
+        case 'USE_REGULAR_MAP':
             return { ...state, mutedMapIsEnabled: false }
         // Editor
         case 'SET_EDITOR_PANE':

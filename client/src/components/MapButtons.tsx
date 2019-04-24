@@ -10,8 +10,8 @@ export const MapButtons = () => {
     const operationInProgress = importInProgress || optimizationInProgress
 
     const enableAutofit = useCallback(() => dispatch({ type: 'ENABLE_AUTOFIT' }), [])
-    const muteMap = useCallback(() => dispatch({ type: 'MUTE_MAP' }), [])
-    const unmuteMap = useCallback(() => dispatch({ type: 'UNMUTE_MAP' }), [])
+    const muteMap = useCallback(() => dispatch({ type: 'USE_MUTED_MAP' }), [])
+    const unmuteMap = useCallback(() => dispatch({ type: 'USE_REGULAR_MAP' }), [])
     const showEditorPane = useCallback(() => dispatch({ type: 'SHOW_EDITOR_PANE' }), [])
     const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 

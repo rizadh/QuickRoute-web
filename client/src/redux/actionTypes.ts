@@ -109,12 +109,12 @@ export type DisableAutofitAction = Readonly<{
     type: 'DISABLE_AUTOFIT';
 }>
 
-export type MuteMapAction = Readonly<{
-    type: 'MUTE_MAP';
+export type UseMutedMapAction = Readonly<{
+    type: 'USE_MUTED_MAP';
 }>
 
-export type UnmuteMapAction = Readonly<{
-    type: 'UNMUTE_MAP';
+export type UseRegularMapAction = Readonly<{
+    type: 'USE_REGULAR_MAP';
 }>
 
 export type SetEditorPaneAction = Readonly<{
@@ -215,8 +215,8 @@ export type AppAction =
     | FetchRouteFailedAction
     | EnableAutofitAction
     | DisableAutofitAction
-    | MuteMapAction
-    | UnmuteMapAction
+    | UseMutedMapAction
+    | UseRegularMapAction
     | SetEditorPaneAction
     | HideEditorPaneAction
     | ShowEditorPaneAction
