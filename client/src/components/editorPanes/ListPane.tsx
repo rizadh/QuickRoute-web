@@ -3,7 +3,7 @@ import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { useMedia } from '../../hooks/useMedia'
 import {
-    createWaypoint,
+    createWaypointFromAddress,
     hideEditorPane as hideEditorPaneActionCreator,
     reverseWaypoints as reverseWaypointsActionCreator,
 } from '../../redux/actions'
@@ -32,7 +32,7 @@ export const ListPane = () => {
 
     const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsActionCreator()), [])
     const addNewWaypoint = useCallback(() => {
-        dispatch(createWaypoint(newWaypointFieldValue))
+        dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(newWaypointFieldValue) })
         setNewWaypointFieldValue('')
     }, [newWaypointFieldValue])
 
@@ -80,8 +80,6 @@ export const ListPane = () => {
 
     return (
         <WaypointEditorTemplate
-            paneIsBusy={false}
-            errorMessage={errorMessage}
             body={
                 <>
                     {currentRouteInformation.status === 'FAILED' && (

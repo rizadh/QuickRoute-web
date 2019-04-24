@@ -59,4 +59,7 @@ export type AppState = Readonly<{
     mutedMapIsEnabled: boolean;
     editorPane: EditorPane;
     editorIsHidden: boolean;
+    importInProgress: boolean;
+    optimizationInProgress: boolean;
+    error?: Error;
 }>

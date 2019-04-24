@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { createAndReplaceWaypoints, setEditorPane } from '../../redux/actions'
+import { createWaypointFromAddress, replaceWaypoints, setEditorPane } from '../../redux/actions'
 import { EditorPane } from '../../redux/state'
 import { WaypointEditorTemplate } from '../WaypointEditor'
 
@@ -140,7 +140,7 @@ export const OptimizerPane = () => {
             const jsonResponse: IOptimizeResponse = await response.json()
             const optimalOrdering = startPoint ? jsonResponse.result.slice(1, -1).map(i => i - 1) : jsonResponse.result
 
-            dispatch(createAndReplaceWaypoints(optimalOrdering.map(i => waypoints[i].address)))
+            dispatch(replaceWaypoints(optimalOrdering.map(i => waypoints[i].address).map(createWaypointFromAddress)))
             dispatch(setEditorPane(EditorPane.List))
         } catch (e) {
             dispatch(setEditorPane(EditorPane.List))
@@ -150,8 +150,6 @@ export const OptimizerPane = () => {
 
     return (
         <WaypointEditorTemplate
-            paneIsBusy={optimizationInProgress}
-            errorMessage={errorMessage}
             body={
                 insufficientWaypoints ? (
                     <div className="alert alert-warning" role="alert">

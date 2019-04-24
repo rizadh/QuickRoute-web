@@ -10,19 +10,18 @@ import { OptimizerPane } from './editorPanes/OptimizerPane'
 import { UrlsPane } from './editorPanes/UrlsPane'
 
 type WaypointEditorTemplateProps = {
-    paneIsBusy: boolean;
-    errorMessage: string;
     body: JSX.Element;
     footer: JSX.Element;
 }
 
 export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
     const {
-        state: { editorPane },
+        state: { editorPane, importInProgress, optimizationInProgress, error },
         dispatch,
     } = useContext(AppStateContext)
+    const paneIsBusy = importInProgress || optimizationInProgress
 
-    const { paneIsBusy, errorMessage, body, footer } = props
+    const { body, footer } = props
 
     const setEditorPaneList = useCallback(() => dispatch(setEditorPane(EditorPane.List)), [])
     const setEditorPaneBulkEdit = useCallback(() => dispatch(setEditorPane(EditorPane.BulkEdit)), [])
@@ -76,9 +75,9 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                 </div>
             </div>
             <div>
-                {errorMessage && (
+                {error && (
                     <div className="alert alert-danger" role="alert">
-                        {errorMessage}
+                        {error.message}
                     </div>
                 )}
                 {body}

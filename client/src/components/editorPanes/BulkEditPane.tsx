@@ -2,7 +2,11 @@ import React, { useCallback, useContext } from 'react'
 import Textarea from 'react-textarea-autosize'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { createAndReplaceWaypoints, setEditorPane as setEditorPaneActionCreator } from '../../redux/actions'
+import {
+    createWaypointFromAddress,
+    replaceWaypoints,
+    setEditorPane as setEditorPaneActionCreator,
+} from '../../redux/actions'
 import { EditorPane } from '../../redux/state'
 import { isValidAddress, parseAddress } from '../../redux/validator'
 import { WaypointEditorTemplate } from '../WaypointEditor'
@@ -25,14 +29,12 @@ export const BulkEditPane = () => {
             .filter(isValidAddress)
             .map(parseAddress)
 
-        dispatch(createAndReplaceWaypoints(validAddresses))
+        dispatch(replaceWaypoints(validAddresses.map(createWaypointFromAddress)))
         dispatch(setEditorPaneActionCreator(EditorPane.List))
     }, [bulkEditFieldValue])
 
     return (
         <WaypointEditorTemplate
-            paneIsBusy={false}
-            errorMessage=""
             body={
                 <>
                     <div className="alert alert-info" role="alert">

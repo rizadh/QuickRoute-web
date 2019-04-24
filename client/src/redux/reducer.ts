@@ -19,7 +19,7 @@ import {
 } from './actionTypes'
 import { AppState, EditorPane, fetchFailed, fetchInProgress, fetchSuccess } from './state'
 
-const initialState: AppState = {
+export const initialState: AppState = {
     waypoints: [],
     lastSelectedWaypointIndex: 0,
     fetchedPlaces: new Map(),
@@ -28,6 +28,9 @@ const initialState: AppState = {
     mutedMapIsEnabled: false,
     editorPane: EditorPane.List,
     editorIsHidden: false,
+    importInProgress: false,
+    optimizationInProgress: false,
+    error: undefined,
 }
 
 export default (state: AppState = initialState, action: AppAction): AppState => {
@@ -73,11 +76,21 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
         case 'UNMUTE_MAP':
             return { ...state, mutedMapIsEnabled: false }
         case 'SET_EDITOR_PANE':
-            return { ...state, editorPane: action.editorPane }
+            return {
+                ...state,
+                editorPane: action.editorPane,
+                error: state.editorPane === action.editorPane ? state.error : undefined,
+            }
         case 'HIDE_EDITOR_PANE':
             return { ...state, editorIsHidden: true }
         case 'SHOW_EDITOR_PANE':
             return { ...state, editorIsHidden: false }
+        case 'IMPORT_WAYPOINTS_IN_PROGRESS':
+            return { ...state, importInProgress: true }
+        case 'IMPORT_WAYPOINTS_SUCCESS':
+            return { ...state, importInProgress: false }
+        case 'IMPORT_WAYPOINTS_FAILED':
+            return { ...state, importInProgress: false, error: action.error }
     }
 
     return state

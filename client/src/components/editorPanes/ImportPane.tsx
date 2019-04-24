@@ -1,56 +1,27 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { createAndReplaceWaypoints, setEditorPane as setEditorPaneActionCreator } from '../../redux/actions'
-import { EditorPane } from '../../redux/state'
+import { importWaypoints as importWaypointsActionCreator } from '../../redux/actions'
 import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const ImportPane = () => {
-    const { dispatch } = useContext(AppStateContext)
-    const [errorMessage, setErrorMessage] = useState('')
+    const {
+        state: { importInProgress },
+        dispatch,
+    } = useContext(AppStateContext)
+
     const {
         value: driverNumberFieldValue,
         changeHandler: handleDriverNumberFieldChange,
         keyPressHandler: handleDriverNumberFieldKeyPress,
-    } = useInputField('', () => executeImport())
-    const [importInProgress, setImportInProgress] = useState(false)
+    } = useInputField('', () => importWaypoints())
 
-    const executeImport = useCallback(async () => {
-        setImportInProgress(true)
-        setErrorMessage('')
-
-        type FetchedWaypoint = { address: string; city: string; postalCode: string }
-        type WaypointsResponse = {
-            date: string;
-            driverNumber: string;
-            waypoints: {
-                dispatched: ReadonlyArray<FetchedWaypoint>;
-                inprogress: ReadonlyArray<FetchedWaypoint>;
-            };
-        }
-
-        const url = '/waypoints/' + driverNumberFieldValue
-        const httpResponse = await fetch(url)
-        if (!httpResponse.ok) {
-            setImportInProgress(false)
-            setErrorMessage(
-                `Failed to import waypoints for driver ${driverNumberFieldValue} ` +
-                    `(ERROR: '${await httpResponse.text()}')`,
-            )
-            return
-        }
-        const jsonResponse = await httpResponse.text()
-        const response = JSON.parse(jsonResponse) as WaypointsResponse
-        const waypoints = [...response.waypoints.dispatched, ...response.waypoints.inprogress]
-        const addresses = waypoints.map(w => `${w.address} ${w.postalCode}`)
-        dispatch(createAndReplaceWaypoints(addresses))
-        dispatch(setEditorPaneActionCreator(EditorPane.List))
-    }, [driverNumberFieldValue])
+    const importWaypoints = useCallback(() => dispatch(importWaypointsActionCreator(driverNumberFieldValue)), [
+        driverNumberFieldValue,
+    ])
 
     return (
         <WaypointEditorTemplate
-            paneIsBusy={importInProgress}
-            errorMessage={errorMessage}
             body={
                 <>
                     <div className="alert alert-info" role="alert">
@@ -78,7 +49,7 @@ export const ImportPane = () => {
                         <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
                     </button>
                 ) : (
-                    <button className="btn btn-primary" onClick={executeImport}>
+                    <button className="btn btn-primary" onClick={importWaypoints}>
                         <i className="fas fa-fw fa-cloud-download-alt" /> Import
                     </button>
                 )

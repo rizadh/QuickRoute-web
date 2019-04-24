@@ -10,9 +10,11 @@ import {
 
 export const MapButtons = () => {
     const {
-        state: { autofitIsEnabled, mutedMapIsEnabled, editorIsHidden },
+        state: { autofitIsEnabled, mutedMapIsEnabled, editorIsHidden, importInProgress, optimizationInProgress },
         dispatch,
     } = useContext(AppStateContext)
+
+    const operationInProgress = importInProgress || optimizationInProgress
 
     const enableAutofit = useCallback(() => dispatch(enableAutofitActionCreator()), [])
     const muteMap = useCallback(() => dispatch(muteMapActionCreator()), [])
@@ -27,7 +29,7 @@ export const MapButtons = () => {
                     <i className="fas fa-fw fa-columns" /> Show Editor
                 </button>
             ) : (
-                <button className="btn btn-primary" onClick={hideEditorPane}>
+                <button className="btn btn-primary" onClick={hideEditorPane} disabled={operationInProgress}>
                     <i className="fas fa-fw fa-window-maximize" /> Hide Editor
                 </button>
             )}

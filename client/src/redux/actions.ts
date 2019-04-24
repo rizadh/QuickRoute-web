@@ -13,6 +13,7 @@ import {
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
     HideEditorPaneAction,
+    ImportWaypointsAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
     MuteMapAction,
@@ -28,21 +29,16 @@ import {
 } from './actionTypes'
 import { EditorPane, Waypoint } from './state'
 
-const createWaypointFromAddress = (address: string): Waypoint => ({
+export const createWaypointFromAddress = (address: string): Waypoint => ({
     address,
     uuid: uuidv4(),
     isSelected: false,
 })
 
-export const createAndReplaceWaypoints = (addresses: ReadonlyArray<string>): ReplaceWaypointsAction =>
-    replaceWaypoints(addresses.map(createWaypointFromAddress))
-
 export const replaceWaypoints = (waypoints: ReadonlyArray<Waypoint>): ReplaceWaypointsAction => ({
     type: 'REPLACE_WAYPOINTS',
     waypoints,
 })
-
-export const createWaypoint = (address: string): AddWaypointAction => addWaypoint(createWaypointFromAddress(address))
 
 export const addWaypoint = (waypoint: Waypoint): AddWaypointAction => ({
     type: 'ADD_WAYPOINT',
@@ -175,4 +171,9 @@ export const hideEditorPane = (): HideEditorPaneAction => ({
 
 export const showEditorPane = (): ShowEditorPaneAction => ({
     type: 'SHOW_EDITOR_PANE',
+})
+
+export const importWaypoints = (driverNumber: string): ImportWaypointsAction => ({
+    type: 'IMPORT_WAYPOINTS',
+    driverNumber,
 })

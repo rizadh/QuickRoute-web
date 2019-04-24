@@ -83,8 +83,6 @@ export const UrlsPane = () => {
 
     return (
         <WaypointEditorTemplate
-            paneIsBusy={false}
-            errorMessage={errorMessage}
             body={
                 insufficientWaypoints ? (
                     <div className="alert alert-warning" role="alert">

@@ -2,6 +2,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable'
 import { EMPTY, Observable, of, range } from 'rxjs'
 import { filter, flatMap, map, mergeMap, take } from 'rxjs/operators'
 import {
+    createWaypointFromAddress,
     fetchPlace,
     fetchPlaceFailed,
     fetchPlaceInProgress,
@@ -23,13 +24,14 @@ import {
     FetchRouteFailedAction,
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
+    ImportWaypointsAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
     ReplaceWaypointsAction,
     ReverseWaypointsAction,
     SetAddressAction,
 } from './actionTypes'
-import { AppState } from './state'
+import { AppState, EditorPane } from './state'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 
@@ -244,6 +246,55 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
         ),
     )
 
+type FetchedWaypoint = { address: string; city: string; postalCode: string }
+type WaypointsResponse = {
+    date: string;
+    driverNumber: string;
+    waypoints: {
+        dispatched: ReadonlyArray<FetchedWaypoint>;
+        inprogress: ReadonlyArray<FetchedWaypoint>;
+    };
+}
+
+const importWaypoints = async (driverNumber: string) => {
+    const url = '/waypoints/' + driverNumber
+    const httpResponse = await fetch(url)
+    if (!httpResponse.ok) {
+        throw new Error(
+            `Failed to import waypoints for driver ${driverNumber} (ERROR: '${await httpResponse.text()}')`,
+        )
+    }
+
+    const {
+        waypoints: { dispatched, inprogress },
+    } = (await httpResponse.json()) as WaypointsResponse
+    return [...dispatched, ...inprogress].map(w => `${w.address} ${w.postalCode}`).map(createWaypointFromAddress)
+}
+
+const importWaypointsEpic: AppEpic = action$ =>
+    action$.pipe(
+        ofType<AppAction, ImportWaypointsAction>('IMPORT_WAYPOINTS'),
+        mergeMap(
+            ({ driverNumber }) =>
+                new Observable<AppAction>(observer => {
+                    observer.next({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber })
+                    importWaypoints(driverNumber)
+                        .then(waypoints => {
+                            observer.next({ type: 'REPLACE_WAYPOINTS', waypoints })
+                            observer.next({ type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber })
+                            observer.next({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List })
+                            observer.complete()
+                        })
+                        .catch(error => {
+                            if (error instanceof Error) {
+                                observer.next({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error })
+                            }
+                            observer.complete()
+                        })
+                }),
+        ),
+    )
+
 export default combineEpics(
     replaceWaypointsEpic,
     reverseWaypointsEpic,
@@ -254,4 +305,5 @@ export default combineEpics(
     setAddressEpic,
     fetchPlaceEpic,
     fetchRouteEpic,
+    importWaypointsEpic,
 )
