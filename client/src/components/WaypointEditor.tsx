@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react'
 import { appVersion } from '..'
 import { AppStateContext } from '../context/AppStateContext'
-import { setEditorPane } from '../redux/actions'
 import { EditorPane } from '../redux/state'
 import { BulkEditPane } from './editorPanes/BulkEditPane'
 import { ImportPane } from './editorPanes/ImportPane'
@@ -23,11 +22,23 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
 
     const { body, footer } = props
 
-    const setEditorPaneList = useCallback(() => dispatch(setEditorPane(EditorPane.List)), [])
-    const setEditorPaneBulkEdit = useCallback(() => dispatch(setEditorPane(EditorPane.BulkEdit)), [])
-    const setEditorPaneLinks = useCallback(() => dispatch(setEditorPane(EditorPane.Links)), [])
-    const setEditorPaneImport = useCallback(() => dispatch(setEditorPane(EditorPane.Import)), [])
-    const setEditorPaneOptimizer = useCallback(() => dispatch(setEditorPane(EditorPane.Optimizer)), [])
+    const setEditorPaneList = useCallback(() => dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List }), [])
+    const setEditorPaneBulkEdit = useCallback(
+        () => dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.BulkEdit }),
+        [],
+    )
+    const setEditorPaneLinks = useCallback(
+        () => dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Links }),
+        [],
+    )
+    const setEditorPaneImport = useCallback(
+        () => dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Import }),
+        [],
+    )
+    const setEditorPaneOptimizer = useCallback(
+        () => dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Optimizer }),
+        [],
+    )
 
     return (
         <div id="waypoint-editor" className="frosted">

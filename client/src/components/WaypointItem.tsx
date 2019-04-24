@@ -2,13 +2,6 @@ import React, { useCallback, useContext } from 'react'
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd'
 import { AppStateContext } from '../context/AppStateContext'
 import { useInputField } from '../hooks/useInputField'
-import {
-    deleteWaypoint as deleteWaypointActionCreator,
-    selectWaypoint,
-    selectWaypointRange,
-    setAddress as setAddressActionCreator,
-    toggleWaypointSelection,
-} from '../redux/actions'
 import { RouteFetchResult } from '../redux/state'
 import { isValidAddress } from '../redux/validator'
 
@@ -37,8 +30,10 @@ export const WaypointItem = (props: WaypointItemProps) => {
     )
     const fieldWasEdited = waypointFieldValue !== waypoint.address
 
-    const setAddress = useCallback(newAddress => dispatch(setAddressActionCreator(index, newAddress)), [index])
-    const deleteWaypoint = useCallback(() => dispatch(deleteWaypointActionCreator(index)), [index])
+    const setAddress = useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [
+        index,
+    ])
+    const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [index])
     const resetWaypointField = useCallback(() => setWaypointFieldValue(waypoint.address), [waypoint.address])
     const routeFetchResult = useCallback(
         (origin: string, destination: string): RouteFetchResult | undefined => {
@@ -60,11 +55,11 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const itemWasClicked = (e: React.MouseEvent) => {
         if (e.shiftKey) {
             e.preventDefault()
-            dispatch(selectWaypointRange(index))
+            dispatch({ type: 'SELECT_WAYPOINT_RANGE', index })
         } else if (e.ctrlKey || e.metaKey) {
-            dispatch(toggleWaypointSelection(index))
+            dispatch({ type: 'TOGGLE_WAYPOINT_SELECTION', index })
         } else {
-            dispatch(selectWaypoint(index))
+            dispatch({ type: 'SELECT_WAYPOINT', index })
         }
     }
 

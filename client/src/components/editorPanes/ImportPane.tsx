@@ -1,7 +1,6 @@
 import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { importWaypoints as importWaypointsActionCreator } from '../../redux/actions'
 import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const ImportPane = () => {
@@ -16,9 +15,10 @@ export const ImportPane = () => {
         keyPressHandler: handleDriverNumberFieldKeyPress,
     } = useInputField('', () => importWaypoints())
 
-    const importWaypoints = useCallback(() => dispatch(importWaypointsActionCreator(driverNumberFieldValue)), [
-        driverNumberFieldValue,
-    ])
+    const importWaypoints = useCallback(
+        () => dispatch({ type: 'IMPORT_WAYPOINTS', driverNumber: driverNumberFieldValue }),
+        [driverNumberFieldValue],
+    )
 
     return (
         <WaypointEditorTemplate

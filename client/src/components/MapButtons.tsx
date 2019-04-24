@@ -1,12 +1,5 @@
 import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
-import {
-    enableAutofit as enableAutofitActionCreator,
-    hideEditorPane as hideEditorPaneActionCreator,
-    muteMap as muteMapActionCreator,
-    showEditorPane as showEditorPaneActionCreator,
-    unmuteMap as unmuteMapActionCreator,
-} from '../redux/actions'
 
 export const MapButtons = () => {
     const {
@@ -16,11 +9,11 @@ export const MapButtons = () => {
 
     const operationInProgress = importInProgress || optimizationInProgress
 
-    const enableAutofit = useCallback(() => dispatch(enableAutofitActionCreator()), [])
-    const muteMap = useCallback(() => dispatch(muteMapActionCreator()), [])
-    const unmuteMap = useCallback(() => dispatch(unmuteMapActionCreator()), [])
-    const showEditorPane = useCallback(() => dispatch(showEditorPaneActionCreator()), [])
-    const hideEditorPane = useCallback(() => dispatch(hideEditorPaneActionCreator()), [])
+    const enableAutofit = useCallback(() => dispatch({ type: 'ENABLE_AUTOFIT' }), [])
+    const muteMap = useCallback(() => dispatch({ type: 'MUTE_MAP' }), [])
+    const unmuteMap = useCallback(() => dispatch({ type: 'UNMUTE_MAP' }), [])
+    const showEditorPane = useCallback(() => dispatch({ type: 'SHOW_EDITOR_PANE' }), [])
+    const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
     return (
         <div id="map-buttons">

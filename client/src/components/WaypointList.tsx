@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import { AppStateContext } from '../context/AppStateContext'
-import { moveSelectedWaypoints, moveWaypoint } from '../redux/actions'
 import { WaypointItem } from './WaypointItem'
 
 export const WaypointList = () => {
@@ -15,9 +14,13 @@ export const WaypointList = () => {
         if (result.destination.index === result.source.index) return
 
         if (waypoints[result.source.index].isSelected) {
-            dispatch(moveSelectedWaypoints(result.destination.index))
+            dispatch({ type: 'MOVE_SELECTED_WAYPOINTS', index: result.destination.index })
         } else {
-            dispatch(moveWaypoint(result.source.index, result.destination.index))
+            dispatch({
+                type: 'MOVE_WAYPOINT',
+                sourceIndex: result.source.index,
+                targetIndex: result.destination.index,
+            })
         }
     }
 

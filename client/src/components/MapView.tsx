@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
 import { useMedia } from '../hooks/useMedia'
 import { useWindowSize } from '../hooks/useWindowSize'
-import { disableAutofit } from '../redux/actions'
 import { routeInformation } from '../redux/selectors'
 import { FetchSuccess } from '../redux/state'
 
@@ -59,7 +58,7 @@ export const MapView = () => {
                 (newMap.annotations && newMap.annotations.length > 0) ||
                 (newMap.overlays && newMap.overlays.length > 0)
             ) {
-                dispatch(disableAutofit())
+                dispatch({ type: 'DISABLE_AUTOFIT' })
             }
         }
 

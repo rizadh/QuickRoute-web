@@ -2,12 +2,8 @@ import React, { useCallback, useContext, useMemo } from 'react'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { useMedia } from '../../hooks/useMedia'
-import {
-    createWaypointFromAddress,
-    hideEditorPane as hideEditorPaneActionCreator,
-    reverseWaypoints as reverseWaypointsActionCreator,
-} from '../../redux/actions'
 import { routeInformation } from '../../redux/selectors'
+import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
 import { WaypointEditorTemplate } from '../WaypointEditor'
 import { WaypointList } from '../WaypointList'
@@ -27,9 +23,9 @@ export const ListPane = () => {
 
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
-    const hideEditorPane = useCallback(() => dispatch(hideEditorPaneActionCreator()), [])
+    const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
-    const reverseWaypoints = useCallback(() => dispatch(reverseWaypointsActionCreator()), [])
+    const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
     const addNewWaypoint = useCallback(() => {
         dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(newWaypointFieldValue) })
         setNewWaypointFieldValue('')
