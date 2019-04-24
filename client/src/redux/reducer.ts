@@ -1,23 +1,5 @@
-import {
-    AddWaypointAction,
-    AppAction,
-    DeleteWaypointAction,
-    FetchPlaceFailedAction,
-    FetchPlaceInProgressAction,
-    FetchPlaceSuccessAction,
-    FetchRouteFailedAction,
-    FetchRouteInProgressAction,
-    FetchRouteSuccessAction,
-    MoveSelectedWaypointsAction,
-    MoveWaypointAction,
-    ReplaceWaypointsAction,
-    ReverseWaypointsAction,
-    SelectWaypointAction,
-    SelectWaypointRangeAction,
-    SetAddressAction,
-    ToggleWaypointSelectionAction,
-} from './actionTypes'
-import { AppState, EditorPane, fetchFailed, fetchInProgress, fetchSuccess } from './state'
+import { AppAction } from './actionTypes'
+import { AppState, EditorPane } from './state'
 
 export const initialState: AppState = {
     waypoints: [],
@@ -35,38 +17,177 @@ export const initialState: AppState = {
 
 export default (state: AppState = initialState, action: AppAction): AppState => {
     switch (action.type) {
+        // Basic Waypoint Manipulation
         case 'REPLACE_WAYPOINTS':
-            return replaceWaypoints(state, action)
+            return {
+                ...state,
+                waypoints: action.waypoints,
+            }
         case 'ADD_WAYPOINT':
-            return addWaypoint(state, action)
+            return {
+                ...state,
+                waypoints: [...state.waypoints, action.waypoint],
+            }
         case 'DELETE_WAYPOINT':
-            return deleteWaypoint(state, action)
-        case 'MOVE_WAYPOINT':
-            return moveWaypoint(state, action)
-        case 'MOVE_SELECTED_WAYPOINTS':
-            return moveSelectedWaypoints(state, action)
+            return { ...state, waypoints: state.waypoints.filter((_, i) => action.index === i) }
         case 'REVERSE_WAYPOINTS':
-            return reverseWaypoints(state, action)
+            return {
+                ...state,
+                waypoints: [...state.waypoints].reverse(),
+            }
         case 'SET_ADDRESS':
-            return setAddress(state, action)
+            return {
+                ...state,
+                waypoints: state.waypoints.map((waypoint, waypointIndex) =>
+                    waypointIndex === action.index ? { ...waypoint, address: action.address } : waypoint,
+                ),
+            }
+        // Waypoint Selection and DND
+        case 'MOVE_WAYPOINT': {
+            if (action.sourceIndex === action.targetIndex) return state
+
+            const waypoints = [...state.waypoints]
+            const [removed] = waypoints.splice(action.sourceIndex, 1)
+            waypoints.splice(action.targetIndex, 0, removed)
+            return { ...state, waypoints }
+        }
+        case 'MOVE_SELECTED_WAYPOINTS': {
+            const lowestIndex = state.waypoints.findIndex(waypoint => waypoint.isSelected)
+            const partitionIndex = lowestIndex < action.index ? action.index + 1 : action.index
+
+            const waypointsBeforePartition = state.waypoints.filter(
+                (waypoint, index) => !waypoint.isSelected && index < partitionIndex,
+            )
+            const movedWaypoints = state.waypoints.filter(waypoint => waypoint.isSelected)
+            const waypointsAfterPartition = state.waypoints.filter(
+                (waypoint, index) => !waypoint.isSelected && index >= partitionIndex,
+            )
+
+            const waypoints = [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
+
+            const lastSelectedWaypoint = state.waypoints[state.lastSelectedWaypointIndex]
+            const lastSelectedWaypointIndex = waypoints.indexOf(lastSelectedWaypoint)
+
+            return { ...state, lastSelectedWaypointIndex, waypoints }
+        }
         case 'SELECT_WAYPOINT':
-            return selectWaypoint(state, action)
+            const selectedWaypointsCount = state.waypoints.filter(w => w.isSelected).length
+
+            return {
+                ...state,
+                lastSelectedWaypointIndex: action.index,
+                waypoints: state.waypoints.map((waypoint, waypointIndex) => {
+                    if (waypointIndex !== action.index && waypoint.isSelected) {
+                        return { ...waypoint, isSelected: false }
+                    }
+
+                    if (waypointIndex === action.index && !waypoint.isSelected) {
+                        return { ...waypoint, isSelected: true }
+                    }
+
+                    if (waypointIndex === action.index && selectedWaypointsCount === 1) {
+                        return { ...waypoint, isSelected: false }
+                    }
+
+                    return waypoint
+                }),
+            }
         case 'TOGGLE_WAYPOINT_SELECTION':
-            return toggleWaypoint(state, action)
+            return {
+                ...state,
+                lastSelectedWaypointIndex: action.index,
+                waypoints: state.waypoints.map((waypoint, waypointIndex) =>
+                    waypointIndex === action.index ? { ...waypoint, isSelected: !waypoint.isSelected } : waypoint,
+                ),
+            }
         case 'SELECT_WAYPOINT_RANGE':
-            return selectWaypointRange(state, action)
+            if (action.index < state.lastSelectedWaypointIndex) {
+                return {
+                    ...state,
+                    waypoints: state.waypoints.map((waypoint, waypointIndex) => {
+                        if (waypointIndex >= action.index && waypointIndex < state.lastSelectedWaypointIndex) {
+                            return { ...waypoint, isSelected: true }
+                        }
+
+                        return waypoint
+                    }),
+                }
+            } else {
+                return {
+                    ...state,
+                    waypoints: state.waypoints.map((waypoint, waypointIndex) => {
+                        if (waypointIndex <= action.index && waypointIndex > state.lastSelectedWaypointIndex) {
+                            return { ...waypoint, isSelected: true }
+                        }
+
+                        return waypoint
+                    }),
+                }
+            }
+        // Place Fetch
+        case 'FETCH_PLACE':
+            return state
         case 'FETCH_PLACE_IN_PROGRESS':
-            return fetchPlaceInProgress(state, action)
+            return {
+                ...state,
+                fetchedPlaces: new Map(state.fetchedPlaces).set(action.address, {
+                    status: 'IN_PROGRESS',
+                    fetchId: action.fetchId,
+                }),
+            }
         case 'FETCH_PLACE_SUCCESS':
-            return fetchPlaceSuccess(state, action)
+            return {
+                ...state,
+                fetchedPlaces: new Map(state.fetchedPlaces).set(action.address, {
+                    status: 'SUCCESS',
+                    result: action.place,
+                }),
+            }
         case 'FETCH_PLACE_FAILED':
-            return fetchPlaceFailed(state, action)
+            return {
+                ...state,
+                fetchedPlaces: new Map(state.fetchedPlaces).set(action.address, {
+                    status: 'FAILED',
+                    error: action.error,
+                }),
+            }
+        // Route Fetch
+        case 'FETCH_ROUTE':
+            return state
         case 'FETCH_ROUTE_IN_PROGRESS':
-            return fetchRouteInProgress(state, action)
+            return {
+                ...state,
+                fetchedRoutes: new Map(state.fetchedRoutes).set(
+                    origin,
+                    new Map(state.fetchedRoutes.get(origin) || []).set(action.destination, {
+                        status: 'IN_PROGRESS',
+                        fetchId: action.fetchId,
+                    }),
+                ),
+            }
         case 'FETCH_ROUTE_SUCCESS':
-            return fetchRouteSuccess(state, action)
+            return {
+                ...state,
+                fetchedRoutes: new Map(state.fetchedRoutes).set(
+                    origin,
+                    new Map(state.fetchedRoutes.get(origin) || []).set(action.destination, {
+                        status: 'SUCCESS',
+                        result: action.route,
+                    }),
+                ),
+            }
         case 'FETCH_ROUTE_FAILED':
-            return fetchRouteFailed(state, action)
+            return {
+                ...state,
+                fetchedRoutes: new Map(state.fetchedRoutes).set(
+                    origin,
+                    new Map(state.fetchedRoutes.get(origin) || []).set(action.destination, {
+                        status: 'FAILED',
+                        error: action.error,
+                    }),
+                ),
+            }
+        // Map Properties
         case 'ENABLE_AUTOFIT':
             return { ...state, autofitIsEnabled: true }
         case 'DISABLE_AUTOFIT':
@@ -75,191 +196,42 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return { ...state, mutedMapIsEnabled: true }
         case 'UNMUTE_MAP':
             return { ...state, mutedMapIsEnabled: false }
+        // Editor
         case 'SET_EDITOR_PANE':
             return {
                 ...state,
                 editorPane: action.editorPane,
                 error: state.editorPane === action.editorPane ? state.error : undefined,
             }
+        // Editor Visibility
         case 'HIDE_EDITOR_PANE':
             return { ...state, editorIsHidden: true }
         case 'SHOW_EDITOR_PANE':
             return { ...state, editorIsHidden: false }
+        // Waypoint Import
+        case 'IMPORT_WAYPOINTS':
+            return state
         case 'IMPORT_WAYPOINTS_IN_PROGRESS':
             return { ...state, importInProgress: true }
         case 'IMPORT_WAYPOINTS_SUCCESS':
             return { ...state, importInProgress: false }
         case 'IMPORT_WAYPOINTS_FAILED':
             return { ...state, importInProgress: false, error: action.error }
+        // Route Optimization
+        case 'OPTIMIZE_ROUTE':
+            return state
         case 'OPTIMIZE_ROUTE_IN_PROGRESS':
             return { ...state, optimizationInProgress: true }
         case 'OPTIMIZE_ROUTE_SUCCESS':
             return { ...state, optimizationInProgress: false }
         case 'OPTIMIZE_ROUTE_FAILED':
             return { ...state, optimizationInProgress: false, error: action.error }
-    }
-
-    return state
-}
-
-type Reducer<T> = (state: AppState, action: T) => AppState
-
-const replaceWaypoints: Reducer<ReplaceWaypointsAction> = (state, { waypoints }) => ({
-    ...state,
-    waypoints,
-})
-
-const addWaypoint: Reducer<AddWaypointAction> = (state, { waypoint }) => ({
-    ...state,
-    waypoints: [...state.waypoints, waypoint],
-})
-
-const deleteWaypoint: Reducer<DeleteWaypointAction> = (state, { index }) => {
-    const waypoints = [...state.waypoints]
-    waypoints.splice(index, 1)
-    return { ...state, waypoints }
-}
-
-const moveWaypoint: Reducer<MoveWaypointAction> = (state, { sourceIndex, targetIndex }) => {
-    if (sourceIndex === targetIndex) return state
-
-    const waypoints = [...state.waypoints]
-    const [removed] = waypoints.splice(sourceIndex, 1)
-    waypoints.splice(targetIndex, 0, removed)
-    return { ...state, waypoints }
-}
-
-const moveSelectedWaypoints: Reducer<MoveSelectedWaypointsAction> = (state, { index: targetIndex }) => {
-    const lowestIndex = state.waypoints.findIndex(waypoint => waypoint.isSelected)
-    const partitionIndex = lowestIndex < targetIndex ? targetIndex + 1 : targetIndex
-
-    const waypointsBeforePartition = state.waypoints.filter(
-        (waypoint, index) => !waypoint.isSelected && index < partitionIndex,
-    )
-    const movedWaypoints = state.waypoints.filter(waypoint => waypoint.isSelected)
-    const waypointsAfterPartition = state.waypoints.filter(
-        (waypoint, index) => !waypoint.isSelected && index >= partitionIndex,
-    )
-
-    const waypoints = [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
-
-    const lastSelectedWaypoint = state.waypoints[state.lastSelectedWaypointIndex]
-    const lastSelectedWaypointIndex = waypoints.indexOf(lastSelectedWaypoint)
-
-    return { ...state, lastSelectedWaypointIndex, waypoints }
-}
-
-const reverseWaypoints: Reducer<ReverseWaypointsAction> = state => ({
-    ...state,
-    waypoints: [...state.waypoints].reverse(),
-})
-
-const setAddress: Reducer<SetAddressAction> = (state, { index, address }) => {
-    const waypoints = [...state.waypoints]
-    waypoints.splice(index, 1, {
-        ...state.waypoints[index],
-        address,
-    })
-    return { ...state, waypoints }
-}
-
-const selectWaypoint: Reducer<SelectWaypointAction> = (state, { index }) => {
-    const selectedWaypointsCount = state.waypoints.filter(w => w.isSelected).length
-
-    return {
-        ...state,
-        lastSelectedWaypointIndex: index,
-        waypoints: state.waypoints.map((waypoint, waypointIndex) => {
-            if (waypointIndex !== index && waypoint.isSelected) {
-                return { ...waypoint, isSelected: false }
-            }
-
-            if (waypointIndex === index && !waypoint.isSelected) {
-                return { ...waypoint, isSelected: true }
-            }
-
-            if (waypointIndex === index && selectedWaypointsCount === 1) {
-                return { ...waypoint, isSelected: false }
-            }
-
-            return waypoint
-        }),
+        // Error Handling
+        case 'ERROR_OCCURED':
+            return { ...state, error: action.error }
+        case 'CLEAR_ERROR':
+            return { ...state, error: undefined }
+        default:
+            return state
     }
 }
-
-const toggleWaypoint: Reducer<ToggleWaypointSelectionAction> = (state, { index }) => ({
-    ...state,
-    lastSelectedWaypointIndex: index,
-    waypoints: state.waypoints.map((waypoint, waypointIndex) => {
-        if (waypointIndex === index) {
-            return { ...waypoint, isSelected: !waypoint.isSelected }
-        }
-
-        return waypoint
-    }),
-})
-
-const selectWaypointRange: Reducer<SelectWaypointRangeAction> = (state, { index }) => {
-    if (index < state.lastSelectedWaypointIndex) {
-        return {
-            ...state,
-            waypoints: state.waypoints.map((waypoint, waypointIndex) => {
-                if (waypointIndex >= index && waypointIndex < state.lastSelectedWaypointIndex) {
-                    return { ...waypoint, isSelected: true }
-                }
-
-                return waypoint
-            }),
-        }
-    } else {
-        return {
-            ...state,
-            waypoints: state.waypoints.map((waypoint, waypointIndex) => {
-                if (waypointIndex <= index && waypointIndex > state.lastSelectedWaypointIndex) {
-                    return { ...waypoint, isSelected: true }
-                }
-
-                return waypoint
-            }),
-        }
-    }
-}
-
-const fetchPlaceInProgress: Reducer<FetchPlaceInProgressAction> = (state, { address, fetchId }) => ({
-    ...state,
-    fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchInProgress(fetchId)),
-})
-
-const fetchPlaceSuccess: Reducer<FetchPlaceSuccessAction> = (state, { address, place }) => ({
-    ...state,
-    fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchSuccess(place)),
-})
-
-const fetchPlaceFailed: Reducer<FetchPlaceFailedAction> = (state, { address, error }) => ({
-    ...state,
-    fetchedPlaces: new Map(state.fetchedPlaces).set(address, fetchFailed(error)),
-})
-
-const fetchRouteInProgress: Reducer<FetchRouteInProgressAction> = (state, { origin, destination, fetchId }) => ({
-    ...state,
-    fetchedRoutes: new Map(state.fetchedRoutes).set(
-        origin,
-        new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchInProgress(fetchId)),
-    ),
-})
-
-const fetchRouteSuccess: Reducer<FetchRouteSuccessAction> = (state, { origin, destination, route }) => ({
-    ...state,
-    fetchedRoutes: new Map(state.fetchedRoutes).set(
-        origin,
-        new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchSuccess(route)),
-    ),
-})
-
-const fetchRouteFailed: Reducer<FetchRouteFailedAction> = (state, { origin, destination, error }) => ({
-    ...state,
-    fetchedRoutes: new Map(state.fetchedRoutes).set(
-        origin,
-        new Map(state.fetchedRoutes.get(origin) || []).set(destination, fetchFailed(error)),
-    ),
-})
