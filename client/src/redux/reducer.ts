@@ -158,8 +158,8 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return {
                 ...state,
                 fetchedRoutes: new Map(state.fetchedRoutes).set(
-                    origin,
-                    new Map(state.fetchedRoutes.get(origin) || []).set(action.destination, {
+                    action.origin,
+                    new Map(state.fetchedRoutes.get(action.origin) || []).set(action.destination, {
                         status: 'IN_PROGRESS',
                         fetchId: action.fetchId,
                     }),
@@ -169,8 +169,8 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return {
                 ...state,
                 fetchedRoutes: new Map(state.fetchedRoutes).set(
-                    origin,
-                    new Map(state.fetchedRoutes.get(origin) || []).set(action.destination, {
+                    action.origin,
+                    new Map(state.fetchedRoutes.get(action.origin) || []).set(action.destination, {
                         status: 'SUCCESS',
                         result: action.route,
                     }),
@@ -180,8 +180,8 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return {
                 ...state,
                 fetchedRoutes: new Map(state.fetchedRoutes).set(
-                    origin,
-                    new Map(state.fetchedRoutes.get(origin) || []).set(action.destination, {
+                    action.origin,
+                    new Map(state.fetchedRoutes.get(action.origin) || []).set(action.destination, {
                         status: 'FAILED',
                         error: action.error,
                     }),
