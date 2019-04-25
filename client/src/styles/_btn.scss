@@ -2,7 +2,7 @@
 
 .btn {
     --local-btn-background-color: transparent;
-    --local-btn-text-color: white;
+    --local-btn-text-color: var(--app-text-color);
 
     padding: $standardPadding;
     border-radius: $standardBorderRadius;
@@ -11,7 +11,6 @@
     line-height: 1.5;
 
     background-color: var(--local-btn-background-color);
-
     color: var(--local-btn-text-color);
 
     transition: transform 0.1s, opacity 0.1s;
@@ -58,8 +57,7 @@
 }
 
 .btn-secondary {
-    --local-btn-background-color: var(--apple-system-gray);
-    --local-btn-text-color: white;
+    --local-btn-background-color: var(--app-form-control-focus-color);
 }
 
 .btn-danger {
