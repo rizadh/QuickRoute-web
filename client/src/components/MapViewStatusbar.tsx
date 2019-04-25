@@ -15,7 +15,7 @@ export const MapViewStatusbar = () => {
         case 'FETCHING':
             statusbarItems = (
                 <>
-                    <StatView title="Routing" value={stringForUpdateProgress(currentRouteInformation.fetchProgress)} />
+                    <StatView title="Routing" value={stringForUpdateProgress(currentRouteInformation.progress)} />
                 </>
             )
             break

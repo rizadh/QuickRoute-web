@@ -13,7 +13,7 @@ export const ProgressBar = () => {
         return (
             <div id="progress-bar">
                 <Line
-                    percent={currentRouteInformation.fetchProgress * 100}
+                    percent={currentRouteInformation.progress * 100}
                     trailColor={darkMode ? 'rgba(10, 132, 255, 0.2)' : 'rgb(0, 122, 255, 0.2)'}
                     strokeColor={darkMode ? 'rgb(10, 132, 255)' : 'rgb(0, 122, 255)'}
                     strokeLinecap="butt"
