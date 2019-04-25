@@ -17,8 +17,8 @@ export const OptimizerPane = () => {
     const { value: startPointFieldValue, setValue: setStartPointFieldValue } = useInputField('', () => undefined)
     const { value: endPointFieldValue, setValue: setEndPointFieldValue } = useInputField('', () => undefined)
 
-    const startPoint = startPointFieldValue || endPointFieldValue
-    const endPoint = endPointFieldValue || startPointFieldValue
+    const startPoint = (startPointFieldValue || endPointFieldValue).trim()
+    const endPoint = (endPointFieldValue || startPointFieldValue).trim()
 
     const handleStartPointFieldChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => setStartPointFieldValue(e.currentTarget.value),
@@ -66,8 +66,7 @@ export const OptimizerPane = () => {
                 ) : (
                     <>
                         <div className="alert alert-info" role="alert">
-                            Note that the route found will be the most optimal route from start point to end point
-                            passing through all waypoints along the way.
+                            The route found will be the optimal from the start point to the end point.
                         </div>
                         <div className="input-row">
                             <input
