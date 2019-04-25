@@ -135,9 +135,9 @@ textarea {
     border-top: 1px solid var(--app-border-color);
 
     & button {
-        float: right;
+        float: left;
         margin-top: $standardMargin;
-        margin-right: $standardMargin;
+        margin-left: $standardMargin;
 
         &:last-child {
             margin-bottom: $standardMargin;
