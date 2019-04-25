@@ -14,10 +14,11 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const { index, isBeingDragged } = props
 
     const {
-        state: { waypoints, fetchedPlaces, fetchedRoutes },
+        state: { waypoints, fetchedPlaces, fetchedRoutes, selectedWaypoints },
         dispatch,
     } = useContext(AppStateContext)
     const waypoint = waypoints[index]
+    const waypointIsSelected = selectedWaypoints.has(waypoint.uuid)
 
     const {
         value: waypointFieldValue,

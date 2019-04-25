@@ -1,9 +1,11 @@
+import { range } from 'lodash'
 import { AppAction } from './actionTypes'
 import { AppState, EditorPane } from './state'
 
 export const initialState: AppState = {
     waypoints: [],
-    lastSelectedWaypointIndex: 0,
+    lastSelectedWaypoint: '',
+    selectedWaypoints: new Set(),
     fetchedPlaces: new Map(),
     fetchedRoutes: new Map(),
     autofitIsEnabled: true,
@@ -52,78 +54,57 @@ export default (state: AppState = initialState, action: AppAction): AppState => 
             return { ...state, waypoints }
         }
         case 'MOVE_SELECTED_WAYPOINTS': {
-            const lowestIndex = state.waypoints.findIndex(waypoint => waypoint.isSelected)
+            const lowestIndex = state.waypoints.findIndex(waypoint => state.selectedWaypoints.has(waypoint.uuid))
             const partitionIndex = lowestIndex < action.index ? action.index + 1 : action.index
 
             const waypointsBeforePartition = state.waypoints.filter(
-                (waypoint, index) => !waypoint.isSelected && index < partitionIndex,
+                (waypoint, index) => !state.selectedWaypoints.has(waypoint.uuid) && index < partitionIndex,
             )
-            const movedWaypoints = state.waypoints.filter(waypoint => waypoint.isSelected)
+            const movedWaypoints = state.waypoints.filter(waypoint => state.selectedWaypoints.has(waypoint.uuid))
             const waypointsAfterPartition = state.waypoints.filter(
-                (waypoint, index) => !waypoint.isSelected && index >= partitionIndex,
+                (waypoint, index) => !state.selectedWaypoints.has(waypoint.uuid) && index >= partitionIndex,
             )
 
             const waypoints = [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
 
-            const lastSelectedWaypoint = state.waypoints[state.lastSelectedWaypointIndex]
-            const lastSelectedWaypointIndex = waypoints.indexOf(lastSelectedWaypoint)
-
-            return { ...state, lastSelectedWaypointIndex, waypoints }
+            return { ...state, waypoints }
         }
-        case 'SELECT_WAYPOINT':
-            const selectedWaypointsCount = state.waypoints.filter(w => w.isSelected).length
+        case 'SELECT_WAYPOINT': {
+            const selectedCurrentWaypoints = state.waypoints.filter(w => state.selectedWaypoints.has(w.uuid))
+            const waypoint = state.waypoints[action.index]
+
+            if (selectedCurrentWaypoints.length === 1 && state.selectedWaypoints.has(waypoint.uuid)) {
+                return { ...state, selectedWaypoints: new Set() }
+            }
 
             return {
                 ...state,
-                lastSelectedWaypointIndex: action.index,
-                waypoints: state.waypoints.map((waypoint, waypointIndex) => {
-                    if (waypointIndex !== action.index && waypoint.isSelected) {
-                        return { ...waypoint, isSelected: false }
-                    }
-
-                    if (waypointIndex === action.index && !waypoint.isSelected) {
-                        return { ...waypoint, isSelected: true }
-                    }
-
-                    if (waypointIndex === action.index && selectedWaypointsCount === 1) {
-                        return { ...waypoint, isSelected: false }
-                    }
-
-                    return waypoint
-                }),
+                selectedWaypoints: new Set([waypoint.uuid]),
+                lastSelectedWaypoint: state.waypoints[action.index].uuid,
             }
-        case 'TOGGLE_WAYPOINT_SELECTION':
-            return {
-                ...state,
-                lastSelectedWaypointIndex: action.index,
-                waypoints: state.waypoints.map((waypoint, waypointIndex) =>
-                    waypointIndex === action.index ? { ...waypoint, isSelected: !waypoint.isSelected } : waypoint,
-                ),
-            }
-        case 'SELECT_WAYPOINT_RANGE':
-            if (action.index < state.lastSelectedWaypointIndex) {
-                return {
-                    ...state,
-                    waypoints: state.waypoints.map((waypoint, waypointIndex) => {
-                        if (waypointIndex >= action.index && waypointIndex < state.lastSelectedWaypointIndex) {
-                            return { ...waypoint, isSelected: true }
-                        }
+        }
+        case 'TOGGLE_WAYPOINT_SELECTION': {
+            const waypoint = state.waypoints[action.index]
+            const selectedWaypoints = new Set(state.selectedWaypoints)
 
-                        return waypoint
-                    }),
-                }
+            if (state.selectedWaypoints.has(waypoint.uuid)) {
+                selectedWaypoints.delete(waypoint.uuid)
             } else {
-                return {
-                    ...state,
-                    waypoints: state.waypoints.map((waypoint, waypointIndex) => {
-                        if (waypointIndex <= action.index && waypointIndex > state.lastSelectedWaypointIndex) {
-                            return { ...waypoint, isSelected: true }
-                        }
-
-                        return waypoint
-                    }),
-                }
+                selectedWaypoints.add(waypoint.uuid)
             }
+
+            return { ...state, selectedWaypoints, lastSelectedWaypoint: state.waypoints[action.index].uuid }
+        }
+        case 'SELECT_WAYPOINT_RANGE': {
+            const lastSelectedWaypointIndex = state.waypoints.map(w => w.uuid).indexOf(state.lastSelectedWaypoint)
+            const lowerBound = Math.min(action.index, lastSelectedWaypointIndex)
+            const upperBound = Math.max(action.index, lastSelectedWaypointIndex)
+            const selectedWaypoints = new Set(state.selectedWaypoints)
+
+            range(lowerBound, upperBound + 1).forEach(i => selectedWaypoints.add(state.waypoints[i].uuid))
+
+            return { ...state, selectedWaypoints }
+        }
         // Place Fetch
         case 'FETCH_PLACE':
             return state

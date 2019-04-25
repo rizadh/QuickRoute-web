@@ -4,5 +4,4 @@ import { Waypoint } from './state'
 export const createWaypointFromAddress = (address: string): Waypoint => ({
     address,
     uuid: uuidv4(),
-    isSelected: false,
 })

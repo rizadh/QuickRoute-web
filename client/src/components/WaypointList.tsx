@@ -5,7 +5,7 @@ import { WaypointItem } from './WaypointItem'
 
 export const WaypointList = () => {
     const {
-        state: { waypoints },
+        state: { waypoints, selectedWaypoints },
         dispatch,
     } = useContext(AppStateContext)
 
@@ -13,7 +13,7 @@ export const WaypointList = () => {
         if (!result.destination) return
         if (result.destination.index === result.source.index) return
 
-        if (waypoints[result.source.index].isSelected) {
+        if (selectedWaypoints.has(waypoints[result.source.index].uuid)) {
             dispatch({ type: 'MOVE_SELECTED_WAYPOINTS', index: result.destination.index })
         } else {
             dispatch({
@@ -33,7 +33,7 @@ export const WaypointList = () => {
                             <WaypointItem
                                 key={waypoint.uuid}
                                 index={index}
-                                isBeingDragged={snapshot.isDraggingOver && waypoint.isSelected}
+                                isBeingDragged={snapshot.isDraggingOver && selectedWaypoints.has(waypoint.uuid)}
                             />
                         ))}
                         {provided.placeholder}
