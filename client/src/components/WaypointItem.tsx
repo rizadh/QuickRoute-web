@@ -80,7 +80,11 @@ export const WaypointItem = (props: WaypointItemProps) => {
                 <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
-                    className={'input-row ' + (waypoint.isSelected ? 'waypoint-item-selected' : '')}
+                    className={
+                        'input-row' +
+                        (waypointIsSelected ? ' waypoint-item-selected' : '') +
+                        (props.isBeingDragged ? ' waypoint-item-dragging' : '')
+                    }
                 >
                     <button onClick={deleteWaypoint} className="btn btn-sm btn-danger">
                         <i className="fas fa-fw fa-trash-alt" />

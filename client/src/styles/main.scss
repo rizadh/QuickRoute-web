@@ -176,6 +176,10 @@ textarea {
         color: white;
     }
 
+    &.waypoint-item-dragging {
+        opacity: 0.5;
+    }
+
     & > *:first-child {
         margin-left: 0;
 
