@@ -1,7 +1,7 @@
 import { flatten } from 'lodash'
 import { combineEpics, Epic, ofType } from 'redux-observable'
-import { EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
-import { filter, flatMap, map, mergeMap, take } from 'rxjs/operators'
+import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
+import { catchError, filter, flatMap, map, mergeMap, take } from 'rxjs/operators'
 import {
     AddWaypointAction,
     AppAction,
@@ -37,7 +37,7 @@ const performLookup = (address: string) =>
     new Observable<FetchPlaceResultAction>(observer => {
         const fetchId = geocoder.lookup(address, (error, data) => {
             if (error) {
-                observer.next({ type: 'FETCH_PLACE_FAILED', address, error })
+                observer.next({ type: 'FETCH_PLACE_FAILED', address, error: new Error(`${error} ('${address}')`) })
                 observer.complete()
 
                 return
@@ -46,7 +46,11 @@ const performLookup = (address: string) =>
             const place = data.results[0]
 
             if (!place) {
-                observer.next({ type: 'FETCH_PLACE_FAILED', address, error: new Error('No places returned') })
+                observer.next({
+                    type: 'FETCH_PLACE_FAILED',
+                    address,
+                    error: new Error(`No places returned ('${address}')`),
+                })
                 observer.complete()
 
                 return
@@ -74,7 +78,7 @@ const performRoute = (
                     type: 'FETCH_ROUTE_FAILED',
                     origin: origin.address,
                     destination: destination.address,
-                    error,
+                    error: new Error(`${error} ('${origin.address}' -> '${origin.address}')`),
                 })
                 observer.complete()
 
@@ -88,7 +92,7 @@ const performRoute = (
                     type: 'FETCH_ROUTE_FAILED',
                     origin: origin.address,
                     destination: destination.address,
-                    error: new Error('No places returned'),
+                    error: new Error(`No routes returned ('${origin.address}' -> '${origin.address}')`),
                 })
                 observer.complete()
 
@@ -239,11 +243,7 @@ const reverseWaypointsEpic: AppEpic = (action$, state$) =>
 const fetchPlaceEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, FetchPlaceAction>('FETCH_PLACE'),
-        filter(({ address }) => {
-            const fetchedPlace = state$.value.fetchedPlaces.get(address)
-
-            return !fetchedPlace || fetchedPlace.status === 'FAILED'
-        }),
+        filter(({ address }) => !state$.value.fetchedPlaces.get(address)),
         mergeMap(({ address }) => performLookup(address)),
     )
 
@@ -252,10 +252,7 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
         ofType<AppAction, FetchRouteAction>('FETCH_ROUTE'),
         filter(({ origin, destination }) => {
             const routesFromOrigin = state$.value.fetchedRoutes.get(origin)
-            if (!routesFromOrigin) return true
-            const route = routesFromOrigin.get(destination)
-
-            return !route || route.status === 'FAILED'
+            return !routesFromOrigin || !routesFromOrigin.get(destination)
         }),
         mergeMap(({ origin, destination }) =>
             merge(
@@ -266,18 +263,31 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
                         const fetchedOrigin = state.fetchedPlaces.get(origin)
                         const fetchedDestination = state.fetchedPlaces.get(destination)
 
-                        if (!fetchedOrigin || fetchedOrigin.status !== 'SUCCESS') return EMPTY
-                        if (!fetchedDestination || fetchedDestination.status !== 'SUCCESS') return EMPTY
+                        if (!fetchedOrigin || fetchedOrigin.status === 'IN_PROGRESS') return EMPTY
+                        if (fetchedOrigin.status === 'FAILED') {
+                            throw new Error(`Route fetching failed: ${fetchedOrigin.error.message}`)
+                        }
 
-                        return of([fetchedOrigin.result, fetchedDestination.result] as [mapkit.Place, mapkit.Place])
+                        if (!fetchedDestination || fetchedDestination.status === 'IN_PROGRESS') return EMPTY
+                        if (fetchedDestination.status === 'FAILED') {
+                            throw new Error(`Route fetching failed: ${fetchedDestination.error.message}`)
+                        }
+
+                        return of({
+                            fetchedOrigin: fetchedOrigin.result,
+                            fetchedDestination: fetchedDestination.result,
+                        })
                     }),
                     take(1),
-                    mergeMap(([originPlace, destinationPlace]) =>
+                    mergeMap(({ fetchedOrigin, fetchedDestination }) =>
                         performRoute(
-                            { address: origin, place: originPlace },
-                            { address: destination, place: destinationPlace },
+                            { address: origin, place: fetchedOrigin },
+                            { address: destination, place: fetchedDestination },
                         ),
                     ),
+                    catchError(error => {
+                        return of({ type: 'FETCH_ROUTE_FAILED', origin, destination, error } as FetchRouteFailedAction)
+                    }),
                 ),
             ),
         ),
@@ -302,33 +312,33 @@ const importWaypoints = async (driverNumber: string) => {
         )
     }
 
-    const {
-        waypoints: { dispatched, inprogress },
-    } = (await httpResponse.json()) as WaypointsResponse
-    return [...dispatched, ...inprogress].map(w => `${w.address} ${w.postalCode}`).map(createWaypointFromAddress)
+    return (await httpResponse.json()) as WaypointsResponse
 }
 
 const importWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, ImportWaypointsAction>('IMPORT_WAYPOINTS'),
-        mergeMap(
-            ({ driverNumber }) =>
-                new Observable<AppAction>(observer => {
-                    observer.next({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber })
-                    importWaypoints(driverNumber)
-                        .then(waypoints => {
-                            observer.next({ type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber })
-                            observer.next({ type: 'REPLACE_WAYPOINTS', waypoints })
-                            observer.next({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List })
-                            observer.complete()
-                        })
-                        .catch(error => {
-                            if (error instanceof Error) {
-                                observer.next({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error })
-                            }
-                            observer.complete()
-                        })
-                }),
+        mergeMap(({ driverNumber }) =>
+            concat(
+                of<AppAction>({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber }),
+                from(importWaypoints(driverNumber)).pipe(
+                    mergeMap<WaypointsResponse, ObservableInput<AppAction>>(
+                        ({ waypoints: { dispatched, inprogress } }) => [
+                            { type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber },
+                            {
+                                type: 'REPLACE_WAYPOINTS',
+                                waypoints: [...dispatched, ...inprogress]
+                                    .map(w => `${w.address} ${w.postalCode}`)
+                                    .map(createWaypointFromAddress),
+                            },
+                            { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
+                        ],
+                    ),
+                    catchError<AppAction, ObservableInput<AppAction>>(error =>
+                        error instanceof Error ? of({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error }) : EMPTY,
+                    ),
+                ),
+            ),
         ),
     )
 
@@ -365,29 +375,35 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                 optimizationWaypoints.map(origin => optimizationWaypoints.map(destination => [origin, destination])),
             )
 
-            return merge(
-                of({ type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter }),
-                from<ObservableInput<FetchRouteAction>>(
-                    waypointPairs.map(([origin, destination]) => ({ type: 'FETCH_ROUTE', origin, destination })),
-                ),
+            return merge<AppAction, AppAction>(
+                [
+                    { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
+                    ...waypointPairs.map(([origin, destination]) => ({
+                        type: 'FETCH_ROUTE',
+                        origin,
+                        destination,
+                    })),
+                ],
                 state$.pipe(
-                    filter(state =>
-                        waypointPairs.every(([origin, destination]) => {
+                    filter(state => {
+                        return waypointPairs.every(([origin, destination]) => {
                             const routesFromOrigin = state.fetchedRoutes.get(origin)
                             const route = routesFromOrigin && routesFromOrigin.get(destination)
-                            return route !== undefined && route.status === 'SUCCESS'
-                        }),
-                    ),
+                            return route !== undefined && route.status !== 'IN_PROGRESS'
+                        })
+                    }),
                     take(1),
                     mergeMap(state => {
                         const costMatrix = optimizationWaypoints.map(origin =>
                             optimizationWaypoints.map(destination => {
                                 const routesFromOrigin = state.fetchedRoutes.get(origin)
                                 const route = routesFromOrigin && routesFromOrigin.get(destination)
-                                if (!route || route.status !== 'SUCCESS') {
-                                    throw new Error(
-                                        `Optimization failed: Route from ${origin} to ${destination} was not fetched`,
-                                    )
+                                if (!route || route.status === 'IN_PROGRESS') {
+                                    throw new Error(`Optimization failed: Internal assertion failed`)
+                                }
+
+                                if (route.status === 'FAILED') {
+                                    throw new Error(`Optimization failed: ${route.error.message}`)
                                 }
 
                                 switch (optimizationParameter) {
@@ -399,29 +415,20 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                             }),
                         )
 
-                        return new Observable<AppAction>(observer => {
-                            optimizeRoute(costMatrix)
-                                .then(optimalOrdering => {
-                                    if (startPoint) optimalOrdering = optimalOrdering.slice(1, -1).map(i => i - 1)
-
-                                    observer.next({ type: 'OPTIMIZE_ROUTE_SUCCESS', optimizationParameter })
-                                    observer.next({
-                                        type: 'REPLACE_WAYPOINTS',
-                                        waypoints: optimalOrdering
-                                            .map(i => state.waypoints[i].address)
-                                            .map(createWaypointFromAddress),
-                                    })
-                                    observer.next({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List })
-                                    observer.complete()
-                                })
-                                .catch(error => {
-                                    if (error instanceof Error) {
-                                        observer.next({ type: 'OPTIMIZE_ROUTE_FAILED', optimizationParameter, error })
-                                    }
-                                    observer.complete()
-                                })
+                        return optimizeRoute(costMatrix).then(optimalOrdering => {
+                            if (startPoint) optimalOrdering = optimalOrdering.slice(1, -1).map(i => i - 1)
+                            return optimalOrdering.map(i => state.waypoints[i].address)
                         })
                     }),
+                    mergeMap(optimalOrdering => [
+                        { type: 'OPTIMIZE_ROUTE_SUCCESS', optimizationParameter },
+                        {
+                            type: 'REPLACE_WAYPOINTS',
+                            waypoints: optimalOrdering.map(createWaypointFromAddress),
+                        },
+                        { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
+                    ]),
+                    catchError(error => of({ type: 'OPTIMIZE_ROUTE_FAILED', optimizationParameter, error })),
                 ),
             )
         }),
