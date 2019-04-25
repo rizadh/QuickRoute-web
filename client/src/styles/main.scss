@@ -169,6 +169,10 @@ textarea {
     & > span {
         background-color: var(--app-input-row-span-color);
         border: 1px solid var(--app-heavy-border-color);
+
+        &:focus {
+            outline: none;
+        }
     }
 
     &.waypoint-item-selected > span {
