@@ -37,7 +37,7 @@ export enum EditorPane {
 export type AppState = Readonly<{
     waypoints: ReadonlyArray<Waypoint>;
     lastSelectedWaypoint: string;
-    selectedWaypoints: Set<string>;
+    selectedWaypoints: ReadonlySet<string>;
     fetchedPlaces: FetchedPlaces;
     fetchedRoutes: FetchedRoutes;
     autofitIsEnabled: boolean;

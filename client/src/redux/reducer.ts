@@ -1,6 +1,6 @@
-import { range } from 'lodash'
+import { produce } from 'immer'
 import { AppAction } from './actionTypes'
-import { AppState, EditorPane } from './state'
+import { AppState, EditorPane, FetchedPlaces, FetchedRoutes } from './state'
 
 export const initialState: AppState = {
     waypoints: [],
@@ -17,202 +17,190 @@ export const initialState: AppState = {
     error: undefined,
 }
 
-export default (state: AppState = initialState, action: AppAction): AppState => {
-    switch (action.type) {
-        // Basic Waypoint Manipulation
-        case 'REPLACE_WAYPOINTS':
-            return {
-                ...state,
-                waypoints: action.waypoints,
+export const reducer = (state: AppState = initialState, action: AppAction): AppState =>
+    produce<AppState>(state, draft => {
+        switch (action.type) {
+            // Basic Waypoint Manipulation
+            case 'REPLACE_WAYPOINTS':
+                return void (draft.waypoints = action.waypoints)
+            case 'ADD_WAYPOINT':
+                return void draft.waypoints.push(action.waypoint)
+            case 'DELETE_WAYPOINT':
+                return void draft.waypoints.splice(action.index, 1)
+            case 'REVERSE_WAYPOINTS':
+                return void draft.waypoints.reverse()
+            case 'SET_ADDRESS':
+                return void (draft.waypoints[action.index].address = action.address)
+            // Waypoint Selection and DND
+            case 'MOVE_WAYPOINT':
+                if (action.sourceIndex === action.targetIndex) return
+
+                const [removed] = draft.waypoints.splice(action.sourceIndex, 1)
+
+                return void draft.waypoints.splice(action.targetIndex, 0, removed)
+            case 'MOVE_SELECTED_WAYPOINTS':
+                const lowestIndex = draft.waypoints.findIndex(waypoint => draft.selectedWaypoints.has(waypoint.uuid))
+                const partitionIndex = lowestIndex < action.index ? action.index + 1 : action.index
+
+                const waypointsBeforePartition = draft.waypoints.filter(
+                    (waypoint, index) => !draft.selectedWaypoints.has(waypoint.uuid) && index < partitionIndex,
+                )
+                const movedWaypoints = draft.waypoints.filter(waypoint => draft.selectedWaypoints.has(waypoint.uuid))
+                const waypointsAfterPartition = draft.waypoints.filter(
+                    (waypoint, index) => !draft.selectedWaypoints.has(waypoint.uuid) && index >= partitionIndex,
+                )
+
+                return void (draft.waypoints = [
+                    ...waypointsBeforePartition,
+                    ...movedWaypoints,
+                    ...waypointsAfterPartition,
+                ])
+            case 'SELECT_WAYPOINT': {
+                const waypoint = draft.waypoints[action.index]
+
+                const selectedCurrentWaypoints = draft.waypoints.filter(w => draft.selectedWaypoints.has(w.uuid))
+                if (selectedCurrentWaypoints.length === 1 && draft.selectedWaypoints.has(waypoint.uuid)) {
+                    // TODO: Can be cleared directly with Immer v4.0
+                    draft.selectedWaypoints = new Set()
+                } else {
+                    draft.selectedWaypoints = new Set([waypoint.uuid])
+                }
+
+                return void (draft.lastSelectedWaypoint = draft.waypoints[action.index].uuid)
             }
-        case 'ADD_WAYPOINT':
-            return {
-                ...state,
-                waypoints: [...state.waypoints, action.waypoint],
+            case 'TOGGLE_WAYPOINT_SELECTION': {
+                // TODO: Can be set directly with Immer v4.0
+                const newSelectedWaypoints = new Set<string>(draft.selectedWaypoints as Set<string>)
+
+                const waypoint = draft.waypoints[action.index]
+
+                if (draft.selectedWaypoints.has(waypoint.uuid)) {
+                    newSelectedWaypoints.delete(waypoint.uuid)
+                } else {
+                    newSelectedWaypoints.add(waypoint.uuid)
+                }
+
+                draft.lastSelectedWaypoint = waypoint.uuid
+
+                return void (draft.selectedWaypoints = newSelectedWaypoints)
             }
-        case 'DELETE_WAYPOINT':
-            return { ...state, waypoints: state.waypoints.filter((_, i) => action.index !== i) }
-        case 'REVERSE_WAYPOINTS':
-            return {
-                ...state,
-                waypoints: [...state.waypoints].reverse(),
+            case 'SELECT_WAYPOINT_RANGE': {
+                // TODO: Can be set directly with Immer v4.0
+                const newSelectedWaypoints = new Set<string>(draft.selectedWaypoints as Set<string>)
+
+                const lastSelectedWaypointIndex = draft.waypoints.map(w => w.uuid).indexOf(draft.lastSelectedWaypoint)
+                const lowerBound = Math.min(action.index, lastSelectedWaypointIndex)
+                const upperBound = Math.max(action.index, lastSelectedWaypointIndex)
+
+                for (let i = lowerBound; i < upperBound + 1; i++) {
+                    newSelectedWaypoints.add(draft.waypoints[i].uuid)
+                }
+
+                return void (draft.selectedWaypoints = newSelectedWaypoints)
             }
-        case 'SET_ADDRESS':
-            return {
-                ...state,
-                waypoints: state.waypoints.map((waypoint, waypointIndex) =>
-                    waypointIndex === action.index ? { ...waypoint, address: action.address } : waypoint,
-                ),
-            }
-        // Waypoint Selection and DND
-        case 'MOVE_WAYPOINT': {
-            if (action.sourceIndex === action.targetIndex) return state
-
-            const waypoints = [...state.waypoints]
-            const [removed] = waypoints.splice(action.sourceIndex, 1)
-            waypoints.splice(action.targetIndex, 0, removed)
-            return { ...state, waypoints }
-        }
-        case 'MOVE_SELECTED_WAYPOINTS': {
-            const lowestIndex = state.waypoints.findIndex(waypoint => state.selectedWaypoints.has(waypoint.uuid))
-            const partitionIndex = lowestIndex < action.index ? action.index + 1 : action.index
-
-            const waypointsBeforePartition = state.waypoints.filter(
-                (waypoint, index) => !state.selectedWaypoints.has(waypoint.uuid) && index < partitionIndex,
-            )
-            const movedWaypoints = state.waypoints.filter(waypoint => state.selectedWaypoints.has(waypoint.uuid))
-            const waypointsAfterPartition = state.waypoints.filter(
-                (waypoint, index) => !state.selectedWaypoints.has(waypoint.uuid) && index >= partitionIndex,
-            )
-
-            const waypoints = [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
-
-            return { ...state, waypoints }
-        }
-        case 'SELECT_WAYPOINT': {
-            const selectedCurrentWaypoints = state.waypoints.filter(w => state.selectedWaypoints.has(w.uuid))
-            const waypoint = state.waypoints[action.index]
-
-            if (selectedCurrentWaypoints.length === 1 && state.selectedWaypoints.has(waypoint.uuid)) {
-                return { ...state, selectedWaypoints: new Set() }
-            }
-
-            return {
-                ...state,
-                selectedWaypoints: new Set([waypoint.uuid]),
-                lastSelectedWaypoint: state.waypoints[action.index].uuid,
-            }
-        }
-        case 'TOGGLE_WAYPOINT_SELECTION': {
-            const waypoint = state.waypoints[action.index]
-            const selectedWaypoints = new Set(state.selectedWaypoints)
-
-            if (state.selectedWaypoints.has(waypoint.uuid)) {
-                selectedWaypoints.delete(waypoint.uuid)
-            } else {
-                selectedWaypoints.add(waypoint.uuid)
-            }
-
-            return { ...state, selectedWaypoints, lastSelectedWaypoint: state.waypoints[action.index].uuid }
-        }
-        case 'SELECT_WAYPOINT_RANGE': {
-            const lastSelectedWaypointIndex = state.waypoints.map(w => w.uuid).indexOf(state.lastSelectedWaypoint)
-            const lowerBound = Math.min(action.index, lastSelectedWaypointIndex)
-            const upperBound = Math.max(action.index, lastSelectedWaypointIndex)
-            const selectedWaypoints = new Set(state.selectedWaypoints)
-
-            range(lowerBound, upperBound + 1).forEach(i => selectedWaypoints.add(state.waypoints[i].uuid))
-
-            return { ...state, selectedWaypoints }
-        }
-        // Place Fetch
-        case 'FETCH_PLACE':
-            return state
-        case 'FETCH_PLACE_IN_PROGRESS':
-            return {
-                ...state,
-                fetchedPlaces: new Map(state.fetchedPlaces).set(action.address, {
+            // Place Fetch
+            case 'FETCH_PLACE_IN_PROGRESS':
+                // TODO: Can be set directly with Immer v4.0
+                return void (draft.fetchedPlaces = new Map(draft.fetchedPlaces as FetchedPlaces).set(action.address, {
                     status: 'IN_PROGRESS',
                     fetchId: action.fetchId,
-                }),
-            }
-        case 'FETCH_PLACE_SUCCESS':
-            return {
-                ...state,
-                fetchedPlaces: new Map(state.fetchedPlaces).set(action.address, {
+                }))
+            case 'FETCH_PLACE_SUCCESS':
+                // TODO: Can be set directly with Immer v4.0
+                return void (draft.fetchedPlaces = new Map(draft.fetchedPlaces as FetchedPlaces).set(action.address, {
                     status: 'SUCCESS',
                     result: action.place,
-                }),
-            }
-        case 'FETCH_PLACE_FAILED':
-            return {
-                ...state,
-                fetchedPlaces: new Map(state.fetchedPlaces).set(action.address, {
+                }))
+            case 'FETCH_PLACE_FAILED':
+                // TODO: Can be set directly with Immer v4.0
+                return void (draft.fetchedPlaces = new Map(draft.fetchedPlaces as FetchedPlaces).set(action.address, {
                     status: 'FAILED',
                     error: action.error,
-                }),
-            }
-        // Route Fetch
-        case 'FETCH_ROUTE':
-            return state
-        case 'FETCH_ROUTE_IN_PROGRESS':
-            return {
-                ...state,
-                fetchedRoutes: new Map(state.fetchedRoutes).set(
+                }))
+            // Route Fetch
+            case 'FETCH_ROUTE_IN_PROGRESS': {
+                // TODO: Can be set directly with Immer v4.0
+                const routesFromOrigin = new Map(draft.fetchedRoutes.get(action.origin) || [])
+                draft.fetchedRoutes = new Map(draft.fetchedRoutes as FetchedRoutes).set(
                     action.origin,
-                    new Map(state.fetchedRoutes.get(action.origin) || []).set(action.destination, {
-                        status: 'IN_PROGRESS',
-                        fetchId: action.fetchId,
-                    }),
-                ),
+                    routesFromOrigin,
+                )
+
+                return void routesFromOrigin.set(action.destination, {
+                    status: 'IN_PROGRESS',
+                    fetchId: action.fetchId,
+                })
             }
-        case 'FETCH_ROUTE_SUCCESS':
-            return {
-                ...state,
-                fetchedRoutes: new Map(state.fetchedRoutes).set(
+            case 'FETCH_ROUTE_SUCCESS': {
+                // TODO: Can be set directly with Immer v4.0
+                const routesFromOrigin = new Map(draft.fetchedRoutes.get(action.origin) || [])
+                draft.fetchedRoutes = new Map(draft.fetchedRoutes as FetchedRoutes).set(
                     action.origin,
-                    new Map(state.fetchedRoutes.get(action.origin) || []).set(action.destination, {
-                        status: 'SUCCESS',
-                        result: action.route,
-                    }),
-                ),
+                    routesFromOrigin,
+                )
+
+                return void routesFromOrigin.set(action.destination, {
+                    status: 'SUCCESS',
+                    result: action.route,
+                })
             }
-        case 'FETCH_ROUTE_FAILED':
-            return {
-                ...state,
-                fetchedRoutes: new Map(state.fetchedRoutes).set(
+            case 'FETCH_ROUTE_FAILED': {
+                // TODO: Can be set directly with Immer v4.0
+                const routesFromOrigin = new Map(draft.fetchedRoutes.get(action.origin) || [])
+                draft.fetchedRoutes = new Map(draft.fetchedRoutes as FetchedRoutes).set(
                     action.origin,
-                    new Map(state.fetchedRoutes.get(action.origin) || []).set(action.destination, {
-                        status: 'FAILED',
-                        error: action.error,
-                    }),
-                ),
+                    routesFromOrigin,
+                )
+
+                return void routesFromOrigin.set(action.destination, {
+                    status: 'FAILED',
+                    error: action.error,
+                })
             }
-        // Map Properties
-        case 'ENABLE_AUTOFIT':
-            return { ...state, autofitIsEnabled: true }
-        case 'DISABLE_AUTOFIT':
-            return { ...state, autofitIsEnabled: false }
-        case 'USE_MUTED_MAP':
-            return { ...state, mutedMapIsEnabled: true }
-        case 'USE_REGULAR_MAP':
-            return { ...state, mutedMapIsEnabled: false }
-        // Editor
-        case 'SET_EDITOR_PANE':
-            return {
-                ...state,
-                editorPane: action.editorPane,
-                error: state.editorPane === action.editorPane ? state.error : undefined,
-            }
-        // Editor Visibility
-        case 'HIDE_EDITOR_PANE':
-            return { ...state, editorIsHidden: true }
-        case 'SHOW_EDITOR_PANE':
-            return { ...state, editorIsHidden: false }
-        // Waypoint Import
-        case 'IMPORT_WAYPOINTS':
-            return state
-        case 'IMPORT_WAYPOINTS_IN_PROGRESS':
-            return { ...state, importInProgress: true }
-        case 'IMPORT_WAYPOINTS_SUCCESS':
-            return { ...state, importInProgress: false }
-        case 'IMPORT_WAYPOINTS_FAILED':
-            return { ...state, importInProgress: false, error: action.error }
-        // Route Optimization
-        case 'OPTIMIZE_ROUTE':
-            return state
-        case 'OPTIMIZE_ROUTE_IN_PROGRESS':
-            return { ...state, optimizationInProgress: true }
-        case 'OPTIMIZE_ROUTE_SUCCESS':
-            return { ...state, optimizationInProgress: false }
-        case 'OPTIMIZE_ROUTE_FAILED':
-            return { ...state, optimizationInProgress: false, error: action.error }
-        // Error Handling
-        case 'ERROR_OCCURED':
-            return { ...state, error: action.error }
-        case 'CLEAR_ERROR':
-            return { ...state, error: undefined }
-        default:
-            return state
-    }
-}
+            // Map Properties
+            case 'ENABLE_AUTOFIT':
+                return void (draft.autofitIsEnabled = true)
+            case 'DISABLE_AUTOFIT':
+                return void (draft.autofitIsEnabled = false)
+            case 'USE_MUTED_MAP':
+                return void (draft.mutedMapIsEnabled = true)
+            case 'USE_REGULAR_MAP':
+                return void (draft.mutedMapIsEnabled = false)
+            // Editor
+            case 'SET_EDITOR_PANE':
+                // TODO: Improve error management
+                if (draft.editorPane !== action.editorPane) delete draft.error
+
+                return void (draft.editorPane = action.editorPane)
+            // Editor Visibility
+            case 'HIDE_EDITOR_PANE':
+                return void (draft.editorIsHidden = true)
+            case 'SHOW_EDITOR_PANE':
+                return void (draft.editorIsHidden = false)
+            // Waypoint Import
+            case 'IMPORT_WAYPOINTS_IN_PROGRESS':
+                return void (draft.importInProgress = true)
+            case 'IMPORT_WAYPOINTS_SUCCESS':
+                return void (draft.importInProgress = false)
+            case 'IMPORT_WAYPOINTS_FAILED':
+                // TODO: Improve error management
+                draft.error = action.error
+
+                return void (draft.importInProgress = false)
+            // Route Optimization
+            case 'OPTIMIZE_ROUTE_IN_PROGRESS':
+                return void (draft.optimizationInProgress = true)
+            case 'OPTIMIZE_ROUTE_SUCCESS':
+                return void (draft.optimizationInProgress = true)
+            case 'OPTIMIZE_ROUTE_FAILED':
+                // TODO: Improve error management
+                draft.error = action.error
+
+                return void (draft.optimizationInProgress = false)
+            // Error Handling
+            case 'ERROR_OCCURED':
+                return void (draft.error = action.error)
+            case 'CLEAR_ERROR':
+                return void delete draft.error
+        }
+    })

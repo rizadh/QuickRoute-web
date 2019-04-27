@@ -298,8 +298,8 @@ type WaypointsResponse = {
     date: string;
     driverNumber: string;
     waypoints: {
-        dispatched: ReadonlyArray<FetchedWaypoint>;
-        inprogress: ReadonlyArray<FetchedWaypoint>;
+        dispatched: FetchedWaypoint[];
+        inprogress: FetchedWaypoint[];
     };
 }
 

@@ -2,7 +2,7 @@ import { EditorPane, Waypoint } from './state'
 
 export type ReplaceWaypointsAction = Readonly<{
     type: 'REPLACE_WAYPOINTS';
-    waypoints: ReadonlyArray<Waypoint>;
+    waypoints: Waypoint[];
 }>
 
 export type AddWaypointAction = Readonly<{
