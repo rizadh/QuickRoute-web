@@ -14,7 +14,10 @@ type LoginParameters = {
     password: string;
 }
 
-type OrderType = 'dispatched' | 'inprogress'
+enum OrderType {
+    Dispatched,
+    InProgress,
+}
 
 type Waypoint = {
     address: string;
@@ -61,8 +64,8 @@ async function loginAndFetchWaypoints(loginParameters: LoginParameters): Promise
     const identifier = identifierRegexResult[1]
 
     const [dispatchedWaypoints, inprogressWaypoints] = await Promise.all([
-        fetchWaypoints(dispatchedCount, identifier, 'dispatched'),
-        fetchWaypoints(inprogressCount, identifier, 'inprogress'),
+        fetchWaypoints(dispatchedCount, identifier, OrderType.Dispatched),
+        fetchWaypoints(inprogressCount, identifier, OrderType.InProgress),
     ])
 
     return { dispatched: dispatchedWaypoints, inprogress: inprogressWaypoints }
@@ -108,18 +111,18 @@ async function fetchWaypoint(
 
 function eventTargetForOrderType(orderType: OrderType): string {
     switch (orderType) {
-        case 'dispatched':
+        case OrderType.Dispatched:
             return 'lstDispatched'
-        case 'inprogress':
+        case OrderType.InProgress:
             return 'lstUnread'
     }
 }
 
 function waypointLineIndexForOrderType(orderType: OrderType): number {
     switch (orderType) {
-        case 'dispatched':
+        case OrderType.Dispatched:
             return 8
-        case 'inprogress':
+        case OrderType.InProgress:
             return 5
     }
 }
