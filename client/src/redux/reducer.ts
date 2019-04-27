@@ -17,7 +17,9 @@ export const initialState: AppState = {
     error: undefined,
 }
 
-export const reducer = (state: AppState = initialState, action: AppAction): AppState =>
+type AppReducer = (state: AppState | undefined, action: AppAction) => AppState
+
+export const reducer: AppReducer = (state: AppState = initialState, action: AppAction) =>
     produce<AppState>(state, draft => {
         switch (action.type) {
             // Basic Waypoint Manipulation
