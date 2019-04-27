@@ -15,8 +15,8 @@ type LoginParameters = {
 }
 
 enum OrderType {
-    Dispatched,
-    InProgress,
+    Dispatched = 'dispatched',
+    InProgress = 'inprogress',
 }
 
 type Waypoint = {
