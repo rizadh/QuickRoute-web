@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react'
+import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { WaypointEditorTemplate } from '../WaypointEditor'
 
 enum OptimizationParameter {
     Time = 'time',

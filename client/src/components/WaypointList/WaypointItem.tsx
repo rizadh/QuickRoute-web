@@ -1,9 +1,9 @@
 import React, { useCallback, useContext } from 'react'
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd'
-import { AppStateContext } from '../context/AppStateContext'
-import { useInputField } from '../hooks/useInputField'
-import { RouteFetchResult } from '../redux/state'
-import { isValidAddress } from '../redux/validator'
+import { AppStateContext } from '../../context/AppStateContext'
+import { useInputField } from '../../hooks/useInputField'
+import { RouteFetchResult } from '../../redux/state'
+import { isValidAddress } from '../../redux/validator'
 
 type WaypointItemProps = {
     index: number;

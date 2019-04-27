@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect } from 'react'
-import { appVersion } from '..'
-import { AppStateContext } from '../context/AppStateContext'
-import { EditorPane } from '../redux/state'
-import { BulkEditPane } from './editorPanes/BulkEditPane'
-import { ImportPane } from './editorPanes/ImportPane'
-import { ListPane } from './editorPanes/ListPane'
-import { OptimizerPane } from './editorPanes/OptimizerPane'
-import { UrlsPane } from './editorPanes/UrlsPane'
+import { appVersion } from '../..'
+import { AppStateContext } from '../../context/AppStateContext'
+import { EditorPane } from '../../redux/state'
+import { BulkEditPane } from './BulkEditPane'
+import { ImportPane } from './ImportPane'
+import { ListPane } from './ListPane'
+import { OptimizerPane } from './OptimizerPane'
+import { UrlsPane } from './UrlsPane'
 
 type WaypointEditorTemplateProps = {
     body: JSX.Element;

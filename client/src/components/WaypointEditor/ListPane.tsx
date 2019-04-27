@@ -1,11 +1,11 @@
 import React, { useCallback, useContext, useMemo } from 'react'
+import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { useMedia } from '../../hooks/useMedia'
 import { routeInformation } from '../../redux/selectors'
 import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
-import { WaypointEditorTemplate } from '../WaypointEditor'
 import { WaypointList } from '../WaypointList'
 
 export const ListPane = () => {

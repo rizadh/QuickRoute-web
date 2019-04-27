@@ -2,8 +2,8 @@ import copyToClipboard from 'copy-text-to-clipboard'
 import { chunk } from 'lodash'
 import { stringify } from 'query-string'
 import React, { useCallback, useContext, useMemo } from 'react'
+import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
-import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const UrlsPane = () => {
     const {

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
-import { AppStateContext } from '../context/AppStateContext'
+import { AppStateContext } from '../../context/AppStateContext'
 import { WaypointItem } from './WaypointItem'
 
 export const WaypointList = () => {

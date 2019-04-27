@@ -1,11 +1,11 @@
 import React, { useCallback, useContext } from 'react'
 import Textarea from 'react-textarea-autosize'
+import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { EditorPane } from '../../redux/state'
 import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress, parseAddress } from '../../redux/validator'
-import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const BulkEditPane = () => {
     const {
