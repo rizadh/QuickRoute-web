@@ -50,35 +50,35 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                 <div id="pane-selector">
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.List ? 'primary' : 'secondary')}
-                        onClick={setEditorPaneList}
+                        onClick={editorPane === EditorPane.List ? undefined : setEditorPaneList}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-th-list" /> Waypoints
                     </button>
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.BulkEdit ? 'primary' : 'secondary')}
-                        onClick={setEditorPaneBulkEdit}
+                        onClick={editorPane === EditorPane.BulkEdit ? undefined : setEditorPaneBulkEdit}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-list-alt" /> Bulk Edit
                     </button>
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Links ? 'primary' : 'secondary')}
-                        onClick={setEditorPaneLinks}
+                        onClick={editorPane === EditorPane.Links ? undefined : setEditorPaneLinks}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-link" /> Links
                     </button>
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Import ? 'primary' : 'secondary')}
-                        onClick={setEditorPaneImport}
+                        onClick={editorPane === EditorPane.Import ? undefined : setEditorPaneImport}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-cloud-download-alt" /> Import
                     </button>
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Optimizer ? 'primary' : 'secondary')}
-                        onClick={setEditorPaneOptimizer}
+                        onClick={editorPane === EditorPane.Optimizer ? undefined : setEditorPaneOptimizer}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-star" /> Optimize
