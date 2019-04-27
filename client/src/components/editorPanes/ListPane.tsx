@@ -17,7 +17,9 @@ export const ListPane = () => {
     } = useInputField('', () => isValidAddress(newWaypointFieldValue) && addNewWaypoint())
 
     const { state, dispatch } = useContext(AppStateContext)
-    const { waypoints } = state
+    const {
+        waypoints: { list: waypoints },
+    } = state
 
     const compactMode = useMedia('(max-width: 800px)')
 

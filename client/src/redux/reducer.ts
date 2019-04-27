@@ -3,9 +3,11 @@ import { AppAction } from './actionTypes'
 import { AppState, EditorPane, FetchedPlaces, FetchedRoutes } from './state'
 
 export const initialState: AppState = {
-    waypoints: [],
-    lastSelectedWaypoint: '',
-    selectedWaypoints: new Set(),
+    waypoints: {
+        list: [],
+        lastSelected: '',
+        selected: new Set(),
+    },
     fetchedPlaces: new Map(),
     fetchedRoutes: new Map(),
     autofitIsEnabled: true,
@@ -24,81 +26,87 @@ export const reducer: AppReducer = (state: AppState = initialState, action: AppA
         switch (action.type) {
             // Basic Waypoint Manipulation
             case 'REPLACE_WAYPOINTS':
-                return void (draft.waypoints = action.waypoints)
+                return void (draft.waypoints.list = action.waypoints)
             case 'ADD_WAYPOINT':
-                return void draft.waypoints.push(action.waypoint)
+                return void draft.waypoints.list.push(action.waypoint)
             case 'DELETE_WAYPOINT':
-                return void draft.waypoints.splice(action.index, 1)
+                return void draft.waypoints.list.splice(action.index, 1)
             case 'REVERSE_WAYPOINTS':
-                return void draft.waypoints.reverse()
+                return void draft.waypoints.list.reverse()
             case 'SET_ADDRESS':
-                return void (draft.waypoints[action.index].address = action.address)
+                return void (draft.waypoints.list[action.index].address = action.address)
             // Waypoint Selection and DND
             case 'MOVE_WAYPOINT':
                 if (action.sourceIndex === action.targetIndex) return
 
-                const [removed] = draft.waypoints.splice(action.sourceIndex, 1)
+                const [removed] = draft.waypoints.list.splice(action.sourceIndex, 1)
 
-                return void draft.waypoints.splice(action.targetIndex, 0, removed)
+                return void draft.waypoints.list.splice(action.targetIndex, 0, removed)
             case 'MOVE_SELECTED_WAYPOINTS':
-                const lowestIndex = draft.waypoints.findIndex(waypoint => draft.selectedWaypoints.has(waypoint.uuid))
+                const lowestIndex = draft.waypoints.list.findIndex(waypoint =>
+                    draft.waypoints.selected.has(waypoint.uuid),
+                )
                 const partitionIndex = lowestIndex < action.index ? action.index + 1 : action.index
 
-                const waypointsBeforePartition = draft.waypoints.filter(
-                    (waypoint, index) => !draft.selectedWaypoints.has(waypoint.uuid) && index < partitionIndex,
+                const waypointsBeforePartition = draft.waypoints.list.filter(
+                    (waypoint, index) => !draft.waypoints.selected.has(waypoint.uuid) && index < partitionIndex,
                 )
-                const movedWaypoints = draft.waypoints.filter(waypoint => draft.selectedWaypoints.has(waypoint.uuid))
-                const waypointsAfterPartition = draft.waypoints.filter(
-                    (waypoint, index) => !draft.selectedWaypoints.has(waypoint.uuid) && index >= partitionIndex,
+                const movedWaypoints = draft.waypoints.list.filter(waypoint =>
+                    draft.waypoints.selected.has(waypoint.uuid),
+                )
+                const waypointsAfterPartition = draft.waypoints.list.filter(
+                    (waypoint, index) => !draft.waypoints.selected.has(waypoint.uuid) && index >= partitionIndex,
                 )
 
-                return void (draft.waypoints = [
+                return void (draft.waypoints.list = [
                     ...waypointsBeforePartition,
                     ...movedWaypoints,
                     ...waypointsAfterPartition,
                 ])
             case 'SELECT_WAYPOINT': {
-                const waypoint = draft.waypoints[action.index]
+                const waypoint = draft.waypoints.list[action.index]
 
-                const selectedCurrentWaypoints = draft.waypoints.filter(w => draft.selectedWaypoints.has(w.uuid))
-                if (selectedCurrentWaypoints.length === 1 && draft.selectedWaypoints.has(waypoint.uuid)) {
+                const selectedCurrentWaypoints = draft.waypoints.list.filter(w => draft.waypoints.selected.has(w.uuid))
+                if (selectedCurrentWaypoints.length === 1 && draft.waypoints.selected.has(waypoint.uuid)) {
                     // TODO: Can be cleared directly with Immer v4.0
-                    draft.selectedWaypoints = new Set()
+                    draft.waypoints.selected = new Set()
                 } else {
-                    draft.selectedWaypoints = new Set([waypoint.uuid])
+                    draft.waypoints.selected = new Set([waypoint.uuid])
                 }
 
-                return void (draft.lastSelectedWaypoint = draft.waypoints[action.index].uuid)
+                return void (draft.waypoints.lastSelected = draft.waypoints.list[action.index].uuid)
             }
             case 'TOGGLE_WAYPOINT_SELECTION': {
                 // TODO: Can be set directly with Immer v4.0
-                const newSelectedWaypoints = new Set<string>(draft.selectedWaypoints as Set<string>)
+                const newSelectedWaypoints = new Set<string>(draft.waypoints.selected as Set<string>)
 
-                const waypoint = draft.waypoints[action.index]
+                const waypoint = draft.waypoints.list[action.index]
 
-                if (draft.selectedWaypoints.has(waypoint.uuid)) {
+                if (draft.waypoints.selected.has(waypoint.uuid)) {
                     newSelectedWaypoints.delete(waypoint.uuid)
                 } else {
                     newSelectedWaypoints.add(waypoint.uuid)
                 }
 
-                draft.lastSelectedWaypoint = waypoint.uuid
+                draft.waypoints.lastSelected = waypoint.uuid
 
-                return void (draft.selectedWaypoints = newSelectedWaypoints)
+                return void (draft.waypoints.selected = newSelectedWaypoints)
             }
             case 'SELECT_WAYPOINT_RANGE': {
                 // TODO: Can be set directly with Immer v4.0
-                const newSelectedWaypoints = new Set<string>(draft.selectedWaypoints as Set<string>)
+                const newSelectedWaypoints = new Set<string>(draft.waypoints.selected as Set<string>)
 
-                const lastSelectedWaypointIndex = draft.waypoints.map(w => w.uuid).indexOf(draft.lastSelectedWaypoint)
+                const lastSelectedWaypointIndex = draft.waypoints.list
+                    .map(w => w.uuid)
+                    .indexOf(draft.waypoints.lastSelected)
                 const lowerBound = Math.min(action.index, lastSelectedWaypointIndex)
                 const upperBound = Math.max(action.index, lastSelectedWaypointIndex)
 
                 for (let i = lowerBound; i < upperBound + 1; i++) {
-                    newSelectedWaypoints.add(draft.waypoints[i].uuid)
+                    newSelectedWaypoints.add(draft.waypoints.list[i].uuid)
                 }
 
-                return void (draft.selectedWaypoints = newSelectedWaypoints)
+                return void (draft.waypoints.selected = newSelectedWaypoints)
             }
             // Place Fetch
             case 'FETCH_PLACE_IN_PROGRESS':

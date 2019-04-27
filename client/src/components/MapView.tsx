@@ -17,7 +17,7 @@ export const MapView = () => {
     const [map, setMap] = useState<mapkit.Map>()
     const { state, dispatch } = useContext(AppStateContext)
     const {
-        waypoints,
+        waypoints: { list: waypoints },
         fetchedPlaces,
         fetchedRoutes,
         autofitIsEnabled,

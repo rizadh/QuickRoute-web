@@ -14,7 +14,11 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const { index, isBeingDragged } = props
 
     const {
-        state: { waypoints, fetchedPlaces, fetchedRoutes, selectedWaypoints },
+        state: {
+            waypoints: { list: waypoints, selected: selectedWaypoints },
+            fetchedPlaces,
+            fetchedRoutes,
+        },
         dispatch,
     } = useContext(AppStateContext)
     const waypoint = waypoints[index]

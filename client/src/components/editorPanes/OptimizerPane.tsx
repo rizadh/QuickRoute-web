@@ -10,7 +10,10 @@ enum OptimizationParameter {
 
 export const OptimizerPane = () => {
     const {
-        state: { waypoints, optimizationInProgress },
+        state: {
+            waypoints: { list: waypoints },
+            optimizationInProgress,
+        },
         dispatch,
     } = useContext(AppStateContext)
 

@@ -5,7 +5,9 @@ import { WaypointItem } from './WaypointItem'
 
 export const WaypointList = () => {
     const {
-        state: { waypoints, selectedWaypoints },
+        state: {
+            waypoints: { list: waypoints, selected: selectedWaypoints },
+        },
         dispatch,
     } = useContext(AppStateContext)
 

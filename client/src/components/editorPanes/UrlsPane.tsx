@@ -7,7 +7,9 @@ import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const UrlsPane = () => {
     const {
-        state: { waypoints },
+        state: {
+            waypoints: { list: waypoints },
+        },
         dispatch,
     } = useContext(AppStateContext)
 

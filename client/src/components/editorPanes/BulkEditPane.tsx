@@ -9,7 +9,9 @@ import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const BulkEditPane = () => {
     const {
-        state: { waypoints },
+        state: {
+            waypoints: { list: waypoints },
+        },
         dispatch,
     } = useContext(AppStateContext)
 
