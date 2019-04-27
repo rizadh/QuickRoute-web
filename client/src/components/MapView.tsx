@@ -4,6 +4,7 @@ import { useMedia } from '../hooks/useMedia'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { routeInformation } from '../redux/selectors'
 import { FetchSuccess } from '../redux/state'
+import { getRoute } from '../redux/util'
 
 mapkit.init({
     authorizationCallback: done =>
@@ -113,10 +114,7 @@ export const MapView = () => {
         const overlays = waypoints
             .map((waypoint, index) => {
                 if (index === 0) return
-                const previousWaypoint = waypoints[index - 1]
-                const routesFromPreviousWaypoint = fetchedRoutes.get(previousWaypoint.address)
-                if (!routesFromPreviousWaypoint) return
-                const forwardRoute = routesFromPreviousWaypoint.get(waypoint.address)
+                const forwardRoute = getRoute(fetchedRoutes, waypoints[index - 1].address, waypoint.address)
                 if (forwardRoute && forwardRoute.status === 'SUCCESS') return forwardRoute.result.polyline
             })
             .filter((p): p is mapkit.PolylineOverlay => !!p)

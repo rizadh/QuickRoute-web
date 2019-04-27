@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { RouteFetchResult } from '../../redux/state'
+import { getRoute } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
 
 type WaypointItemProps = {
@@ -41,11 +41,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [index])
     const resetWaypointField = useCallback(() => setWaypointFieldValue(waypoint.address), [waypoint.address])
     const routeFetchResult = useCallback(
-        (origin: string, destination: string): RouteFetchResult | undefined => {
-            const routesFromOrigin = fetchedRoutes.get(origin)
-
-            return routesFromOrigin ? routesFromOrigin.get(destination) : undefined
-        },
+        (origin: string, destination: string) => getRoute(fetchedRoutes, origin, destination),
         [fetchedRoutes],
     )
 

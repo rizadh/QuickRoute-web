@@ -24,7 +24,7 @@ import {
     SetAddressAction,
 } from './actionTypes'
 import { AppState, EditorPane } from './state'
-import { createWaypointFromAddress } from './util'
+import { createWaypointFromAddress, getRoute } from './util'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 
@@ -253,10 +253,7 @@ const fetchPlaceEpic: AppEpic = (action$, state$) =>
 const fetchRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, FetchRouteAction>('FETCH_ROUTE'),
-        filter(({ origin, destination }) => {
-            const routesFromOrigin = state$.value.fetchedRoutes.get(origin)
-            return !routesFromOrigin || !routesFromOrigin.get(destination)
-        }),
+        filter(({ origin, destination }) => !getRoute(state$.value.fetchedRoutes, origin, destination)),
         mergeMap(({ origin, destination }) =>
             merge(
                 of<AppAction>({ type: 'FETCH_PLACE', address: origin }),
@@ -390,8 +387,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                 state$.pipe(
                     filter(state => {
                         return waypointPairs.every(([origin, destination]) => {
-                            const routesFromOrigin = state.fetchedRoutes.get(origin)
-                            const route = routesFromOrigin && routesFromOrigin.get(destination)
+                            const route = getRoute(state.fetchedRoutes, origin, destination)
                             return route !== undefined && route.status !== 'IN_PROGRESS'
                         })
                     }),
@@ -399,8 +395,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                     mergeMap(state => {
                         const costMatrix = optimizationWaypoints.map(origin =>
                             optimizationWaypoints.map(destination => {
-                                const routesFromOrigin = state.fetchedRoutes.get(origin)
-                                const route = routesFromOrigin && routesFromOrigin.get(destination)
+                                const route = getRoute(state.fetchedRoutes, origin, destination)
                                 if (!route || route.status === 'IN_PROGRESS') {
                                     throw new Error(`Optimization failed: Internal assertion failed`)
                                 }

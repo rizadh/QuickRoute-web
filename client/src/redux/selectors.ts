@@ -1,5 +1,6 @@
 import { range } from 'lodash'
 import { AppState } from '../redux/state'
+import { getRoute } from './util'
 
 type NoRouteInformation = Readonly<{
     status: 'NO_ROUTE';
@@ -31,10 +32,9 @@ export const routeInformation = (state: AppState): RouteInformation => {
 
     if (routeCount <= 0) return { status: 'NO_ROUTE' }
 
-    const routes = range(0, routeCount).map(i => {
-        const routesFromOrigin = state.fetchedRoutes.get(state.waypoints.list[i].address)
-        return routesFromOrigin && routesFromOrigin.get(state.waypoints.list[i + 1].address)
-    })
+    const routes = range(0, routeCount).map(i =>
+        getRoute(state.fetchedRoutes, state.waypoints.list[i].address, state.waypoints.list[i + 1].address),
+    )
 
     const routeSuccessCount = routes.filter(result => result && result.status === 'SUCCESS').length
     const routeFailedCount = routes.filter(result => result && result.status === 'FAILED').length
