@@ -34,12 +34,14 @@ export enum EditorPane {
     Optimizer = 'optimizer',
 }
 
+export type WaypointsState = Readonly<{
+    list: ReadonlyArray<Waypoint>;
+    lastSelected: string;
+    selected: ReadonlySet<string>;
+}>
+
 export type AppState = Readonly<{
-    waypoints: {
-        list: ReadonlyArray<Waypoint>;
-        lastSelected: string;
-        selected: ReadonlySet<string>;
-    };
+    waypoints: WaypointsState;
     fetchedPlaces: FetchedPlaces;
     fetchedRoutes: FetchedRoutes;
     autofitIsEnabled: boolean;
@@ -48,5 +50,5 @@ export type AppState = Readonly<{
     editorIsHidden: boolean;
     importInProgress: boolean;
     optimizationInProgress: boolean;
-    error?: Error;
+    error: Error | null;
 }>
