@@ -7,4 +7,11 @@ export const appVersion = 'v2019.04.29'
 // tslint:disable-next-line:no-var-requires
 require('babel-polyfill')
 
+mapkit.init({
+    authorizationCallback: done =>
+        fetch('/token')
+            .then(res => res.text())
+            .then(done),
+})
+
 render(<App />, document.getElementById('root'))

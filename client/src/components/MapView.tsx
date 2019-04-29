@@ -6,13 +6,6 @@ import { routeInformation } from '../redux/selectors'
 import { FetchSuccess } from '../redux/state'
 import { getRoute } from '../redux/util'
 
-mapkit.init({
-    authorizationCallback: done =>
-        fetch('/token')
-            .then(res => res.text())
-            .then(done),
-})
-
 export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
