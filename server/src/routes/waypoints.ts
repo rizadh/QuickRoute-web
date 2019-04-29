@@ -1,5 +1,5 @@
 import { IMiddleware } from 'koa-router'
-import { range } from 'lodash'
+import range from 'lodash/range'
 import fetch from 'node-fetch'
 import { URLSearchParams } from 'url'
 

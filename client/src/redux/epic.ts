@@ -1,5 +1,5 @@
 import { getDistance } from 'geolib'
-import { flatten } from 'lodash'
+import flatten from 'lodash/flatten'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { catchError, filter, flatMap, map, mergeMap, take } from 'rxjs/operators'

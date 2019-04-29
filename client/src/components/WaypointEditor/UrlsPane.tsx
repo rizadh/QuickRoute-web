@@ -1,5 +1,5 @@
 import copyToClipboard from 'copy-text-to-clipboard'
-import { chunk } from 'lodash'
+import chunk from 'lodash/chunk'
 import { stringify } from 'query-string'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
