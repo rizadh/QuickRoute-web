@@ -1,3 +1,4 @@
+import { getDistance } from 'geolib'
 import { flatten } from 'lodash'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
@@ -376,47 +377,94 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
             )
 
             return merge<AppAction, AppAction>(
-                [
-                    { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
-                    ...waypointPairs.map(([origin, destination]) => ({
-                        type: 'FETCH_ROUTE',
-                        origin,
-                        destination,
-                    })),
-                ],
+                optimizationParameter === OptimizationParameter.Quick
+                    ? [
+                          { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
+                          ...optimizationWaypoints.map<AppAction>(waypoint => ({
+                              type: 'FETCH_PLACE',
+                              address: waypoint,
+                          })),
+                      ]
+                    : [
+                          { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
+                          ...waypointPairs.map<AppAction>(([origin, destination]) => ({
+                              type: 'FETCH_ROUTE',
+                              origin,
+                              destination,
+                          })),
+                      ],
                 state$.pipe(
-                    filter(state => {
-                        return waypointPairs.every(([origin, destination]) => {
-                            const route = getRoute(state.fetchedRoutes, origin, destination)
-                            return route !== undefined && route.status !== 'IN_PROGRESS'
-                        })
-                    }),
+                    filter(state =>
+                        optimizationParameter === OptimizationParameter.Quick
+                            ? optimizationWaypoints.every(waypoint => {
+                                  const place = state.fetchedPlaces.get(waypoint)
+                                  return place !== undefined && place.status !== 'IN_PROGRESS'
+                              })
+                            : waypointPairs.every(([origin, destination]) => {
+                                  const route = getRoute(state.fetchedRoutes, origin, destination)
+                                  return route !== undefined && route.status !== 'IN_PROGRESS'
+                              }),
+                    ),
                     take(1),
-                    mergeMap(state => {
-                        const costMatrix = optimizationWaypoints.map(origin =>
-                            optimizationWaypoints.map(destination => {
-                                const route = getRoute(state.fetchedRoutes, origin, destination)
-                                if (!route || route.status === 'IN_PROGRESS') {
-                                    throw new Error(`Optimization failed: Internal assertion failed`)
+                    mergeMap(async state => {
+                        const getCost = (origin: string, destination: string) => {
+                            if (optimizationParameter === OptimizationParameter.Quick) {
+                                const fetchedRoute = getRoute(state.fetchedRoutes, origin, destination)
+
+                                if (fetchedRoute && fetchedRoute.status === 'SUCCESS') {
+                                    return fetchedRoute.result.distance
                                 }
 
-                                if (route.status === 'FAILED') {
-                                    throw new Error(`Optimization failed: ${route.error.message}`)
+                                const originPlace = state.fetchedPlaces.get(origin)
+                                const destinationPlace = state.fetchedPlaces.get(destination)
+
+                                if (
+                                    !originPlace ||
+                                    !destinationPlace ||
+                                    originPlace.status === 'IN_PROGRESS' ||
+                                    destinationPlace.status === 'IN_PROGRESS'
+                                ) {
+                                    throw new Error('Optimization failed: Internal assertion failed')
                                 }
 
-                                switch (optimizationParameter) {
-                                    case OptimizationParameter.Distance:
-                                        return route.result.distance
-                                    case OptimizationParameter.Time:
-                                        return route.result.expectedTravelTime
+                                if (originPlace.status === 'FAILED') {
+                                    throw new Error(`Optimization failed: ${originPlace.error.message}`)
                                 }
-                            }),
+
+                                if (destinationPlace.status === 'FAILED') {
+                                    throw new Error(`Optimization failed: ${destinationPlace.error.message}`)
+                                }
+
+                                return getDistance(originPlace.result.coordinate, destinationPlace.result.coordinate)
+                            }
+
+                            const route = getRoute(state.fetchedRoutes, origin, destination)
+                            if (!route || route.status === 'IN_PROGRESS') {
+                                throw new Error('Optimization failed: Internal assertion failed')
+                            }
+
+                            if (route.status === 'FAILED') {
+                                throw new Error(`Optimization failed: ${route.error.message}`)
+                            }
+
+                            switch (optimizationParameter) {
+                                case OptimizationParameter.Distance:
+                                    return route.result.distance
+                                case OptimizationParameter.Time:
+                                    return route.result.expectedTravelTime
+                                default:
+                                    throw new Error('Optimization failed: Internal assertion failed')
+                            }
+                        }
+
+                        const costMatrix: number[][] = optimizationWaypoints.map(origin =>
+                            optimizationWaypoints.map(destination => getCost(origin, destination)),
                         )
 
-                        return optimizeRoute(costMatrix).then(optimalOrdering => {
-                            if (startPoint) optimalOrdering = optimalOrdering.slice(1, -1).map(i => i - 1)
-                            return optimalOrdering.map(i => state.waypoints.list[i].address)
-                        })
+                        let optimalOrdering = await optimizeRoute(costMatrix)
+                        if (startPoint) optimalOrdering = optimalOrdering.slice(1).map(i => i - 1)
+                        if (endPoint) optimalOrdering = optimalOrdering.slice(0, -1)
+                        return optimalOrdering.map(i => state.waypoints.list[i].address)
                     }),
                     mergeMap(optimalOrdering => [
                         { type: 'OPTIMIZE_ROUTE_SUCCESS', optimizationParameter },

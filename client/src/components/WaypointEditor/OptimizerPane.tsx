@@ -2,11 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-
-enum OptimizationParameter {
-    Time = 'time',
-    Distance = 'distance',
-}
+import { OptimizationParameter } from '../../redux/actionTypes'
 
 export const OptimizerPane = () => {
     const {
@@ -48,6 +44,17 @@ export const OptimizerPane = () => {
             dispatch({
                 type: 'OPTIMIZE_ROUTE',
                 optimizationParameter: OptimizationParameter.Time,
+                startPoint: startPoint || undefined,
+                endPoint: endPoint || undefined,
+            }),
+        [startPoint, endPoint],
+    )
+
+    const quickOptimize = useCallback(
+        () =>
+            dispatch({
+                type: 'OPTIMIZE_ROUTE',
+                optimizationParameter: OptimizationParameter.Quick,
                 startPoint: startPoint || undefined,
                 endPoint: endPoint || undefined,
             }),
@@ -107,6 +114,9 @@ export const OptimizerPane = () => {
                         </button>
                         <button className="btn btn-primary" onClick={optimizeTime} disabled={insufficientWaypoints}>
                             <i className="fas fa-fw fa-clock" /> Optimize Time
+                        </button>
+                        <button className="btn btn-primary" onClick={quickOptimize} disabled={insufficientWaypoints}>
+                            <i className="fas fa-tachometer-alt" /> Quick Optimize
                         </button>
                     </>
                 )
