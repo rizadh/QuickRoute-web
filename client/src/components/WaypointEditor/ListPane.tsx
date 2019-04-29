@@ -55,14 +55,12 @@ export const ListPane = () => {
         const url = window.URL.createObjectURL(await response.blob())
 
         const a = document.createElement('a')
+        document.body.appendChild(a)
         a.href = url
         a.style.display = 'none'
-        document.body.appendChild(a)
         a.download = 'waypoints.pdf'
         a.click()
         a.remove()
-
-        window.URL.revokeObjectURL(url)
     }, [waypoints])
 
     const shareWaypoints = useCallback(async () => {
