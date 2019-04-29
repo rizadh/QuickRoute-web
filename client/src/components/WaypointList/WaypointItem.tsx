@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
@@ -31,9 +31,9 @@ export const WaypointItem = (props: WaypointItemProps) => {
         keyPressHandler: handleWaypointFieldKeyPress,
     } = useInputField(
         waypoint.address,
-        () => fieldWasEdited && isValidAddress(waypointFieldValue) && setAddress(waypointFieldValue),
+        () => fieldWasEdited && isValidAddress(waypointFieldValue) && setAddress(waypointFieldValue.trim()),
     )
-    const fieldWasEdited = waypointFieldValue !== waypoint.address
+    const fieldWasEdited = waypointFieldValue.trim() !== waypoint.address
 
     const setAddress = useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [
         index,
