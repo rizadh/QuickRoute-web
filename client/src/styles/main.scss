@@ -146,10 +146,15 @@ textarea {
 }
 
 .input-row {
-    margin: $standardMargin;
-
     display: flex;
     align-items: center;
+
+    margin: $standardMargin;
+    margin-bottom: 0;
+
+    &:last-child {
+        margin-bottom: $standardMargin;
+    }
 
     & > * {
         border-radius: $standardBorderRadius / 2;
@@ -158,6 +163,18 @@ textarea {
         padding: $standardPadding;
 
         line-height: 1.5;
+    }
+
+    & > *:first-child {
+        margin-left: 0;
+
+        border-top-left-radius: $standardBorderRadius;
+        border-bottom-left-radius: $standardBorderRadius;
+    }
+
+    & > *:last-child {
+        border-top-right-radius: $standardBorderRadius;
+        border-bottom-right-radius: $standardBorderRadius;
     }
 
     & > input,
@@ -182,18 +199,6 @@ textarea {
 
     &.waypoint-item-dragging {
         opacity: 0.5;
-    }
-
-    & > *:first-child {
-        margin-left: 0;
-
-        border-top-left-radius: $standardBorderRadius;
-        border-bottom-left-radius: $standardBorderRadius;
-    }
-
-    & > *:last-child {
-        border-top-right-radius: $standardBorderRadius;
-        border-bottom-right-radius: $standardBorderRadius;
     }
 }
 
