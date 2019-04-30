@@ -2,6 +2,7 @@ import { IMiddleware } from 'koa-router'
 import range from 'lodash/range'
 import fetch from 'node-fetch'
 import { URLSearchParams } from 'url'
+import demoWaypoints from './resources/demoWaypoints.json'
 
 const viewstateRegex = /<input type="hidden" name="__VIEWSTATE" value="(.*)">/
 const identifierRegex = /http:\/\/pickup.atripcocourier.com\/ccwap\/\(S\((.*)\)\)\/.*.aspx/
@@ -28,6 +29,12 @@ type Waypoint = {
 type WaypointsSet = {
     dispatched: Waypoint[];
     inprogress: Waypoint[];
+}
+
+type WaypointsResponse = {
+    date: string;
+    driverNumber: string;
+    waypoints: WaypointsSet;
 }
 
 async function loginAndFetchWaypoints(loginParameters: LoginParameters): Promise<WaypointsSet> {
@@ -129,13 +136,41 @@ function waypointLineIndexForOrderType(orderType: OrderType): number {
 
 const waypointsRoute: IMiddleware = async ctx => {
     try {
-        const waypoints = await loginAndFetchWaypoints({ driverNumber: ctx.params.id, password: ctx.params.id })
-        const date = new Date().toISOString()
-        ctx.body = JSON.stringify({ date, driverNumber: ctx.params.id, waypoints })
+        const response: WaypointsResponse = {
+            date: new Date().toISOString(),
+            driverNumber: ctx.params.driverNumber,
+            waypoints: await loginAndFetchWaypoints({
+                driverNumber: ctx.params.driverNumber,
+                password: ctx.params.driverNumber,
+            }),
+        }
+        ctx.body = JSON.stringify(response)
     } catch (e) {
         ctx.status = 500
         ctx.body = e instanceof Error ? e.message : e
     }
+}
+
+const shuffle = (arr: any[]) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+}
+
+export const demoWaypointsRoute: IMiddleware = async ctx => {
+    await new Promise(resolve => setTimeout(resolve, ctx.params.delay))
+    shuffle(demoWaypoints.waypoints)
+    const response: WaypointsResponse = {
+        date: new Date().toISOString(),
+        driverNumber: ctx.params.driverNumber,
+        waypoints: {
+            dispatched: demoWaypoints.waypoints.slice(0, ctx.params.count),
+            inprogress: [],
+        },
+    }
+    ctx.body = JSON.stringify(response)
+    return
 }
 
 export default waypointsRoute
