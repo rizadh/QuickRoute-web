@@ -181,6 +181,10 @@ textarea {
     & > textarea {
         flex-grow: 1;
         min-width: 0;
+
+        *:not(&) {
+            flex-shrink: 0;
+        }
     }
 
     & > span {
