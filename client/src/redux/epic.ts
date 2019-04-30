@@ -21,6 +21,7 @@ import {
     MoveWaypointAction,
     OptimizationParameter,
     OptimizeRouteAction,
+    OptimizeRouteCancelAction,
     ReplaceWaypointsAction,
     ReverseWaypointsAction,
     SetAddressAction,
@@ -482,6 +483,12 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                         { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
                     ]),
                     catchError(error => of({ type: 'OPTIMIZE_ROUTE_FAILED', optimizationParameter, error })),
+                    takeUntil(
+                        action$.pipe(
+                            ofType<AppAction, OptimizeRouteCancelAction>('OPTIMIZE_ROUTE_CANCEL'),
+                            filter(action => action.startPoint === startPoint && action.endPoint === endPoint),
+                        ),
+                    ),
                 ),
             )
         }),

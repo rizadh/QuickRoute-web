@@ -61,6 +61,16 @@ export const OptimizerPane = () => {
         [startPoint, endPoint],
     )
 
+    const cancelOptimize = useCallback(
+        () =>
+            dispatch({
+                type: 'OPTIMIZE_ROUTE_CANCEL',
+                startPoint: startPoint || undefined,
+                endPoint: endPoint || undefined,
+            }),
+        [startPoint, endPoint],
+    )
+
     const insufficientWaypoints = waypoints.length < 3
 
     const defaultStartPoint = () => startPoint || waypoints[0].address
@@ -104,7 +114,10 @@ export const OptimizerPane = () => {
                 optimizationInProgress ? (
                     <>
                         <button className="btn btn-primary" disabled={true}>
-                            <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing (this may take a while)
+                            <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing
+                        </button>
+                        <button className="btn btn-danger" onClick={cancelOptimize}>
+                            <i className="fas fa-ban" /> Cancel
                         </button>
                     </>
                 ) : (

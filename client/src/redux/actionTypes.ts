@@ -169,6 +169,12 @@ export type OptimizeRouteAction = Readonly<{
     endPoint?: string;
 }>
 
+export type OptimizeRouteCancelAction = Readonly<{
+    type: 'OPTIMIZE_ROUTE_CANCEL';
+    startPoint?: string;
+    endPoint?: string;
+}>
+
 export type OptimizeRouteInProgressAction = Readonly<{
     type: 'OPTIMIZE_ROUTE_IN_PROGRESS';
     optimizationParameter: OptimizationParameter;
@@ -232,6 +238,7 @@ export type AppAction =
     | ImportWaypointsSuccessAction
     | ImportWaypointsFailedAction
     | OptimizeRouteAction
+    | OptimizeRouteCancelAction
     | OptimizeRouteInProgressAction
     | OptimizeRouteSuccessAction
     | OptimizeRouteFailedAction
