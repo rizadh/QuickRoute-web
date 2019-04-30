@@ -54,7 +54,7 @@ export const ImportPane = () => {
                         <button className="btn btn-primary" disabled={true}>
                             <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
                         </button>
-                        <button className="btn btn-secondary" onClick={cancelImport}>
+                        <button className="btn btn-danger" onClick={cancelImport}>
                             <i className="fas fa-ban" /> Cancel
                         </button>
                     </>
