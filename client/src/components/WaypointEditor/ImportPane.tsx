@@ -13,10 +13,15 @@ export const ImportPane = () => {
         value: driverNumberFieldValue,
         changeHandler: handleDriverNumberFieldChange,
         keyPressHandler: handleDriverNumberFieldKeyPress,
-    } = useInputField('', () => importWaypoints())
+    } = useInputField('', () => driverNumberFieldValue.length && importWaypoints())
 
     const importWaypoints = useCallback(
         () => dispatch({ type: 'IMPORT_WAYPOINTS', driverNumber: driverNumberFieldValue }),
+        [driverNumberFieldValue],
+    )
+
+    const cancelImport = useCallback(
+        () => dispatch({ type: 'IMPORT_WAYPOINTS_CANCEL', driverNumber: driverNumberFieldValue }),
         [driverNumberFieldValue],
     )
 
@@ -45,11 +50,20 @@ export const ImportPane = () => {
             }
             footer={
                 importInProgress ? (
-                    <button className="btn btn-primary" disabled={true}>
-                        <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
-                    </button>
+                    <>
+                        <button className="btn btn-primary" disabled={true}>
+                            <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
+                        </button>
+                        <button className="btn btn-secondary" onClick={cancelImport}>
+                            <i className="fas fa-ban" /> Cancel
+                        </button>
+                    </>
                 ) : (
-                    <button className="btn btn-primary" onClick={importWaypoints}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={importWaypoints}
+                        disabled={!driverNumberFieldValue.length}
+                    >
                         <i className="fas fa-fw fa-cloud-download-alt" /> Import
                     </button>
                 )

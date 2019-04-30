@@ -135,6 +135,11 @@ export type ImportWaypointsAction = Readonly<{
     driverNumber: string;
 }>
 
+export type ImportWaypointsCancelAction = Readonly<{
+    type: 'IMPORT_WAYPOINTS_CANCEL';
+    driverNumber: string;
+}>
+
 export type ImportWaypointsInProgressAction = Readonly<{
     type: 'IMPORT_WAYPOINTS_IN_PROGRESS';
     driverNumber: string;
@@ -222,6 +227,7 @@ export type AppAction =
     | HideEditorPaneAction
     | ShowEditorPaneAction
     | ImportWaypointsAction
+    | ImportWaypointsCancelAction
     | ImportWaypointsInProgressAction
     | ImportWaypointsSuccessAction
     | ImportWaypointsFailedAction

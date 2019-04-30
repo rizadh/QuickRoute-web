@@ -2,7 +2,7 @@ import { getDistance } from 'geolib'
 import flatten from 'lodash/flatten'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
-import { catchError, filter, flatMap, map, mergeMap, take } from 'rxjs/operators'
+import { catchError, filter, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
 import {
     AddWaypointAction,
     AppAction,
@@ -16,6 +16,7 @@ import {
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
     ImportWaypointsAction,
+    ImportWaypointsCancelAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
     OptimizationParameter,
@@ -337,6 +338,12 @@ const importWaypointsEpic: AppEpic = action$ =>
                     ),
                     catchError<AppAction, ObservableInput<AppAction>>(error =>
                         error instanceof Error ? of({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error }) : EMPTY,
+                    ),
+                    takeUntil(
+                        action$.pipe(
+                            ofType<AppAction, ImportWaypointsCancelAction>('IMPORT_WAYPOINTS_CANCEL'),
+                            filter(action => action.driverNumber === driverNumber),
+                        ),
                     ),
                 ),
             ),
