@@ -1,9 +1,9 @@
-import { v4 as uuidv4 } from 'uuid'
+import uuid from 'uuid/v4'
 import { FetchedRoutes, RouteFetchResult, Waypoint } from './state'
 
 export const createWaypointFromAddress = (address: string): Waypoint => ({
     address,
-    uuid: uuidv4(),
+    uuid: uuid(),
 })
 
 export const getRoute = (
