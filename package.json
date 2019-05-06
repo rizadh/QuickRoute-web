@@ -5,9 +5,9 @@
     "repository": "https://github.com/rizadh/route-planner",
     "scripts": {
         "build": "npm run build:client && npm run build:server",
-        "build:client": "parcel build -d client/public client/src/index.html",
+        "build:client": "parcel build -d client/public --public-url . client/src/index.html",
         "build:server": "tsc -p server",
-        "watch:client": "parcel watch -d client/public client/src/index.html",
+        "watch:client": "parcel watch -d client/public --public-url . client/src/index.html",
         "watch:server": "tsc -w -p server",
         "clean": "npm run clean:client && npm run clean:server",
         "clean:client": "rm -rf client/public",
