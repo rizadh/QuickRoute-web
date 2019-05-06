@@ -36,7 +36,7 @@ export const ListPane = () => {
     const generatePdf = useCallback(async () => {
         dispatch({ type: 'CLEAR_ERROR' })
 
-        const response = await fetch('/pdf', {
+        const response = await fetch('pdf', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

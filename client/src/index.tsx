@@ -9,7 +9,7 @@ require('babel-polyfill')
 
 mapkit.init({
     authorizationCallback: done =>
-        fetch('/token')
+        fetch('token')
             .then(res => res.text())
             .then(done),
 })

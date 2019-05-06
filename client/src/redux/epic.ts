@@ -307,8 +307,7 @@ type WaypointsResponse = {
 }
 
 const importWaypoints = async (driverNumber: string) => {
-    const url = '/waypoints/' + driverNumber
-    const httpResponse = await fetch(url)
+    const httpResponse = await fetch('waypoints/' + driverNumber)
     if (!httpResponse.ok) {
         throw new Error(
             `Failed to import waypoints for driver ${driverNumber} (ERROR: '${await httpResponse.text()}')`,
@@ -356,7 +355,7 @@ interface IOptimizeResponse {
 }
 
 const optimizeRoute = async (costMatrix: number[][]) => {
-    const response = await fetch('/optimize', {
+    const response = await fetch('optimize', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
