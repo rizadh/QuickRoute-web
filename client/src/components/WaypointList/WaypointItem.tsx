@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react'
-import { Draggable, DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd'
+import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { getRoute } from '../../redux/util'
@@ -7,11 +7,11 @@ import { isValidAddress } from '../../redux/validator'
 
 type WaypointItemProps = {
     index: number;
-    isBeingDragged: boolean;
+    isBeingDraggedOver: boolean;
 }
 
 export const WaypointItem = (props: WaypointItemProps) => {
-    const { index, isBeingDragged } = props
+    const { index, isBeingDraggedOver } = props
 
     const {
         state: {
@@ -76,14 +76,14 @@ export const WaypointItem = (props: WaypointItemProps) => {
 
     return (
         <Draggable index={index} draggableId={waypoint.uuid}>
-            {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
+            {(provided: DraggableProvided) => (
                 <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     className={
                         'input-row' +
                         (waypointIsSelected ? ' waypoint-item-selected' : '') +
-                        (props.isBeingDragged ? ' waypoint-item-dragging' : '')
+                        (isBeingDraggedOver ? ' waypoint-item-dragging-over' : '')
                     }
                 >
                     <button onClick={deleteWaypoint} className="btn btn-sm btn-danger">
@@ -94,7 +94,6 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         value={waypointFieldValue}
                         onChange={handleWaypointFieldValueChange}
                         onKeyPress={handleWaypointFieldKeyPress}
-                        disabled={isBeingDragged && !snapshot.isDragging}
                     />
                     {fieldWasEdited && (
                         <button onClick={resetWaypointField} className="btn btn-secondary">

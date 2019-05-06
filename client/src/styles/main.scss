@@ -152,6 +152,8 @@ textarea {
     margin: $standardMargin;
     margin-bottom: 0;
 
+    transition: opacity 0.2s;
+
     &:last-child {
         margin-bottom: $standardMargin;
     }
@@ -201,7 +203,8 @@ textarea {
         color: white;
     }
 
-    &.waypoint-item-dragging {
+    &.waypoint-item-dragging-over {
+        transition: opacity 0.1s;
         opacity: 0.5;
     }
 }
