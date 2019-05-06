@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
 import { routeInformation } from '../redux/selectors'
-import StatView from './StatView'
+import { StatView } from './StatView'
 
 export const MapViewStatusbar = () => {
     const { state } = useContext(AppStateContext)

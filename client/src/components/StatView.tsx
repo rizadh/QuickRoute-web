@@ -5,10 +5,8 @@ type StatViewProps = {
     value: string;
 }
 
-const StatView = (props: StatViewProps) => (
+export const StatView = (props: StatViewProps) => (
     <div className="statview">
         <span>{props.title}</span> {props.value}
     </div>
 )
-
-export default StatView
