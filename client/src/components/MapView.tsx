@@ -44,7 +44,7 @@ export const MapView = () => {
 
         const newMap = new mapkit.Map(mapviewRef.current, {
             showsMapTypeControl: false,
-            showsScale: mapkit.FeatureVisibility.Visible,
+            showsScale: mapkit.FeatureVisibility.Adaptive,
         })
 
         const mapDidMove = () => {
