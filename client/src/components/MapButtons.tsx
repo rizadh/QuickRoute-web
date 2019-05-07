@@ -1,5 +1,6 @@
 import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
+import { preventFocus } from './util/preventFocus'
 
 export const MapButtons = () => {
     const {
@@ -18,25 +19,30 @@ export const MapButtons = () => {
     return (
         <div id="map-buttons">
             {editorIsHidden ? (
-                <button className="btn btn-primary" onClick={showEditorPane}>
+                <button className="btn btn-primary" onClick={showEditorPane} onMouseDown={preventFocus}>
                     <i className="fas fa-fw fa-columns" /> Show Editor
                 </button>
             ) : (
-                <button className="btn btn-primary" onClick={hideEditorPane} disabled={operationInProgress}>
+                <button
+                    className="btn btn-primary"
+                    onClick={hideEditorPane}
+                    onMouseDown={preventFocus}
+                    disabled={operationInProgress}
+                >
                     <i className="fas fa-fw fa-window-maximize" /> Hide Editor
                 </button>
             )}
             {mutedMapIsEnabled ? (
-                <button className="btn btn-primary" onClick={unmuteMap}>
+                <button className="btn btn-primary" onClick={unmuteMap} onMouseDown={preventFocus}>
                     <i className="fas fa-fw fa-map-marked" /> Use Regular Map
                 </button>
             ) : (
-                <button className="btn btn-primary" onClick={muteMap}>
+                <button className="btn btn-primary" onClick={muteMap} onMouseDown={preventFocus}>
                     <i className="fas fa-fw fa-map" /> Use Muted Map
                 </button>
             )}
             {!autofitIsEnabled && (
-                <button className="btn btn-warning" onClick={enableAutofit}>
+                <button className="btn btn-warning" onClick={enableAutofit} onMouseDown={preventFocus}>
                     <i className="fas fa-fw fa-expand" /> Auto-Fit
                 </button>
             )}

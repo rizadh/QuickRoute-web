@@ -4,6 +4,7 @@ import { stringify } from 'query-string'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
+import { preventFocus } from '../util/preventFocus'
 
 export const UrlsPane = () => {
     const {
@@ -101,14 +102,22 @@ export const UrlsPane = () => {
                             <div key={url} className="input-row">
                                 <input type="text" value={url} readOnly={true} />
                                 {(navigator as INavigator).share && (
-                                    <button onClick={shareLink(index)} className="btn btn-primary">
+                                    <button
+                                        onClick={shareLink(index)}
+                                        onMouseDown={preventFocus}
+                                        className="btn btn-primary"
+                                    >
                                         <i className="fas fa-fw fa-share" />
                                     </button>
                                 )}
-                                <button onClick={copyLink(index)} className="btn btn-primary">
+                                <button
+                                    onClick={copyLink(index)}
+                                    onMouseDown={preventFocus}
+                                    className="btn btn-primary"
+                                >
                                     <i className="fas fa-fw fa-clipboard" />
                                 </button>
-                                <button onClick={openUrl(index)} className="btn btn-primary">
+                                <button onClick={openUrl(index)} onMouseDown={preventFocus} className="btn btn-primary">
                                     <i className="fas fa-fw fa-external-link-alt" />
                                 </button>
                             </div>
@@ -118,14 +127,29 @@ export const UrlsPane = () => {
             }
             footer={
                 <>
-                    <button className="btn btn-primary" onClick={openAllLinks} disabled={insufficientWaypoints}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={openAllLinks}
+                        onMouseDown={preventFocus}
+                        disabled={insufficientWaypoints}
+                    >
                         <i className="fas fa-fw fa-external-link-alt" /> Open All
                     </button>
-                    <button className="btn btn-primary" onClick={copyAllLinks} disabled={insufficientWaypoints}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={copyAllLinks}
+                        onMouseDown={preventFocus}
+                        disabled={insufficientWaypoints}
+                    >
                         <i className="fas fa-fw fa-clipboard" /> Copy All
                     </button>
                     {(navigator as INavigator).share && (
-                        <button className="btn btn-primary" onClick={shareAllLinks} disabled={insufficientWaypoints}>
+                        <button
+                            className="btn btn-primary"
+                            onClick={shareAllLinks}
+                            onMouseDown={preventFocus}
+                            disabled={insufficientWaypoints}
+                        >
                             <i className="fas fa-fw fa-share" /> Share All
                         </button>
                     )}

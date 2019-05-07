@@ -6,6 +6,7 @@ import { useInputField } from '../../hooks/useInputField'
 import { EditorPane } from '../../redux/state'
 import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress, parseAddress } from '../../redux/validator'
+import { preventFocus } from '../util/preventFocus'
 
 export const BulkEditPane = () => {
     const {
@@ -50,7 +51,7 @@ export const BulkEditPane = () => {
                 </>
             }
             footer={
-                <button className="btn btn-primary" onClick={commitBulkEdit}>
+                <button className="btn btn-primary" onClick={commitBulkEdit} onMouseDown={preventFocus}>
                     <i className="fas fa-fw fa-save" /> Save
                 </button>
             }

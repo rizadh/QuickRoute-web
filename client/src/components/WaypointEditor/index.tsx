@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect } from 'react'
 import { appVersion } from '../..'
 import { AppStateContext } from '../../context/AppStateContext'
 import { EditorPane } from '../../redux/state'
+import { preventFocus } from '../util/preventFocus'
 import { BulkEditPane } from './BulkEditPane'
 import { ImportPane } from './ImportPane'
 import { ListPane } from './ListPane'
@@ -51,6 +52,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.List ? 'primary' : 'secondary')}
                         onClick={editorPane === EditorPane.List ? undefined : setEditorPaneList}
+                        onMouseDown={preventFocus}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-th-list" /> Waypoints
@@ -58,6 +60,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.BulkEdit ? 'primary' : 'secondary')}
                         onClick={editorPane === EditorPane.BulkEdit ? undefined : setEditorPaneBulkEdit}
+                        onMouseDown={preventFocus}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-list-alt" /> Bulk Edit
@@ -65,6 +68,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Links ? 'primary' : 'secondary')}
                         onClick={editorPane === EditorPane.Links ? undefined : setEditorPaneLinks}
+                        onMouseDown={preventFocus}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-link" /> Links
@@ -72,6 +76,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Import ? 'primary' : 'secondary')}
                         onClick={editorPane === EditorPane.Import ? undefined : setEditorPaneImport}
+                        onMouseDown={preventFocus}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-cloud-download-alt" /> Import
@@ -79,6 +84,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                     <button
                         className={'btn btn-' + (editorPane === EditorPane.Optimizer ? 'primary' : 'secondary')}
                         onClick={editorPane === EditorPane.Optimizer ? undefined : setEditorPaneOptimizer}
+                        onMouseDown={preventFocus}
                         disabled={paneIsBusy}
                     >
                         <i className="fas fa-fw fa-star" /> Optimize

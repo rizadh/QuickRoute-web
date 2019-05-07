@@ -6,6 +6,7 @@ import { useInputField } from '../../hooks/useInputField'
 import { routeInformation } from '../../redux/selectors'
 import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
+import { preventFocus } from '../util/preventFocus'
 import { WaypointList } from '../WaypointList'
 
 export const ListPane = () => {
@@ -108,6 +109,7 @@ export const ListPane = () => {
                         />
                         <button
                             onClick={addNewWaypoint}
+                            onMouseDown={preventFocus}
                             disabled={!isValidAddress(newWaypointFieldValue)}
                             className="btn btn-primary"
                         >
@@ -118,19 +120,34 @@ export const ListPane = () => {
             }
             footer={
                 <>
-                    <button className="btn btn-primary" onClick={generatePdf} disabled={waypoints.length === 0}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={generatePdf}
+                        onMouseDown={preventFocus}
+                        disabled={waypoints.length === 0}
+                    >
                         <i className="fas fa-fw fa-file-pdf" /> Generate PDF
                     </button>
-                    <button className="btn btn-primary" onClick={reverseWaypoints} disabled={waypoints.length < 2}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={reverseWaypoints}
+                        onMouseDown={preventFocus}
+                        disabled={waypoints.length < 2}
+                    >
                         <i className="fas fa-fw fa-exchange-alt" /> Reverse
                     </button>
                     {(navigator as INavigator).share && (
-                        <button className="btn btn-primary" onClick={shareWaypoints} disabled={waypoints.length === 0}>
+                        <button
+                            className="btn btn-primary"
+                            onClick={shareWaypoints}
+                            onMouseDown={preventFocus}
+                            disabled={waypoints.length === 0}
+                        >
                             <i className="fas fa-fw fa-share" /> Share
                         </button>
                     )}
                     {compactMode && (
-                        <button className="btn btn-primary" onClick={hideEditorPane}>
+                        <button className="btn btn-primary" onClick={hideEditorPane} onMouseDown={preventFocus}>
                             <i className="fas fa-fw fa-window-maximize" /> Hide Editor
                         </button>
                     )}

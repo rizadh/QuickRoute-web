@@ -4,6 +4,7 @@ import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { getRoute } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
+import { preventFocus } from '../util/preventFocus'
 
 type WaypointItemProps = {
     index: number;
@@ -54,8 +55,9 @@ export const WaypointItem = (props: WaypointItemProps) => {
         index !== waypoints.length - 1 && routeFetchResult(waypoints[index].address, waypoints[index + 1].address)
 
     const itemWasClicked = (e: React.MouseEvent) => {
+        e.preventDefault()
+
         if (e.shiftKey) {
-            e.preventDefault()
             dispatch({ type: 'SELECT_WAYPOINT_RANGE', index })
         } else if (e.ctrlKey || e.metaKey) {
             dispatch({ type: 'TOGGLE_WAYPOINT_SELECTION', index })
@@ -86,7 +88,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         (isBeingDraggedOver ? ' waypoint-item-dragging-over' : '')
                     }
                 >
-                    <button onClick={deleteWaypoint} className="btn btn-sm btn-danger">
+                    <button onClick={deleteWaypoint} onMouseDown={preventFocus} className="btn btn-sm btn-danger">
                         <i className="fas fa-fw fa-trash-alt" />
                     </button>
                     <input
@@ -96,7 +98,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         onKeyPress={handleWaypointFieldKeyPress}
                     />
                     {fieldWasEdited && (
-                        <button onClick={resetWaypointField} className="btn btn-secondary">
+                        <button onClick={resetWaypointField} onMouseDown={preventFocus} className="btn btn-secondary">
                             <i className="fas fa-fw fa-undo-alt" />
                         </button>
                     )}

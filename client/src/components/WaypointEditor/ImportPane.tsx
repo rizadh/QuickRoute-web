@@ -2,6 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
+import { preventFocus } from '../util/preventFocus'
 
 export const ImportPane = () => {
     const {
@@ -54,7 +55,7 @@ export const ImportPane = () => {
                         <button className="btn btn-primary" disabled={true}>
                             <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
                         </button>
-                        <button className="btn btn-danger" onClick={cancelImport}>
+                        <button className="btn btn-danger" onClick={cancelImport} onMouseDown={preventFocus}>
                             <i className="fas fa-ban" /> Cancel
                         </button>
                     </>
@@ -62,6 +63,7 @@ export const ImportPane = () => {
                     <button
                         className="btn btn-primary"
                         onClick={importWaypoints}
+                        onMouseDown={preventFocus}
                         disabled={!driverNumberFieldValue.length}
                     >
                         <i className="fas fa-fw fa-cloud-download-alt" /> Import
