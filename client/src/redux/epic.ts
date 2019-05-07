@@ -3,6 +3,7 @@ import flatten from 'lodash/flatten'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { catchError, filter, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
+import { WaypointsResponse } from '../../../server/src/routes/waypoints'
 import {
     AddWaypointAction,
     AppAction,
@@ -296,16 +297,6 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
         ),
     )
 
-type FetchedWaypoint = { address: string; city: string; postalCode: string }
-type WaypointsResponse = {
-    date: string;
-    driverNumber: string;
-    waypoints: {
-        dispatched: FetchedWaypoint[];
-        inprogress: FetchedWaypoint[];
-    };
-}
-
 const importWaypoints = async (driverNumber: string) => {
     const httpResponse = await fetch('waypoints/' + driverNumber)
     if (!httpResponse.ok) {
@@ -317,6 +308,11 @@ const importWaypoints = async (driverNumber: string) => {
     return (await httpResponse.json()) as WaypointsResponse
 }
 
+const extractAddress = (address: string) => {
+    const result = /^(.*?)[,\n]/.exec(address)
+    return result ? result[1] : address
+}
+
 const importWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, ImportWaypointsAction>('IMPORT_WAYPOINTS'),
@@ -325,16 +321,23 @@ const importWaypointsEpic: AppEpic = action$ =>
                 of<AppAction>({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber }),
                 from(importWaypoints(driverNumber)).pipe(
                     mergeMap<WaypointsResponse, ObservableInput<AppAction>>(
-                        ({ waypoints: { dispatched, inprogress } }) => [
-                            { type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber },
-                            {
-                                type: 'REPLACE_WAYPOINTS',
-                                waypoints: [...dispatched, ...inprogress]
-                                    .map(w => `${w.address} ${w.postalCode}`)
-                                    .map(createWaypointFromAddress),
-                            },
-                            { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
-                        ],
+                        ({ waypoints: { dispatched, inprogress } }) =>
+                            dispatched.length + inprogress.length > 0
+                                ? [
+                                      { type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber },
+                                      {
+                                          type: 'REPLACE_WAYPOINTS',
+                                          waypoints: [...dispatched, ...inprogress]
+                                              .map(w => `${extractAddress(w.address)} ${w.postalCode}`)
+                                              .map(createWaypointFromAddress),
+                                      },
+                                      { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
+                                  ]
+                                : of({
+                                      type: 'IMPORT_WAYPOINTS_FAILED',
+                                      driverNumber,
+                                      error: new Error(`No waypoints returned for driver ${driverNumber}`),
+                                  }),
                     ),
                     catchError<AppAction, ObservableInput<AppAction>>(error =>
                         error instanceof Error ? of({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error }) : EMPTY,

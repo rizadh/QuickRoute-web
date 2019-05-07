@@ -6,7 +6,7 @@ import demoWaypoints from './resources/demoWaypoints.json'
 
 const viewstateRegex = /<input type="hidden" name="__VIEWSTATE" value="(.*)">/
 const identifierRegex = /http:\/\/pickup.atripcocourier.com\/ccwap\/\(S\((.*)\)\)\/.*.aspx/
-const waypointRegex = /^([^,]+).*; (.+); (.+)<br>/
+const waypointRegex = /^(.+); (.+); (.+)<br>/
 const dispatchedCountRegex = /Disptchd (\d+)/
 const inprogressCountRegex = /In Prog. (\d+)/
 
@@ -31,7 +31,7 @@ type WaypointsSet = {
     inprogress: Waypoint[];
 }
 
-type WaypointsResponse = {
+export type WaypointsResponse = {
     date: string;
     driverNumber: string;
     waypoints: WaypointsSet;
