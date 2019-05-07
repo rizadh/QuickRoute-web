@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
-import { useMedia } from '../hooks/useMedia'
+import { useCompactMode } from '../hooks/useCompactMode'
+import { useDarkMode } from '../hooks/useDarkMode'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { routeInformation } from '../redux/selectors'
 import { FetchSuccess } from '../redux/state'
@@ -22,8 +23,8 @@ export const MapView = () => {
     } = state
     const operationInProgress = importInProgress || optimizationInProgress
     const status = useMemo(() => routeInformation(state).status, [state])
-    const darkMode = useMedia('(prefers-color-scheme: dark)')
-    const compactMode = useMedia('(max-width: 800px)')
+    const darkMode = useDarkMode()
+    const compactMode = useCompactMode()
     const windowSize = useWindowSize()
     const centerMap = (animated: boolean) => {
         if (!autofitIsEnabled || !map) return

@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
+import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
-import { useMedia } from '../../hooks/useMedia'
 import { routeInformation } from '../../redux/selectors'
 import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
@@ -21,18 +21,16 @@ export const ListPane = () => {
         waypoints: { list: waypoints },
     } = state
 
-    const compactMode = useMedia('(max-width: 800px)')
+    const compactMode = useCompactMode()
 
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
     const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
-
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
     const addNewWaypoint = useCallback(() => {
         dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(newWaypointFieldValue) })
         setNewWaypointFieldValue('')
     }, [newWaypointFieldValue])
-
     const generatePdf = useCallback(async () => {
         dispatch({ type: 'CLEAR_ERROR' })
 

@@ -1,11 +1,11 @@
 import { Line } from 'rc-progress'
 import React, { useContext, useMemo } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
-import { useMedia } from '../hooks/useMedia'
+import { useDarkMode } from '../hooks/useDarkMode'
 import { routeInformation } from '../redux/selectors'
 
 export const ProgressBar = () => {
-    const darkMode = useMedia('(prefers-color-scheme: dark)')
+    const darkMode = useDarkMode()
     const { state } = useContext(AppStateContext)
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
