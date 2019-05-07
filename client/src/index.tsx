@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { App } from './components/App'
 
-export const appVersion = 'v2019.05.06'
+export const appVersion = 'v2019.05.07'
 
 // tslint:disable-next-line:no-var-requires
 require('babel-polyfill')
