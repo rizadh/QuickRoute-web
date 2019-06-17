@@ -3,6 +3,7 @@ import flatten from 'lodash/flatten'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { catchError, filter, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
+import { apiPrefix } from '..'
 import { WaypointsResponse } from '../../../server/src/routes/waypoints'
 import {
     AddWaypointAction,
@@ -298,7 +299,7 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
     )
 
 const importWaypoints = async (driverNumber: string) => {
-    const httpResponse = await fetch('waypoints/' + driverNumber)
+    const httpResponse = await fetch(apiPrefix + 'waypoints/' + driverNumber)
     if (!httpResponse.ok) {
         throw new Error(
             `Failed to import waypoints for driver ${driverNumber} (ERROR: '${await httpResponse.text()}')`,
@@ -358,7 +359,7 @@ interface IOptimizeResponse {
 }
 
 const optimizeRoute = async (costMatrix: number[][]) => {
-    const response = await fetch('optimize', {
+    const response = await fetch(apiPrefix + 'optimize', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

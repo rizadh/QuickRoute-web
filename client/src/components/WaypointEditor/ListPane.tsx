@@ -8,6 +8,7 @@ import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
 import { preventFocus } from '../util/preventFocus'
 import { WaypointList } from '../WaypointList'
+import { apiPrefix } from '../..';
 
 export const ListPane = () => {
     const {
@@ -35,7 +36,7 @@ export const ListPane = () => {
     const generatePdf = useCallback(async () => {
         dispatch({ type: 'CLEAR_ERROR' })
 
-        const response = await fetch('pdf', {
+        const response = await fetch(apiPrefix + 'pdf', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
