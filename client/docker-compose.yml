@@ -1,0 +1,13 @@
+version: "3"
+services:
+    web:
+        build: .
+        volumes:
+            - .:/app
+            - api-deps:/app/node_modules
+        ports:
+            - 8080:8080
+            - 8081:8081
+        command: npm run serve
+volumes:
+    api-deps:

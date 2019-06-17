@@ -6,8 +6,8 @@
     "scripts": {
         "lint": "tsc -p . -noEmit && tslint --project . --format verbose -c tslint.json",
         "clean": "rm -rf public",
-        "build": "parcel build -d public --public-url . src/index.html",
-        "start": "parcel -d public --public-url . -p 8000 src/index.html"
+        "build": "parcel build --out-dir public --public-url . src/index.html",
+        "serve": "parcel --out-dir public --https --port 8080 --hmr-port 8081 src/index.html"
     },
     "author": "",
     "license": "ISC",
