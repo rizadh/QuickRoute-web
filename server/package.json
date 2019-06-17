@@ -6,6 +6,7 @@
     "scripts": {
         "clean": "rm -rf out",
         "lint": "tsc -p . -noEmit && tslint --project . --format verbose -c tslint.json",
+        "lint:watch": "onchange src/**/*.ts src/*.ts -- tslint --project . --format verbose -c tslint.json",
         "build": "tsc -p .",
         "build:watch": "tsc -w -p .",
         "start": "node out/server.js",
@@ -44,11 +45,12 @@
         "temp": "^0.9.0"
     },
     "devDependencies": {
-        "tslint": "^5.17.0",
         "autoprefixer": "^9.6.0",
         "nodemon": "^1.19.1",
+        "onchange": "^6.0.0",
         "prettier": "^1.18.2",
         "prettier-tslint": "^0.4.2",
+        "tslint": "^5.17.0",
         "tslint-react-hooks": "^2.1.1",
         "typescript": "^3.5.2"
     }
