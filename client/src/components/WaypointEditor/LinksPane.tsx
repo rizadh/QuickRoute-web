@@ -6,7 +6,7 @@ import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { preventFocus } from '../util/preventFocus'
 
-export const UrlsPane = () => {
+export const LinksPane = () => {
     const {
         state: {
             waypoints: { list: waypoints },

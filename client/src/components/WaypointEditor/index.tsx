@@ -5,9 +5,9 @@ import { EditorPane } from '../../redux/state'
 import { preventFocus } from '../util/preventFocus'
 import { BulkEditPane } from './BulkEditPane'
 import { ImportPane } from './ImportPane'
-import { ListPane } from './ListPane'
-import { OptimizerPane } from './OptimizerPane'
-import { UrlsPane } from './UrlsPane'
+import { LinksPane } from './LinksPane'
+import { OptimizePane } from './OptimizePane'
+import { Waypointspane } from './WaypointsPane'
 
 type WaypointEditorTemplateProps = {
     body: JSX.Element;
@@ -123,14 +123,14 @@ export const WaypointEditor = () => {
 
     switch (editorPane) {
         case EditorPane.List:
-            return <ListPane />
+            return <Waypointspane />
         case EditorPane.Links:
-            return <UrlsPane />
+            return <LinksPane />
         case EditorPane.BulkEdit:
             return <BulkEditPane />
         case EditorPane.Import:
             return <ImportPane />
         case EditorPane.Optimizer:
-            return <OptimizerPane />
+            return <OptimizePane />
     }
 }

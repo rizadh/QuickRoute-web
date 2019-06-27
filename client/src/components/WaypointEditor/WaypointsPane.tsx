@@ -10,7 +10,7 @@ import { isValidAddress } from '../../redux/validator'
 import { preventFocus } from '../util/preventFocus'
 import { WaypointList } from '../WaypointList'
 
-export const ListPane = () => {
+export const Waypointspane = () => {
     const {
         value: newWaypointFieldValue,
         setValue: setNewWaypointFieldValue,
