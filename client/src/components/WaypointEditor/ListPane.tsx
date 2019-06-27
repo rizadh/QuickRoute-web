@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
+import { apiPrefix } from '../..'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
@@ -8,7 +9,6 @@ import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
 import { preventFocus } from '../util/preventFocus'
 import { WaypointList } from '../WaypointList'
-import { apiPrefix } from '../..';
 
 export const ListPane = () => {
     const {
