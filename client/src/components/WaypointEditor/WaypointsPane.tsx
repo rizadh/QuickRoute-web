@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { apiPrefix } from '../..'
 import { AppStateContext } from '../../context/AppStateContext'
-import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
 import { routeInformation } from '../../redux/selectors'
 import { createWaypointFromAddress } from '../../redux/util'
@@ -23,11 +22,8 @@ export const Waypointspane = () => {
         waypoints: { list: waypoints },
     } = state
 
-    const compactMode = useCompactMode()
-
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
-    const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
     const addNewWaypoint = useCallback(() => {
         dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(newWaypointFieldValue) })
@@ -145,11 +141,6 @@ export const Waypointspane = () => {
                             disabled={waypoints.length === 0}
                         >
                             <i className="fas fa-fw fa-share" /> Share
-                        </button>
-                    )}
-                    {compactMode && (
-                        <button className="btn btn-primary" onClick={hideEditorPane} onMouseDown={preventFocus}>
-                            <i className="fas fa-fw fa-window-maximize" /> Hide Editor
                         </button>
                     )}
                 </>

@@ -14,9 +14,7 @@ export const MapViewStatusbar = () => {
     switch (currentRouteInformation.status) {
         case 'FETCHING':
             statusbarItems = (
-                <>
-                    <StatView title="Routing" value={stringForUpdateProgress(currentRouteInformation.progress)} />
-                </>
+                <StatView title="Routing" value={stringForUpdateProgress(currentRouteInformation.progress)} />
             )
             break
         case 'FETCHED':
@@ -37,11 +35,7 @@ export const MapViewStatusbar = () => {
             throw new Error('Invalid route information')
     }
 
-    return (
-        <div id="mapview-statusbar" className="frosted">
-            {statusbarItems}
-        </div>
-    )
+    return <div id="mapview-statusbar">{statusbarItems}</div>
 }
 
 function stringForTime(seconds: number) {

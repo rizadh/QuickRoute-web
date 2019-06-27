@@ -1,7 +1,9 @@
 import React, { useCallback, useContext, useEffect } from 'react'
 import { appVersion } from '../..'
 import { AppStateContext } from '../../context/AppStateContext'
+import { useCompactMode } from '../../hooks/useCompactMode'
 import { EditorPane } from '../../redux/state'
+import { MapViewStatusbar } from '../MapViewStatusbar'
 import { preventFocus } from '../util/preventFocus'
 import { BulkEditPane } from './BulkEditPane'
 import { ImportPane } from './ImportPane'
@@ -19,6 +21,8 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
         state: { editorPane, importInProgress, optimizationInProgress, error },
         dispatch,
     } = useContext(AppStateContext)
+    const compactMode = useCompactMode()
+
     const paneIsBusy = importInProgress || optimizationInProgress
 
     const { body, footer } = props
@@ -40,10 +44,19 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
         () => dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Optimizer }),
         [],
     )
+    const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
     return (
-        <div id="waypoint-editor" className="frosted">
-            <div id="waypoint-editor-header" className="frosted">
+        <div id="waypoint-editor">
+            <div id="waypoint-editor-header">
+                <button
+                    id="waypoint-editor-hide-button"
+                    className="btn btn-secondary"
+                    onClick={hideEditorPane}
+                    onMouseDown={preventFocus}
+                >
+                    <i className={`fas fa-fw fa-caret-${compactMode ? 'down' : 'up'}`} />
+                </button>
                 <div id="app-title">Route Planner</div>
                 <div id="app-version">
                     {appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
@@ -99,8 +112,9 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                 )}
                 {body}
             </div>
-            <div id="waypoint-editor-footer" className="frosted">
+            <div id="waypoint-editor-footer">
                 {footer}
+                <MapViewStatusbar />
             </div>
         </div>
     )
