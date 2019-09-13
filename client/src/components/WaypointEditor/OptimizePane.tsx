@@ -5,7 +5,7 @@ import { useInputField } from '../../hooks/useInputField'
 import { OptimizationParameter } from '../../redux/actionTypes'
 import { preventFocus } from '../util/preventFocus'
 
-export const OptimizerPane = () => {
+export const OptimizePane = () => {
     const {
         state: {
             waypoints: { list: waypoints },

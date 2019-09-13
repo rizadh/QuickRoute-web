@@ -1,0 +1,24 @@
+version: "3"
+services:
+    server:
+        build: .
+        volumes:
+            - .:/app
+            - api-deps:/app/node_modules
+        ports:
+            - 8000:8000
+        command: npm run start:watch
+    build:
+        build: .
+        volumes:
+            - .:/app
+            - api-deps:/app/node_modules
+        command: npm run build:watch
+    lint:
+        build: .
+        volumes:
+            - .:/app
+            - api-deps:/app/node_modules
+        command: npm run lint:watch
+volumes:
+    api-deps:

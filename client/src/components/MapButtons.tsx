@@ -1,35 +1,27 @@
 import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
+import { useCompactMode } from '../hooks/useCompactMode'
+import { RouteInformationBar } from './RouteInformationBar'
 import { preventFocus } from './util/preventFocus'
 
 export const MapButtons = () => {
     const {
-        state: { autofitIsEnabled, mutedMapIsEnabled, editorIsHidden, importInProgress, optimizationInProgress },
+        state: { autofitIsEnabled, mutedMapIsEnabled, editorIsHidden },
         dispatch,
     } = useContext(AppStateContext)
-
-    const operationInProgress = importInProgress || optimizationInProgress
+    const compactMode = useCompactMode()
 
     const enableAutofit = useCallback(() => dispatch({ type: 'ENABLE_AUTOFIT' }), [])
     const muteMap = useCallback(() => dispatch({ type: 'USE_MUTED_MAP' }), [])
     const unmuteMap = useCallback(() => dispatch({ type: 'USE_REGULAR_MAP' }), [])
     const showEditorPane = useCallback(() => dispatch({ type: 'SHOW_EDITOR_PANE' }), [])
-    const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
     return (
         <div id="map-buttons">
-            {editorIsHidden ? (
-                <button className="btn btn-primary" onClick={showEditorPane} onMouseDown={preventFocus}>
-                    <i className="fas fa-fw fa-columns" /> Show Editor
-                </button>
-            ) : (
-                <button
-                    className="btn btn-primary"
-                    onClick={hideEditorPane}
-                    onMouseDown={preventFocus}
-                    disabled={operationInProgress}
-                >
-                    <i className="fas fa-fw fa-window-maximize" /> Hide Editor
+            {editorIsHidden && (
+                <button className="btn btn-frosted" onClick={showEditorPane}>
+                    <RouteInformationBar collapsed={true} />{' '}
+                    <i className={`fas fa-fw fa-caret-${compactMode ? 'up' : 'down'}`} />
                 </button>
             )}
             {mutedMapIsEnabled ? (

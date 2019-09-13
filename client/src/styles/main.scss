@@ -2,6 +2,7 @@
 @import "./btn.scss";
 @import "./alert.scss";
 @import "./colors.scss";
+@import "./mixins.scss";
 
 html {
     background-color: var(--app-background-color);
@@ -73,16 +74,33 @@ textarea {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 
+    box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.25), 0 16px 32px rgba(0, 0, 0, 0.25);
+
+    @include frosted-colored();
+
     @media (max-width: $compactBreakpoint) {
+        top: auto;
         left: 0;
-        top: 0;
+        bottom: 0;
 
         width: 100%;
-        height: calc(100% - #{$statusbarHeight});
+        max-height: calc(100% - #{$peekWidth});
+
+        box-shadow: 0 0 $peekWidth rgba(0, 0, 0, 0.25);
 
         border: none;
-        border-radius: 0;
+        border-top: 1px solid var(--app-border-color);
+        border-radius: $standardBorderRadius $standardBorderRadius 0 0;
     }
+}
+
+#waypoint-editor-hide-button {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+
+    width: 100%;
 }
 
 #waypoint-editor-header {
@@ -93,6 +111,8 @@ textarea {
     z-index: 2;
 
     border-bottom: 1px solid var(--app-border-color);
+
+    @include frosted-uncolored();
 }
 
 #app-title {
@@ -134,13 +154,46 @@ textarea {
 
     border-top: 1px solid var(--app-border-color);
 
-    & button {
+    @include frosted-uncolored();
+
+    & > * {
         float: left;
         margin-top: $standardMargin;
         margin-left: $standardMargin;
+    }
 
-        &:last-child {
-            margin-bottom: $standardMargin;
+    & > #route-statusbar {
+        margin-left: 0;
+    }
+
+    & > #waypoint-editor-hide-button {
+        margin-left: 0;
+        margin-top: 0;
+    }
+}
+
+#route-statusbar {
+    align-items: center;
+    justify-content: space-evenly;
+
+    &:not(.collapsed) {
+        display: flex;
+
+        z-index: 2;
+
+        position: sticky;
+        bottom: 0;
+        height: $statusbarHeight;
+        width: 100%;
+
+        border-top: 1px solid var(--app-border-color);
+    }
+
+    &.collapsed {
+        display: inline-flex;
+
+        & > *:first-child {
+            margin-right: $standardHorizontalPadding;
         }
     }
 }
@@ -226,35 +279,13 @@ textarea {
 
     @media (max-width: $compactBreakpoint) {
         #root:not(.editor-hidden) & {
-            display: none;
+            transition: filter 0.4s;
+            filter: opacity(0.5);
+
+            * {
+                pointer-events: none;
+            }
         }
-    }
-}
-
-#mapview-statusbar {
-    position: absolute;
-    right: $standardMargin;
-    bottom: $standardMargin;
-    width: calc(100% - #{$editorWidth + 3 * $standardMargin});
-    height: $statusbarHeight;
-
-    z-index: 2;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-
-    border: 1px solid var(--app-border-color);
-    border-radius: $standardBorderRadius;
-
-    @media (max-width: $compactBreakpoint) {
-        left: 0;
-        bottom: 0;
-        width: 100%;
-
-        border: none;
-        border-top: 1px solid var(--app-border-color);
-        border-radius: 0;
     }
 }
 
@@ -313,20 +344,5 @@ textarea {
 
     svg {
         position: absolute;
-    }
-}
-
-$frostedBlurRadius: 128px;
-
-.frosted {
-    background-color: var(--app-frost-fallback-color);
-
-    @supports (backdrop-filter: blur($frostedBlurRadius)) {
-        backdrop-filter: blur($frostedBlurRadius);
-        background-color: var(--app-frost-color);
-
-        .frosted & {
-            background-color: initial;
-        }
     }
 }

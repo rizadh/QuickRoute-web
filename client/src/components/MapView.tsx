@@ -69,11 +69,11 @@ export const MapView = () => {
         if (!map) return
 
         if (compactMode) {
-            map.padding = new mapkit.Padding({ top: 0, left: 0, right: 0, bottom: 16 + 42 })
+            map.padding = new mapkit.Padding({ top: 0, left: 16, right: 0, bottom: 16 + 42 })
         } else if (editorIsHidden) {
             map.padding = new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 })
         } else {
-            map.padding = new mapkit.Padding({ top: 16 + 42, left: 16 + 420 + 16, right: 16, bottom: 16 + 48 })
+            map.padding = new mapkit.Padding({ top: 16 + 42, left: 16 + 420 + 16, right: 0, bottom: 0 })
         }
     }, [editorIsHidden, map, compactMode])
 

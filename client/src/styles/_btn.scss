@@ -1,4 +1,5 @@
-@import "./variables.scss";
+@import "./variables";
+@import "./mixins";
 
 .btn {
     --local-btn-background-color: transparent;
@@ -68,4 +69,8 @@
 .btn-warning {
     --local-btn-background-color: var(--apple-system-yellow);
     --local-btn-text-color: rgba(0, 0, 0, 0.6);
+}
+
+.btn-frosted {
+    @include frosted-colored();
 }

@@ -1,3 +1,4 @@
+import cors from '@koa/cors'
 import Koa from 'koa'
 import Parser from 'koa-bodyparser'
 import Logger from 'koa-logger'
@@ -19,6 +20,7 @@ router.post('/pdf', pdfRoute)
 router.post('/optimize', optimizeRoute)
 
 const app = new Koa()
+app.use(cors())
 app.use(Logger())
 app.use(Static(WEB_ROOT))
 app.use(Parser())

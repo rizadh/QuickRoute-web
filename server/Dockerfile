@@ -7,8 +7,8 @@ WORKDIR /app
 RUN apk add --no-cache make gcc g++ python linux-headers udev texlive
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 RUN npm run build
-CMD npm run serve
+CMD npm start

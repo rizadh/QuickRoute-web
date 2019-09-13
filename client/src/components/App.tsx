@@ -5,7 +5,6 @@ import { useAppState } from '../hooks/useAppState'
 import store from '../redux/store'
 import { MapButtons } from './MapButtons'
 import { MapView } from './MapView'
-import { MapViewStatusbar } from './MapViewStatusbar'
 import { WaypointEditor } from './WaypointEditor'
 
 export const App = () => {
@@ -17,7 +16,6 @@ export const App = () => {
             <MapView />
             <ProgressBar />
             <MapButtons />
-            <MapViewStatusbar />
             <WaypointEditor />
         </AppStateContext.Provider>
     )

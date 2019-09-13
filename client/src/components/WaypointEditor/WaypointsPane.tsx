@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
+import { apiPrefix } from '../..'
 import { AppStateContext } from '../../context/AppStateContext'
-import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
 import { routeInformation } from '../../redux/selectors'
 import { createWaypointFromAddress } from '../../redux/util'
@@ -9,7 +9,7 @@ import { isValidAddress } from '../../redux/validator'
 import { preventFocus } from '../util/preventFocus'
 import { WaypointList } from '../WaypointList'
 
-export const ListPane = () => {
+export const Waypointspane = () => {
     const {
         value: newWaypointFieldValue,
         setValue: setNewWaypointFieldValue,
@@ -22,11 +22,8 @@ export const ListPane = () => {
         waypoints: { list: waypoints },
     } = state
 
-    const compactMode = useCompactMode()
-
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
-    const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
     const addNewWaypoint = useCallback(() => {
         dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(newWaypointFieldValue) })
@@ -35,7 +32,7 @@ export const ListPane = () => {
     const generatePdf = useCallback(async () => {
         dispatch({ type: 'CLEAR_ERROR' })
 
-        const response = await fetch('pdf', {
+        const response = await fetch(apiPrefix + 'pdf', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -144,11 +141,6 @@ export const ListPane = () => {
                             disabled={waypoints.length === 0}
                         >
                             <i className="fas fa-fw fa-share" /> Share
-                        </button>
-                    )}
-                    {compactMode && (
-                        <button className="btn btn-primary" onClick={hideEditorPane} onMouseDown={preventFocus}>
-                            <i className="fas fa-fw fa-window-maximize" /> Hide Editor
                         </button>
                     )}
                 </>
