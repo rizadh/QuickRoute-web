@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
 import { useCompactMode } from '../hooks/useCompactMode'
+import { RouteInformationBar } from './RouteInformationBar'
 import { preventFocus } from './util/preventFocus'
 
 export const MapButtons = () => {
@@ -19,7 +20,8 @@ export const MapButtons = () => {
         <div id="map-buttons">
             {editorIsHidden && (
                 <button className="btn btn-frosted" onClick={showEditorPane}>
-                    Route Planner <i className={`fas fa-fw fa-caret-${compactMode ? 'up' : 'down'}`} />
+                    <RouteInformationBar collapsed={true} />{' '}
+                    <i className={`fas fa-fw fa-caret-${compactMode ? 'up' : 'down'}`} />
                 </button>
             )}
             {mutedMapIsEnabled ? (

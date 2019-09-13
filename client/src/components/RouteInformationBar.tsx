@@ -3,12 +3,13 @@ import { AppStateContext } from '../context/AppStateContext'
 import { routeInformation } from '../redux/selectors'
 import { StatView } from './StatView'
 
-export const MapViewStatusbar = () => {
-    const { state } = useContext(AppStateContext)
-    const { editorIsHidden } = state
-    const currentRouteInformation = routeInformation(state)
+type RouteInformationBarProps = {
+    collapsed?: boolean;
+}
 
-    if (editorIsHidden) return null
+export const RouteInformationBar = ({ collapsed }: RouteInformationBarProps) => {
+    const { state } = useContext(AppStateContext)
+    const currentRouteInformation = routeInformation(state)
 
     let statusbarItems: JSX.Element | string
     switch (currentRouteInformation.status) {
@@ -35,7 +36,11 @@ export const MapViewStatusbar = () => {
             throw new Error('Invalid route information')
     }
 
-    return <div id="mapview-statusbar">{statusbarItems}</div>
+    return (
+        <div id="route-statusbar" className={collapsed ? 'collapsed' : undefined}>
+            {statusbarItems}
+        </div>
+    )
 }
 
 function stringForTime(seconds: number) {

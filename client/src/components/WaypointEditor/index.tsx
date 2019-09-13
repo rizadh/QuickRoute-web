@@ -3,7 +3,7 @@ import { appVersion } from '../..'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { EditorPane } from '../../redux/state'
-import { MapViewStatusbar } from '../MapViewStatusbar'
+import { RouteInformationBar } from '../RouteInformationBar'
 import { preventFocus } from '../util/preventFocus'
 import { BulkEditPane } from './BulkEditPane'
 import { ImportPane } from './ImportPane'
@@ -114,7 +114,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
             </div>
             <div id="waypoint-editor-footer">
                 {footer}
-                <MapViewStatusbar />
+                <RouteInformationBar />
             </div>
         </div>
     )

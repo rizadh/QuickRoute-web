@@ -162,24 +162,35 @@ textarea {
         margin-left: $standardMargin;
     }
 
-    & > #mapview-statusbar {
+    & > #route-statusbar {
         margin-left: 0;
     }
 }
 
-#mapview-statusbar {
-    position: sticky;
-    bottom: 0;
-    height: $statusbarHeight;
-    width: 100%;
-
-    z-index: 2;
-
-    display: flex;
+#route-statusbar {
     align-items: center;
     justify-content: space-evenly;
 
-    border-top: 1px solid var(--app-border-color);
+    &:not(.collapsed) {
+        display: flex;
+
+        z-index: 2;
+
+        position: sticky;
+        bottom: 0;
+        height: $statusbarHeight;
+        width: 100%;
+
+        border-top: 1px solid var(--app-border-color);
+    }
+
+    &.collapsed {
+        display: inline-flex;
+
+        & > *:first-child {
+            margin-right: $standardHorizontalPadding;
+        }
+    }
 }
 
 .input-row {
