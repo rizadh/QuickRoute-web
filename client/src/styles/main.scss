@@ -95,12 +95,12 @@ textarea {
 }
 
 #waypoint-editor-hide-button {
-    position: absolute;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
 
-    right: $standardMargin;
-    top: $standardMargin;
-
-    line-height: 1;
+    width: 100%;
 }
 
 #waypoint-editor-header {
@@ -164,6 +164,11 @@ textarea {
 
     & > #route-statusbar {
         margin-left: 0;
+    }
+
+    & > #waypoint-editor-hide-button {
+        margin-left: 0;
+        margin-top: 0;
     }
 }
 

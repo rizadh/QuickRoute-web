@@ -49,14 +49,6 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
     return (
         <div id="waypoint-editor">
             <div id="waypoint-editor-header">
-                <button
-                    id="waypoint-editor-hide-button"
-                    className="btn btn-secondary"
-                    onClick={hideEditorPane}
-                    onMouseDown={preventFocus}
-                >
-                    <i className={`fas fa-fw fa-caret-${compactMode ? 'down' : 'up'}`} />
-                </button>
                 <div id="app-title">Route Planner</div>
                 <div id="app-version">
                     {appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
@@ -115,6 +107,14 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
             <div id="waypoint-editor-footer">
                 {footer}
                 <RouteInformationBar />
+                <button
+                    id="waypoint-editor-hide-button"
+                    className="btn btn-secondary"
+                    onClick={hideEditorPane}
+                    onMouseDown={preventFocus}
+                >
+                    <i className={`fas fa-chevron-${compactMode ? 'down' : 'up'}`} />
+                </button>
             </div>
         </div>
     )
