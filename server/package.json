@@ -35,7 +35,7 @@
         "koa-logger": "^3.2.0",
         "koa-router": "^7.4.0",
         "koa-static": "^5.0.0",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.13",
         "mapkit-token": "^1.0.2",
         "node-fetch": "^2.6.0",
         "node-tspsolver": "^1.0.1",
