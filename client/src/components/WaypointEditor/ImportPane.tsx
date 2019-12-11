@@ -31,7 +31,8 @@ export const ImportPane = () => {
             body={
                 <>
                     <div className="alert alert-info" role="alert">
-                        Waypoints are imported from Atripco
+                        Waypoints are imported from{' '}
+                        <a href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco Delivery Service</a>
                     </div>
                     <div className="input-row">
                         <input
