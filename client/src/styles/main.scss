@@ -96,15 +96,10 @@ textarea {
 
 #waypoint-editor-hide-button {
     border-radius: 0;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-
     width: 100%;
 }
 
 #waypoint-editor-header {
-    padding: $standardMargin;
     position: sticky;
     top: 0;
 
@@ -113,6 +108,21 @@ textarea {
     border-bottom: 1px solid var(--app-border-color);
 
     @include frosted-uncolored();
+
+    & > #waypoint-editor-hide-button {
+        margin-left: 0;
+        margin-top: 0;
+
+        background-color: transparent;
+
+        border-left: none;
+        border-right: none;
+        border-top: none;
+    }
+}
+
+#waypoint-editor-header-items {
+    padding: $standardMargin;
 }
 
 #app-title {
@@ -169,7 +179,12 @@ textarea {
     & > #waypoint-editor-hide-button {
         margin-left: 0;
         margin-top: 0;
+
         background-color: transparent;
+
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
     }
 }
 
