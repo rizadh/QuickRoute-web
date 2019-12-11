@@ -60,7 +60,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                     </button>
                 )}
                 <div id="waypoint-editor-header-items">
-                    <div id="app-title">Route Planner</div>
+                    <div id="app-title">QuickRoute</div>
                     <div id="app-version">
                         {appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
                     </div>
