@@ -90,9 +90,10 @@ export const OptimizePane = () => {
                             The route found will be the optimal from the start point to the end point.
                         </div>
                         <div className="input-row">
+                            <span>Start Point</span>
                             <input
                                 type="text"
-                                placeholder={`Start Point (default: ${defaultStartPoint()})`}
+                                placeholder={defaultStartPoint()}
                                 value={startPointFieldValue}
                                 onChange={handleStartPointFieldChange}
                                 disabled={optimizationInProgress}
@@ -100,9 +101,10 @@ export const OptimizePane = () => {
                             />
                         </div>
                         <div className="input-row">
+                            <span>End Point</span>
                             <input
                                 type="text"
-                                placeholder={`End Point (default: ${defaultEndPoint()})`}
+                                placeholder={defaultEndPoint()}
                                 value={endPointFieldValue}
                                 onChange={handleEndPointFieldChange}
                                 disabled={optimizationInProgress}
