@@ -21,7 +21,7 @@ export const MapButtons = () => {
             {editorIsHidden && (
                 <button className="btn btn-frosted" onClick={showEditorPane}>
                     <RouteInformationBar collapsed={true} />{' '}
-                    <i className={`fas fa-fw fa-caret-${compactMode ? 'up' : 'down'}`} />
+                    <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'down'}`} />
                 </button>
             )}
             {mutedMapIsEnabled ? (

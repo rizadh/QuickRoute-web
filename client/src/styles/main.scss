@@ -208,8 +208,8 @@ textarea {
     &.collapsed {
         display: inline-flex;
 
-        & > *:first-child {
-            margin-right: $standardHorizontalPadding;
+        & > *:not(:first-child) {
+            margin-left: $standardHorizontalPadding;
         }
     }
 }
