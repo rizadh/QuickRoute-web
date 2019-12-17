@@ -106,6 +106,7 @@ export const LinksPane = () => {
                                         onClick={shareLink(index)}
                                         onMouseDown={preventFocus}
                                         className="btn btn-primary"
+                                        title="Share this link"
                                     >
                                         <i className="fas fa-fw fa-share" />
                                     </button>
@@ -114,10 +115,16 @@ export const LinksPane = () => {
                                     onClick={copyLink(index)}
                                     onMouseDown={preventFocus}
                                     className="btn btn-primary"
+                                    title="Copy this link to clipboard"
                                 >
                                     <i className="fas fa-fw fa-clipboard" />
                                 </button>
-                                <button onClick={openUrl(index)} onMouseDown={preventFocus} className="btn btn-primary">
+                                <button
+                                    onClick={openUrl(index)}
+                                    onMouseDown={preventFocus}
+                                    className="btn btn-primary"
+                                    title="Open this link"
+                                >
                                     <i className="fas fa-fw fa-external-link-alt" />
                                 </button>
                             </div>
@@ -127,22 +134,6 @@ export const LinksPane = () => {
             }
             footer={
                 <>
-                    <button
-                        className="btn btn-primary"
-                        onClick={openAllLinks}
-                        onMouseDown={preventFocus}
-                        disabled={insufficientWaypoints}
-                    >
-                        <i className="fas fa-fw fa-external-link-alt" /> Open All
-                    </button>
-                    <button
-                        className="btn btn-primary"
-                        onClick={copyAllLinks}
-                        onMouseDown={preventFocus}
-                        disabled={insufficientWaypoints}
-                    >
-                        <i className="fas fa-fw fa-clipboard" /> Copy All
-                    </button>
                     {(navigator as INavigator).share && (
                         <button
                             className="btn btn-primary"
@@ -153,6 +144,22 @@ export const LinksPane = () => {
                             <i className="fas fa-fw fa-share" /> Share All
                         </button>
                     )}
+                    <button
+                        className="btn btn-primary"
+                        onClick={copyAllLinks}
+                        onMouseDown={preventFocus}
+                        disabled={insufficientWaypoints}
+                    >
+                        <i className="fas fa-fw fa-clipboard" /> Copy All
+                    </button>
+                    <button
+                        className="btn btn-primary"
+                        onClick={openAllLinks}
+                        onMouseDown={preventFocus}
+                        disabled={insufficientWaypoints}
+                    >
+                        <i className="fas fa-fw fa-external-link-alt" /> Open All
+                    </button>
                 </>
             }
         />
