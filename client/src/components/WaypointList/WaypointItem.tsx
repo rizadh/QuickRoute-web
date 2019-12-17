@@ -88,7 +88,12 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         (isBeingDraggedOver ? ' waypoint-item-dragging-over' : '')
                     }
                 >
-                    <button onClick={deleteWaypoint} onMouseDown={preventFocus} className="btn btn-sm btn-danger">
+                    <button
+                        title="Delete waypoint"
+                        onClick={deleteWaypoint}
+                        onMouseDown={preventFocus}
+                        className="btn btn-sm btn-danger"
+                    >
                         <i className="fas fa-fw fa-trash-alt" />
                     </button>
                     <input
@@ -113,7 +118,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                             <i className="fas fa-fw fa-circle-notch fa-spin" />
                         </span>
                     )}
-                    <span onClick={itemWasClicked} {...provided.dragHandleProps}>
+                    <span title="Drag to reorder" onClick={itemWasClicked} {...provided.dragHandleProps}>
                         <i className="fas fa-fw fa-grip-lines-vertical" />
                     </span>
                 </div>

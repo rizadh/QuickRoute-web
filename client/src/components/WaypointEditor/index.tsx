@@ -51,6 +51,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
             <div id="waypoint-editor-header">
                 {compactMode && (
                     <button
+                        title="Minimize editor"
                         id="waypoint-editor-hide-button"
                         className="btn btn-secondary"
                         onClick={hideEditorPane}
@@ -121,6 +122,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                 <RouteInformationBar />
                 {!compactMode && (
                     <button
+                        title="Minimize editor"
                         id="waypoint-editor-hide-button"
                         className="btn btn-secondary"
                         onClick={hideEditorPane}

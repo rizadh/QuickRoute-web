@@ -105,6 +105,7 @@ export const Waypointspane = () => {
                             autoFocus={true}
                         />
                         <button
+                            title="Add waypoint"
                             onClick={addNewWaypoint}
                             onMouseDown={preventFocus}
                             disabled={!isValidAddress(newWaypointFieldValue)}
