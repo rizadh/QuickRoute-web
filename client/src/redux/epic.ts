@@ -10,6 +10,7 @@ import {
     AddWaypointAction,
     AppAction,
     DeleteWaypointAction,
+    FetchAllRoutesAction,
     FetchPlaceAction,
     FetchPlaceFailedAction,
     FetchPlaceInProgressAction,
@@ -257,6 +258,20 @@ const fetchPlaceEpic: AppEpic = (action$, state$) =>
         ofType<AppAction, FetchPlaceAction>('FETCH_PLACE'),
         filter(({ address }) => !state$.value.fetchedPlaces.get(address)),
         mergeMap(({ address }) => performLookup(address)),
+    )
+
+const fetchAllRoutesEpic: AppEpic = (action$, state$) =>
+    action$.pipe(
+        ofType<AppAction, FetchAllRoutesAction>('FETCH_ALL_ROUTES'),
+        mergeMap(() =>
+            range(0, state$.value.waypoints.list.length - 1).pipe(
+                map<number, FetchRouteAction>(index => ({
+                    type: 'FETCH_ROUTE',
+                    origin: state$.value.waypoints.list[index].address,
+                    destination: state$.value.waypoints.list[index + 1].address,
+                })),
+            ),
+        ),
     )
 
 const fetchRouteEpic: AppEpic = (action$, state$) =>
@@ -546,6 +561,7 @@ export default combineEpics(
     moveSelectedWaypointsEpic,
     setAddressEpic,
     fetchPlaceEpic,
+    fetchAllRoutesEpic,
     fetchRouteEpic,
     importWaypointsEpic,
     optimizeRouteEpic,

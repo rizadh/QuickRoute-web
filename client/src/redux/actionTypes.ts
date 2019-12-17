@@ -74,6 +74,10 @@ export type FetchPlaceFailedAction = Readonly<{
     error: Error;
 }>
 
+export type FetchAllRoutesAction = Readonly<{
+    type: 'FETCH_ALL_ROUTES';
+}>
+
 export type FetchRouteAction = Readonly<{
     type: 'FETCH_ROUTE';
     origin: string;
@@ -220,6 +224,7 @@ export type AppAction =
     | FetchPlaceInProgressAction
     | FetchPlaceSuccessAction
     | FetchPlaceFailedAction
+    | FetchAllRoutesAction
     | FetchRouteAction
     | FetchRouteInProgressAction
     | FetchRouteSuccessAction
