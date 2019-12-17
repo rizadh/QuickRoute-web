@@ -1,8 +1,9 @@
-import { getDistance } from 'geolib'
-import flatten from 'lodash/flatten'
+import { DirectionsAnnotation } from '@mapbox/mapbox-sdk/services/directions'
+import mapboxMatrix from '@mapbox/mapbox-sdk/services/matrix'
+import { range as _range, times } from 'lodash'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
-import { catchError, filter, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
+import { catchError, filter, first, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
 import { apiPrefix } from '..'
 import { WaypointsResponse } from '../../../server/src/routes/waypoints'
 import {
@@ -29,14 +30,17 @@ import {
     SetAddressAction,
 } from './actionTypes'
 import { AppState, EditorPane } from './state'
-import { createWaypointFromAddress, getRoute } from './util'
+import { createWaypointFromAddress, getRoute, partitionMatrix } from './util'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
+type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
 
 const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
 const directions = new mapkit.Directions()
-
-type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
+const matrixClient = mapboxMatrix({
+    accessToken: 'pk.eyJ1Ijoicml6YWRoIiwiYSI6ImNrNDFzZDlwZTA0bWszbXJqNHdieXNzMDkifQ.xGoSI1wcoXze546ObEX9ng',
+})
+const MAPBOX_MAX_POINTS = 25
 
 const performLookup = (address: string) =>
     new Observable<FetchPlaceResultAction>(observer => {
@@ -383,95 +387,131 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
             if (startPoint) optimizationWaypoints.splice(0, 0, startPoint)
             if (endPoint) optimizationWaypoints.push(endPoint)
 
-            const waypointPairs: Array<[string, string]> = flatten(
-                optimizationWaypoints.map(origin => optimizationWaypoints.map(destination => [origin, destination])),
-            )
-
             return merge<AppAction, AppAction>(
-                optimizationParameter === OptimizationParameter.Quick
-                    ? [
-                          { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
-                          ...optimizationWaypoints.map<AppAction>(waypoint => ({
-                              type: 'FETCH_PLACE',
-                              address: waypoint,
-                          })),
-                      ]
-                    : [
-                          { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
-                          ...waypointPairs.map<AppAction>(([origin, destination]) => ({
-                              type: 'FETCH_ROUTE',
-                              origin,
-                              destination,
-                          })),
-                      ],
+                [
+                    { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
+                    ...optimizationWaypoints.map<AppAction>(waypoint => ({
+                        type: 'FETCH_PLACE',
+                        address: waypoint,
+                    })),
+                ],
                 state$.pipe(
-                    filter(state =>
-                        optimizationParameter === OptimizationParameter.Quick
-                            ? optimizationWaypoints.every(waypoint => {
-                                  const place = state.fetchedPlaces.get(waypoint)
-                                  return place !== undefined && place.status !== 'IN_PROGRESS'
-                              })
-                            : waypointPairs.every(([origin, destination]) => {
-                                  const route = getRoute(state.fetchedRoutes, origin, destination)
-                                  return route !== undefined && route.status !== 'IN_PROGRESS'
-                              }),
+                    first(state =>
+                        optimizationWaypoints.every(waypoint => {
+                            const place = state.fetchedPlaces.get(waypoint)
+                            return place !== undefined && place.status !== 'IN_PROGRESS'
+                        }),
                     ),
-                    take(1),
                     mergeMap(async state => {
-                        const getCost = (origin: string, destination: string) => {
-                            if (optimizationParameter === OptimizationParameter.Quick) {
-                                const fetchedRoute = getRoute(state.fetchedRoutes, origin, destination)
+                        const costMatrix = times(optimizationWaypoints.length, () =>
+                            times(optimizationWaypoints.length, () => 0),
+                        )
 
-                                if (fetchedRoute && fetchedRoute.status === 'SUCCESS') {
-                                    return fetchedRoute.result.distance
-                                }
+                        let annotation: DirectionsAnnotation
+                        switch (optimizationParameter) {
+                            case OptimizationParameter.Distance:
+                                annotation = 'distance'
+                                break
+                            case OptimizationParameter.Time:
+                                annotation = 'duration'
+                                break
+                            default:
+                                throw new Error('Optimization failed: Internal assertion failed')
+                        }
 
-                                const originPlace = state.fetchedPlaces.get(origin)
-                                const destinationPlace = state.fetchedPlaces.get(destination)
+                        const getCoordinates = (waypoint: string): [number, number] => {
+                            const place = state.fetchedPlaces.get(waypoint)
 
-                                if (
-                                    !originPlace ||
-                                    !destinationPlace ||
-                                    originPlace.status === 'IN_PROGRESS' ||
-                                    destinationPlace.status === 'IN_PROGRESS'
-                                ) {
-                                    throw new Error('Optimization failed: Internal assertion failed')
-                                }
-
-                                if (originPlace.status === 'FAILED') {
-                                    throw new Error(`Optimization failed: ${originPlace.error.message}`)
-                                }
-
-                                if (destinationPlace.status === 'FAILED') {
-                                    throw new Error(`Optimization failed: ${destinationPlace.error.message}`)
-                                }
-
-                                return getDistance(originPlace.result.coordinate, destinationPlace.result.coordinate)
-                            }
-
-                            const route = getRoute(state.fetchedRoutes, origin, destination)
-                            if (!route || route.status === 'IN_PROGRESS') {
+                            if (!place || place.status === 'IN_PROGRESS') {
                                 throw new Error('Optimization failed: Internal assertion failed')
                             }
 
-                            if (route.status === 'FAILED') {
-                                throw new Error(`Optimization failed: ${route.error.message}`)
+                            if (place.status === 'FAILED') {
+                                throw new Error(`Optimization failed: ${place.error.message}`)
                             }
 
-                            switch (optimizationParameter) {
-                                case OptimizationParameter.Distance:
-                                    return route.result.distance
-                                case OptimizationParameter.Time:
-                                    return route.result.expectedTravelTime
-                                default:
-                                    throw new Error('Optimization failed: Internal assertion failed')
-                            }
+                            const { longitude, latitude } = place.result.coordinate
+
+                            return [longitude, latitude]
                         }
 
-                        const costMatrix: number[][] = optimizationWaypoints.map(origin =>
-                            optimizationWaypoints.map(destination => getCost(origin, destination)),
+                        const matrixRequests = partitionMatrix(MAPBOX_MAX_POINTS, optimizationWaypoints).map(
+                            partition => {
+                                switch (partition.type) {
+                                    case 'SYMMETRIC':
+                                        return matrixClient
+                                            .getMatrix({
+                                                points: partition.items.map(waypoint => {
+                                                    return { coordinates: getCoordinates(waypoint) }
+                                                }),
+                                                annotations: ([annotation] as unknown) as DirectionsAnnotation,
+                                            })
+                                            .send()
+                                            .then(response => {
+                                                // console.log(response.body)
+                                                switch (optimizationParameter) {
+                                                    case OptimizationParameter.Distance:
+                                                        return response.body.distances as number[][]
+                                                    case OptimizationParameter.Time:
+                                                        return response.body.durations as number[][]
+                                                    default:
+                                                        throw new Error(
+                                                            'Optimization failed: No distance matrix received',
+                                                        )
+                                                }
+                                            })
+                                            .then(matrix => {
+                                                const { items, offset } = partition
+                                                for (let i = 0; i < items.length; i++) {
+                                                    costMatrix[offset + i].splice(offset, items.length, ...matrix[i])
+                                                }
+                                            })
+                                    case 'ASYMMETRIC':
+                                        return matrixClient
+                                            .getMatrix({
+                                                points: partition.rowItems
+                                                    .concat(partition.columnItems)
+                                                    .map(waypoint => {
+                                                        return { coordinates: getCoordinates(waypoint) }
+                                                    }),
+                                                annotations: ([annotation] as unknown) as DirectionsAnnotation,
+                                                sources: _range(0, partition.rowItems.length),
+                                                destinations: _range(
+                                                    partition.rowItems.length,
+                                                    partition.rowItems.length + partition.columnItems.length,
+                                                ),
+                                            })
+                                            .send()
+                                            .then(response => {
+                                                // console.log(response.body)
+                                                switch (optimizationParameter) {
+                                                    case OptimizationParameter.Distance:
+                                                        return response.body.distances as number[][]
+                                                    case OptimizationParameter.Time:
+                                                        return response.body.durations as number[][]
+                                                    default:
+                                                        throw new Error(
+                                                            'Optimization failed: No distance matrix received',
+                                                        )
+                                                }
+                                            })
+                                            .then(matrix => {
+                                                const { rowItems, columnItems, rowOffset, columnOffset } = partition
+                                                for (let i = 0; i < rowItems.length; i++) {
+                                                    costMatrix[rowOffset + i].splice(
+                                                        columnOffset,
+                                                        columnItems.length,
+                                                        ...matrix[i],
+                                                    )
+                                                }
+                                            })
+                                    default:
+                                        throw new Error('Optimization failed: Internal assertion failed')
+                                }
+                            },
                         )
 
+                        await Promise.all(matrixRequests)
                         let optimalOrdering = await optimizeRoute(costMatrix)
                         if (startPoint) optimalOrdering = optimalOrdering.slice(1).map(i => i - 1)
                         if (endPoint) optimalOrdering = optimalOrdering.slice(0, -1)

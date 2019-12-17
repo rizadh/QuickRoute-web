@@ -159,7 +159,6 @@ export type ImportWaypointsFailedAction = Readonly<{
 export enum OptimizationParameter {
     Time = 'time',
     Distance = 'distance',
-    Quick = 'quick',
 }
 
 export type OptimizeRouteAction = Readonly<{

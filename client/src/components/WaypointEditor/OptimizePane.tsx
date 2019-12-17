@@ -51,17 +51,6 @@ export const OptimizePane = () => {
         [startPoint, endPoint],
     )
 
-    const quickOptimize = useCallback(
-        () =>
-            dispatch({
-                type: 'OPTIMIZE_ROUTE',
-                optimizationParameter: OptimizationParameter.Quick,
-                startPoint: startPoint || undefined,
-                endPoint: endPoint || undefined,
-            }),
-        [startPoint, endPoint],
-    )
-
     const cancelOptimize = useCallback(
         () =>
             dispatch({
@@ -140,14 +129,6 @@ export const OptimizePane = () => {
                             disabled={insufficientWaypoints}
                         >
                             <i className="fas fa-fw fa-clock" /> Optimize Time
-                        </button>
-                        <button
-                            className="btn btn-primary"
-                            onClick={quickOptimize}
-                            onMouseDown={preventFocus}
-                            disabled={insufficientWaypoints}
-                        >
-                            <i className="fas fa-tachometer-alt" /> Quick Optimize
                         </button>
                     </>
                 )
