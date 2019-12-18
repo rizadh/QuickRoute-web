@@ -54,17 +54,20 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const outgoingRouteFetchResult =
         index !== waypoints.length - 1 && routeFetchResult(waypoints[index].address, waypoints[index + 1].address)
 
-    const itemWasClicked = (e: React.MouseEvent) => {
-        e.preventDefault()
+    const itemWasClicked = useCallback(
+        (e: React.MouseEvent) => {
+            e.preventDefault()
 
-        if (e.shiftKey) {
-            dispatch({ type: 'SELECT_WAYPOINT_RANGE', index })
-        } else if (e.ctrlKey || e.metaKey) {
-            dispatch({ type: 'TOGGLE_WAYPOINT_SELECTION', index })
-        } else {
-            dispatch({ type: 'SELECT_WAYPOINT', index })
-        }
-    }
+            if (e.shiftKey) {
+                dispatch({ type: 'SELECT_WAYPOINT_RANGE', index })
+            } else if (e.ctrlKey || e.metaKey) {
+                dispatch({ type: 'TOGGLE_WAYPOINT_SELECTION', index })
+            } else {
+                dispatch({ type: 'SELECT_WAYPOINT', index })
+            }
+        },
+        [index, dispatch],
+    )
 
     const fetchIsInProgress =
         (placeFetchResult && placeFetchResult.status === 'IN_PROGRESS') ||
