@@ -37,10 +37,19 @@ export const WaypointList = () => {
         waypoints,
     ])
 
-    const isDraggingWaypoint = useCallback(
+    /**
+     * Returns true iff waypoint is being dragged due to being selected, but is not being dragged directly
+     */
+    const isBeingDraggedAlong = useCallback(
         (uuid: string) =>
-            (draggedWaypoint && selectedWaypoints.has(draggedWaypoint) && selectedWaypoints.has(uuid)) ||
-            uuid === draggedWaypoint,
+            // Check that this waypoint is not being dragged directly
+            uuid !== draggedWaypoint &&
+            // Check that a waypoint is being dragged
+            draggedWaypoint !== null &&
+            // Check that a selected waypoint is being dragged
+            selectedWaypoints.has(draggedWaypoint) &&
+            // Check that this waypoint is selected
+            selectedWaypoints.has(uuid),
         [draggedWaypoint, selectedWaypoints],
     )
 
@@ -53,7 +62,7 @@ export const WaypointList = () => {
                             <WaypointItem
                                 key={waypoint.uuid}
                                 index={index}
-                                isBeingDraggedOver={snapshot.isDraggingOver && !isDraggingWaypoint(waypoint.uuid)}
+                                isBeingDraggedAlong={snapshot.isDraggingOver && isBeingDraggedAlong(waypoint.uuid)}
                             />
                         ))}
                         {provided.placeholder}

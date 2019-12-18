@@ -8,11 +8,11 @@ import { preventFocus } from '../util/preventFocus'
 
 type WaypointItemProps = {
     index: number;
-    isBeingDraggedOver: boolean;
+    isBeingDraggedAlong: boolean;
 }
 
 export const WaypointItem = (props: WaypointItemProps) => {
-    const { index, isBeingDraggedOver } = props
+    const { index, isBeingDraggedAlong } = props
 
     const {
         state: {
@@ -88,7 +88,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                     className={
                         'input-row' +
                         (waypointIsSelected ? ' waypoint-item-selected' : '') +
-                        (isBeingDraggedOver ? ' waypoint-item-dragging-over' : '')
+                        (isBeingDraggedAlong ? ' waypoint-item-dragging-along' : '')
                     }
                 >
                     <button
