@@ -7,21 +7,27 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
     (waypoints: Draft<WaypointsState>, action: AppAction) => {
         switch (action.type) {
             case 'REPLACE_WAYPOINTS':
-                return void (waypoints.list = action.waypoints)
+                waypoints.list = action.waypoints
+                break
             case 'ADD_WAYPOINT':
-                return void waypoints.list.push(action.waypoint)
+                waypoints.list.push(action.waypoint)
+                break
             case 'DELETE_WAYPOINT':
-                return void waypoints.list.splice(action.index, 1)
+                waypoints.list.splice(action.index, 1)
+                break
             case 'REVERSE_WAYPOINTS':
-                return void waypoints.list.reverse()
+                waypoints.list.reverse()
+                break
             case 'SET_ADDRESS':
-                return void (waypoints.list[action.index].address = action.address)
+                waypoints.list[action.index].address = action.address
+                break
             case 'MOVE_WAYPOINT':
                 if (action.sourceIndex === action.targetIndex) return
 
                 const [removed] = waypoints.list.splice(action.sourceIndex, 1)
 
-                return void waypoints.list.splice(action.targetIndex, 0, removed)
+                waypoints.list.splice(action.targetIndex, 0, removed)
+                break
             case 'MOVE_SELECTED_WAYPOINTS':
                 const lowestIndex = waypoints.list.findIndex(waypoint => waypoints.selected.has(waypoint.uuid))
                 const partitionIndex = lowestIndex < action.index ? action.index + 1 : action.index
@@ -34,11 +40,9 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
                     (waypoint, index) => !waypoints.selected.has(waypoint.uuid) && index >= partitionIndex,
                 )
 
-                return void (waypoints.list = [
-                    ...waypointsBeforePartition,
-                    ...movedWaypoints,
-                    ...waypointsAfterPartition,
-                ])
+                waypoints.list = [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
+
+                break
             case 'SELECT_WAYPOINT': {
                 const waypoint = waypoints.list[action.index]
 
@@ -50,7 +54,8 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
                     waypoints.selected = new Set([waypoint.uuid])
                 }
 
-                return void (waypoints.lastSelected = waypoints.list[action.index].uuid)
+                waypoints.lastSelected = waypoints.list[action.index].uuid
+                break
             }
             case 'TOGGLE_WAYPOINT_SELECTION': {
                 // TODO: Can be set directly with Immer v4.0
@@ -66,7 +71,8 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
 
                 waypoints.lastSelected = waypoint.uuid
 
-                return void (waypoints.selected = newSelectedWaypoints)
+                waypoints.selected = newSelectedWaypoints
+                break
             }
             case 'SELECT_WAYPOINT_RANGE': {
                 // TODO: Can be set directly with Immer v4.0
@@ -80,7 +86,8 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
                     newSelectedWaypoints.add(waypoints.list[i].uuid)
                 }
 
-                return void (waypoints.selected = newSelectedWaypoints)
+                waypoints.selected = newSelectedWaypoints
+                break
             }
         }
     },
