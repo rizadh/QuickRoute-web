@@ -44,11 +44,14 @@
         "uuid": "^3.3.2"
     },
     "devDependencies": {
+        "@types/jest": "^24.0.24",
         "autoprefixer": "^9.6.0",
+        "jest": "^24.9.0",
         "parcel": "^1.12.4",
         "prettier": "^1.18.2",
         "prettier-tslint": "^0.4.2",
         "sass": "^1.21.0",
+        "ts-jest": "^24.2.0",
         "tslint": "^5.17.0",
         "tslint-react": "^4.0.0",
         "tslint-react-hooks": "^2.1.1",
