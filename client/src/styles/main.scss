@@ -110,7 +110,7 @@ textarea {
 
     @include frosted-uncolored();
 
-    & > #waypoint-editor-hide-button {
+    > #waypoint-editor-hide-button {
         margin-left: 0;
         margin-top: 0;
 
@@ -179,11 +179,11 @@ textarea {
 
     @include frosted-uncolored();
 
-    & > #route-statusbar {
+    > #route-statusbar {
         margin-left: 0;
     }
 
-    & > #waypoint-editor-hide-button {
+    > #waypoint-editor-hide-button {
         margin-left: 0;
         margin-top: 0;
 
@@ -199,7 +199,7 @@ textarea {
     padding-left: var(--standard-margin);
     padding-top: var(--standard-margin);
 
-    & > * {
+    > * {
         margin-right: var(--standard-margin);
         margin-bottom: var(--standard-margin);
     }
@@ -225,7 +225,7 @@ textarea {
     &.collapsed {
         display: inline-flex;
 
-        & > *:not(:first-child) {
+        > *:not(:first-child) {
             margin-left: var(--standard-horizontal-padding);
         }
     }
@@ -237,7 +237,7 @@ textarea {
 
     transition: opacity 0.2s;
 
-    & > * {
+    > * {
         border-radius: calc(var(--standard-border-radius) / 2);
         margin-left: calc(var(--standard-margin) / 2);
 
@@ -246,20 +246,20 @@ textarea {
         line-height: var(--standard-control-line-height);
     }
 
-    & > *:first-child {
+    > *:first-child {
         margin-left: 0;
 
         border-top-left-radius: var(--standard-border-radius);
         border-bottom-left-radius: var(--standard-border-radius);
     }
 
-    & > *:last-child {
+    > *:last-child {
         border-top-right-radius: var(--standard-border-radius);
         border-bottom-right-radius: var(--standard-border-radius);
     }
 
-    & > input,
-    & > textarea {
+    > input,
+    > textarea {
         flex-grow: 1;
         min-width: 0;
 
@@ -268,7 +268,7 @@ textarea {
         }
     }
 
-    & > span {
+    > span {
         background-color: var(--app-input-row-span-color);
         border: 1px solid var(--app-heavy-border-color);
 
@@ -317,13 +317,13 @@ textarea {
 .statview {
     color: var(--app-secondary-text-color);
 
-    & > .spacer {
+    > .spacer {
         width: 0.5em;
         display: inline-block;
         background-color: red;
     }
 
-    & > span {
+    > span {
         font-weight: 600;
         color: var(--app-primary-text-color);
     }
@@ -358,7 +358,7 @@ textarea {
         left: 0;
     }
 
-    & > button {
+    > button {
         flex-shrink: 0;
         margin-right: calc(var(--standard-margin) / 2);
     }
