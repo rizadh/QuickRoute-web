@@ -155,6 +155,10 @@ textarea {
     }
 }
 
+#waypoint-editor-body {
+    padding-bottom: $standardMargin;
+}
+
 #waypoint-editor-footer {
     position: sticky;
     bottom: 0;
@@ -222,10 +226,6 @@ textarea {
     margin-bottom: 0;
 
     transition: opacity 0.2s;
-
-    &:last-child {
-        margin-bottom: $standardMargin;
-    }
 
     & > * {
         border-radius: $standardBorderRadius / 2;
