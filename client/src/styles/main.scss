@@ -278,15 +278,15 @@ textarea {
             outline: none;
         }
     }
+}
 
-    &.waypoint-item-selected > span {
-        background-color: var(--apple-system-blue);
-        color: white;
-    }
+.waypoint-item-selected > span {
+    background-color: var(--apple-system-blue);
+    color: white;
+}
 
-    &.waypoint-item-dragging-along {
-        opacity: 0.5;
-    }
+.waypoint-item-dragging-along {
+    opacity: 0.5;
 }
 
 #mapview {
