@@ -9,6 +9,7 @@ import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
 import { preventFocus } from '../util/preventFocus'
 import { WaypointList } from '../WaypointList'
+import isMobileFn from 'ismobilejs'
 
 export const Waypointspane = () => {
     const {
@@ -77,6 +78,8 @@ export const Waypointspane = () => {
         }
     }, [waypoints])
 
+    const isMobileDevice = isMobileFn().any
+
     return (
         <WaypointEditorTemplate
             body={
@@ -104,7 +107,7 @@ export const Waypointspane = () => {
                             value={newWaypointFieldValue}
                             onChange={handleNewWaypointFieldChange}
                             onKeyPress={handleNewWaypointFieldKeyPress}
-                            autoFocus={true}
+                            autoFocus={!isMobileDevice}
                         />
                         <button
                             title="Add waypoint"

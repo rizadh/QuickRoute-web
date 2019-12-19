@@ -5,6 +5,7 @@ import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
 import { OptimizationParameter } from '../../redux/actionTypes'
 import { preventFocus } from '../util/preventFocus'
+import isMobileFn from 'ismobilejs'
 
 export const OptimizePane = () => {
     const {
@@ -68,6 +69,8 @@ export const OptimizePane = () => {
     const defaultStartPoint = () => startPoint || waypoints[0].address
     const defaultEndPoint = () => endPoint || waypoints[waypoints.length - 1].address
 
+    const isMobileDevice = isMobileFn().any
+
     return (
         <WaypointEditorTemplate
             body={
@@ -88,7 +91,7 @@ export const OptimizePane = () => {
                                 value={startPointFieldValue}
                                 onChange={handleStartPointFieldChange}
                                 disabled={optimizationInProgress}
-                                autoFocus={true}
+                                autoFocus={!isMobileDevice}
                             />
                         </div>
                         <div className="input-row">

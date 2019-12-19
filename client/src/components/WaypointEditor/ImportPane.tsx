@@ -3,6 +3,7 @@ import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { preventFocus } from '../util/preventFocus'
+import isMobileFn from 'ismobilejs'
 
 export const ImportPane = () => {
     const {
@@ -29,6 +30,8 @@ export const ImportPane = () => {
         [driverNumberFieldValue],
     )
 
+    const isMobileDevice = isMobileFn().any
+
     return (
         <WaypointEditorTemplate
             body={
@@ -45,7 +48,7 @@ export const ImportPane = () => {
                             onChange={handleDriverNumberFieldChange}
                             onKeyPress={handleDriverNumberFieldKeyPress}
                             disabled={importInProgress}
-                            autoFocus={true}
+                            autoFocus={!isMobileDevice}
                         />
                     </div>
                     {waypoints.length > 0 && (

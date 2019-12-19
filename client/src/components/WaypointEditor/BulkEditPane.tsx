@@ -1,3 +1,4 @@
+import isMobileFn from 'ismobilejs'
 import React, { useCallback, useContext } from 'react'
 import Textarea from 'react-textarea-autosize'
 import { WaypointEditorTemplate } from '.'
@@ -32,6 +33,8 @@ export const BulkEditPane = () => {
         dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List })
     }, [bulkEditFieldValue])
 
+    const isMobileDevice = isMobileFn().any
+
     return (
         <WaypointEditorTemplate
             body={
@@ -45,7 +48,7 @@ export const BulkEditPane = () => {
                             onChange={handleBulkEditFieldChange}
                             onKeyPress={handleBulkEditFieldKeyPress}
                             value={bulkEditFieldValue}
-                            autoFocus={true}
+                            autoFocus={!isMobileDevice}
                         />
                     </div>
                 </>
