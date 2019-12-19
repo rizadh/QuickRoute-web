@@ -307,6 +307,12 @@ textarea {
 .statview {
     color: var(--app-secondary-text-color);
 
+    & > .spacer {
+        width: 0.5em;
+        display: inline-block;
+        background-color: red;
+    }
+
     & > span {
         font-weight: 600;
         color: var(--app-primary-text-color);

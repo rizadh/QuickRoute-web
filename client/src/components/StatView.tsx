@@ -7,6 +7,8 @@ type StatViewProps = {
 
 export const StatView = (props: StatViewProps) => (
     <div className="statview">
-        <span>{props.title}</span> {props.value}
+        <span>{props.title}</span>
+        <div className="spacer" />
+        {props.value}
     </div>
 )
