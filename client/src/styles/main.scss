@@ -122,7 +122,18 @@ textarea {
 }
 
 #waypoint-editor-header-items {
-    padding: var(--standard-margin);
+    padding-left: var(--standard-margin);
+    padding-top: var(--standard-margin);
+
+    > * {
+        margin-right: var(--standard-margin);
+        margin-bottom: var(--standard-margin);
+    }
+
+    #pane-selector {
+        margin-right: calc(var(--standard-margin) / 2);
+        margin-bottom: calc(var(--standard-margin) / 2);
+    }
 }
 
 #app-title {
@@ -136,26 +147,18 @@ textarea {
 
 #app-version {
     font-size: 1rem;
-    font-weight: 500;
     color: var(--app-secondary-text-color);
 }
 
 #pane-selector {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    width: 100%;
-    margin-top: calc(var(--standard-margin) / 2);
 
     .btn {
         margin-right: calc(var(--standard-margin) / 2);
-        margin-top: calc(var(--standard-margin) / 2);
+        margin-bottom: calc(var(--standard-margin) / 2);
 
         line-height: 1;
-
-        &:last-child {
-            margin-right: 0;
-        }
     }
 }
 
