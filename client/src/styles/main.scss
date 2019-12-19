@@ -109,12 +109,15 @@ textarea {
     position: sticky;
     z-index: 1;
 
+    border-width: 1px;
+    border-color: var(--app-border-color);
+
     @include frosted-uncolored();
 }
 
 #waypoint-editor-header {
     top: 0;
-    border-bottom: 1px solid var(--app-border-color);
+    border-bottom-style: solid;
 
     > #waypoint-editor-hide-button {
         border-top: none;
@@ -123,26 +126,26 @@ textarea {
 
 #waypoint-editor-footer {
     bottom: 0;
-    border-top: 1px solid var(--app-border-color);
+    border-top-style: solid;
 
     > #waypoint-editor-hide-button {
         border-bottom: none;
     }
 }
 
-#waypoint-editor-header-items {
+#waypoint-editor-header-items,
+#waypoint-editor-footer-items,
+#waypoint-editor-body {
     padding-left: var(--standard-margin);
     padding-top: var(--standard-margin);
+}
 
-    > * {
-        margin-right: var(--standard-margin);
-        margin-bottom: var(--standard-margin);
-    }
-
-    #pane-selector {
-        margin-right: calc(var(--standard-margin) / 2);
-        margin-bottom: calc(var(--standard-margin) / 2);
-    }
+#waypoint-editor-header-items > *,
+#waypoint-editor-footer-items > *,
+#waypoint-editor-body .text,
+#waypoint-editor-body .input-row {
+    margin-right: var(--standard-margin);
+    margin-bottom: var(--standard-margin);
 }
 
 #app-title {
@@ -163,32 +166,14 @@ textarea {
     display: flex;
     flex-wrap: wrap;
 
+    margin-right: calc(var(--standard-margin) / 2);
+    margin-bottom: calc(var(--standard-margin) / 2);
+
     .btn {
         margin-right: calc(var(--standard-margin) / 2);
         margin-bottom: calc(var(--standard-margin) / 2);
 
         line-height: 1;
-    }
-}
-
-#waypoint-editor-body {
-    padding-left: var(--standard-margin);
-    padding-top: var(--standard-margin);
-
-    .text,
-    .input-row {
-        margin-right: var(--standard-margin);
-        margin-bottom: var(--standard-margin);
-    }
-}
-
-#waypoint-editor-footer-items {
-    padding-left: var(--standard-margin);
-    padding-top: var(--standard-margin);
-
-    > * {
-        margin-right: var(--standard-margin);
-        margin-bottom: var(--standard-margin);
     }
 }
 
@@ -199,8 +184,6 @@ textarea {
     &:not(.collapsed) {
         display: flex;
 
-        position: sticky;
-        bottom: 0;
         height: $statusbarHeight;
         width: 100%;
 
@@ -210,7 +193,7 @@ textarea {
     &.collapsed {
         display: inline-flex;
 
-        > *:not(:first-child) {
+        > :not(:first-child) {
             margin-left: var(--standard-horizontal-padding);
         }
     }
@@ -224,21 +207,22 @@ textarea {
 
     > * {
         border-radius: calc(var(--standard-border-radius) / 2);
-        margin-right: calc(var(--standard-margin) / 2);
 
         padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
 
         line-height: var(--standard-control-line-height);
     }
 
-    > *:first-child {
+    > :not(:last-child) {
+        margin-right: calc(var(--standard-margin) / 2);
+    }
+
+    > :first-child {
         border-top-left-radius: var(--standard-border-radius);
         border-bottom-left-radius: var(--standard-border-radius);
     }
 
-    > *:last-child {
-        margin-right: 0;
-
+    > :last-child {
         border-top-right-radius: var(--standard-border-radius);
         border-bottom-right-radius: var(--standard-border-radius);
     }
@@ -247,10 +231,10 @@ textarea {
     > textarea {
         flex-grow: 1;
         min-width: 0;
+    }
 
-        *:not(&) {
-            flex-shrink: 0;
-        }
+    > :not(input, textarea) {
+        flex-shrink: 0;
     }
 
     > span {
