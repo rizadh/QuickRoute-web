@@ -4,52 +4,6 @@
 @import "./mixins.scss";
 @import "./spacings.scss";
 
-html {
-    background-color: var(--app-background-color);
-    color: var(--app-primary-text-color);
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-}
-
-a {
-    color: var(--apple-system-blue);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-input,
-textarea {
-    border: none;
-    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
-    border-radius: var(--standard-border-radius);
-
-    appearance: none;
-    outline: none;
-
-    box-shadow: none;
-
-    line-height: var(--standard-control-line-height);
-
-    color: var(--app-primary-text-color);
-
-    transition: background-color 0.2s, border 0.2s;
-    background-color: var(--app-form-control-color);
-    border: 1px solid var(--app-heavy-border-color);
-
-    &::placeholder {
-        color: var(--app-secondary-text-color);
-    }
-
-    &:not(:read-only):focus {
-        background-color: var(--app-form-control-focus-color);
-
-        border: 1px solid var(--apple-system-blue);
-    }
-}
-
 #root {
     position: fixed;
     left: 0;
@@ -94,16 +48,6 @@ textarea {
     }
 }
 
-#waypoint-editor-hide-button {
-    width: 100%;
-
-    background-color: transparent;
-
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-}
-
 #waypoint-editor-header,
 #waypoint-editor-footer {
     position: sticky;
@@ -146,6 +90,16 @@ textarea {
 #waypoint-editor-body .input-row {
     margin-right: var(--standard-margin);
     margin-bottom: var(--standard-margin);
+}
+
+#waypoint-editor-hide-button {
+    width: 100%;
+
+    background-color: transparent;
+
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
 }
 
 #app-title {
@@ -196,6 +150,81 @@ textarea {
         > :not(:first-child) {
             margin-left: var(--standard-horizontal-padding);
         }
+    }
+}
+
+#mapview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    transition: filter 0.2s;
+    &.updating {
+        transition: filter 0.4s;
+        filter: saturate(0) opacity(0.5);
+
+        * {
+            pointer-events: none;
+        }
+    }
+
+    @media (max-width: $compactBreakpoint) {
+        #root:not(.editor-hidden) & {
+            transition: filter 0.4s;
+            filter: opacity(0.5);
+
+            * {
+                pointer-events: none;
+            }
+        }
+    }
+}
+
+#map-buttons {
+    position: absolute;
+    top: 0;
+    left: calc(#{$editorWidth} + var(--standard-margin));
+    padding: var(--standard-margin);
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    display: flex;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    @media (max-width: $compactBreakpoint) {
+        top: initial;
+        left: 0;
+        bottom: 0;
+
+        #root:not(.editor-hidden) & {
+            display: none;
+        }
+    }
+
+    #root.editor-hidden & {
+        left: 0;
+    }
+
+    > button {
+        flex-shrink: 0;
+        margin-right: calc(var(--standard-margin) / 2);
+    }
+}
+
+#progress-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4px;
+    overflow: hidden;
+
+    svg {
+        position: absolute;
     }
 }
 
@@ -256,33 +285,6 @@ textarea {
     opacity: 0.5;
 }
 
-#mapview {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-
-    transition: filter 0.2s;
-    &.updating {
-        transition: filter 0.4s;
-        filter: saturate(0) opacity(0.5);
-
-        * {
-            pointer-events: none;
-        }
-    }
-
-    @media (max-width: $compactBreakpoint) {
-        #root:not(.editor-hidden) & {
-            transition: filter 0.4s;
-            filter: opacity(0.5);
-
-            * {
-                pointer-events: none;
-            }
-        }
-    }
-}
-
 .statview {
     color: var(--app-secondary-text-color);
 
@@ -297,50 +299,48 @@ textarea {
     }
 }
 
-#map-buttons {
-    position: absolute;
-    top: 0;
-    left: calc(#{$editorWidth} + var(--standard-margin));
-    padding: var(--standard-margin);
-
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-
-    display: flex;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-
-    @media (max-width: $compactBreakpoint) {
-        top: initial;
-        left: 0;
-        bottom: 0;
-
-        #root:not(.editor-hidden) & {
-            display: none;
-        }
-    }
-
-    #root.editor-hidden & {
-        left: 0;
-    }
-
-    > button {
-        flex-shrink: 0;
-        margin-right: calc(var(--standard-margin) / 2);
-    }
+html {
+    background-color: var(--app-background-color);
+    color: var(--app-primary-text-color);
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
-#progress-bar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 4px;
-    overflow: hidden;
+a {
+    color: var(--apple-system-blue);
+    text-decoration: none;
+}
 
-    svg {
-        position: absolute;
+a:hover {
+    text-decoration: underline;
+}
+
+input,
+textarea {
+    border: none;
+    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    border-radius: var(--standard-border-radius);
+
+    appearance: none;
+    outline: none;
+
+    box-shadow: none;
+
+    line-height: var(--standard-control-line-height);
+
+    color: var(--app-primary-text-color);
+
+    transition: background-color 0.2s, border 0.2s;
+    background-color: var(--app-form-control-color);
+    border: 1px solid var(--app-heavy-border-color);
+
+    &::placeholder {
+        color: var(--app-secondary-text-color);
+    }
+
+    &:not(:read-only):focus {
+        background-color: var(--app-form-control-focus-color);
+
+        border: 1px solid var(--apple-system-blue);
     }
 }
