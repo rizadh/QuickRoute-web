@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { App } from './components/App'
 
-export const appVersion = 'v2019.12.18'
+export const appVersion = 'v2019.12.19'
 export const apiPrefix = 'https://rizadh.com/route-planner/'
 
 // tslint:disable-next-line:no-var-requires
