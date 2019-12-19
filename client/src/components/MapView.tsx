@@ -32,10 +32,10 @@ export const MapView = () => {
         map.showItems([...(map.annotations || []), ...map.overlays], {
             animate: animated,
             padding: new mapkit.Padding({
-                top: 16,
-                right: 16,
-                bottom: 16,
-                left: 16,
+                top: compactMode ? 12 : 16,
+                right: compactMode ? 12 : 16,
+                bottom: compactMode ? 12 : 16,
+                left: compactMode ? 12 : 16,
             }),
         })
     }
@@ -69,7 +69,7 @@ export const MapView = () => {
         if (!map) return
 
         if (compactMode) {
-            map.padding = new mapkit.Padding({ top: 0, left: 16, right: 0, bottom: 16 + 42 })
+            map.padding = new mapkit.Padding({ top: 0, left: 12, right: 0, bottom: 12 + 42 })
         } else if (editorIsHidden) {
             map.padding = new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 })
         } else {

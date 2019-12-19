@@ -1,0 +1,15 @@
+:root {
+    --standard-margin: 16px;
+    --standard-vertical-padding: 8px;
+    --standard-horizontal-padding: 12px;
+    --standard-border-radius: 8px;
+    --standard-control-line-height: 1.55;
+
+    @media (max-width: $compactBreakpoint) {
+        --standard-margin: 12px;
+        --standard-vertical-padding: 6px;
+        --standard-horizontal-padding: 9px;
+        --standard-border-radius: 6px;
+        --standard-control-line-height: 1.25;
+    }
+}

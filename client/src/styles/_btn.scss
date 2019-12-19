@@ -5,11 +5,11 @@
     --local-btn-background-color: transparent;
     --local-btn-text-color: var(--app-text-color);
 
-    padding: $standardPadding;
-    border-radius: $standardBorderRadius;
+    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    border-radius: var(--standard-border-radius);
     border: 1px solid var(--app-border-color);
 
-    line-height: 1.5;
+    line-height: var(--standard-control-line-height);
 
     background-color: var(--local-btn-background-color);
     color: var(--local-btn-text-color);
@@ -18,11 +18,6 @@
 
     position: relative;
     overflow: hidden;
-
-    @media (max-width: $compactBreakpoint) {
-        padding: #{$standardVerticalPadding * 3 / 4} #{$standardHorizontalPadding * 3 / 4};
-        line-height: 1.25;
-    }
 
     &::after {
         content: "";

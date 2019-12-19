@@ -1,7 +1,7 @@
 @import "./variables.scss";
 
 .alert {
-    margin: $standardMargin;
+    margin: var(--standard-margin);
     margin-bottom: 0;
 }
 

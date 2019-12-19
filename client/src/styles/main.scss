@@ -3,6 +3,7 @@
 @import "./alert.scss";
 @import "./colors.scss";
 @import "./mixins.scss";
+@import "./spacings.scss";
 
 html {
     background-color: var(--app-background-color);
@@ -23,26 +24,21 @@ a:hover {
 input,
 textarea {
     border: none;
-    padding: $standardPadding;
-    border-radius: $standardBorderRadius;
+    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    border-radius: var(--standard-border-radius);
 
     appearance: none;
     outline: none;
 
     box-shadow: none;
 
-    line-height: 1.5;
+    line-height: var(--standard-control-line-height);
 
     color: var(--app-primary-text-color);
 
     transition: background-color 0.2s, border 0.2s;
     background-color: var(--app-form-control-color);
     border: 1px solid var(--app-heavy-border-color);
-
-    @media (max-width: $compactBreakpoint) {
-        padding: #{$standardVerticalPadding * 3 / 4} #{$standardHorizontalPadding * 3 / 4};
-        line-height: 1.25;
-    }
 
     &::placeholder {
         color: var(--app-secondary-text-color);
@@ -66,13 +62,13 @@ textarea {
 #waypoint-editor {
     position: absolute;
 
-    left: $standardMargin;
-    top: $standardMargin;
+    left: var(--standard-margin);
+    top: var(--standard-margin);
 
     width: $editorWidth;
-    max-height: calc(100% - #{2 * $standardMargin});
+    max-height: calc(100% - 2 * var(--standard-margin));
 
-    border-radius: $standardBorderRadius;
+    border-radius: var(--standard-border-radius);
 
     border: 1px solid var(--app-border-color);
 
@@ -95,7 +91,7 @@ textarea {
 
         border: none;
         border-top: 1px solid var(--app-border-color);
-        border-radius: $standardBorderRadius $standardBorderRadius 0 0;
+        border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
     }
 }
 
@@ -127,7 +123,7 @@ textarea {
 }
 
 #waypoint-editor-header-items {
-    padding: $standardMargin;
+    padding: var(--standard-margin);
 }
 
 #app-title {
@@ -150,11 +146,11 @@ textarea {
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
-    margin-top: $standardMargin / 2;
+    margin-top: calc(var(--standard-margin) / 2);
 
     .btn {
-        margin-right: $standardMargin / 2;
-        margin-top: $standardMargin / 2;
+        margin-right: calc(var(--standard-margin) / 2);
+        margin-top: calc(var(--standard-margin) / 2);
 
         line-height: 1;
 
@@ -165,7 +161,7 @@ textarea {
 }
 
 #waypoint-editor-body {
-    padding-bottom: $standardMargin;
+    padding-bottom: var(--standard-margin);
 }
 
 #waypoint-editor-footer {
@@ -181,8 +177,8 @@ textarea {
 
     & > * {
         float: left;
-        margin-top: $standardMargin;
-        margin-left: $standardMargin;
+        margin-top: var(--standard-margin);
+        margin-left: var(--standard-margin);
     }
 
     & > #route-statusbar {
@@ -222,7 +218,7 @@ textarea {
         display: inline-flex;
 
         & > *:not(:first-child) {
-            margin-left: $standardHorizontalPadding;
+            margin-left: var(--standard-horizontal-padding);
         }
     }
 }
@@ -231,35 +227,30 @@ textarea {
     display: flex;
     align-items: center;
 
-    margin: $standardMargin;
+    margin: var(--standard-margin);
     margin-bottom: 0;
 
     transition: opacity 0.2s;
 
     & > * {
-        border-radius: $standardBorderRadius / 2;
-        margin-left: $standardMargin / 2;
+        border-radius: calc(var(--standard-border-radius) / 2);
+        margin-left: calc(var(--standard-margin) / 2);
 
-        padding: $standardPadding;
+        padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
 
-        line-height: 1.5;
-
-        @media (max-width: $compactBreakpoint) {
-            padding: #{$standardVerticalPadding * 3 / 4} #{$standardHorizontalPadding * 3 / 4};
-            line-height: 1.25;
-        }
+        line-height: var(--standard-control-line-height);
     }
 
     & > *:first-child {
         margin-left: 0;
 
-        border-top-left-radius: $standardBorderRadius;
-        border-bottom-left-radius: $standardBorderRadius;
+        border-top-left-radius: var(--standard-border-radius);
+        border-bottom-left-radius: var(--standard-border-radius);
     }
 
     & > *:last-child {
-        border-top-right-radius: $standardBorderRadius;
-        border-bottom-right-radius: $standardBorderRadius;
+        border-top-right-radius: var(--standard-border-radius);
+        border-bottom-right-radius: var(--standard-border-radius);
     }
 
     & > input,
@@ -336,8 +327,8 @@ textarea {
 #map-buttons {
     position: absolute;
     top: 0;
-    left: $editorWidth + $standardMargin;
-    padding: $standardMargin;
+    left: calc(#{$editorWidth} + var(--standard-margin));
+    padding: var(--standard-margin);
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
@@ -364,7 +355,7 @@ textarea {
 
     & > button {
         flex-shrink: 0;
-        margin-right: $standardMargin / 2;
+        margin-right: calc(var(--standard-margin) / 2);
     }
 }
 
