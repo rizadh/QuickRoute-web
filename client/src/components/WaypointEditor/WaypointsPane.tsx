@@ -98,6 +98,11 @@ export const Waypointspane = () => {
                 </div>
             )}
             <WaypointList />
+        </>
+    )
+
+    const footer = (
+        <>
             <div className="input-row">
                 <input
                     type="text"
@@ -117,11 +122,6 @@ export const Waypointspane = () => {
                     <i className="fas fa-fw fa-plus" />
                 </button>
             </div>
-        </>
-    )
-
-    const footer = (
-        <>
             <button
                 className="btn btn-primary"
                 onClick={generatePdf}

@@ -175,7 +175,7 @@ textarea {
 
     @include frosted-uncolored();
 
-    & > * {
+    & > :not(.input-row) {
         float: left;
         margin-top: var(--standard-margin);
         margin-left: var(--standard-margin);
