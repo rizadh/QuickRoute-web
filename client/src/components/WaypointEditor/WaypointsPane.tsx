@@ -102,7 +102,7 @@ export const Waypointspane = () => {
     )
 
     const footer = (
-        <>
+        <div id="waypoint-editor-footer-items">
             <div className="input-row">
                 <input
                     type="text"
@@ -149,7 +149,7 @@ export const Waypointspane = () => {
                     <i className="fas fa-fw fa-share" /> Share
                 </button>
             )}
-        </>
+        </div>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />

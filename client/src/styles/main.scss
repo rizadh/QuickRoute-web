@@ -162,6 +162,10 @@ textarea {
 
 #waypoint-editor-body {
     padding-bottom: var(--standard-margin);
+
+    .input-row {
+        margin: var(--standard-margin);
+    }
 }
 
 #waypoint-editor-footer {
@@ -174,12 +178,6 @@ textarea {
     border-top: 1px solid var(--app-border-color);
 
     @include frosted-uncolored();
-
-    & > :not(.input-row) {
-        float: left;
-        margin-top: var(--standard-margin);
-        margin-left: var(--standard-margin);
-    }
 
     & > #route-statusbar {
         margin-left: 0;
@@ -194,6 +192,16 @@ textarea {
         border-left: none;
         border-right: none;
         border-bottom: none;
+    }
+}
+
+#waypoint-editor-footer-items {
+    padding-left: var(--standard-margin);
+    padding-top: var(--standard-margin);
+
+    & > * {
+        margin-right: var(--standard-margin);
+        margin-bottom: var(--standard-margin);
     }
 }
 
@@ -226,9 +234,6 @@ textarea {
 .input-row {
     display: flex;
     align-items: center;
-
-    margin: var(--standard-margin);
-    margin-bottom: 0;
 
     transition: opacity 0.2s;
 

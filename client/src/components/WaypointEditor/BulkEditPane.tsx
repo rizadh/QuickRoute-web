@@ -53,9 +53,11 @@ export const BulkEditPane = () => {
     )
 
     const footer = (
-        <button className="btn btn-primary" onClick={commitBulkEdit} onMouseDown={preventFocus}>
-            <i className="fas fa-fw fa-save" /> Save
-        </button>
+        <div id="waypoint-editor-footer-items">
+            <button className="btn btn-primary" onClick={commitBulkEdit} onMouseDown={preventFocus}>
+                <i className="fas fa-fw fa-save" /> Save
+            </button>
+        </div>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />

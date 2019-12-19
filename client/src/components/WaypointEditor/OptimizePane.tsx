@@ -105,7 +105,7 @@ export const OptimizePane = () => {
     )
 
     const footer = optimizationInProgress ? (
-        <>
+        <div id="waypoint-editor-footer-items">
             <button className="btn btn-primary" disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" />
                 {!compactMode && ' Optimizing'}
@@ -113,9 +113,9 @@ export const OptimizePane = () => {
             <button className="btn btn-danger" onClick={cancelOptimize} onMouseDown={preventFocus}>
                 <i className="fas fa-ban" /> Cancel
             </button>
-        </>
+        </div>
     ) : (
-        <>
+        <div id="waypoint-editor-footer-items">
             <button
                 className="btn btn-primary"
                 onClick={optimizeDistance}
@@ -134,7 +134,7 @@ export const OptimizePane = () => {
                 <i className="fas fa-fw fa-clock" />
                 {compactMode ? ' Time' : ' Optimize Time'}
             </button>
-        </>
+        </div>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />

@@ -57,23 +57,25 @@ export const ImportPane = () => {
     )
 
     const footer = importInProgress ? (
-        <>
+        <div id="waypoint-editor-footer-items">
             <button className="btn btn-primary" disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
             </button>
             <button className="btn btn-danger" onClick={cancelImport} onMouseDown={preventFocus}>
                 <i className="fas fa-ban" /> Cancel
             </button>
-        </>
+        </div>
     ) : (
-        <button
-            className="btn btn-primary"
-            onClick={importWaypoints}
-            onMouseDown={preventFocus}
-            disabled={!driverNumberFieldValue.length}
-        >
-            <i className="fas fa-fw fa-cloud-download-alt" /> Import
-        </button>
+        <div id="waypoint-editor-footer-items">
+            <button
+                className="btn btn-primary"
+                onClick={importWaypoints}
+                onMouseDown={preventFocus}
+                disabled={!driverNumberFieldValue.length}
+            >
+                <i className="fas fa-fw fa-cloud-download-alt" /> Import
+            </button>
+        </div>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />
