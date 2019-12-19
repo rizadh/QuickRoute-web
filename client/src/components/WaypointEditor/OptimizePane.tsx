@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
+import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
 import { OptimizationParameter } from '../../redux/actionTypes'
 import { preventFocus } from '../util/preventFocus'
@@ -13,6 +14,7 @@ export const OptimizePane = () => {
         },
         dispatch,
     } = useContext(AppStateContext)
+    const compactMode = useCompactMode()
 
     const { value: startPointFieldValue, setValue: setStartPointFieldValue } = useInputField('', () => undefined)
     const { value: endPointFieldValue, setValue: setEndPointFieldValue } = useInputField('', () => undefined)
@@ -106,7 +108,8 @@ export const OptimizePane = () => {
                 optimizationInProgress ? (
                     <>
                         <button className="btn btn-primary" disabled={true}>
-                            <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing
+                            <i className="fas fa-fw fa-spin fa-circle-notch" />
+                            {!compactMode && ' Optimizing'}
                         </button>
                         <button className="btn btn-danger" onClick={cancelOptimize} onMouseDown={preventFocus}>
                             <i className="fas fa-ban" /> Cancel
@@ -120,7 +123,8 @@ export const OptimizePane = () => {
                             onMouseDown={preventFocus}
                             disabled={insufficientWaypoints}
                         >
-                            <i className="fas fa-fw fa-ruler-combined" /> Optimize Distance
+                            <i className="fas fa-fw fa-ruler-combined" />
+                            {compactMode ? ' Distance' : ' Optimize Distance'}
                         </button>
                         <button
                             className="btn btn-primary"
@@ -128,7 +132,8 @@ export const OptimizePane = () => {
                             onMouseDown={preventFocus}
                             disabled={insufficientWaypoints}
                         >
-                            <i className="fas fa-fw fa-clock" /> Optimize Time
+                            <i className="fas fa-fw fa-clock" />
+                            {compactMode ? ' Time' : ' Optimize Time'}
                         </button>
                     </>
                 )

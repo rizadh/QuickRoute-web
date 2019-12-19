@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { apiPrefix } from '../..'
 import { AppStateContext } from '../../context/AppStateContext'
+import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
 import { routeInformation } from '../../redux/selectors'
 import { createWaypointFromAddress } from '../../redux/util'
@@ -18,6 +19,7 @@ export const Waypointspane = () => {
     } = useInputField('', () => isValidAddress(newWaypointFieldValue) && addNewWaypoint())
 
     const { state, dispatch } = useContext(AppStateContext)
+    const compactMode = useCompactMode()
     const {
         waypoints: { list: waypoints },
     } = state
@@ -124,7 +126,8 @@ export const Waypointspane = () => {
                         onMouseDown={preventFocus}
                         disabled={waypoints.length === 0}
                     >
-                        <i className="fas fa-fw fa-file-pdf" /> Generate PDF
+                        <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
+                        {compactMode ? ' PDF' : ' Generate PDF'}
                     </button>
                     <button
                         className="btn btn-primary"

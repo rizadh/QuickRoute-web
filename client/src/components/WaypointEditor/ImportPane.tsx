@@ -6,7 +6,10 @@ import { preventFocus } from '../util/preventFocus'
 
 export const ImportPane = () => {
     const {
-        state: { importInProgress },
+        state: {
+            importInProgress,
+            waypoints: { list: waypoints },
+        },
         dispatch,
     } = useContext(AppStateContext)
 
@@ -32,7 +35,7 @@ export const ImportPane = () => {
                 <>
                     <div className="alert alert-info" role="alert">
                         Waypoints are imported from{' '}
-                        <a href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco Delivery Service</a>
+                        <a href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco</a>
                     </div>
                     <div className="input-row">
                         <input
@@ -45,9 +48,11 @@ export const ImportPane = () => {
                             autoFocus={true}
                         />
                     </div>
-                    <div className="alert alert-warning" role="alert">
-                        Note: Any existing waypoints will be replaced
-                    </div>
+                    {waypoints.length > 0 && (
+                        <div className="alert alert-warning" role="alert">
+                            Existing waypoints will be replaced
+                        </div>
+                    )}
                 </>
             }
             footer={

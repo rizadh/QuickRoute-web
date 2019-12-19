@@ -78,6 +78,18 @@ export const MapView = () => {
     }, [editorIsHidden, map, compactMode])
 
     useEffect(() => {
+        if (!map) return
+
+        if (compactMode) {
+            map.showsCompass = mapkit.FeatureVisibility.Hidden
+            map.showsZoomControl = false
+        } else {
+            map.showsCompass = mapkit.FeatureVisibility.Adaptive
+            map.showsZoomControl = true
+        }
+    }, [map, compactMode])
+
+    useEffect(() => {
         if (!mapviewRef.current) return
 
         if (status === 'FETCHING' || operationInProgress) mapviewRef.current.classList.add('updating')

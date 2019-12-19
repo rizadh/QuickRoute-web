@@ -95,7 +95,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         title="Delete waypoint"
                         onClick={deleteWaypoint}
                         onMouseDown={preventFocus}
-                        className="btn btn-sm btn-danger"
+                        className="btn btn-danger"
                     >
                         <i className="fas fa-fw fa-trash-alt" />
                     </button>

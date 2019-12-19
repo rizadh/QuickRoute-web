@@ -72,7 +72,8 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                             onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
-                            <i className="fas fa-fw fa-th-list" /> Waypoints
+                            <i className="fas fa-fw fa-th-list" />
+                            {!compactMode && ' Waypoints'}
                         </button>
                         <button
                             className={'btn btn-' + (editorPane === EditorPane.BulkEdit ? 'primary' : 'secondary')}
@@ -80,7 +81,8 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                             onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
-                            <i className="fas fa-fw fa-list-alt" /> Bulk Edit
+                            <i className="fas fa-fw fa-list-alt" />
+                            {!compactMode && ' Bulk Edit'}
                         </button>
                         <button
                             className={'btn btn-' + (editorPane === EditorPane.Links ? 'primary' : 'secondary')}
@@ -88,7 +90,8 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                             onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
-                            <i className="fas fa-fw fa-link" /> Links
+                            <i className="fas fa-fw fa-link" />
+                            {!compactMode && ' Links'}
                         </button>
                         <button
                             className={'btn btn-' + (editorPane === EditorPane.Import ? 'primary' : 'secondary')}
@@ -96,7 +99,8 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                             onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
-                            <i className="fas fa-fw fa-cloud-download-alt" /> Import
+                            <i className="fas fa-fw fa-cloud-download-alt" />
+                            {!compactMode && ' Import'}
                         </button>
                         <button
                             className={'btn btn-' + (editorPane === EditorPane.Optimizer ? 'primary' : 'secondary')}
@@ -104,7 +108,8 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                             onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
-                            <i className="fas fa-fw fa-star" /> Optimize
+                            <i className="fas fa-fw fa-star" />
+                            {!compactMode && ' Optimize'}
                         </button>
                     </div>
                 </div>

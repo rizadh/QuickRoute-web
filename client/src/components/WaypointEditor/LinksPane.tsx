@@ -4,6 +4,7 @@ import { stringify } from 'query-string'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
+import { useCompactMode } from '../../hooks/useCompactMode'
 import { preventFocus } from '../util/preventFocus'
 
 export const LinksPane = () => {
@@ -13,6 +14,7 @@ export const LinksPane = () => {
         },
         dispatch,
     } = useContext(AppStateContext)
+    const compactMode = useCompactMode()
 
     const navigationLinks = useMemo(() => {
         return chunk(waypoints, 10)
@@ -141,7 +143,8 @@ export const LinksPane = () => {
                             onMouseDown={preventFocus}
                             disabled={insufficientWaypoints}
                         >
-                            <i className="fas fa-fw fa-share" /> Share All
+                            <i className="fas fa-fw fa-share" />
+                            {compactMode ? ' Share' : ' Share All'}
                         </button>
                     )}
                     <button
@@ -150,7 +153,8 @@ export const LinksPane = () => {
                         onMouseDown={preventFocus}
                         disabled={insufficientWaypoints}
                     >
-                        <i className="fas fa-fw fa-clipboard" /> Copy All
+                        <i className="fas fa-fw fa-clipboard" />
+                        {compactMode ? ' Copy' : ' Copy All'}
                     </button>
                     <button
                         className="btn btn-primary"
@@ -158,7 +162,8 @@ export const LinksPane = () => {
                         onMouseDown={preventFocus}
                         disabled={insufficientWaypoints}
                     >
-                        <i className="fas fa-fw fa-external-link-alt" /> Open All
+                        <i className="fas fa-fw fa-external-link-alt" />
+                        {compactMode ? ' Open' : ' Open All'}
                     </button>
                 </>
             }

@@ -19,6 +19,11 @@
     position: relative;
     overflow: hidden;
 
+    @media (max-width: $compactBreakpoint) {
+        padding: #{$standardVerticalPadding * 3 / 4} #{$standardHorizontalPadding * 3 / 4};
+        line-height: 1.25;
+    }
+
     &::after {
         content: "";
 

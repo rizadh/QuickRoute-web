@@ -1,14 +1,12 @@
 import React, { useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
+import { useCompactMode } from '../hooks/useCompactMode'
 import { routeInformation } from '../redux/selectors'
 import { StatView } from './StatView'
 
-type RouteInformationBarProps = {
-    collapsed?: boolean;
-}
-
-export const RouteInformationBar = ({ collapsed }: RouteInformationBarProps) => {
+export const RouteInformationBar = () => {
     const { state } = useContext(AppStateContext)
+    const compactMode = useCompactMode()
     const currentRouteInformation = routeInformation(state)
 
     let statusbarItems: JSX.Element | string
@@ -37,8 +35,8 @@ export const RouteInformationBar = ({ collapsed }: RouteInformationBarProps) => 
     }
 
     return (
-        <div id="route-statusbar" className={collapsed ? 'collapsed' : undefined}>
-            {statusbarItems}
+        <div id="route-statusbar" className={state.editorIsHidden ? 'collapsed' : undefined}>
+            {!state.editorIsHidden || !compactMode ? statusbarItems : 'Show Editor'}
         </div>
     )
 }
