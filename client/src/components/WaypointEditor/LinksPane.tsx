@@ -91,82 +91,79 @@ export const LinksPane = () => {
 
     const insufficientWaypoints = waypoints.length === 0
 
-    return (
-        <WaypointEditorTemplate
-            body={
-                insufficientWaypoints ? (
-                    <div className="alert alert-warning" role="alert">
-                        Add one or more waypoints to generate links
-                    </div>
-                ) : (
-                    <>
-                        {navigationLinks.map((url, index) => (
-                            <div key={url} className="input-row">
-                                <input type="text" value={url} readOnly={true} />
-                                {(navigator as INavigator).share && (
-                                    <button
-                                        onClick={shareLink(index)}
-                                        onMouseDown={preventFocus}
-                                        className="btn btn-primary"
-                                        title="Share this link"
-                                    >
-                                        <i className="fas fa-fw fa-share" />
-                                    </button>
-                                )}
-                                <button
-                                    onClick={copyLink(index)}
-                                    onMouseDown={preventFocus}
-                                    className="btn btn-primary"
-                                    title="Copy this link to clipboard"
-                                >
-                                    <i className="fas fa-fw fa-clipboard" />
-                                </button>
-                                <button
-                                    onClick={openUrl(index)}
-                                    onMouseDown={preventFocus}
-                                    className="btn btn-primary"
-                                    title="Open this link"
-                                >
-                                    <i className="fas fa-fw fa-external-link-alt" />
-                                </button>
-                            </div>
-                        ))}
-                    </>
-                )
-            }
-            footer={
-                <>
+    const body = insufficientWaypoints ? (
+        <div className="alert alert-warning" role="alert">
+            Add one or more waypoints to generate links
+        </div>
+    ) : (
+        <>
+            {navigationLinks.map((url, index) => (
+                <div key={url} className="input-row">
+                    <input type="text" value={url} readOnly={true} />
                     {(navigator as INavigator).share && (
                         <button
-                            className="btn btn-primary"
-                            onClick={shareAllLinks}
+                            onClick={shareLink(index)}
                             onMouseDown={preventFocus}
-                            disabled={insufficientWaypoints}
+                            className="btn btn-primary"
+                            title="Share this link"
                         >
                             <i className="fas fa-fw fa-share" />
-                            {compactMode ? ' Share' : ' Share All'}
                         </button>
                     )}
                     <button
-                        className="btn btn-primary"
-                        onClick={copyAllLinks}
+                        onClick={copyLink(index)}
                         onMouseDown={preventFocus}
-                        disabled={insufficientWaypoints}
+                        className="btn btn-primary"
+                        title="Copy this link to clipboard"
                     >
                         <i className="fas fa-fw fa-clipboard" />
-                        {compactMode ? ' Copy' : ' Copy All'}
                     </button>
                     <button
-                        className="btn btn-primary"
-                        onClick={openAllLinks}
+                        onClick={openUrl(index)}
                         onMouseDown={preventFocus}
-                        disabled={insufficientWaypoints}
+                        className="btn btn-primary"
+                        title="Open this link"
                     >
                         <i className="fas fa-fw fa-external-link-alt" />
-                        {compactMode ? ' Open' : ' Open All'}
                     </button>
-                </>
-            }
-        />
+                </div>
+            ))}
+        </>
     )
+
+    const footer = (
+        <>
+            {(navigator as INavigator).share && (
+                <button
+                    className="btn btn-primary"
+                    onClick={shareAllLinks}
+                    onMouseDown={preventFocus}
+                    disabled={insufficientWaypoints}
+                >
+                    <i className="fas fa-fw fa-share" />
+                    {compactMode ? ' Share' : ' Share All'}
+                </button>
+            )}
+            <button
+                className="btn btn-primary"
+                onClick={copyAllLinks}
+                onMouseDown={preventFocus}
+                disabled={insufficientWaypoints}
+            >
+                <i className="fas fa-fw fa-clipboard" />
+                {compactMode ? ' Copy' : ' Copy All'}
+            </button>
+            <button
+                className="btn btn-primary"
+                onClick={openAllLinks}
+                onMouseDown={preventFocus}
+                disabled={insufficientWaypoints}
+            >
+                <i className="fas fa-fw fa-external-link-alt" />
+                {compactMode ? ' Open' : ' Open All'}
+            </button>
+        </>
+    )
+
+    return <WaypointEditorTemplate body={body} footer={footer} />
 }

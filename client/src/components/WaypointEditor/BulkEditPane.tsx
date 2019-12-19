@@ -35,29 +35,28 @@ export const BulkEditPane = () => {
 
     const isMobileDevice = isMobileFn().any
 
-    return (
-        <WaypointEditorTemplate
-            body={
-                <>
-                    <div className="alert alert-info" role="alert">
-                        Enter one address per line
-                    </div>
-                    <div className="input-row">
-                        <Textarea
-                            minRows={3}
-                            onChange={handleBulkEditFieldChange}
-                            onKeyPress={handleBulkEditFieldKeyPress}
-                            value={bulkEditFieldValue}
-                            autoFocus={!isMobileDevice}
-                        />
-                    </div>
-                </>
-            }
-            footer={
-                <button className="btn btn-primary" onClick={commitBulkEdit} onMouseDown={preventFocus}>
-                    <i className="fas fa-fw fa-save" /> Save
-                </button>
-            }
-        />
+    const body = (
+        <>
+            <div className="alert alert-info" role="alert">
+                Enter one address per line
+            </div>
+            <div className="input-row">
+                <Textarea
+                    minRows={3}
+                    onChange={handleBulkEditFieldChange}
+                    onKeyPress={handleBulkEditFieldKeyPress}
+                    value={bulkEditFieldValue}
+                    autoFocus={!isMobileDevice}
+                />
+            </div>
+        </>
     )
+
+    const footer = (
+        <button className="btn btn-primary" onClick={commitBulkEdit} onMouseDown={preventFocus}>
+            <i className="fas fa-fw fa-save" /> Save
+        </button>
+    )
+
+    return <WaypointEditorTemplate body={body} footer={footer} />
 }

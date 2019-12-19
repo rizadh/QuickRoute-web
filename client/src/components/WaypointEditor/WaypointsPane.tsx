@@ -1,3 +1,4 @@
+import isMobileFn from 'ismobilejs'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { apiPrefix } from '../..'
@@ -9,7 +10,6 @@ import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
 import { preventFocus } from '../util/preventFocus'
 import { WaypointList } from '../WaypointList'
-import isMobileFn from 'ismobilejs'
 
 export const Waypointspane = () => {
     const {
@@ -80,78 +80,77 @@ export const Waypointspane = () => {
 
     const isMobileDevice = isMobileFn().any
 
-    return (
-        <WaypointEditorTemplate
-            body={
-                <>
-                    {currentRouteInformation.status === 'FAILED' && (
-                        <div className="alert alert-danger" role="alert">
-                            Route could not be found
-                        </div>
-                    )}
-                    {waypoints.length === 0 && (
-                        <div className="alert alert-info" role="alert">
-                            Enter an address to begin
-                        </div>
-                    )}
-                    {waypoints.length === 1 && (
-                        <div className="alert alert-info" role="alert">
-                            Enter another address to show route information
-                        </div>
-                    )}
-                    <WaypointList />
-                    <div className="input-row">
-                        <input
-                            type="text"
-                            placeholder="New waypoint"
-                            value={newWaypointFieldValue}
-                            onChange={handleNewWaypointFieldChange}
-                            onKeyPress={handleNewWaypointFieldKeyPress}
-                            autoFocus={!isMobileDevice}
-                        />
-                        <button
-                            title="Add waypoint"
-                            onClick={addNewWaypoint}
-                            onMouseDown={preventFocus}
-                            disabled={!isValidAddress(newWaypointFieldValue)}
-                            className="btn btn-primary"
-                        >
-                            <i className="fas fa-fw fa-plus" />
-                        </button>
-                    </div>
-                </>
-            }
-            footer={
-                <>
-                    <button
-                        className="btn btn-primary"
-                        onClick={generatePdf}
-                        onMouseDown={preventFocus}
-                        disabled={waypoints.length === 0}
-                    >
-                        <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
-                        {compactMode ? ' PDF' : ' Generate PDF'}
-                    </button>
-                    <button
-                        className="btn btn-primary"
-                        onClick={reverseWaypoints}
-                        onMouseDown={preventFocus}
-                        disabled={waypoints.length < 2}
-                    >
-                        <i className="fas fa-fw fa-exchange-alt" /> Reverse
-                    </button>
-                    {(navigator as INavigator).share && (
-                        <button
-                            className="btn btn-primary"
-                            onClick={shareWaypoints}
-                            onMouseDown={preventFocus}
-                            disabled={waypoints.length === 0}
-                        >
-                            <i className="fas fa-fw fa-share" /> Share
-                        </button>
-                    )}
-                </>
-            }
-        />
+    const body = (
+        <>
+            {currentRouteInformation.status === 'FAILED' && (
+                <div className="alert alert-danger" role="alert">
+                    Route could not be found
+                </div>
+            )}
+            {waypoints.length === 0 && (
+                <div className="alert alert-info" role="alert">
+                    Enter an address to begin
+                </div>
+            )}
+            {waypoints.length === 1 && (
+                <div className="alert alert-info" role="alert">
+                    Enter another address to show route information
+                </div>
+            )}
+            <WaypointList />
+            <div className="input-row">
+                <input
+                    type="text"
+                    placeholder="New waypoint"
+                    value={newWaypointFieldValue}
+                    onChange={handleNewWaypointFieldChange}
+                    onKeyPress={handleNewWaypointFieldKeyPress}
+                    autoFocus={!isMobileDevice}
+                />
+                <button
+                    title="Add waypoint"
+                    onClick={addNewWaypoint}
+                    onMouseDown={preventFocus}
+                    disabled={!isValidAddress(newWaypointFieldValue)}
+                    className="btn btn-primary"
+                >
+                    <i className="fas fa-fw fa-plus" />
+                </button>
+            </div>
+        </>
     )
+
+    const footer = (
+        <>
+            <button
+                className="btn btn-primary"
+                onClick={generatePdf}
+                onMouseDown={preventFocus}
+                disabled={waypoints.length === 0}
+            >
+                <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
+                {compactMode ? ' PDF' : ' Generate PDF'}
+            </button>
+            <button
+                className="btn btn-primary"
+                onClick={reverseWaypoints}
+                onMouseDown={preventFocus}
+                disabled={waypoints.length < 2}
+            >
+                <i className="fas fa-fw fa-exchange-alt" /> Reverse
+            </button>
+            {(navigator as INavigator).share && (
+                <button
+                    className="btn btn-primary"
+                    onClick={shareWaypoints}
+                    onMouseDown={preventFocus}
+                    disabled={waypoints.length === 0}
+                >
+                    <i className="fas fa-fw fa-share" /> Share
+                </button>
+            )}
+        </>
+    )
+
+    return <WaypointEditorTemplate body={body} footer={footer} />
 }

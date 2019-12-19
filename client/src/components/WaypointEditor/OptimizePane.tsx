@@ -1,3 +1,4 @@
+import isMobileFn from 'ismobilejs'
 import React, { useCallback, useContext } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
@@ -5,7 +6,6 @@ import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
 import { OptimizationParameter } from '../../redux/actionTypes'
 import { preventFocus } from '../util/preventFocus'
-import isMobileFn from 'ismobilejs'
 
 export const OptimizePane = () => {
     const {
@@ -71,76 +71,71 @@ export const OptimizePane = () => {
 
     const isMobileDevice = isMobileFn().any
 
-    return (
-        <WaypointEditorTemplate
-            body={
-                insufficientWaypoints ? (
-                    <div className="alert alert-warning" role="alert">
-                        Add three or more waypoints to optimize routes
-                    </div>
-                ) : (
-                    <>
-                        <div className="alert alert-info" role="alert">
-                            The route found will be the optimal from the start point to the end point.
-                        </div>
-                        <div className="input-row">
-                            <span>Start Point</span>
-                            <input
-                                type="text"
-                                placeholder={defaultStartPoint()}
-                                value={startPointFieldValue}
-                                onChange={handleStartPointFieldChange}
-                                disabled={optimizationInProgress}
-                                autoFocus={!isMobileDevice}
-                            />
-                        </div>
-                        <div className="input-row">
-                            <span>End Point</span>
-                            <input
-                                type="text"
-                                placeholder={defaultEndPoint()}
-                                value={endPointFieldValue}
-                                onChange={handleEndPointFieldChange}
-                                disabled={optimizationInProgress}
-                            />
-                        </div>
-                    </>
-                )
-            }
-            footer={
-                optimizationInProgress ? (
-                    <>
-                        <button className="btn btn-primary" disabled={true}>
-                            <i className="fas fa-fw fa-spin fa-circle-notch" />
-                            {!compactMode && ' Optimizing'}
-                        </button>
-                        <button className="btn btn-danger" onClick={cancelOptimize} onMouseDown={preventFocus}>
-                            <i className="fas fa-ban" /> Cancel
-                        </button>
-                    </>
-                ) : (
-                    <>
-                        <button
-                            className="btn btn-primary"
-                            onClick={optimizeDistance}
-                            onMouseDown={preventFocus}
-                            disabled={insufficientWaypoints}
-                        >
-                            <i className="fas fa-fw fa-ruler-combined" />
-                            {compactMode ? ' Distance' : ' Optimize Distance'}
-                        </button>
-                        <button
-                            className="btn btn-primary"
-                            onClick={optimizeTime}
-                            onMouseDown={preventFocus}
-                            disabled={insufficientWaypoints}
-                        >
-                            <i className="fas fa-fw fa-clock" />
-                            {compactMode ? ' Time' : ' Optimize Time'}
-                        </button>
-                    </>
-                )
-            }
-        />
+    const body = insufficientWaypoints ? (
+        <div className="alert alert-warning" role="alert">
+            Add three or more waypoints to optimize routes
+        </div>
+    ) : (
+        <>
+            <div className="alert alert-info" role="alert">
+                The route found will be the optimal from the start point to the end point.
+            </div>
+            <div className="input-row">
+                <span>Start Point</span>
+                <input
+                    type="text"
+                    placeholder={defaultStartPoint()}
+                    value={startPointFieldValue}
+                    onChange={handleStartPointFieldChange}
+                    disabled={optimizationInProgress}
+                    autoFocus={!isMobileDevice}
+                />
+            </div>
+            <div className="input-row">
+                <span>End Point</span>
+                <input
+                    type="text"
+                    placeholder={defaultEndPoint()}
+                    value={endPointFieldValue}
+                    onChange={handleEndPointFieldChange}
+                    disabled={optimizationInProgress}
+                />
+            </div>
+        </>
     )
+
+    const footer = optimizationInProgress ? (
+        <>
+            <button className="btn btn-primary" disabled={true}>
+                <i className="fas fa-fw fa-spin fa-circle-notch" />
+                {!compactMode && ' Optimizing'}
+            </button>
+            <button className="btn btn-danger" onClick={cancelOptimize} onMouseDown={preventFocus}>
+                <i className="fas fa-ban" /> Cancel
+            </button>
+        </>
+    ) : (
+        <>
+            <button
+                className="btn btn-primary"
+                onClick={optimizeDistance}
+                onMouseDown={preventFocus}
+                disabled={insufficientWaypoints}
+            >
+                <i className="fas fa-fw fa-ruler-combined" />
+                {compactMode ? ' Distance' : ' Optimize Distance'}
+            </button>
+            <button
+                className="btn btn-primary"
+                onClick={optimizeTime}
+                onMouseDown={preventFocus}
+                disabled={insufficientWaypoints}
+            >
+                <i className="fas fa-fw fa-clock" />
+                {compactMode ? ' Time' : ' Optimize Time'}
+            </button>
+        </>
+    )
+
+    return <WaypointEditorTemplate body={body} footer={footer} />
 }
