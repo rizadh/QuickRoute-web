@@ -72,12 +72,12 @@ export const OptimizePane = () => {
     const isMobileDevice = isMobileFn().any
 
     const body = insufficientWaypoints ? (
-        <div className="alert alert-warning" role="alert">
+        <div className="text text-warning" role="alert">
             Add three or more waypoints to optimize routes
         </div>
     ) : (
         <>
-            <div className="alert alert-info" role="alert">
+            <div className="text text-secondary" role="alert">
                 The route found will be the optimal from the start point to the end point.
             </div>
             <div className="input-row">

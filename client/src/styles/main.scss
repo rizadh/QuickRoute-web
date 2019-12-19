@@ -1,6 +1,5 @@
 @import "./variables.scss";
 @import "./btn.scss";
-@import "./alert.scss";
 @import "./colors.scss";
 @import "./mixins.scss";
 @import "./spacings.scss";
@@ -161,10 +160,13 @@ textarea {
 }
 
 #waypoint-editor-body {
-    padding-bottom: var(--standard-margin);
+    padding-left: var(--standard-margin);
+    padding-top: var(--standard-margin);
 
+    .text,
     .input-row {
-        margin: var(--standard-margin);
+        margin-right: var(--standard-margin);
+        margin-bottom: var(--standard-margin);
     }
 }
 

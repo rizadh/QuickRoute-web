@@ -83,17 +83,17 @@ export const Waypointspane = () => {
     const body = (
         <>
             {currentRouteInformation.status === 'FAILED' && (
-                <div className="alert alert-danger" role="alert">
+                <div className="text text-danger" role="alert">
                     Route could not be found
                 </div>
             )}
             {waypoints.length === 0 && (
-                <div className="alert alert-info" role="alert">
+                <div className="text text-secondary" role="alert">
                     Enter an address to begin
                 </div>
             )}
             {waypoints.length === 1 && (
-                <div className="alert alert-info" role="alert">
+                <div className="text text-secondary" role="alert">
                     Enter another address to show route information
                 </div>
             )}

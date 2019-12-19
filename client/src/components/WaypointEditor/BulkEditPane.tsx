@@ -37,7 +37,7 @@ export const BulkEditPane = () => {
 
     const body = (
         <>
-            <div className="alert alert-info" role="alert">
+            <div className="text text-secondary" role="alert">
                 Enter one address per line
             </div>
             <div className="input-row">

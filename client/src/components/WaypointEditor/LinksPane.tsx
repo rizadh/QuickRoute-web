@@ -92,7 +92,7 @@ export const LinksPane = () => {
     const insufficientWaypoints = waypoints.length === 0
 
     const body = insufficientWaypoints ? (
-        <div className="alert alert-warning" role="alert">
+        <div className="text text-warning" role="alert">
             Add one or more waypoints to generate links
         </div>
     ) : (

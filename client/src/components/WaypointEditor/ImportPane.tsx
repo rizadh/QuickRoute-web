@@ -34,7 +34,7 @@ export const ImportPane = () => {
 
     const body = (
         <>
-            <div className="alert alert-info" role="alert">
+            <div className="text text-secondary" role="alert">
                 Waypoints are imported from <a href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco</a>
             </div>
             <div className="input-row">
@@ -49,7 +49,7 @@ export const ImportPane = () => {
                 />
             </div>
             {waypoints.length > 0 && (
-                <div className="alert alert-warning" role="alert">
+                <div className="text text-warning" role="alert">
                     Existing waypoints will be replaced
                 </div>
             )}

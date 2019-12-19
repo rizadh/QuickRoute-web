@@ -116,7 +116,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
             </div>
             <div id="waypoint-editor-body">
                 {error && (
-                    <div className="alert alert-danger" role="alert">
+                    <div className="text text-danger" role="alert">
                         {error.message}
                     </div>
                 )}
