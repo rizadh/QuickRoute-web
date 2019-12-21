@@ -8,8 +8,6 @@ import pdfRoute from './routes/pdf'
 import tokenRoute from './routes/token'
 import waypointsRoute, { demoWaypointsRoute } from './routes/waypoints'
 
-const LISTEN_PORT = process.env.ROUTE_PLANNER_LISTEN_PORT || 8000
-
 const router = new Router()
 router.get('/token', tokenRoute)
 router.get('/waypoints/demo/:count/:delay', demoWaypointsRoute)
@@ -23,6 +21,6 @@ app.use(Logger())
 app.use(Parser())
 app.use(router.routes())
 app.use(router.allowedMethods())
-app.listen(LISTEN_PORT)
+app.listen(process.env.PORT)
 
-process.stderr.write(`Listening on http://localhost:${LISTEN_PORT}...\n`)
+process.stderr.write(`Listening on port ${process.env.PORT}...\n`)

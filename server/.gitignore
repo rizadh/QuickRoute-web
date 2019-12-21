@@ -1,3 +1,4 @@
 node_modules
 private/mapkit_key.txt
 out
+.env
