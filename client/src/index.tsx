@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import { App } from './components/App'
 
 export const appVersion = 'v2019.12.19'
-export const apiPrefix = 'https://rizadh.com/route-planner/'
+export const apiPrefix = 'https://api.quickroute.rizadh.com/'
 
 // tslint:disable-next-line:no-var-requires
 require('babel-polyfill')
