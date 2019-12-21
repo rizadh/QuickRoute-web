@@ -1,5 +1,5 @@
 {
-    "name": "QuickRoute",
+    "name": "quickroute",
     "version": "1.0.0",
     "description": "Web app to plan routes with large numbers of waypoints",
     "repository": "https://github.com/rizadh/route-planner",
