@@ -56,10 +56,12 @@ export const Waypointspane = () => {
     }, [waypoints])
 
     const shareWaypoints = useCallback(async () => {
+        const searchParams = new URLSearchParams()
+        searchParams.set('waypoints', JSON.stringify(waypoints.map(w => w.address)))
+
         try {
             await (navigator as INavigator).share({
-                title: 'Waypoints PDF',
-                text: waypoints.map(w => w.address).join('\n'),
+                url: location.origin + location.pathname + '?' + searchParams.toString(),
             })
         } catch (e) {
             if (e instanceof Error && e.name !== 'AbortError') {

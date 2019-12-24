@@ -4,6 +4,7 @@ import { AppAction } from './actionTypes'
 import epic from './epic'
 import { reducer } from './reducers'
 import { AppState } from './state'
+import { createWaypointFromAddress } from './util'
 
 const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>()
 
@@ -13,7 +14,7 @@ const { waypoints, autofitIsEnabled, mutedMapIsEnabled, editorPane, editorIsHidd
     localStorage.getItem(STATE_STORAGE_KEY) || '{}',
 )
 
-const persistedState: Partial<AppState> = {
+let persistedState: Partial<AppState> = {
     waypoints: waypoints
         ? {
               list: waypoints.list,
@@ -25,6 +26,19 @@ const persistedState: Partial<AppState> = {
     mutedMapIsEnabled,
     editorPane,
     editorIsHidden,
+}
+
+const queryWaypointsValue = new URLSearchParams(location.search).get('waypoints')
+if (queryWaypointsValue) {
+    const queryWaypoints = JSON.parse(queryWaypointsValue) as string[]
+    persistedState = {
+        ...persistedState,
+        waypoints: {
+            list: queryWaypoints.map(createWaypointFromAddress),
+            selected: new Set(),
+            lastSelected: '',
+        },
+    }
 }
 
 const store = createStore(reducer, persistedState, applyMiddleware(epicMiddleware))
