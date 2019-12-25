@@ -1,6 +1,4 @@
-import { DirectionsAnnotation } from '@mapbox/mapbox-sdk/services/directions'
-import mapboxMatrix from '@mapbox/mapbox-sdk/services/matrix'
-import { range as _range, times } from 'lodash'
+import { range as _range } from 'lodash'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { catchError, filter, first, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
@@ -31,17 +29,13 @@ import {
     SetAddressAction,
 } from './actionTypes'
 import { AppState, Coordinate, EditorPane } from './state'
-import { createWaypointFromAddress, getRoute, partitionMatrix } from './util'
+import { createWaypointFromAddress, getRoute } from './util'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
 
 const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
 const directions = new mapkit.Directions()
-const matrixClient = mapboxMatrix({
-    accessToken: 'pk.eyJ1Ijoicml6YWRoIiwiYSI6ImNrNDFzZDlwZTA0bWszbXJqNHdieXNzMDkifQ.xGoSI1wcoXze546ObEX9ng',
-})
-const MAPBOX_MAX_POINTS = 25
 
 const performLookup = (address: string) =>
     new Observable<FetchPlaceResultAction>(observer => {
