@@ -6,7 +6,7 @@ import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { EditorPane } from '../../redux/state'
 import { createWaypointFromAddress } from '../../redux/util'
-import { isValidAddress, parseAddress } from '../../redux/validator'
+import { isValidAddress } from '../../redux/validator'
 import { preventFocus } from '../util/preventFocus'
 
 export const BulkEditPane = () => {
@@ -27,7 +27,7 @@ export const BulkEditPane = () => {
         const validAddresses = bulkEditFieldValue
             .split('\n')
             .filter(isValidAddress)
-            .map(parseAddress)
+            .map(address => address.trim())
 
         dispatch({ type: 'REPLACE_WAYPOINTS', waypoints: validAddresses.map(createWaypointFromAddress) })
         dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List })
