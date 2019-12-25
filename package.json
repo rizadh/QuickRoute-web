@@ -7,7 +7,7 @@
         "lint": "tsc -p . -noEmit && tslint --project . --format verbose -c tslint.json",
         "clean": "rm -rf public",
         "build": "parcel build --out-dir public --public-url . src/index.html",
-        "serve": "parcel --out-dir public --https --port 8080 --hmr-port 8081 src/index.html",
+        "serve": "parcel --out-dir public --https src/index.html",
         "test": "jest"
     },
     "author": "",
