@@ -1,5 +1,7 @@
 import { applyMiddleware, createStore } from 'redux'
 import { createEpicMiddleware } from 'redux-observable'
+import { Observable } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 import { AppAction } from './actionTypes'
 import epic from './epic'
 import { reducer } from './reducers'
@@ -52,6 +54,9 @@ const store = createStore(reducer, persistedState, applyMiddleware(epicMiddlewar
 epicMiddleware.run(epic)
 
 store.dispatch({ type: 'FETCH_ALL_ROUTES' })
-store.subscribe(() => localStorage.setItem(STATE_STORAGE_KEY, JSON.stringify(store.getState())))
+
+new Observable<AppState>(subscriber => store.subscribe(() => subscriber.next(store.getState())))
+    .pipe(debounceTime(1000))
+    .forEach(state => localStorage.setItem(STATE_STORAGE_KEY, JSON.stringify(state)))
 
 export default store
