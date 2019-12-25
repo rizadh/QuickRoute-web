@@ -34,9 +34,6 @@ let persistedState: Partial<AppState> = {
     fetchedRoutes: fetchedRoutes && new Map(fetchedRoutes.map(([key, value]: [string, any]) => [key, new Map(value)])),
 }
 
-// console.log(new Map(fetchedPlaces))
-// console.log(new Map(fetchedRoutes.map(([key, value]: [string, any]) => [key, new Map(value)])))
-
 const queryWaypointsValue = new URLSearchParams(location.search).get('waypoints')
 if (queryWaypointsValue) {
     const queryWaypoints = JSON.parse(queryWaypointsValue) as string[]
