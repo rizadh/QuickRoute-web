@@ -9,7 +9,7 @@ import { BulkEditPane } from './BulkEditPane'
 import { ImportPane } from './ImportPane'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
-import { Waypointspane } from './WaypointsPane'
+import { WaypointsPane } from './WaypointsPane'
 
 type WaypointEditorTemplateProps = {
     body: JSX.Element;
@@ -160,7 +160,7 @@ export const WaypointEditor = () => {
 
     switch (editorPane) {
         case EditorPane.List:
-            return <Waypointspane />
+            return <WaypointsPane />
         case EditorPane.Links:
             return <LinksPane />
         case EditorPane.BulkEdit:
