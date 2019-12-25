@@ -3,7 +3,6 @@ import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { catchError, filter, first, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
 import { apiPrefix } from '..'
-import { WaypointsResponse } from '../../../server/src/routes/waypoints'
 import {
     AddWaypointAction,
     AppAction,
@@ -33,6 +32,23 @@ import { createWaypointFromAddress, getRoute } from './util'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
+
+type Waypoint = {
+    address: string;
+    city: string;
+    postalCode: string;
+}
+
+type WaypointsSet = {
+    dispatched: Waypoint[];
+    inprogress: Waypoint[];
+}
+
+type WaypointsResponse = {
+    date: string;
+    driverNumber: string;
+    waypoints: WaypointsSet;
+}
 
 const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
 const directions = new mapkit.Directions()
