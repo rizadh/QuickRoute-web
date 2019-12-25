@@ -58,8 +58,7 @@ export const LinksPane = () => {
         (index: number) => async () => {
             try {
                 await (navigator as INavigator).share({
-                    title: `Navigation Links (${index + 1} out of ${navigationLinks.length})`,
-                    text: navigationLinks[index],
+                    url: navigationLinks[index],
                 })
             } catch (e) {
                 if (e instanceof Error && e.name !== 'AbortError') {
