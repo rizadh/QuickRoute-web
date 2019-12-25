@@ -15,10 +15,26 @@ export type FetchFailed = Readonly<{
     error: Error;
 }>
 
-export type PlaceFetchResult = FetchResult<mapkit.Place>
+export type Coordinate = {
+    latitude: number;
+    longitude: number;
+}
+
+export type Place = {
+    coordinate: Coordinate;
+    address: string;
+}
+
+export type Route = {
+    points: Coordinate[];
+    distance: number;
+    time: number;
+}
+
+export type PlaceFetchResult = FetchResult<Place>
 export type FetchedPlaces = ReadonlyMap<string, PlaceFetchResult>
 
-export type RouteFetchResult = FetchResult<mapkit.Route>
+export type RouteFetchResult = FetchResult<Route>
 export type FetchedRoutes = ReadonlyMap<string, ReadonlyMap<string, RouteFetchResult>>
 
 export type Waypoint = Readonly<{

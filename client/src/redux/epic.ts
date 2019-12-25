@@ -30,7 +30,7 @@ import {
     ReverseWaypointsAction,
     SetAddressAction,
 } from './actionTypes'
-import { AppState, EditorPane } from './state'
+import { AppState, Coordinate, EditorPane } from './state'
 import { createWaypointFromAddress, getRoute, partitionMatrix } from './util'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
@@ -66,7 +66,14 @@ const performLookup = (address: string) =>
                 return
             }
 
-            observer.next({ type: 'FETCH_PLACE_SUCCESS', address, place })
+            observer.next({
+                type: 'FETCH_PLACE_SUCCESS',
+                address,
+                place: {
+                    coordinate: place.coordinate,
+                    address: place.formattedAddress,
+                },
+            })
             observer.complete()
         })
 
@@ -78,45 +85,55 @@ const performLookup = (address: string) =>
 type FetchRouteResultAction = FetchRouteInProgressAction | FetchRouteSuccessAction | FetchRouteFailedAction
 
 const performRoute = (
-    origin: { address: string; place: mapkit.Place },
-    destination: { address: string; place: mapkit.Place },
+    origin: { address: string; coordinate: Coordinate },
+    destination: { address: string; coordinate: Coordinate },
 ) =>
     new Observable<FetchRouteResultAction>(observer => {
-        const fetchId = directions.route({ origin: origin.place, destination: destination.place }, (error, data) => {
-            if (error) {
+        const fetchId = directions.route(
+            {
+                origin: new mapkit.Coordinate(origin.coordinate.latitude, origin.coordinate.longitude),
+                destination: new mapkit.Coordinate(destination.coordinate.latitude, destination.coordinate.longitude),
+            },
+            (error, data) => {
+                if (error) {
+                    observer.next({
+                        type: 'FETCH_ROUTE_FAILED',
+                        origin: origin.address,
+                        destination: destination.address,
+                        error: new Error(`${error} ('${origin.address}' -> '${origin.address}')`),
+                    })
+                    observer.complete()
+
+                    return
+                }
+
+                const route = data.routes[0]
+
+                if (!route) {
+                    observer.next({
+                        type: 'FETCH_ROUTE_FAILED',
+                        origin: origin.address,
+                        destination: destination.address,
+                        error: new Error(`No routes returned ('${origin.address}' -> '${origin.address}')`),
+                    })
+                    observer.complete()
+
+                    return
+                }
+
                 observer.next({
-                    type: 'FETCH_ROUTE_FAILED',
+                    type: 'FETCH_ROUTE_SUCCESS',
                     origin: origin.address,
                     destination: destination.address,
-                    error: new Error(`${error} ('${origin.address}' -> '${origin.address}')`),
+                    route: {
+                        points: route.polyline.points,
+                        distance: route.distance,
+                        time: route.expectedTravelTime,
+                    },
                 })
                 observer.complete()
-
-                return
-            }
-
-            const route = data.routes[0]
-
-            if (!route) {
-                observer.next({
-                    type: 'FETCH_ROUTE_FAILED',
-                    origin: origin.address,
-                    destination: destination.address,
-                    error: new Error(`No routes returned ('${origin.address}' -> '${origin.address}')`),
-                })
-                observer.complete()
-
-                return
-            }
-
-            observer.next({
-                type: 'FETCH_ROUTE_SUCCESS',
-                origin: origin.address,
-                destination: destination.address,
-                route,
-            })
-            observer.complete()
-        })
+            },
+        )
 
         observer.next({
             type: 'FETCH_ROUTE_IN_PROGRESS',
@@ -264,12 +281,20 @@ const fetchAllRoutesEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, FetchAllRoutesAction>('FETCH_ALL_ROUTES'),
         mergeMap(() =>
-            range(0, state$.value.waypoints.list.length - 1).pipe(
-                map<number, FetchRouteAction>(index => ({
-                    type: 'FETCH_ROUTE',
-                    origin: state$.value.waypoints.list[index].address,
-                    destination: state$.value.waypoints.list[index + 1].address,
-                })),
+            merge(
+                range(0, state$.value.waypoints.list.length - 1).pipe(
+                    map<number, FetchRouteAction>(index => ({
+                        type: 'FETCH_ROUTE',
+                        origin: state$.value.waypoints.list[index].address,
+                        destination: state$.value.waypoints.list[index + 1].address,
+                    })),
+                ),
+                range(0, state$.value.waypoints.list.length).pipe(
+                    map<number, FetchPlaceAction>(index => ({
+                        type: 'FETCH_PLACE',
+                        address: state$.value.waypoints.list[index].address,
+                    })),
+                ),
             ),
         ),
     )
@@ -305,8 +330,8 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
                     take(1),
                     mergeMap(({ fetchedOrigin, fetchedDestination }) =>
                         performRoute(
-                            { address: origin, place: fetchedOrigin },
-                            { address: destination, place: fetchedDestination },
+                            { address: origin, coordinate: fetchedOrigin.coordinate },
+                            { address: destination, coordinate: fetchedDestination.coordinate },
                         ),
                     ),
                     catchError(error => {
@@ -377,7 +402,7 @@ interface IOptimizeResponse {
     result: number[]
 }
 
-const optimizeRoute = async (coordinates: mapkit.Coordinate[], optimizationParameter: OptimizationParameter) => {
+const optimizeRoute = async (coordinates: Coordinate[], optimizationParameter: OptimizationParameter) => {
     const response = await fetch(apiPrefix + 'optimize', {
         method: 'POST',
         headers: {
@@ -418,7 +443,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                         }),
                     ),
                     mergeMap(async state => {
-                        const getCoordinates = (waypoint: string): mapkit.Coordinate => {
+                        const getCoordinates = (waypoint: string): Coordinate => {
                             const place = state.fetchedPlaces.get(waypoint)
 
                             if (!place || place.status === 'IN_PROGRESS') {

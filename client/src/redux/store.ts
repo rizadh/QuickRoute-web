@@ -10,23 +10,32 @@ const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>()
 
 const STATE_STORAGE_KEY = 'com.rizadh.QuickRoute.state'
 
-const { waypoints, autofitIsEnabled, mutedMapIsEnabled, editorPane, editorIsHidden } = JSON.parse(
-    localStorage.getItem(STATE_STORAGE_KEY) || '{}',
-)
-
-let persistedState: Partial<AppState> = {
-    waypoints: waypoints
-        ? {
-              list: waypoints.list,
-              selected: new Set(waypoints.selected),
-              lastSelected: waypoints.lastSelected,
-          }
-        : undefined,
+const {
+    waypoints,
     autofitIsEnabled,
     mutedMapIsEnabled,
     editorPane,
     editorIsHidden,
+    fetchedPlaces,
+    fetchedRoutes,
+} = JSON.parse(localStorage.getItem(STATE_STORAGE_KEY) || '{}')
+
+let persistedState: Partial<AppState> = {
+    waypoints: waypoints && {
+        list: waypoints.list,
+        selected: new Set(waypoints.selected),
+        lastSelected: waypoints.lastSelected,
+    },
+    autofitIsEnabled,
+    mutedMapIsEnabled,
+    editorPane,
+    editorIsHidden,
+    fetchedPlaces: fetchedPlaces && new Map(fetchedPlaces),
+    fetchedRoutes: fetchedRoutes && new Map(fetchedRoutes.map(([key, value]: [string, any]) => [key, new Map(value)])),
 }
+
+// console.log(new Map(fetchedPlaces))
+// console.log(new Map(fetchedRoutes.map(([key, value]: [string, any]) => [key, new Map(value)])))
 
 const queryWaypointsValue = new URLSearchParams(location.search).get('waypoints')
 if (queryWaypointsValue) {

@@ -46,7 +46,7 @@ export const routeInformation = (state: AppState): RouteInformation => {
         .reduce((acc, cur) => acc + cur, 0)
 
     const totalTime = routes
-        .map(route => (route && route.status === 'SUCCESS' ? route.result.expectedTravelTime : 0))
+        .map(route => (route && route.status === 'SUCCESS' ? route.result.time : 0))
         .reduce((acc, cur) => acc + cur, 0)
 
     const progress = routeSuccessCount / routeCount

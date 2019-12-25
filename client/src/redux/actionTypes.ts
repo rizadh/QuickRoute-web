@@ -1,4 +1,4 @@
-import { EditorPane, Waypoint } from './state'
+import { EditorPane, Place, Route, Waypoint } from './state'
 
 export type ReplaceWaypointsAction = Readonly<{
     type: 'REPLACE_WAYPOINTS';
@@ -65,7 +65,7 @@ export type FetchPlaceInProgressAction = Readonly<{
 export type FetchPlaceSuccessAction = Readonly<{
     type: 'FETCH_PLACE_SUCCESS';
     address: string;
-    place: mapkit.Place;
+    place: Place;
 }>
 
 export type FetchPlaceFailedAction = Readonly<{
@@ -95,7 +95,7 @@ export type FetchRouteSuccessAction = Readonly<{
     type: 'FETCH_ROUTE_SUCCESS';
     origin: string;
     destination: string;
-    route: mapkit.Route;
+    route: Route;
 }>
 
 export type FetchRouteFailedAction = Readonly<{

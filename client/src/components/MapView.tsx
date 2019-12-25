@@ -4,7 +4,7 @@ import { useCompactMode } from '../hooks/useCompactMode'
 import { useDarkMode } from '../hooks/useDarkMode'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { routeInformation } from '../redux/selectors'
-import { FetchSuccess } from '../redux/state'
+import { FetchSuccess, Place, Route } from '../redux/state'
 import { getRoute } from '../redux/util'
 
 export const MapView = () => {
@@ -94,10 +94,18 @@ export const MapView = () => {
 
         const annotations = waypoints
             .map(({ address }) => fetchedPlaces.get(address))
-            .filter((p): p is FetchSuccess<mapkit.Place> => !!p && p.status === 'SUCCESS')
+            .filter((p): p is FetchSuccess<Place> => !!p && p.status === 'SUCCESS')
             .map(
-                ({ result: { coordinate, formattedAddress } }, index) =>
-                    new mapkit.MarkerAnnotation(coordinate, {
+                (
+                    {
+                        result: {
+                            coordinate: { latitude, longitude },
+                            address: formattedAddress,
+                        },
+                    },
+                    index,
+                ) =>
+                    new mapkit.MarkerAnnotation(new mapkit.Coordinate(latitude, longitude), {
                         glyphText: `${index + 1}`,
                         title: waypoints[index].address,
                         subtitle: formattedAddress,
@@ -108,18 +116,20 @@ export const MapView = () => {
         const overlays = waypoints
             .map((waypoint, index) => {
                 if (index === 0) return
-                const forwardRoute = getRoute(fetchedRoutes, waypoints[index - 1].address, waypoint.address)
-                if (forwardRoute && forwardRoute.status === 'SUCCESS') return forwardRoute.result.polyline
+                return getRoute(fetchedRoutes, waypoints[index - 1].address, waypoint.address)
             })
-            .filter((p): p is mapkit.PolylineOverlay => !!p)
+            .filter((p): p is FetchSuccess<Route> => !!p && p.status === 'SUCCESS')
             .map(
-                polyline =>
-                    new mapkit.PolylineOverlay(polyline.points, {
-                        style: new mapkit.Style({
-                            lineWidth: 6,
-                            strokeOpacity: 0.75,
-                        }),
-                    }),
+                ({ result: { points } }) =>
+                    new mapkit.PolylineOverlay(
+                        points.map(({ latitude, longitude }) => new mapkit.Coordinate(latitude, longitude)),
+                        {
+                            style: new mapkit.Style({
+                                lineWidth: 6,
+                                strokeOpacity: 0.75,
+                            }),
+                        },
+                    ),
             )
 
         if (map.annotations) map.removeAnnotations(map.annotations)
