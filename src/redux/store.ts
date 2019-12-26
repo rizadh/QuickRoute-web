@@ -12,6 +12,10 @@ const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>()
 
 const STATE_STORAGE_KEY = 'com.rizadh.QuickRoute.state'
 
+const searchParams = new URLSearchParams(location.search)
+
+if (searchParams.has('reset')) localStorage.removeItem(STATE_STORAGE_KEY)
+
 const {
     waypoints,
     autofitIsEnabled,
@@ -36,7 +40,7 @@ let persistedState: Partial<AppState> = {
     fetchedRoutes: fetchedRoutes && new Map(fetchedRoutes.map(([key, value]: [string, any]) => [key, new Map(value)])),
 }
 
-const queryWaypointsValue = new URLSearchParams(location.search).get('waypoints')
+const queryWaypointsValue = searchParams.get('waypoints')
 if (queryWaypointsValue) {
     const queryWaypoints = JSON.parse(queryWaypointsValue) as string[]
     persistedState = {
