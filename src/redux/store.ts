@@ -14,7 +14,10 @@ const STATE_STORAGE_KEY = 'com.rizadh.QuickRoute.state'
 
 const searchParams = new URLSearchParams(location.search)
 
-if (searchParams.has('reset')) localStorage.removeItem(STATE_STORAGE_KEY)
+if (searchParams.has('reset')) {
+    localStorage.removeItem(STATE_STORAGE_KEY)
+    location.href = location.origin
+}
 
 const {
     waypoints,
