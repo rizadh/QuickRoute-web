@@ -6,64 +6,41 @@ import { AppAction } from './actionTypes'
 import epic from './epic'
 import { reducer } from './reducers'
 import { AppState } from './state'
-import { createWaypointFromAddress } from './util'
+import { createWaypointFromAddress, PersistanceManager } from './util'
 
 const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>()
-
-const STATE_STORAGE_KEY = 'com.rizadh.QuickRoute.state'
 
 const searchParams = new URLSearchParams(location.search)
 
 if (searchParams.has('reset')) {
-    localStorage.removeItem(STATE_STORAGE_KEY)
-    location.href = location.origin
+    PersistanceManager.resetState()
+    history.replaceState(undefined, 'QuickRoute', location.origin + location.pathname)
 }
 
-const {
-    waypoints,
-    autofitIsEnabled,
-    mutedMapIsEnabled,
-    editorPane,
-    editorIsHidden,
-    fetchedPlaces,
-    fetchedRoutes,
-} = JSON.parse(localStorage.getItem(STATE_STORAGE_KEY) || '{}')
+const store = createStore(reducer, PersistanceManager.persistedState(), applyMiddleware(epicMiddleware))
 
-let persistedState: Partial<AppState> = {
-    waypoints: waypoints && {
-        list: waypoints.list,
-        selected: new Set(waypoints.selected),
-        lastSelected: waypoints.lastSelected,
-    },
-    autofitIsEnabled,
-    mutedMapIsEnabled,
-    editorPane,
-    editorIsHidden,
-    fetchedPlaces: fetchedPlaces && new Map(fetchedPlaces),
-    fetchedRoutes: fetchedRoutes && new Map(fetchedRoutes.map(([key, value]: [string, any]) => [key, new Map(value)])),
-}
+epicMiddleware.run(epic)
 
 const queryWaypointsValue = searchParams.get('waypoints')
 if (queryWaypointsValue) {
-    const queryWaypoints = JSON.parse(queryWaypointsValue) as string[]
-    persistedState = {
-        ...persistedState,
-        waypoints: {
-            list: queryWaypoints.map(createWaypointFromAddress),
-            selected: new Set(),
-            lastSelected: '',
-        },
+    try {
+        store.dispatch({
+            type: 'REPLACE_WAYPOINTS',
+            waypoints: JSON.parse(queryWaypointsValue).map(createWaypointFromAddress),
+        })
+        history.replaceState(undefined, 'QuickRoute', location.origin + location.pathname)
+    } catch {
+        store.dispatch({
+            type: 'ERROR_OCCURED',
+            error: new Error('Waypoint were provided in URL but could not be parsed'),
+        })
     }
 }
-
-const store = createStore(reducer, persistedState, applyMiddleware(epicMiddleware))
-
-epicMiddleware.run(epic)
 
 store.dispatch({ type: 'FETCH_ALL_ROUTES' })
 
 new Observable<AppState>(subscriber => store.subscribe(() => subscriber.next(store.getState())))
     .pipe(debounceTime(1000))
-    .forEach(state => localStorage.setItem(STATE_STORAGE_KEY, JSON.stringify(state)))
+    .forEach(PersistanceManager.persistState)
 
 export default store
