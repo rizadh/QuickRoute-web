@@ -64,7 +64,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                     <div id="app-title">
                         QuickRoute
                         <div id="app-version">
-                            {appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
+                            v{appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
                         </div>
                     </div>
                     <div id="pane-selector">
