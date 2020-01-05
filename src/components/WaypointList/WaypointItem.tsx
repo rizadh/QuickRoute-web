@@ -81,6 +81,28 @@ export const WaypointItem = (props: WaypointItemProps) => {
         incomingRouteFetchResult?.status === 'FAILED' ||
         outgoingRouteFetchResult?.status === 'FAILED'
 
+    const failureMessage =
+        placeFetchResult?.status === 'FAILED'
+            ? 'Could not find this waypoint'
+            : incomingRouteFetchResult?.status === 'FAILED' && outgoingRouteFetchResult?.status === 'FAILED'
+            ? 'Could not find route to or from this waypoint'
+            : incomingRouteFetchResult?.status === 'FAILED'
+            ? 'Could not find route from last waypoint'
+            : outgoingRouteFetchResult?.status === 'FAILED'
+            ? 'Could not find route to next waypoint'
+            : undefined
+
+    const failureIcon =
+        placeFetchResult?.status === 'FAILED' ? (
+            <i className="far fa-fw fa-dot-circle" />
+        ) : incomingRouteFetchResult?.status === 'FAILED' && outgoingRouteFetchResult?.status === 'FAILED' ? (
+            <i className="fas fa-fw fa-rotate-90 fa-exchange-alt" />
+        ) : incomingRouteFetchResult?.status === 'FAILED' ? (
+            <i className="fas fa-fw fa-long-arrow-alt-up" />
+        ) : outgoingRouteFetchResult?.status === 'FAILED' ? (
+            <i className="fas fa-fw fa-long-arrow-alt-down" />
+        ) : null
+
     return (
         <Draggable index={index} draggableId={waypoint.uuid}>
             {(provided: DraggableProvided) => (
@@ -114,8 +136,8 @@ export const WaypointItem = (props: WaypointItemProps) => {
                     )}
                     <span>{index + 1}</span>
                     {fetchFailed && (
-                        <span className="text-danger">
-                            <i className="fas fa-fw fa-exclamation-circle" />
+                        <span className="text-danger" title={failureMessage}>
+                            {failureIcon}
                         </span>
                     )}
                     {fetchIsInProgress && (

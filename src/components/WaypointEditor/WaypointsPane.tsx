@@ -79,7 +79,7 @@ export const WaypointsPane = () => {
         <>
             {currentRouteInformation.status === 'FAILED' && (
                 <div className="text text-danger" role="alert">
-                    Route could not be found
+                    One or more waypoints could not be routed
                 </div>
             )}
             {waypoints.length === 0 && (
