@@ -10,7 +10,4 @@ export const getRoute = (
     fetchedRoutes: FetchedRoutes,
     origin: string,
     destination: string,
-): RouteFetchResult | undefined => {
-    const routesFromOrigin = fetchedRoutes.get(origin)
-    return routesFromOrigin && routesFromOrigin.get(destination)
-}
+): RouteFetchResult | undefined => fetchedRoutes.get(origin)?.get(destination)

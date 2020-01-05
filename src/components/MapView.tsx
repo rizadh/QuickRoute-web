@@ -48,10 +48,7 @@ export const MapView = () => {
         })
 
         const mapDidMove = () => {
-            if (
-                (newMap.annotations && newMap.annotations.length > 0) ||
-                (newMap.overlays && newMap.overlays.length > 0)
-            ) {
+            if (newMap.annotations.length > 0 || newMap.overlays.length > 0) {
                 dispatch({ type: 'DISABLE_AUTOFIT' })
             }
         }

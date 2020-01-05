@@ -37,8 +37,8 @@ export const OptimizePane = () => {
             dispatch({
                 type: 'OPTIMIZE_ROUTE',
                 optimizationParameter: OptimizationParameter.Distance,
-                startPoint: startPoint || undefined,
-                endPoint: endPoint || undefined,
+                startPoint,
+                endPoint,
             }),
         [startPoint, endPoint],
     )
@@ -48,8 +48,8 @@ export const OptimizePane = () => {
             dispatch({
                 type: 'OPTIMIZE_ROUTE',
                 optimizationParameter: OptimizationParameter.Time,
-                startPoint: startPoint || undefined,
-                endPoint: endPoint || undefined,
+                startPoint,
+                endPoint,
             }),
         [startPoint, endPoint],
     )
@@ -58,8 +58,8 @@ export const OptimizePane = () => {
         () =>
             dispatch({
                 type: 'OPTIMIZE_ROUTE_CANCEL',
-                startPoint: startPoint || undefined,
-                endPoint: endPoint || undefined,
+                startPoint,
+                endPoint,
             }),
         [startPoint, endPoint],
     )

@@ -36,17 +36,17 @@ export const routeInformation = (state: AppState): RouteInformation => {
         getRoute(state.fetchedRoutes, state.waypoints.list[i].address, state.waypoints.list[i + 1].address),
     )
 
-    const routeSuccessCount = routes.filter(result => result && result.status === 'SUCCESS').length
-    const routeFailedCount = routes.filter(result => result && result.status === 'FAILED').length
+    const routeSuccessCount = routes.filter(result => result?.status === 'SUCCESS').length
+    const routeFailedCount = routes.filter(result => result?.status === 'FAILED').length
 
     if (routeFailedCount) return { status: 'FAILED' }
 
     const totalDistance = routes
-        .map(route => (route && route.status === 'SUCCESS' ? route.result.distance : 0))
+        .map(route => (route?.status === 'SUCCESS' ? route.result.distance : 0))
         .reduce((acc, cur) => acc + cur, 0)
 
     const totalTime = routes
-        .map(route => (route && route.status === 'SUCCESS' ? route.result.time : 0))
+        .map(route => (route?.status === 'SUCCESS' ? route.result.time : 0))
         .reduce((acc, cur) => acc + cur, 0)
 
     const progress = routeSuccessCount / routeCount

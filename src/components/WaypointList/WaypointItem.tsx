@@ -49,10 +49,12 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const placeFetchResult = fetchedPlaces.get(waypoint.address)
 
     const incomingRouteFetchResult =
-        index !== 0 && routeFetchResult(waypoints[index - 1].address, waypoints[index].address)
+        index !== 0 ? routeFetchResult(waypoints[index - 1].address, waypoints[index].address) : undefined
 
     const outgoingRouteFetchResult =
-        index !== waypoints.length - 1 && routeFetchResult(waypoints[index].address, waypoints[index + 1].address)
+        index !== waypoints.length - 1
+            ? routeFetchResult(waypoints[index].address, waypoints[index + 1].address)
+            : undefined
 
     const itemWasClicked = useCallback(
         (e: React.MouseEvent) => {
@@ -70,14 +72,14 @@ export const WaypointItem = (props: WaypointItemProps) => {
     )
 
     const fetchIsInProgress =
-        (placeFetchResult && placeFetchResult.status === 'IN_PROGRESS') ||
-        (incomingRouteFetchResult && incomingRouteFetchResult.status === 'IN_PROGRESS') ||
-        (outgoingRouteFetchResult && outgoingRouteFetchResult.status === 'IN_PROGRESS')
+        placeFetchResult?.status === 'IN_PROGRESS' ||
+        incomingRouteFetchResult?.status === 'IN_PROGRESS' ||
+        outgoingRouteFetchResult?.status === 'IN_PROGRESS'
 
     const fetchFailed =
-        (placeFetchResult && placeFetchResult.status === 'FAILED') ||
-        (incomingRouteFetchResult && incomingRouteFetchResult.status === 'FAILED') ||
-        (outgoingRouteFetchResult && outgoingRouteFetchResult.status === 'FAILED')
+        placeFetchResult?.status === 'FAILED' ||
+        incomingRouteFetchResult?.status === 'FAILED' ||
+        outgoingRouteFetchResult?.status === 'FAILED'
 
     return (
         <Draggable index={index} draggableId={waypoint.uuid}>
