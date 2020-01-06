@@ -5,7 +5,7 @@ import React, { useCallback, useContext, useMemo } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
-import { preventFocus } from '../util/preventFocus'
+import { Button } from '../Button'
 
 export const LinksPane = () => {
     const {
@@ -100,31 +100,16 @@ export const LinksPane = () => {
                 <div key={url} className="input-row">
                     <input type="text" value={url} readOnly={true} />
                     {(navigator as INavigator).share && (
-                        <button
-                            onClick={shareLink(index)}
-                            onMouseDown={preventFocus}
-                            className="btn btn-primary"
-                            title="Share this link"
-                        >
+                        <Button onClick={shareLink(index)} type="primary" title="Share this link">
                             <i className="fas fa-fw fa-share" />
-                        </button>
+                        </Button>
                     )}
-                    <button
-                        onClick={copyLink(index)}
-                        onMouseDown={preventFocus}
-                        className="btn btn-primary"
-                        title="Copy this link to clipboard"
-                    >
+                    <Button onClick={copyLink(index)} type="primary" title="Copy this link to clipboard">
                         <i className="fas fa-fw fa-clipboard" />
-                    </button>
-                    <button
-                        onClick={openUrl(index)}
-                        onMouseDown={preventFocus}
-                        className="btn btn-primary"
-                        title="Open this link"
-                    >
+                    </Button>
+                    <Button onClick={openUrl(index)} type="primary" title="Open this link">
                         <i className="fas fa-fw fa-external-link-alt" />
-                    </button>
+                    </Button>
                 </div>
             ))}
         </>
@@ -133,34 +118,19 @@ export const LinksPane = () => {
     const footer = (
         <div id="waypoint-editor-footer-items">
             {(navigator as INavigator).share && (
-                <button
-                    className="btn btn-primary"
-                    onClick={shareAllLinks}
-                    onMouseDown={preventFocus}
-                    disabled={insufficientWaypoints}
-                >
+                <Button type="primary" onClick={shareAllLinks} disabled={insufficientWaypoints}>
                     <i className="fas fa-fw fa-share" />
                     {compactMode ? ' Share' : ' Share All'}
-                </button>
+                </Button>
             )}
-            <button
-                className="btn btn-primary"
-                onClick={copyAllLinks}
-                onMouseDown={preventFocus}
-                disabled={insufficientWaypoints}
-            >
+            <Button type="primary" onClick={copyAllLinks} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-clipboard" />
                 {compactMode ? ' Copy' : ' Copy All'}
-            </button>
-            <button
-                className="btn btn-primary"
-                onClick={openAllLinks}
-                onMouseDown={preventFocus}
-                disabled={insufficientWaypoints}
-            >
+            </Button>
+            <Button type="primary" onClick={openAllLinks} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-external-link-alt" />
                 {compactMode ? ' Open' : ' Open All'}
-            </button>
+            </Button>
         </div>
     )
 

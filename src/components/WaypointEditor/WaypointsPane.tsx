@@ -9,7 +9,7 @@ import { useInputField } from '../../hooks/useInputField'
 import { routeInformation } from '../../redux/selectors'
 import { createWaypointFromAddress } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
-import { preventFocus } from '../util/preventFocus'
+import { Button } from '../Button'
 import { WaypointList } from '../WaypointList'
 
 export const WaypointsPane = () => {
@@ -107,42 +107,26 @@ export const WaypointsPane = () => {
                     onKeyPress={handleNewWaypointFieldKeyPress}
                     autoFocus={!isMobileDevice}
                 />
-                <button
+                <Button
                     title="Add waypoint"
                     onClick={addNewWaypoint}
-                    onMouseDown={preventFocus}
                     disabled={!isValidAddress(newWaypointFieldValue)}
-                    className="btn btn-primary"
+                    type="primary"
                 >
                     <i className="fas fa-fw fa-plus" />
-                </button>
+                </Button>
             </div>
-            <button
-                className="btn btn-primary"
-                onClick={generatePdf}
-                onMouseDown={preventFocus}
-                disabled={waypoints.length === 0}
-            >
+            <Button type="primary" onClick={generatePdf} disabled={waypoints.length === 0}>
                 <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
                 {compactMode ? ' PDF' : ' Save PDF'}
-            </button>
-            <button
-                className="btn btn-primary"
-                onClick={reverseWaypoints}
-                onMouseDown={preventFocus}
-                disabled={waypoints.length < 2}
-            >
+            </Button>
+            <Button type="primary" onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                 <i className="fas fa-fw fa-exchange-alt" /> Reverse
-            </button>
+            </Button>
             {(navigator as INavigator).share && (
-                <button
-                    className="btn btn-primary"
-                    onClick={shareWaypoints}
-                    onMouseDown={preventFocus}
-                    disabled={waypoints.length === 0}
-                >
+                <Button type="primary" onClick={shareWaypoints} disabled={waypoints.length === 0}>
                     <i className="fas fa-fw fa-share" /> Share
-                </button>
+                </Button>
             )}
         </div>
     )

@@ -3,8 +3,8 @@ import { appVersion } from '../..'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { EditorPane } from '../../redux/state'
+import { Button } from '../Button'
 import { RouteInformationBar } from '../RouteInformationBar'
-import { preventFocus } from '../util/preventFocus'
 import { BulkEditPane } from './BulkEditPane'
 import { ImportPane } from './ImportPane'
 import { LinksPane } from './LinksPane'
@@ -49,15 +49,14 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
     return (
         <div id="waypoint-editor">
             <div id="waypoint-editor-header">
-                <button
+                <Button
                     title="Minimize editor"
                     id="waypoint-editor-hide-button"
-                    className="btn btn-secondary"
+                    type="secondary"
                     onClick={hideEditorPane}
-                    onMouseDown={preventFocus}
                 >
                     <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'up')} />
-                </button>
+                </Button>
                 <div id="waypoint-editor-header-items">
                     <div id="app-title">
                         QuickRoute
@@ -66,51 +65,46 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                         </div>
                     </div>
                     <div id="pane-selector">
-                        <button
-                            className={'btn btn-' + (editorPane === EditorPane.List ? 'primary' : 'secondary')}
+                        <Button
+                            type={editorPane === EditorPane.List ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.List ? undefined : setEditorPaneList}
-                            onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
                             <i className="fas fa-fw fa-th-list" />
                             {!compactMode && ' Waypoints'}
-                        </button>
-                        <button
-                            className={'btn btn-' + (editorPane === EditorPane.BulkEdit ? 'primary' : 'secondary')}
+                        </Button>
+                        <Button
+                            type={editorPane === EditorPane.BulkEdit ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.BulkEdit ? undefined : setEditorPaneBulkEdit}
-                            onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
                             <i className="fas fa-fw fa-list-alt" />
                             {!compactMode && ' Bulk Edit'}
-                        </button>
-                        <button
-                            className={'btn btn-' + (editorPane === EditorPane.Links ? 'primary' : 'secondary')}
+                        </Button>
+                        <Button
+                            type={editorPane === EditorPane.Links ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.Links ? undefined : setEditorPaneLinks}
-                            onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
                             <i className="fas fa-fw fa-link" />
                             {!compactMode && ' Links'}
-                        </button>
-                        <button
-                            className={'btn btn-' + (editorPane === EditorPane.Import ? 'primary' : 'secondary')}
+                        </Button>
+                        <Button
+                            type={editorPane === EditorPane.Import ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.Import ? undefined : setEditorPaneImport}
-                            onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
                             <i className="fas fa-fw fa-cloud-download-alt" />
                             {!compactMode && ' Import'}
-                        </button>
-                        <button
-                            className={'btn btn-' + (editorPane === EditorPane.Optimizer ? 'primary' : 'secondary')}
+                        </Button>
+                        <Button
+                            type={editorPane === EditorPane.Optimizer ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.Optimizer ? undefined : setEditorPaneOptimizer}
-                            onMouseDown={preventFocus}
                             disabled={paneIsBusy}
                         >
                             <i className="fas fa-fw fa-star" />
                             {!compactMode && ' Optimize'}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

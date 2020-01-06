@@ -1,8 +1,8 @@
 import React, { useCallback, useContext } from 'react'
 import { AppStateContext } from '../context/AppStateContext'
 import { useCompactMode } from '../hooks/useCompactMode'
+import { Button } from './Button'
 import { RouteInformationBar } from './RouteInformationBar'
-import { preventFocus } from './util/preventFocus'
 
 export const MapButtons = () => {
     const {
@@ -19,29 +19,24 @@ export const MapButtons = () => {
     return (
         <div id="map-buttons">
             {editorIsHidden && (
-                <button className="btn btn-frosted" onClick={showEditorPane}>
+                <Button type="frosted" onClick={showEditorPane}>
                     <RouteInformationBar /> <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'down'}`} />
-                </button>
+                </Button>
             )}
             {!compactMode &&
                 (mutedMapIsEnabled ? (
-                    <button className="btn btn-primary" onClick={unmuteMap} onMouseDown={preventFocus}>
+                    <Button type="primary" onClick={unmuteMap}>
                         <i className="fas fa-fw fa-map-marked" /> Use Regular Map
-                    </button>
+                    </Button>
                 ) : (
-                    <button className="btn btn-primary" onClick={muteMap} onMouseDown={preventFocus}>
+                    <Button type="primary" onClick={muteMap}>
                         <i className="fas fa-fw fa-map" /> Use Muted Map
-                    </button>
+                    </Button>
                 ))}
-            <button
-                className="btn btn-warning"
-                onClick={enableAutofit}
-                onMouseDown={preventFocus}
-                disabled={autofitIsEnabled}
-            >
+            <Button type="warning" onClick={enableAutofit} disabled={autofitIsEnabled}>
                 <i className="fas fa-fw fa-expand" />
                 {!compactMode && ' Auto-Fit'}
-            </button>
+            </Button>
         </div>
     )
 }

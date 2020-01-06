@@ -5,7 +5,7 @@ import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
 import { OptimizationParameter } from '../../redux/actionTypes'
-import { preventFocus } from '../util/preventFocus'
+import { Button } from '../Button'
 
 export const OptimizePane = () => {
     const {
@@ -107,34 +107,24 @@ export const OptimizePane = () => {
 
     const footer = optimizationInProgress ? (
         <div id="waypoint-editor-footer-items">
-            <button className="btn btn-primary" disabled={true}>
+            <Button type="primary" disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" />
                 {!compactMode && ' Optimizing'}
-            </button>
-            <button className="btn btn-danger" onClick={cancelOptimize} onMouseDown={preventFocus}>
+            </Button>
+            <Button type="danger" onClick={cancelOptimize}>
                 <i className="fas fa-ban" /> Cancel
-            </button>
+            </Button>
         </div>
     ) : (
         <div id="waypoint-editor-footer-items">
-            <button
-                className="btn btn-primary"
-                onClick={optimizeDistance}
-                onMouseDown={preventFocus}
-                disabled={insufficientWaypoints}
-            >
+            <Button type="primary" onClick={optimizeDistance} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-ruler-combined" />
                 {compactMode ? ' Distance' : ' Optimize Distance'}
-            </button>
-            <button
-                className="btn btn-primary"
-                onClick={optimizeTime}
-                onMouseDown={preventFocus}
-                disabled={insufficientWaypoints}
-            >
+            </Button>
+            <Button type="primary" onClick={optimizeTime} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-clock" />
                 {compactMode ? ' Time' : ' Optimize Time'}
-            </button>
+            </Button>
         </div>
     )
 

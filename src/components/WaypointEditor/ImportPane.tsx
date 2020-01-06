@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from 'react'
 import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { preventFocus } from '../util/preventFocus'
+import { Button } from '../Button'
 
 export const ImportPane = () => {
     const {
@@ -58,23 +58,18 @@ export const ImportPane = () => {
 
     const footer = importInProgress ? (
         <div id="waypoint-editor-footer-items">
-            <button className="btn btn-primary" disabled={true}>
+            <Button type="primary" disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
-            </button>
-            <button className="btn btn-danger" onClick={cancelImport} onMouseDown={preventFocus}>
+            </Button>
+            <Button type="danger" onClick={cancelImport}>
                 <i className="fas fa-ban" /> Cancel
-            </button>
+            </Button>
         </div>
     ) : (
         <div id="waypoint-editor-footer-items">
-            <button
-                className="btn btn-primary"
-                onClick={importWaypoints}
-                onMouseDown={preventFocus}
-                disabled={!driverNumberFieldValue.length}
-            >
+            <Button type="primary" onClick={importWaypoints} disabled={!driverNumberFieldValue.length}>
                 <i className="fas fa-fw fa-cloud-download-alt" /> Import
-            </button>
+            </Button>
         </div>
     )
 

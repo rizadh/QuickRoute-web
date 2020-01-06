@@ -4,7 +4,7 @@ import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { getRoute } from '../../redux/util'
 import { isValidAddress } from '../../redux/validator'
-import { preventFocus } from '../util/preventFocus'
+import { Button } from '../Button'
 
 type WaypointItemProps = {
     index: number;
@@ -115,14 +115,9 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         (isBeingDraggedAlong ? ' waypoint-item-dragging-along' : '')
                     }
                 >
-                    <button
-                        title="Delete waypoint"
-                        onClick={deleteWaypoint}
-                        onMouseDown={preventFocus}
-                        className="btn btn-danger"
-                    >
+                    <Button type="danger" onClick={deleteWaypoint} title="Delete waypoint">
                         <i className="fas fa-fw fa-trash-alt" />
-                    </button>
+                    </Button>
                     <input
                         className="form-control"
                         value={waypointFieldValue}
@@ -130,9 +125,9 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         onKeyPress={handleWaypointFieldKeyPress}
                     />
                     {fieldWasEdited && (
-                        <button onClick={resetWaypointField} onMouseDown={preventFocus} className="btn btn-secondary">
+                        <Button type="secondary" onClick={resetWaypointField}>
                             <i className="fas fa-fw fa-undo-alt" />
-                        </button>
+                        </Button>
                     )}
                     <span>{index + 1}</span>
                     {fetchFailed && (
