@@ -31,7 +31,7 @@ if (queryWaypointsValue) {
         history.replaceState(undefined, 'QuickRoute', location.origin + location.pathname)
     } catch {
         store.dispatch({
-            type: 'ERROR_OCCURED',
+            type: 'ERROR_OCCURRED',
             error: new Error('Waypoint were provided in URL but could not be parsed'),
         })
     }

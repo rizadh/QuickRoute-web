@@ -46,7 +46,7 @@ export const WaypointsPane = () => {
 
         if (!response.ok) {
             dispatch({
-                type: 'ERROR_OCCURED',
+                type: 'ERROR_OCCURRED',
                 error: new Error(`Failed to generate PDF (ERROR: '${await response.text()}')`),
             })
             return
@@ -66,7 +66,7 @@ export const WaypointsPane = () => {
         } catch (e) {
             if (e instanceof Error && e.name !== 'AbortError') {
                 dispatch({
-                    type: 'ERROR_OCCURED',
+                    type: 'ERROR_OCCURRED',
                     error: new Error(`Share failed: ${e.message}`),
                 })
             }

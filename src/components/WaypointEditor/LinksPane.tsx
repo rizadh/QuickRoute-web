@@ -63,7 +63,7 @@ export const LinksPane = () => {
             } catch (e) {
                 if (e instanceof Error && e.name !== 'AbortError') {
                     dispatch({
-                        type: 'ERROR_OCCURED',
+                        type: 'ERROR_OCCURRED',
                         error: new Error(`Share failed: ${e.message}`),
                     })
                 }
@@ -81,7 +81,7 @@ export const LinksPane = () => {
         } catch (e) {
             if (e instanceof Error && e.name !== 'AbortError') {
                 dispatch({
-                    type: 'ERROR_OCCURED',
+                    type: 'ERROR_OCCURRED',
                     error: new Error(`Share failed: ${e.message}`),
                 })
             }

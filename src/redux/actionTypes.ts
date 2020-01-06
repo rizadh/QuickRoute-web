@@ -201,7 +201,7 @@ export type OptimizeRouteFailedAction = Readonly<{
 }>
 
 export type SetErrorAction = Readonly<{
-    type: 'ERROR_OCCURED';
+    type: 'ERROR_OCCURRED';
     error: Error;
 }>
 
