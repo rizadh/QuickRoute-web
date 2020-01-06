@@ -49,17 +49,15 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
     return (
         <div id="waypoint-editor">
             <div id="waypoint-editor-header">
-                {compactMode && (
-                    <button
-                        title="Minimize editor"
-                        id="waypoint-editor-hide-button"
-                        className="btn btn-secondary"
-                        onClick={hideEditorPane}
-                        onMouseDown={preventFocus}
-                    >
-                        <i className={'fas fa-chevron-down'} />
-                    </button>
-                )}
+                <button
+                    title="Minimize editor"
+                    id="waypoint-editor-hide-button"
+                    className="btn btn-secondary"
+                    onClick={hideEditorPane}
+                    onMouseDown={preventFocus}
+                >
+                    <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'up')} />
+                </button>
                 <div id="waypoint-editor-header-items">
                     <div id="app-title">
                         QuickRoute
@@ -127,17 +125,6 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
             <div id="waypoint-editor-footer">
                 {footer}
                 <RouteInformationBar />
-                {!compactMode && (
-                    <button
-                        title="Minimize editor"
-                        id="waypoint-editor-hide-button"
-                        className="btn btn-secondary"
-                        onClick={hideEditorPane}
-                        onMouseDown={preventFocus}
-                    >
-                        <i className={'fas fa-chevron-up'} />
-                    </button>
-                )}
             </div>
         </div>
     )

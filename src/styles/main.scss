@@ -62,19 +62,11 @@
 #waypoint-editor-header {
     top: 0;
     border-bottom-style: solid;
-
-    > #waypoint-editor-hide-button {
-        border-top: none;
-    }
 }
 
 #waypoint-editor-footer {
     bottom: 0;
     border-top-style: solid;
-
-    > #waypoint-editor-hide-button {
-        border-bottom: none;
-    }
 }
 
 #waypoint-editor-header-items,
@@ -93,13 +85,10 @@
 }
 
 #waypoint-editor-hide-button {
-    width: 100%;
-
-    background-color: transparent;
-
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
+    position: absolute;
+    z-index: 2;
+    top: var(--standard-margin);
+    right: var(--standard-margin);
 }
 
 #app-title {
