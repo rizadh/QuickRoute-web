@@ -124,7 +124,7 @@ export const WaypointsPane = () => {
                 disabled={waypoints.length === 0}
             >
                 <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
-                {compactMode ? ' PDF' : ' Generate PDF'}
+                {compactMode ? ' PDF' : ' Save PDF'}
             </button>
             <button
                 className="btn btn-primary"
