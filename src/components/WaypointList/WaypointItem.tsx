@@ -115,9 +115,15 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         (isBeingDraggedAlong ? ' waypoint-item-dragging-along' : '')
                     }
                 >
-                    <Button type="danger" onClick={deleteWaypoint} title="Delete waypoint">
-                        <i className="fas fa-fw fa-trash-alt" />
-                    </Button>
+                    <span
+                        className="waypoint-item-index"
+                        title="Drag to reorder"
+                        onClick={itemWasClicked}
+                        {...provided.dragHandleProps}
+                    >
+                        <i className="fas fa-fw fa-grip-vertical" /> {index + 1}
+                    </span>
+
                     <input
                         className="form-control"
                         value={waypointFieldValue}
@@ -129,7 +135,6 @@ export const WaypointItem = (props: WaypointItemProps) => {
                             <i className="fas fa-fw fa-undo-alt" />
                         </Button>
                     )}
-                    <span>{index + 1}</span>
                     {fetchFailed && (
                         <span className="text-danger" title={failureMessage}>
                             {failureIcon}
@@ -140,9 +145,9 @@ export const WaypointItem = (props: WaypointItemProps) => {
                             <i className="fas fa-fw fa-circle-notch fa-spin" />
                         </span>
                     )}
-                    <span title="Drag to reorder" onClick={itemWasClicked} {...provided.dragHandleProps}>
-                        <i className="fas fa-fw fa-grip-lines-vertical" />
-                    </span>
+                    <Button type="danger" onClick={deleteWaypoint} title="Delete waypoint">
+                        <i className="fas fa-fw fa-trash-alt" />
+                    </Button>
                 </div>
             )}
         </Draggable>
