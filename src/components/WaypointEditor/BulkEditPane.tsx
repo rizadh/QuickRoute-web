@@ -11,9 +11,7 @@ import { Button } from '../Button'
 
 export const BulkEditPane = () => {
     const {
-        state: {
-            waypoints: { list: waypoints },
-        },
+        state: { waypoints },
         dispatch,
     } = useContext(AppStateContext)
 

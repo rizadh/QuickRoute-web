@@ -166,11 +166,11 @@ const replaceWaypointsEpic: AppEpic = combineEpics(
         action$.pipe(
             ofType<AppAction, ReplaceWaypointsAction>('REPLACE_WAYPOINTS'),
             mergeMap(() =>
-                range(0, state$.value.waypoints.list.length - 1).pipe(
+                range(0, state$.value.waypoints.length - 1).pipe(
                     map(index => ({
                         type: 'FETCH_ROUTE',
-                        origin: state$.value.waypoints.list[index].address,
-                        destination: state$.value.waypoints.list[index + 1].address,
+                        origin: state$.value.waypoints[index].address,
+                        destination: state$.value.waypoints[index + 1].address,
                     })),
                 ),
             ),
@@ -186,10 +186,10 @@ const addWaypointEpic: AppEpic = combineEpics(
     (action$, state$) =>
         action$.pipe(
             ofType<AppAction, AddWaypointAction>('ADD_WAYPOINT'),
-            filter(() => state$.value.waypoints.list.length > 1),
+            filter(() => state$.value.waypoints.length > 1),
             map(({ waypoint: { address } }) => ({
                 type: 'FETCH_ROUTE',
-                origin: state$.value.waypoints.list.slice(-2)[0].address,
+                origin: state$.value.waypoints.slice(-2)[0].address,
                 destination: address,
             })),
         ),
@@ -200,12 +200,12 @@ const deleteWaypointEpic: AppEpic = (action$, state$) =>
         ofType<AppAction, DeleteWaypointAction>('DELETE_WAYPOINT'),
         filter(
             ({ index }) =>
-                state$.value.waypoints.list.length > 1 && index > 0 && index < state$.value.waypoints.list.length,
+                state$.value.waypoints.length > 1 && index > 0 && index < state$.value.waypoints.length,
         ),
         map(({ index }) => ({
             type: 'FETCH_ROUTE',
-            origin: state$.value.waypoints.list[index - 1].address,
-            destination: state$.value.waypoints.list[index].address,
+            origin: state$.value.waypoints[index - 1].address,
+            destination: state$.value.waypoints[index].address,
         })),
     )
 
@@ -227,18 +227,18 @@ const setAddressEpic: AppEpic = combineEpics(
             filter(({ index }) => index > 0),
             map(({ index }) => ({
                 type: 'FETCH_ROUTE',
-                origin: state$.value.waypoints.list[index - 1].address,
-                destination: state$.value.waypoints.list[index].address,
+                origin: state$.value.waypoints[index - 1].address,
+                destination: state$.value.waypoints[index].address,
             })),
         ),
     (action$, state$) =>
         action$.pipe(
             ofType<AppAction, SetAddressAction>('SET_ADDRESS'),
-            filter(({ index }) => index < state$.value.waypoints.list.length - 1),
+            filter(({ index }) => index < state$.value.waypoints.length - 1),
             map(({ index }) => ({
                 type: 'FETCH_ROUTE',
-                origin: state$.value.waypoints.list[index].address,
-                destination: state$.value.waypoints.list[index + 1].address,
+                origin: state$.value.waypoints[index].address,
+                destination: state$.value.waypoints[index + 1].address,
             })),
         ),
 )
@@ -248,11 +248,11 @@ const moveWaypointEpic: AppEpic = (action$, state$) =>
         ofType<AppAction, MoveWaypointAction>('MOVE_WAYPOINT'),
         // TODO: Use a more efficient update algorithm
         mergeMap(() =>
-            range(0, state$.value.waypoints.list.length - 1).pipe(
+            range(0, state$.value.waypoints.length - 1).pipe(
                 map<number, FetchRouteAction>(index => ({
                     type: 'FETCH_ROUTE',
-                    origin: state$.value.waypoints.list[index].address,
-                    destination: state$.value.waypoints.list[index + 1].address,
+                    origin: state$.value.waypoints[index].address,
+                    destination: state$.value.waypoints[index + 1].address,
                 })),
             ),
         ),
@@ -263,11 +263,11 @@ const moveSelectedWaypointsEpic: AppEpic = (action$, state$) =>
         ofType<AppAction, MoveSelectedWaypointsAction>('MOVE_SELECTED_WAYPOINTS'),
         // TODO: Use a more efficient update algorithm
         mergeMap(() =>
-            range(0, state$.value.waypoints.list.length - 1).pipe(
+            range(0, state$.value.waypoints.length - 1).pipe(
                 map<number, FetchRouteAction>(index => ({
                     type: 'FETCH_ROUTE',
-                    origin: state$.value.waypoints.list[index].address,
-                    destination: state$.value.waypoints.list[index + 1].address,
+                    origin: state$.value.waypoints[index].address,
+                    destination: state$.value.waypoints[index + 1].address,
                 })),
             ),
         ),
@@ -277,11 +277,11 @@ const reverseWaypointsEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, ReverseWaypointsAction>('REVERSE_WAYPOINTS'),
         mergeMap(() =>
-            range(0, state$.value.waypoints.list.length - 1).pipe(
+            range(0, state$.value.waypoints.length - 1).pipe(
                 map<number, FetchRouteAction>(index => ({
                     type: 'FETCH_ROUTE',
-                    origin: state$.value.waypoints.list[index].address,
-                    destination: state$.value.waypoints.list[index + 1].address,
+                    origin: state$.value.waypoints[index].address,
+                    destination: state$.value.waypoints[index + 1].address,
                 })),
             ),
         ),
@@ -299,17 +299,17 @@ const fetchAllRoutesEpic: AppEpic = (action$, state$) =>
         ofType<AppAction, FetchAllRoutesAction>('FETCH_ALL_ROUTES'),
         mergeMap(() =>
             merge(
-                range(0, state$.value.waypoints.list.length - 1).pipe(
+                range(0, state$.value.waypoints.length - 1).pipe(
                     map<number, FetchRouteAction>(index => ({
                         type: 'FETCH_ROUTE',
-                        origin: state$.value.waypoints.list[index].address,
-                        destination: state$.value.waypoints.list[index + 1].address,
+                        origin: state$.value.waypoints[index].address,
+                        destination: state$.value.waypoints[index + 1].address,
                     })),
                 ),
-                range(0, state$.value.waypoints.list.length).pipe(
+                range(0, state$.value.waypoints.length).pipe(
                     map<number, FetchPlaceAction>(index => ({
                         type: 'FETCH_PLACE',
-                        address: state$.value.waypoints.list[index].address,
+                        address: state$.value.waypoints[index].address,
                     })),
                 ),
             ),
@@ -440,7 +440,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, OptimizeRouteAction>('OPTIMIZE_ROUTE'),
         mergeMap<OptimizeRouteAction, ObservableInput<AppAction>>(({ optimizationParameter, startPoint, endPoint }) => {
-            const optimizationWaypoints = [...state$.value.waypoints.list.map(w => w.address)]
+            const optimizationWaypoints = [...state$.value.waypoints.map(w => w.address)]
             if (startPoint) optimizationWaypoints.splice(0, 0, startPoint)
             if (endPoint) optimizationWaypoints.push(endPoint)
 
@@ -480,7 +480,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                         )
                         if (startPoint) optimalOrdering = optimalOrdering.slice(1).map(i => i - 1)
                         if (endPoint) optimalOrdering = optimalOrdering.slice(0, -1)
-                        return optimalOrdering.map(i => state.waypoints.list[i].address)
+                        return optimalOrdering.map(i => state.waypoints[i].address)
                     }),
                     mergeMap(optimalOrdering => [
                         { type: 'OPTIMIZE_ROUTE_SUCCESS', optimizationParameter },

@@ -27,12 +27,12 @@ export type RouteInformation =
     | NoRouteInformation
 
 export const routeInformation = (state: AppState): RouteInformation => {
-    const routeCount = state.waypoints.list.length - 1
+    const routeCount = state.waypoints.length - 1
 
     if (routeCount <= 0) return { status: 'NO_ROUTE' }
 
     const routes = range(0, routeCount).map(i =>
-        state.fetchedRoutes.get(state.waypoints.list[i].address)?.get(state.waypoints.list[i + 1].address),
+        state.fetchedRoutes.get(state.waypoints[i].address)?.get(state.waypoints[i + 1].address),
     )
 
     const routeSuccessCount = routes.filter(result => result?.status === 'SUCCESS').length

@@ -14,15 +14,10 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const { index, isBeingDraggedAlong } = props
 
     const {
-        state: {
-            waypoints: { list: waypoints, selected: selectedWaypoints },
-            fetchedPlaces,
-            fetchedRoutes,
-        },
+        state: { waypoints, fetchedPlaces, fetchedRoutes },
         dispatch,
     } = useContext(AppStateContext)
     const waypoint = waypoints[index]
-    const waypointIsSelected = selectedWaypoints.has(waypoint.uuid)
 
     const {
         value: waypointFieldValue,
@@ -110,7 +105,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                     {...provided.draggableProps}
                     className={
                         'input-row' +
-                        (waypointIsSelected ? ' waypoint-item-selected' : '') +
+                        (waypoints[index].selected ? ' waypoint-item-selected' : '') +
                         (isBeingDraggedAlong ? ' waypoint-item-dragging-along' : '')
                     }
                 >

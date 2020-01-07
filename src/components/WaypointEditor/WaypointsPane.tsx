@@ -22,9 +22,7 @@ export const WaypointsPane = () => {
 
     const { state, dispatch } = useContext(AppStateContext)
     const compactMode = useCompactMode()
-    const {
-        waypoints: { list: waypoints, selected: selectedWaypoints },
-    } = state
+    const { waypoints } = state
 
     const currentRouteInformation = useMemo(() => routeInformation(state), [state])
 
@@ -102,12 +100,14 @@ export const WaypointsPane = () => {
         </>
     )
 
+    const selectedWaypointsCount = waypoints.filter(waypoint => waypoint.selected).length
+
     const footer =
-        selectedWaypoints.size > 0 ? (
+        selectedWaypointsCount > 0 ? (
             <>
                 <Button type="danger" onClick={deleteSelectedWaypoints}>
-                    <i className="fas fa-fw fa-trash" /> Delete {selectedWaypoints.size}{' '}
-                    {selectedWaypoints.size > 1 ? 'Waypoints' : 'Waypoint'}
+                    <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
+                    {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
                 </Button>
                 <Button type="primary" onClick={deselectAllWaypoints}>
                     <i className="fas fa-fw fa-ban" /> Cancel

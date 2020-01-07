@@ -9,10 +9,7 @@ import { Button } from '../Button'
 
 export const OptimizePane = () => {
     const {
-        state: {
-            waypoints: { list: waypoints },
-            optimizationInProgress,
-        },
+        state: { waypoints, optimizationInProgress },
         dispatch,
     } = useContext(AppStateContext)
     const compactMode = useCompactMode()

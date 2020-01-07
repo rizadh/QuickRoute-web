@@ -7,10 +7,7 @@ import { Button } from '../Button'
 
 export const ImportPane = () => {
     const {
-        state: {
-            importInProgress,
-            waypoints: { list: waypoints },
-        },
+        state: { importInProgress, waypoints },
         dispatch,
     } = useContext(AppStateContext)
 

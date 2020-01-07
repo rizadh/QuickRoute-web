@@ -9,9 +9,7 @@ import { Button } from '../Button'
 
 export const LinksPane = () => {
     const {
-        state: {
-            waypoints: { list: waypoints },
-        },
+        state: { waypoints },
         dispatch,
     } = useContext(AppStateContext)
     const compactMode = useCompactMode()

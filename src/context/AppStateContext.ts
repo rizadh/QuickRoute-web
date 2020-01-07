@@ -7,11 +7,7 @@ export const AppStateContext = createContext<{
     dispatch: Dispatch<AppAction>;
 }>({
     state: {
-        waypoints: {
-            list: [],
-            lastSelected: '',
-            selected: new Set(),
-        },
+        waypoints: [],
         fetchedPlaces: new Map(),
         fetchedRoutes: new Map(),
         autofitIsEnabled: true,

@@ -40,6 +40,7 @@ export type FetchedRoutes = ReadonlyMap<string, ReadonlyMap<string, RouteFetchRe
 export type Waypoint = Readonly<{
     address: string;
     uuid: string;
+    selected?: number;
 }>
 
 export enum EditorPane {
@@ -50,14 +51,10 @@ export enum EditorPane {
     Optimizer = 'optimizer',
 }
 
-export type WaypointsState = Readonly<{
-    list: ReadonlyArray<Waypoint>;
-    lastSelected: string;
-    selected: ReadonlySet<string>;
-}>
+export type Waypoints = ReadonlyArray<Waypoint>
 
 export type AppState = Readonly<{
-    waypoints: WaypointsState;
+    waypoints: Waypoints;
     fetchedPlaces: FetchedPlaces;
     fetchedRoutes: FetchedRoutes;
     autofitIsEnabled: boolean;

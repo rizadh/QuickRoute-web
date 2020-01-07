@@ -1,39 +1,23 @@
-import { Waypoint, WaypointsState } from '../state'
+import { Waypoint, Waypoints } from '../state'
 import { waypointsReducer } from './waypointsReducer'
 
 const TEST_WAYPOINT: Waypoint = {
     address: 'TEST ADDRESS',
     uuid: 'TEST UUID',
 }
-const INITIAL_STATE: WaypointsState = {
-    list: [],
-    lastSelected: '',
-    selected: new Set(),
-}
+const INITIAL_STATE: Waypoints = []
 
-const ONE_WAYPOINT_STATE: WaypointsState = {
-    list: [TEST_WAYPOINT],
-    lastSelected: '',
-    selected: new Set(),
-}
+const ONE_WAYPOINT_STATE: Waypoints = [TEST_WAYPOINT]
 
-const TWO_WAYPOINTS_STATE: WaypointsState = {
-    list: [
-        { address: 'ONE', uuid: 'ONE' },
-        { address: 'TWO', uuid: 'TWo' },
-    ],
-    lastSelected: '',
-    selected: new Set(),
-}
+const TWO_WAYPOINTS_STATE: Waypoints = [
+    { address: 'ONE', uuid: 'ONE' },
+    { address: 'TWO', uuid: 'TWo' },
+]
 
-const TWO_WAYPOINTS_STATE_REVERSED: WaypointsState = {
-    list: [
-        { address: 'TWO', uuid: 'TWo' },
-        { address: 'ONE', uuid: 'ONE' },
-    ],
-    lastSelected: '',
-    selected: new Set(),
-}
+const TWO_WAYPOINTS_STATE_REVERSED: Waypoints = [
+    { address: 'TWO', uuid: 'TWo' },
+    { address: 'ONE', uuid: 'ONE' },
+]
 
 describe('waypointsReducer', () => {
     it('should return the initial state', () => {

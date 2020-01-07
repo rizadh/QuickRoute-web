@@ -38,13 +38,12 @@ export class PersistanceManager {
 
     private static sanitizeState(state: AppState): AppState {
         const { waypoints, fetchedPlaces, fetchedRoutes } = state
-        const addresses = waypoints.list.map(w => w.address)
+        const addresses = waypoints.map(w => w.address)
 
         return {
             ...state,
             waypoints: {
-                ...waypoints,
-                selected: new Set(),
+                ...waypoints.map(waypoint => ({ ...waypoint, selected: undefined })),
             },
             fetchedPlaces: PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces), addresses),
             fetchedRoutes: new Map(
