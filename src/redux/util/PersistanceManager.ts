@@ -15,10 +15,7 @@ export class PersistanceManager {
         return {
             ...state,
             autofitIsEnabled: true,
-            waypoints: waypoints && {
-                ...waypoints,
-                selected: new Set(waypoints.selected),
-            },
+            waypoints,
             fetchedPlaces: fetchedPlaces && PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces)),
             fetchedRoutes:
                 fetchedRoutes &&
@@ -42,9 +39,7 @@ export class PersistanceManager {
 
         return {
             ...state,
-            waypoints: {
-                ...waypoints.map(waypoint => ({ ...waypoint, selected: undefined })),
-            },
+            waypoints: waypoints.map(waypoint => ({ ...waypoint, selected: undefined })),
             fetchedPlaces: PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces), addresses),
             fetchedRoutes: new Map(
                 [...fetchedRoutes.entries()]
