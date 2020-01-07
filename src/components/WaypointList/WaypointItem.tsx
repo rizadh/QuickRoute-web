@@ -131,7 +131,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                     />
                     {fieldWasEdited && (
                         <Button type="secondary" onClick={resetWaypointField}>
-                            <i className="fas fa-fw fa-undo-alt" />
+                            <i className="fas fa-fw fa-undo" />
                         </Button>
                     )}
                     {fetchFailed && (
@@ -145,7 +145,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                         </span>
                     )}
                     <Button type="danger" onClick={deleteWaypoint} title="Delete waypoint">
-                        <i className="fas fa-fw fa-trash-alt" />
+                        <i className="fas fa-fw fa-trash" />
                     </Button>
                 </div>
             )}
