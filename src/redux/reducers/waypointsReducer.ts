@@ -15,6 +15,9 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
             case 'DELETE_WAYPOINT':
                 waypoints.list.splice(action.index, 1)
                 break
+            case 'DELETE_SELECTED_WAYPOINTS':
+                waypoints.list = waypoints.list.filter(({ uuid }) => !waypoints.selected.has(uuid))
+                break
             case 'REVERSE_WAYPOINTS':
                 waypoints.list.reverse()
                 break
@@ -59,6 +62,10 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
                 waypoints.lastSelected = waypoints.list[action.index].uuid
                 break
             }
+            case 'DESELECT_ALL_WAYPOINTS':
+                waypoints.selected = new Set()
+                waypoints.lastSelected = ''
+                break
             case 'TOGGLE_WAYPOINT_SELECTION': {
                 // TODO: Can be set directly with Immer v4.0
                 const newSelectedWaypoints = new Set<string>(waypoints.selected as Set<string>)

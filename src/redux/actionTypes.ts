@@ -15,6 +15,10 @@ export type DeleteWaypointAction = Readonly<{
     index: number;
 }>
 
+export type DeleteSelectedWaypointsAction = Readonly<{
+    type: 'DELETE_SELECTED_WAYPOINTS';
+}>
+
 export type MoveWaypointAction = Readonly<{
     type: 'MOVE_WAYPOINT';
     sourceIndex: number;
@@ -39,6 +43,10 @@ export type SetAddressAction = Readonly<{
 export type SelectWaypointAction = Readonly<{
     type: 'SELECT_WAYPOINT';
     index: number;
+}>
+
+export type DeselectAllWaypointsAction = Readonly<{
+    type: 'DESELECT_ALL_WAYPOINTS';
 }>
 
 export type ToggleWaypointSelectionAction = Readonly<{
@@ -213,11 +221,13 @@ export type AppAction =
     | ReplaceWaypointsAction
     | AddWaypointAction
     | DeleteWaypointAction
+    | DeleteSelectedWaypointsAction
     | MoveWaypointAction
     | MoveSelectedWaypointsAction
     | ReverseWaypointsAction
     | SetAddressAction
     | SelectWaypointAction
+    | DeselectAllWaypointsAction
     | ToggleWaypointSelectionAction
     | SelectWaypointRangeAction
     | FetchPlaceAction

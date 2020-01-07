@@ -6,6 +6,7 @@ import { apiPrefix } from '..'
 import {
     AddWaypointAction,
     AppAction,
+    DeleteSelectedWaypointsAction,
     DeleteWaypointAction,
     FetchAllRoutesAction,
     FetchPlaceAction,
@@ -206,6 +207,12 @@ const deleteWaypointEpic: AppEpic = (action$, state$) =>
             origin: state$.value.waypoints.list[index - 1].address,
             destination: state$.value.waypoints.list[index].address,
         })),
+    )
+
+const deleteSelectedWaypointsEpic: AppEpic = action$ =>
+    action$.pipe(
+        ofType<AppAction, DeleteSelectedWaypointsAction>('DELETE_SELECTED_WAYPOINTS'),
+        map(() => ({ type: 'FETCH_ALL_ROUTES' })),
     )
 
 const setAddressEpic: AppEpic = combineEpics(
@@ -500,6 +507,7 @@ export default combineEpics(
     reverseWaypointsEpic,
     addWaypointEpic,
     deleteWaypointEpic,
+    deleteSelectedWaypointsEpic,
     moveWaypointEpic,
     moveSelectedWaypointsEpic,
     setAddressEpic,
