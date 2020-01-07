@@ -4,7 +4,6 @@ import { useCompactMode } from '../hooks/useCompactMode'
 import { useDarkMode } from '../hooks/useDarkMode'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { routeInformation } from '../redux/selectors'
-import { getRoute } from '../redux/util'
 
 export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
@@ -111,7 +110,7 @@ export const MapView = () => {
         const overlays = waypoints.map((waypoint, index) => {
             if (index === 0) return
 
-            const fetchedRoute = getRoute(fetchedRoutes, waypoints[index - 1].address, waypoint.address)
+            const fetchedRoute = fetchedRoutes.get(waypoints[index - 1].address)?.get(waypoint.address)
 
             if (fetchedRoute?.status === 'SUCCESS') {
                 const {

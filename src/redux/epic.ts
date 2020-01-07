@@ -28,7 +28,7 @@ import {
     SetAddressAction,
 } from './actionTypes'
 import { AppState, Coordinate, EditorPane } from './state'
-import { createWaypointFromAddress, getRoute } from './util'
+import { createWaypointFromAddress } from './util'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
@@ -312,7 +312,7 @@ const fetchAllRoutesEpic: AppEpic = (action$, state$) =>
 const fetchRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, FetchRouteAction>('FETCH_ROUTE'),
-        filter(({ origin, destination }) => !getRoute(state$.value.fetchedRoutes, origin, destination)),
+        filter(({ origin, destination }) => !state$.value.fetchedRoutes.get(origin)?.get(destination)),
         mergeMap(({ origin, destination }) =>
             merge(
                 of<AppAction>({ type: 'FETCH_PLACE', address: origin }),
