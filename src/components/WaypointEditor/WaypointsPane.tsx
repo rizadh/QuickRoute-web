@@ -97,7 +97,7 @@ export const WaypointsPane = () => {
     )
 
     const footer = (
-        <div id="waypoint-editor-footer-items">
+        <>
             <div className="input-row">
                 <input
                     type="text"
@@ -128,7 +128,7 @@ export const WaypointsPane = () => {
                     <i className="fas fa-fw fa-share" /> Share
                 </Button>
             )}
-        </div>
+        </>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />

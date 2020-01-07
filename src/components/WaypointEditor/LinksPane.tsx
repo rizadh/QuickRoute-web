@@ -116,7 +116,7 @@ export const LinksPane = () => {
     )
 
     const footer = (
-        <div id="waypoint-editor-footer-items">
+        <>
             {(navigator as INavigator).share && (
                 <Button type="primary" onClick={shareAllLinks} disabled={insufficientWaypoints}>
                     <i className="fas fa-fw fa-share" />
@@ -131,7 +131,7 @@ export const LinksPane = () => {
                 <i className="fas fa-fw fa-external-link-alt" />
                 {compactMode ? ' Open' : ' Open All'}
             </Button>
-        </div>
+        </>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />

@@ -117,7 +117,7 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
                 {body}
             </div>
             <div id="waypoint-editor-footer">
-                {footer}
+                <div id="waypoint-editor-footer-items">{footer}</div>
                 <RouteInformationBar />
             </div>
         </div>
