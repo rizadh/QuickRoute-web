@@ -7,15 +7,27 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
     (waypoints: Draft<WaypointsState>, action: AppAction) => {
         switch (action.type) {
             case 'REPLACE_WAYPOINTS':
+                waypoints.lastSelected = ''
+                waypoints.selected = new Set()
                 waypoints.list = action.waypoints
                 break
             case 'ADD_WAYPOINT':
                 waypoints.list.push(action.waypoint)
                 break
             case 'DELETE_WAYPOINT':
+                if (waypoints.list[action.index].uuid === waypoints.lastSelected) {
+                    waypoints.lastSelected = ''
+                }
+                waypoints.selected = new Set(
+                    [...waypoints.selected.values()].filter(uuid => uuid !== waypoints.list[action.index].uuid),
+                )
                 waypoints.list.splice(action.index, 1)
                 break
             case 'DELETE_SELECTED_WAYPOINTS':
+                if (waypoints.selected.has(waypoints.lastSelected)) {
+                    waypoints.lastSelected = ''
+                }
+                waypoints.selected = new Set()
                 waypoints.list = waypoints.list.filter(({ uuid }) => !waypoints.selected.has(uuid))
                 break
             case 'REVERSE_WAYPOINTS':
@@ -49,17 +61,16 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
             case 'SELECT_WAYPOINT': {
                 const { uuid } = waypoints.list[action.index]
 
-                const selectedCurrentWaypoints = waypoints.list.filter(({ uuid: currenUuid }) =>
-                    waypoints.selected.has(currenUuid),
-                )
-                if (selectedCurrentWaypoints.length === 1 && waypoints.selected.has(uuid)) {
+                if (waypoints.selected.has(uuid)) {
                     // TODO: Can be cleared directly with Immer v4.0
                     waypoints.selected = new Set()
+                    waypoints.lastSelected = ''
                 } else {
+                    // TODO: Can be cleared directly with Immer v4.0
                     waypoints.selected = new Set([uuid])
+                    waypoints.lastSelected = waypoints.list[action.index].uuid
                 }
 
-                waypoints.lastSelected = waypoints.list[action.index].uuid
                 break
             }
             case 'DESELECT_ALL_WAYPOINTS':
@@ -67,37 +78,42 @@ export const waypointsReducer: AppReducer<WaypointsState> = produce(
                 waypoints.lastSelected = ''
                 break
             case 'TOGGLE_WAYPOINT_SELECTION': {
-                // TODO: Can be set directly with Immer v4.0
                 const newSelectedWaypoints = new Set<string>(waypoints.selected as Set<string>)
 
                 const { uuid } = waypoints.list[action.index]
 
                 if (waypoints.selected.has(uuid)) {
                     newSelectedWaypoints.delete(uuid)
+                    waypoints.lastSelected = ''
                 } else {
                     newSelectedWaypoints.add(uuid)
+                    waypoints.lastSelected = uuid
                 }
 
-                waypoints.lastSelected = uuid
-
+                // TODO: Can be cleared directly with Immer v4.0
                 waypoints.selected = newSelectedWaypoints
                 break
             }
             case 'SELECT_WAYPOINT_RANGE': {
-                // TODO: Can be set directly with Immer v4.0
                 const newSelectedWaypoints = new Set<string>(waypoints.selected as Set<string>)
 
                 const lastSelectedWaypointIndex = waypoints.list.map(w => w.uuid).indexOf(waypoints.lastSelected)
-                const lowerBound = Math.min(action.index, lastSelectedWaypointIndex)
+                const lowerBound = Math.min(action.index, Math.max(lastSelectedWaypointIndex, 0))
                 const upperBound = Math.max(action.index, lastSelectedWaypointIndex)
 
                 for (let i = lowerBound; i < upperBound + 1; i++) {
                     newSelectedWaypoints.add(waypoints.list[i].uuid)
                 }
 
+                // TODO: Can be set directly with Immer v4.0
                 waypoints.selected = newSelectedWaypoints
+                waypoints.lastSelected = waypoints.list[action.index].uuid
                 break
             }
+            case 'SET_EDITOR_PANE':
+                waypoints.lastSelected = ''
+                waypoints.selected = new Set()
+                break
         }
     },
     {

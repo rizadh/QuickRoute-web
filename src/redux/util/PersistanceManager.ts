@@ -36,24 +36,25 @@ export class PersistanceManager {
     }
     private static STATE_STORAGE_KEY = 'com.rizadh.QuickRoute.state'
 
-    private static sanitizeState(state: Partial<AppState>): Partial<AppState> {
+    private static sanitizeState(state: AppState): AppState {
         const { waypoints, fetchedPlaces, fetchedRoutes } = state
-
-        const addresses = waypoints && waypoints.list.map(w => w.address)
+        const addresses = waypoints.list.map(w => w.address)
 
         return {
             ...state,
-            fetchedPlaces: fetchedPlaces && PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces), addresses),
-            fetchedRoutes:
-                fetchedRoutes &&
-                new Map(
-                    [...fetchedRoutes.entries()]
-                        .filter(([key]) => !addresses || addresses.includes(key))
-                        .map(([key, value]: [string, any]) => [
-                            key,
-                            PersistanceManager.sanitizeFetchResults(new Map(value), addresses),
-                        ]),
-                ),
+            waypoints: {
+                ...waypoints,
+                selected: new Set(),
+            },
+            fetchedPlaces: PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces), addresses),
+            fetchedRoutes: new Map(
+                [...fetchedRoutes.entries()]
+                    .filter(([key]) => !addresses || addresses.includes(key))
+                    .map(([key, value]: [string, any]) => [
+                        key,
+                        PersistanceManager.sanitizeFetchResults(new Map(value), addresses),
+                    ]),
+            ),
         }
     }
 
