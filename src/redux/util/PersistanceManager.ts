@@ -2,7 +2,10 @@ import { AppState, FetchResult, FetchSuccess } from '../state'
 
 export class PersistanceManager {
     static persistState(state: AppState) {
-        localStorage.setItem(PersistanceManager.STATE_STORAGE_KEY, JSON.stringify(state))
+        localStorage.setItem(
+            PersistanceManager.STATE_STORAGE_KEY,
+            JSON.stringify(PersistanceManager.sanitizeState(state)),
+        )
     }
 
     static persistedState(): Partial<AppState> {
@@ -33,17 +36,36 @@ export class PersistanceManager {
     }
     private static STATE_STORAGE_KEY = 'com.rizadh.QuickRoute.state'
 
-    private static sanitizeFetchResults<K, V>(source: ReadonlyMap<K, FetchResult<V>>): ReadonlyMap<K, FetchSuccess<V>> {
-        const sanitizedEntries: Array<[K, FetchSuccess<V>]> = []
+    private static sanitizeState(state: Partial<AppState>): Partial<AppState> {
+        const { waypoints, fetchedPlaces, fetchedRoutes } = state
 
-        for (const entry of source.entries()) {
-            const [key, result] = entry
+        const addresses = waypoints && waypoints.list.map(w => w.address)
 
-            if (result.status === 'SUCCESS') {
-                sanitizedEntries.push([key, result])
-            }
+        return {
+            ...state,
+            fetchedPlaces: fetchedPlaces && PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces), addresses),
+            fetchedRoutes:
+                fetchedRoutes &&
+                new Map(
+                    [...fetchedRoutes.entries()]
+                        .filter(([key]) => !addresses || addresses.includes(key))
+                        .map(([key, value]: [string, any]) => [
+                            key,
+                            PersistanceManager.sanitizeFetchResults(new Map(value), addresses),
+                        ]),
+                ),
         }
+    }
 
-        return new Map(sanitizedEntries)
+    private static sanitizeFetchResults<K, V>(
+        source: ReadonlyMap<K, FetchResult<V>>,
+        addresses?: K[],
+    ): ReadonlyMap<K, FetchSuccess<V>> {
+        return new Map(
+            [...source.entries()].filter(
+                (entry): entry is [K, FetchSuccess<V>] =>
+                    entry[1].status === 'SUCCESS' && (!addresses || addresses.includes(entry[0])),
+            ),
+        )
     }
 }
