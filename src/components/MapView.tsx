@@ -24,11 +24,11 @@ export const MapView = () => {
     const darkMode = useDarkMode()
     const compactMode = useCompactMode()
     const windowSize = useWindowSize()
-    const centerMap = (animated: boolean) => {
+    const centerMap = (animate: boolean) => {
         if (!autofitIsEnabled || !map) return
 
         map.showItems([...(map.annotations || []), ...map.overlays], {
-            animate: animated,
+            animate,
             padding: new mapkit.Padding({
                 top: compactMode ? 12 : 16,
                 right: compactMode ? 12 : 16,
@@ -135,8 +135,8 @@ export const MapView = () => {
         centerMap(true)
     }, [map, waypoints, fetchedPlaces, fetchedRoutes])
 
-    useEffect(() => centerMap(true), [map, autofitIsEnabled])
-    useEffect(() => centerMap(false), [windowSize.width, windowSize.height, editorIsHidden])
+    useEffect(() => centerMap(true), [autofitIsEnabled])
+    useEffect(() => centerMap(false), [map, windowSize.width, windowSize.height, editorIsHidden])
 
     useEffect(() => {
         if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light

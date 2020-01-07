@@ -6,26 +6,16 @@ export class PersistanceManager {
     }
 
     static persistedState(): Partial<AppState> {
-        const {
-            waypoints,
-            autofitIsEnabled,
-            mutedMapIsEnabled,
-            editorPane,
-            editorIsHidden,
-            fetchedPlaces,
-            fetchedRoutes,
-        } = JSON.parse(localStorage.getItem(PersistanceManager.STATE_STORAGE_KEY) || '{}')
+        const state = JSON.parse(localStorage.getItem(PersistanceManager.STATE_STORAGE_KEY) || '{}')
+        const { waypoints, fetchedPlaces, fetchedRoutes } = state
 
         return {
+            ...state,
+            autofitIsEnabled: true,
             waypoints: waypoints && {
-                list: waypoints.list,
+                ...waypoints,
                 selected: new Set(waypoints.selected),
-                lastSelected: waypoints.lastSelected,
             },
-            autofitIsEnabled,
-            mutedMapIsEnabled,
-            editorPane,
-            editorIsHidden,
             fetchedPlaces: fetchedPlaces && PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces)),
             fetchedRoutes:
                 fetchedRoutes &&
