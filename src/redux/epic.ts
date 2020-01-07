@@ -162,18 +162,10 @@ const replaceWaypointsEpic: AppEpic = combineEpics(
             ofType<AppAction, ReplaceWaypointsAction>('REPLACE_WAYPOINTS'),
             flatMap(({ waypoints }) => waypoints.map(({ address }) => ({ type: 'FETCH_PLACE', address }))),
         ),
-    (action$, state$) =>
+    (action$) =>
         action$.pipe(
             ofType<AppAction, ReplaceWaypointsAction>('REPLACE_WAYPOINTS'),
-            mergeMap(() =>
-                range(0, state$.value.waypoints.length - 1).pipe(
-                    map(index => ({
-                        type: 'FETCH_ROUTE',
-                        origin: state$.value.waypoints[index].address,
-                        destination: state$.value.waypoints[index + 1].address,
-                    })),
-                ),
-            ),
+            map(() => ({ type: 'FETCH_ALL_ROUTES' })),
         ),
 )
 
@@ -198,10 +190,7 @@ const addWaypointEpic: AppEpic = combineEpics(
 const deleteWaypointEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, DeleteWaypointAction>('DELETE_WAYPOINT'),
-        filter(
-            ({ index }) =>
-                state$.value.waypoints.length > 1 && index > 0 && index < state$.value.waypoints.length,
-        ),
+        filter(({ index }) => state$.value.waypoints.length > 1 && index > 0 && index < state$.value.waypoints.length),
         map(({ index }) => ({
             type: 'FETCH_ROUTE',
             origin: state$.value.waypoints[index - 1].address,
@@ -243,48 +232,22 @@ const setAddressEpic: AppEpic = combineEpics(
         ),
 )
 
-const moveWaypointEpic: AppEpic = (action$, state$) =>
+const moveWaypointEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, MoveWaypointAction>('MOVE_WAYPOINT'),
-        // TODO: Use a more efficient update algorithm
-        mergeMap(() =>
-            range(0, state$.value.waypoints.length - 1).pipe(
-                map<number, FetchRouteAction>(index => ({
-                    type: 'FETCH_ROUTE',
-                    origin: state$.value.waypoints[index].address,
-                    destination: state$.value.waypoints[index + 1].address,
-                })),
-            ),
-        ),
+        map(() => ({ type: 'FETCH_ALL_ROUTES' })),
     )
 
-const moveSelectedWaypointsEpic: AppEpic = (action$, state$) =>
+const moveSelectedWaypointsEpic: AppEpic = (action$) =>
     action$.pipe(
         ofType<AppAction, MoveSelectedWaypointsAction>('MOVE_SELECTED_WAYPOINTS'),
-        // TODO: Use a more efficient update algorithm
-        mergeMap(() =>
-            range(0, state$.value.waypoints.length - 1).pipe(
-                map<number, FetchRouteAction>(index => ({
-                    type: 'FETCH_ROUTE',
-                    origin: state$.value.waypoints[index].address,
-                    destination: state$.value.waypoints[index + 1].address,
-                })),
-            ),
-        ),
+        map(() => ({ type: 'FETCH_ALL_ROUTES' })),
     )
 
-const reverseWaypointsEpic: AppEpic = (action$, state$) =>
+const reverseWaypointsEpic: AppEpic = (action$) =>
     action$.pipe(
         ofType<AppAction, ReverseWaypointsAction>('REVERSE_WAYPOINTS'),
-        mergeMap(() =>
-            range(0, state$.value.waypoints.length - 1).pipe(
-                map<number, FetchRouteAction>(index => ({
-                    type: 'FETCH_ROUTE',
-                    origin: state$.value.waypoints[index].address,
-                    destination: state$.value.waypoints[index + 1].address,
-                })),
-            ),
-        ),
+        map(() => ({ type: 'FETCH_ALL_ROUTES' })),
     )
 
 const fetchPlaceEpic: AppEpic = (action$, state$) =>
