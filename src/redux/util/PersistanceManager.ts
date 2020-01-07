@@ -1,10 +1,4 @@
-import uuid from 'uuid/v4'
-import { AppState, FetchResult, FetchSuccess, Waypoint } from './state'
-
-export const createWaypointFromAddress = (address: string): Waypoint => ({
-    address,
-    uuid: uuid(),
-})
+import { AppState, FetchResult, FetchSuccess } from '../state'
 
 export class PersistanceManager {
     static persistState(state: AppState) {

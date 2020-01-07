@@ -5,7 +5,7 @@ import { WaypointEditorTemplate } from '.'
 import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
 import { EditorPane } from '../../redux/state'
-import { createWaypointFromAddress } from '../../redux/util'
+import { createWaypointFromAddress } from '../../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../../redux/validator'
 import { Button } from '../Button'
 

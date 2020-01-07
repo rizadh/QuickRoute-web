@@ -28,7 +28,7 @@ import {
     SetAddressAction,
 } from './actionTypes'
 import { AppState, Coordinate, EditorPane } from './state'
-import { createWaypointFromAddress } from './util'
+import { createWaypointFromAddress } from './util/createWaypointFromAddress'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction

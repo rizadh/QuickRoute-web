@@ -6,7 +6,8 @@ import { AppAction } from './actionTypes'
 import epic from './epic'
 import { reducer } from './reducers'
 import { AppState } from './state'
-import { createWaypointFromAddress, PersistanceManager } from './util'
+import { createWaypointFromAddress } from './util/createWaypointFromAddress'
+import { PersistanceManager } from './util/PersistanceManager'
 
 const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>()
 
