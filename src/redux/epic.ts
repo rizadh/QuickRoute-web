@@ -282,7 +282,7 @@ const fetchAllRoutesEpic: AppEpic = (action$, state$) =>
 const fetchRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, FetchRouteAction>('FETCH_ROUTE'),
-        filter(({ origin, destination }) => !state$.value.fetchedRoutes.get(origin)?.get(destination)),
+        filter(({ origin, destination }) => !state$.value.fetchedRoutes[origin]?.[destination]),
         mergeMap(({ origin, destination }) =>
             merge(
                 of<AppAction>({ type: 'FETCH_PLACE', address: origin }),

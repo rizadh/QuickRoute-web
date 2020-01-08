@@ -9,23 +9,7 @@ export class PersistanceManager {
     }
 
     static persistedState(): Partial<AppState> {
-        const state = JSON.parse(localStorage.getItem(PersistanceManager.STATE_STORAGE_KEY) || '{}')
-        const { waypoints, fetchedPlaces, fetchedRoutes } = state
-
-        return {
-            ...state,
-            autofitIsEnabled: true,
-            waypoints,
-            fetchedPlaces,
-            fetchedRoutes:
-                fetchedRoutes &&
-                new Map(
-                    fetchedRoutes.map(([key, value]: [string, any]) => [
-                        key,
-                        PersistanceManager.sanitizeFetchResultsMap(new Map(value)),
-                    ]),
-                ),
-        }
+        return JSON.parse(localStorage.getItem(PersistanceManager.STATE_STORAGE_KEY) || '{}')
     }
 
     static resetState() {
@@ -40,15 +24,21 @@ export class PersistanceManager {
         return {
             ...state,
             waypoints: waypoints.map(waypoint => ({ ...waypoint, selected: undefined })),
+            autofitIsEnabled: true,
             fetchedPlaces: PersistanceManager.objectFromEntries(
                 PersistanceManager.filterSuccessfulFetchResults(Object.entries(fetchedPlaces), addresses.includes),
             ),
-            fetchedRoutes: new Map(
-                [...fetchedRoutes.entries()]
+            fetchedRoutes: PersistanceManager.objectFromEntries(
+                [...Object.entries(fetchedRoutes)]
                     .filter(([key]) => !addresses || addresses.includes(key))
-                    .map(([key, value]: [string, any]) => [
+                    .map(([key, value]) => [
                         key,
-                        PersistanceManager.sanitizeFetchResultsMap(new Map(value), addresses),
+                        PersistanceManager.objectFromEntries(
+                            PersistanceManager.filterSuccessfulFetchResults(
+                                Object.entries(value ?? {}),
+                                addresses.includes,
+                            ),
+                        ),
                     ]),
             ),
         }
@@ -67,18 +57,6 @@ export class PersistanceManager {
         return [...source].filter(
             (entry): entry is [string, FetchSuccess<V>] =>
                 entry[1]?.status === 'SUCCESS' && (!predicate || predicate(entry[0])),
-        )
-    }
-
-    private static sanitizeFetchResultsMap<K, V>(
-        source: ReadonlyMap<K, FetchResult<V>>,
-        addresses?: K[],
-    ): ReadonlyMap<K, FetchSuccess<V>> {
-        return new Map(
-            [...source.entries()].filter(
-                (entry): entry is [K, FetchSuccess<V>] =>
-                    entry[1].status === 'SUCCESS' && (!addresses || addresses.includes(entry[0])),
-            ),
         )
     }
 }

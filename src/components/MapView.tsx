@@ -110,7 +110,7 @@ export const MapView = () => {
         const overlays = waypoints.map((waypoint, index) => {
             if (index === 0) return
 
-            const fetchedRoute = fetchedRoutes.get(waypoints[index - 1].address)?.get(waypoint.address)
+            const fetchedRoute = fetchedRoutes[waypoints[index - 1].address]?.[waypoint.address]
 
             if (fetchedRoute?.status === 'SUCCESS') {
                 const {

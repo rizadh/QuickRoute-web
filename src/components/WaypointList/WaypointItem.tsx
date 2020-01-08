@@ -36,7 +36,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
     const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [index])
     const resetWaypointField = useCallback(() => setWaypointFieldValue(waypoint.address), [waypoint.address])
     const routeFetchResult = useCallback(
-        (origin: string, destination: string) => fetchedRoutes.get(origin)?.get(destination),
+        (origin: string, destination: string) => fetchedRoutes[origin]?.[destination],
         [fetchedRoutes],
     )
 

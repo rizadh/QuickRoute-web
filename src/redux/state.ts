@@ -35,7 +35,9 @@ export type PlaceFetchResult = FetchResult<Place>
 export type FetchedPlaces = Readonly<{ [key: string]: PlaceFetchResult | undefined }>
 
 export type RouteFetchResult = FetchResult<Route>
-export type FetchedRoutes = ReadonlyMap<string, ReadonlyMap<string, RouteFetchResult>>
+export type FetchedRoutes = Readonly<{
+    [key: string]: Readonly<{ [key: string]: RouteFetchResult | undefined }> | undefined;
+}>
 
 export type Waypoint = Readonly<{
     address: string;

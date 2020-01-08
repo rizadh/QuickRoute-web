@@ -31,8 +31,8 @@ export const routeInformation = (state: AppState): RouteInformation => {
 
     if (routeCount <= 0) return { status: 'NO_ROUTE' }
 
-    const routes = range(0, routeCount).map(i =>
-        state.fetchedRoutes.get(state.waypoints[i].address)?.get(state.waypoints[i + 1].address),
+    const routes = range(0, routeCount).map(
+        i => state.fetchedRoutes[state.waypoints[i].address]?.[state.waypoints[i + 1].address],
     )
 
     const routeSuccessCount = routes.filter(result => result?.status === 'SUCCESS').length
