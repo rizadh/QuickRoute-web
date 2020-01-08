@@ -1,13 +1,12 @@
 import { Line } from 'rc-progress'
-import React, { useContext, useMemo } from 'react'
-import { AppStateContext } from '../context/AppStateContext'
+import React from 'react'
+import { shallowEqual, useSelector } from 'react-redux'
 import { useDarkMode } from '../hooks/useDarkMode'
 import { routeInformation } from '../redux/selectors'
 
 export const ProgressBar = () => {
     const darkMode = useDarkMode()
-    const { state } = useContext(AppStateContext)
-    const currentRouteInformation = useMemo(() => routeInformation(state), [state])
+    const currentRouteInformation = useSelector(routeInformation, shallowEqual)
 
     if (currentRouteInformation.status === 'FETCHING') {
         return (

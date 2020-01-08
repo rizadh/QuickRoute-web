@@ -1,12 +1,14 @@
 import { saveAs } from 'file-saver'
 import isMobileFn from 'ismobilejs'
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { Dispatch, useCallback } from 'react'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { WaypointEditorTemplate } from '.'
 import { apiPrefix } from '../..'
-import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
+import { AppAction } from '../../redux/actionTypes'
 import { routeInformation } from '../../redux/selectors'
+import { AppState } from '../../redux/state'
 import { createWaypointFromAddress } from '../../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../../redux/validator'
 import { Button } from '../Button'
@@ -20,11 +22,10 @@ export const WaypointsPane = () => {
         keyPressHandler: handleNewWaypointFieldKeyPress,
     } = useInputField('', () => isValidAddress(newWaypointFieldValue) && addNewWaypoint())
 
-    const { state, dispatch } = useContext(AppStateContext)
     const compactMode = useCompactMode()
-    const { waypoints } = state
-
-    const currentRouteInformation = useMemo(() => routeInformation(state), [state])
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const dispatch: Dispatch<AppAction> = useDispatch()
+    const currentRouteInformation = useSelector(routeInformation, shallowEqual)
 
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
 

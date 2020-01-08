@@ -1,14 +1,13 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { Dispatch, useCallback, useState } from 'react'
 import { DragDropContext, DragStart, Droppable, DropResult } from 'react-beautiful-dnd'
-import { AppStateContext } from '../../context/AppStateContext'
-import { Waypoint } from '../../redux/state'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState, Waypoint } from '../../redux/state'
 import { WaypointItem } from './WaypointItem'
 
 export const WaypointList = () => {
-    const {
-        state: { waypoints },
-        dispatch,
-    } = useContext(AppStateContext)
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const dispatch: Dispatch<AppAction> = useDispatch()
 
     const [draggedWaypoint, setDraggedWaypoint] = useState<Waypoint | null>(null)
 

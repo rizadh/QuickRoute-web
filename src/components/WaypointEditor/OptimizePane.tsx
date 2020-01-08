@@ -1,17 +1,17 @@
 import isMobileFn from 'ismobilejs'
-import React, { useCallback, useContext } from 'react'
+import React, { Dispatch, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { WaypointEditorTemplate } from '.'
-import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInputField } from '../../hooks/useInputField'
-import { OptimizationParameter } from '../../redux/actionTypes'
+import { AppAction, OptimizationParameter } from '../../redux/actionTypes'
+import { AppState } from '../../redux/state'
 import { Button } from '../Button'
 
 export const OptimizePane = () => {
-    const {
-        state: { waypoints, optimizationInProgress },
-        dispatch,
-    } = useContext(AppStateContext)
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const optimizationInProgress = useSelector((state: AppState) => state.optimizationInProgress)
+    const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
 
     const { value: startPointFieldValue, setValue: setStartPointFieldValue } = useInputField('', () => undefined)

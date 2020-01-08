@@ -1,19 +1,18 @@
 import isMobileFn from 'ismobilejs'
-import React, { useCallback, useContext } from 'react'
+import React, { Dispatch, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import { WaypointEditorTemplate } from '.'
-import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
-import { EditorPane } from '../../redux/state'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState, EditorPane } from '../../redux/state'
 import { createWaypointFromAddress } from '../../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../../redux/validator'
 import { Button } from '../Button'
 
 export const BulkEditPane = () => {
-    const {
-        state: { waypoints },
-        dispatch,
-    } = useContext(AppStateContext)
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const dispatch: Dispatch<AppAction> = useDispatch()
 
     const {
         value: bulkEditFieldValue,

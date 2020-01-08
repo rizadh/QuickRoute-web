@@ -1,42 +1,45 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { AppStateContext } from '../context/AppStateContext'
+import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { useDarkMode } from '../hooks/useDarkMode'
 import { useWindowSize } from '../hooks/useWindowSize'
+import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
+import { AppState } from '../redux/state'
 
 export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
-    const { state, dispatch } = useContext(AppStateContext)
-    const {
-        waypoints,
-        fetchedPlaces,
-        fetchedRoutes,
-        autofitIsEnabled,
-        mutedMapIsEnabled,
-        editorIsHidden,
-        importInProgress,
-        optimizationInProgress,
-    } = state
-    const operationInProgress = importInProgress || optimizationInProgress
-    const status = useMemo(() => routeInformation(state).status, [state])
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const fetchedPlaces = useSelector((state: AppState) => state.fetchedPlaces)
+    const fetchedRoutes = useSelector((state: AppState) => state.fetchedRoutes)
+    const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
+    const mutedMapIsEnabled = useSelector((state: AppState) => state.mutedMapIsEnabled)
+    const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
+    const dispatch: Dispatch<AppAction> = useDispatch()
+    const operationInProgress = useSelector(
+        (state: AppState) => state.importInProgress || state.optimizationInProgress,
+    )
+    const status = useSelector((state: AppState) => routeInformation(state).status)
     const darkMode = useDarkMode()
     const compactMode = useCompactMode()
     const windowSize = useWindowSize()
-    const centerMap = (animate: boolean) => {
-        if (!autofitIsEnabled || !map) return
+    const centerMap = useCallback(
+        (animate: boolean) => {
+            if (!autofitIsEnabled || !map) return
 
-        map.showItems([...(map.annotations || []), ...map.overlays], {
-            animate,
-            padding: new mapkit.Padding({
-                top: compactMode ? 12 : 16,
-                right: compactMode ? 12 : 16,
-                bottom: compactMode ? 12 : 16,
-                left: compactMode ? 12 : 16,
-            }),
-        })
-    }
+            map.showItems([...(map.annotations || []), ...map.overlays], {
+                animate,
+                padding: new mapkit.Padding({
+                    top: compactMode ? 12 : 16,
+                    right: compactMode ? 12 : 16,
+                    bottom: compactMode ? 12 : 16,
+                    left: compactMode ? 12 : 16,
+                }),
+            })
+        },
+        [autofitIsEnabled, map],
+    )
 
     useEffect(() => {
         if (mapviewRef.current == null) return

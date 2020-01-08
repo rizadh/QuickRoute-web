@@ -1,7 +1,9 @@
-import React, { useCallback, useContext } from 'react'
+import React, { Dispatch, useCallback } from 'react'
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
-import { AppStateContext } from '../../context/AppStateContext'
+import { useDispatch, useSelector } from 'react-redux'
 import { useInputField } from '../../hooks/useInputField'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState } from '../../redux/state'
 import { isValidAddress } from '../../redux/validator'
 import { Button } from '../Button'
 
@@ -10,14 +12,9 @@ type WaypointItemProps = {
     isBeingDraggedAlong: boolean;
 }
 
-export const WaypointItem = (props: WaypointItemProps) => {
-    const { index, isBeingDraggedAlong } = props
-
-    const {
-        state: { waypoints, fetchedPlaces, fetchedRoutes },
-        dispatch,
-    } = useContext(AppStateContext)
-    const waypoint = waypoints[index]
+export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) => {
+    const dispatch: Dispatch<AppAction> = useDispatch()
+    const waypoint = useSelector((state: AppState) => state.waypoints[index])
 
     const {
         value: waypointFieldValue,
@@ -35,20 +32,20 @@ export const WaypointItem = (props: WaypointItemProps) => {
     ])
     const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [index])
     const resetWaypointField = useCallback(() => setWaypointFieldValue(waypoint.address), [waypoint.address])
-    const routeFetchResult = useCallback(
-        (origin: string, destination: string) => fetchedRoutes[origin]?.[destination],
-        [fetchedRoutes],
+
+    const placeFetchResult = useSelector((state: AppState) => state.fetchedPlaces[waypoint.address])
+
+    const incomingRouteFetchResult = useSelector((state: AppState) =>
+        index !== 0
+            ? state.fetchedRoutes[state.waypoints[index - 1].address]?.[state.waypoints[index].address]
+            : undefined,
     )
 
-    const placeFetchResult = fetchedPlaces[waypoint.address]
-
-    const incomingRouteFetchResult =
-        index !== 0 ? routeFetchResult(waypoints[index - 1].address, waypoints[index].address) : undefined
-
-    const outgoingRouteFetchResult =
-        index !== waypoints.length - 1
-            ? routeFetchResult(waypoints[index].address, waypoints[index + 1].address)
-            : undefined
+    const outgoingRouteFetchResult = useSelector((state: AppState) =>
+        index !== state.waypoints.length - 1
+            ? state.fetchedRoutes[state.waypoints[index].address]?.[state.waypoints[index + 1].address]
+            : undefined,
+    )
 
     const itemWasClicked = useCallback(
         (e: React.MouseEvent) => {
@@ -105,7 +102,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
                     {...provided.draggableProps}
                     className={
                         'input-row' +
-                        (waypoints[index].selected ? ' waypoint-item-selected' : '') +
+                        (waypoint.selected ? ' waypoint-item-selected' : '') +
                         (isBeingDraggedAlong ? ' waypoint-item-dragging-along' : '')
                     }
                 >

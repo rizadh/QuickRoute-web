@@ -1,8 +1,9 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { Dispatch, useCallback, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { appVersion } from '../..'
-import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
-import { EditorPane } from '../../redux/state'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState, EditorPane } from '../../redux/state'
 import { Button } from '../Button'
 import { RouteInformationBar } from '../RouteInformationBar'
 import { BulkEditPane } from './BulkEditPane'
@@ -16,16 +17,15 @@ type WaypointEditorTemplateProps = {
     footer: JSX.Element;
 }
 
-export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
-    const {
-        state: { editorPane, importInProgress, optimizationInProgress, error },
-        dispatch,
-    } = useContext(AppStateContext)
+export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateProps) => {
+    const editorPane = useSelector((state: AppState) => state.editorPane)
+    const importInProgress = useSelector((state: AppState) => state.importInProgress)
+    const optimizationInProgress = useSelector((state: AppState) => state.optimizationInProgress)
+    const error = useSelector((state: AppState) => state.error)
+    const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
 
     const paneIsBusy = importInProgress || optimizationInProgress
-
-    const { body, footer } = props
 
     const setEditorPaneList = useCallback(() => dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.List }), [])
     const setEditorPaneBulkEdit = useCallback(
@@ -125,9 +125,8 @@ export const WaypointEditorTemplate = (props: WaypointEditorTemplateProps) => {
 }
 
 export const WaypointEditor = () => {
-    const {
-        state: { editorPane, editorIsHidden },
-    } = useContext(AppStateContext)
+    const editorPane = useSelector((state: AppState) => state.editorPane)
+    const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
 
     useEffect(() => {
         const root = document.getElementById('root')

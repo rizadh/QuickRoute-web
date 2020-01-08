@@ -1,15 +1,16 @@
 import isMobileFn from 'ismobilejs'
-import React, { useCallback, useContext } from 'react'
+import React, { Dispatch, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { WaypointEditorTemplate } from '.'
-import { AppStateContext } from '../../context/AppStateContext'
 import { useInputField } from '../../hooks/useInputField'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState } from '../../redux/state'
 import { Button } from '../Button'
 
 export const ImportPane = () => {
-    const {
-        state: { importInProgress, waypoints },
-        dispatch,
-    } = useContext(AppStateContext)
+    const importInProgress = useSelector((state: AppState) => state.importInProgress)
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const dispatch: Dispatch<AppAction> = useDispatch()
 
     const {
         value: driverNumberFieldValue,

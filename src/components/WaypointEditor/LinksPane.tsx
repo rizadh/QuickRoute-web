@@ -1,17 +1,17 @@
 import copyToClipboard from 'copy-text-to-clipboard'
 import chunk from 'lodash/chunk'
 import { stringify } from 'query-string'
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { Dispatch, useCallback, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { WaypointEditorTemplate } from '.'
-import { AppStateContext } from '../../context/AppStateContext'
 import { useCompactMode } from '../../hooks/useCompactMode'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState } from '../../redux/state'
 import { Button } from '../Button'
 
 export const LinksPane = () => {
-    const {
-        state: { waypoints },
-        dispatch,
-    } = useContext(AppStateContext)
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
 
     const navigationLinks = useMemo(() => {

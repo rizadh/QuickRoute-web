@@ -1,13 +1,14 @@
-import React, { useContext } from 'react'
-import { AppStateContext } from '../context/AppStateContext'
+import React from 'react'
+import { shallowEqual, useSelector } from 'react-redux'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { routeInformation } from '../redux/selectors'
+import { AppState } from '../redux/state'
 import { StatView } from './StatView'
 
 export const RouteInformationBar = () => {
-    const { state } = useContext(AppStateContext)
     const compactMode = useCompactMode()
-    const currentRouteInformation = routeInformation(state)
+    const currentRouteInformation = useSelector(routeInformation, shallowEqual)
+    const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
 
     let statusbarItems: JSX.Element | string
     switch (currentRouteInformation.status) {
@@ -35,8 +36,8 @@ export const RouteInformationBar = () => {
     }
 
     return (
-        <div id="route-statusbar" className={state.editorIsHidden ? 'collapsed' : undefined}>
-            {!state.editorIsHidden || !compactMode ? statusbarItems : 'Show Editor'}
+        <div id="route-statusbar" className={editorIsHidden ? 'collapsed' : undefined}>
+            {!editorIsHidden || !compactMode ? statusbarItems : 'Show Editor'}
         </div>
     )
 }

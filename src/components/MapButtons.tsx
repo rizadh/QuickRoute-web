@@ -1,14 +1,16 @@
-import React, { useCallback, useContext } from 'react'
-import { AppStateContext } from '../context/AppStateContext'
+import React, { Dispatch, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useCompactMode } from '../hooks/useCompactMode'
+import { AppAction } from '../redux/actionTypes'
+import { AppState } from '../redux/state'
 import { Button } from './Button'
 import { RouteInformationBar } from './RouteInformationBar'
 
 export const MapButtons = () => {
-    const {
-        state: { autofitIsEnabled, mutedMapIsEnabled, editorIsHidden },
-        dispatch,
-    } = useContext(AppStateContext)
+    const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
+    const mutedMapIsEnabled = useSelector((state: AppState) => state.mutedMapIsEnabled)
+    const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
+    const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
 
     const enableAutofit = useCallback(() => dispatch({ type: 'ENABLE_AUTOFIT' }), [])
