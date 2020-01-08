@@ -14,7 +14,37 @@ import { isValidAddress } from '../../redux/validator'
 import { Button } from '../Button'
 import { WaypointList } from '../WaypointList'
 
-export const WaypointsPane = () => {
+export const WaypointsPane = () => (
+    <WaypointEditorTemplate body={<WaypointsPaneBody />} footer={<WaypointsPaneFooter />} />
+)
+
+export const WaypointsPaneBody = () => {
+    const waypointCount = useSelector((state: AppState) => state.waypoints.length)
+    const currentRouteInformation = useSelector(routeInformation, shallowEqual)
+
+    return (
+        <>
+            {currentRouteInformation.status === 'FAILED' && (
+                <div className="text text-danger" role="alert">
+                    One or more waypoints could not be routed
+                </div>
+            )}
+            {waypointCount === 0 && (
+                <div className="text text-secondary" role="alert">
+                    Enter an address to begin
+                </div>
+            )}
+            {waypointCount === 1 && (
+                <div className="text text-secondary" role="alert">
+                    Enter another address to show route information
+                </div>
+            )}
+            <WaypointList />
+        </>
+    )
+}
+
+export const WaypointsPaneFooter = () => {
     const {
         value: newWaypointFieldValue,
         setValue: setNewWaypointFieldValue,
@@ -25,7 +55,6 @@ export const WaypointsPane = () => {
     const compactMode = useCompactMode()
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
-    const currentRouteInformation = useSelector(routeInformation, shallowEqual)
 
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
 
@@ -80,74 +109,50 @@ export const WaypointsPane = () => {
 
     const isMobileDevice = isMobileFn().any
 
-    const body = (
-        <>
-            {currentRouteInformation.status === 'FAILED' && (
-                <div className="text text-danger" role="alert">
-                    One or more waypoints could not be routed
-                </div>
-            )}
-            {waypoints.length === 0 && (
-                <div className="text text-secondary" role="alert">
-                    Enter an address to begin
-                </div>
-            )}
-            {waypoints.length === 1 && (
-                <div className="text text-secondary" role="alert">
-                    Enter another address to show route information
-                </div>
-            )}
-            <WaypointList />
-        </>
-    )
-
     const selectedWaypointsCount = waypoints.filter(waypoint => waypoint.selected).length
 
-    const footer =
-        selectedWaypointsCount > 0 ? (
-            <>
-                <Button type="danger" onClick={deleteSelectedWaypoints}>
-                    <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
-                    {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
+    return selectedWaypointsCount > 0 ? (
+        <>
+            <Button type="danger" onClick={deleteSelectedWaypoints}>
+                <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
+                {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
+            </Button>
+            <Button type="primary" onClick={deselectAllWaypoints}>
+                <i className="fas fa-fw fa-ban" /> Cancel
+            </Button>
+        </>
+    ) : (
+        <>
+            <div className="input-row">
+                <input
+                    type="text"
+                    placeholder="New waypoint"
+                    value={newWaypointFieldValue}
+                    onChange={handleNewWaypointFieldChange}
+                    onKeyPress={handleNewWaypointFieldKeyPress}
+                    autoFocus={!isMobileDevice}
+                />
+                <Button
+                    title="Add waypoint"
+                    onClick={addNewWaypoint}
+                    disabled={!isValidAddress(newWaypointFieldValue)}
+                    type="primary"
+                >
+                    <i className="fas fa-fw fa-plus" />
                 </Button>
-                <Button type="primary" onClick={deselectAllWaypoints}>
-                    <i className="fas fa-fw fa-ban" /> Cancel
+            </div>
+            <Button type="primary" onClick={generatePdf} disabled={waypoints.length === 0}>
+                <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
+                {compactMode ? ' PDF' : ' Save PDF'}
+            </Button>
+            <Button type="primary" onClick={reverseWaypoints} disabled={waypoints.length < 2}>
+                <i className="fas fa-fw fa-exchange-alt" /> Reverse
+            </Button>
+            {(navigator as INavigator).share && (
+                <Button type="primary" onClick={shareWaypoints} disabled={waypoints.length === 0}>
+                    <i className="fas fa-fw fa-share" /> Share
                 </Button>
-            </>
-        ) : (
-            <>
-                <div className="input-row">
-                    <input
-                        type="text"
-                        placeholder="New waypoint"
-                        value={newWaypointFieldValue}
-                        onChange={handleNewWaypointFieldChange}
-                        onKeyPress={handleNewWaypointFieldKeyPress}
-                        autoFocus={!isMobileDevice}
-                    />
-                    <Button
-                        title="Add waypoint"
-                        onClick={addNewWaypoint}
-                        disabled={!isValidAddress(newWaypointFieldValue)}
-                        type="primary"
-                    >
-                        <i className="fas fa-fw fa-plus" />
-                    </Button>
-                </div>
-                <Button type="primary" onClick={generatePdf} disabled={waypoints.length === 0}>
-                    <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
-                    {compactMode ? ' PDF' : ' Save PDF'}
-                </Button>
-                <Button type="primary" onClick={reverseWaypoints} disabled={waypoints.length < 2}>
-                    <i className="fas fa-fw fa-exchange-alt" /> Reverse
-                </Button>
-                {(navigator as INavigator).share && (
-                    <Button type="primary" onClick={shareWaypoints} disabled={waypoints.length === 0}>
-                        <i className="fas fa-fw fa-share" /> Share
-                    </Button>
-                )}
-            </>
-        )
-
-    return <WaypointEditorTemplate body={body} footer={footer} />
+            )}
+        </>
+    )
 }
