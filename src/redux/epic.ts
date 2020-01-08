@@ -81,7 +81,10 @@ const performLookup = (address: string) =>
                 type: 'FETCH_PLACE_SUCCESS',
                 address,
                 place: {
-                    coordinate: place.coordinate,
+                    coordinate: {
+                        latitude: place.coordinate.latitude,
+                        longitude: place.coordinate.longitude,
+                    },
                     address: place.formattedAddress,
                 },
             })
@@ -137,7 +140,7 @@ const performRoute = (
                     origin: origin.address,
                     destination: destination.address,
                     route: {
-                        points: route.polyline.points,
+                        points: route.polyline.points.map(({ latitude, longitude }) => ({ latitude, longitude })),
                         distance: route.distance,
                         time: route.expectedTravelTime,
                     },
