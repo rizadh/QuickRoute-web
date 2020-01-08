@@ -40,7 +40,7 @@ export const WaypointItem = (props: WaypointItemProps) => {
         [fetchedRoutes],
     )
 
-    const placeFetchResult = fetchedPlaces.get(waypoint.address)
+    const placeFetchResult = fetchedPlaces[waypoint.address]
 
     const incomingRouteFetchResult =
         index !== 0 ? routeFetchResult(waypoints[index - 1].address, waypoints[index].address) : undefined

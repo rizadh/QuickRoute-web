@@ -16,13 +16,13 @@ export class PersistanceManager {
             ...state,
             autofitIsEnabled: true,
             waypoints,
-            fetchedPlaces: fetchedPlaces && PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces)),
+            fetchedPlaces,
             fetchedRoutes:
                 fetchedRoutes &&
                 new Map(
                     fetchedRoutes.map(([key, value]: [string, any]) => [
                         key,
-                        PersistanceManager.sanitizeFetchResults(new Map(value)),
+                        PersistanceManager.sanitizeFetchResultsMap(new Map(value)),
                     ]),
                 ),
         }
@@ -40,19 +40,37 @@ export class PersistanceManager {
         return {
             ...state,
             waypoints: waypoints.map(waypoint => ({ ...waypoint, selected: undefined })),
-            fetchedPlaces: PersistanceManager.sanitizeFetchResults(new Map(fetchedPlaces), addresses),
+            fetchedPlaces: PersistanceManager.objectFromEntries(
+                PersistanceManager.filterSuccessfulFetchResults(Object.entries(fetchedPlaces), addresses.includes),
+            ),
             fetchedRoutes: new Map(
                 [...fetchedRoutes.entries()]
                     .filter(([key]) => !addresses || addresses.includes(key))
                     .map(([key, value]: [string, any]) => [
                         key,
-                        PersistanceManager.sanitizeFetchResults(new Map(value), addresses),
+                        PersistanceManager.sanitizeFetchResultsMap(new Map(value), addresses),
                     ]),
             ),
         }
     }
 
-    private static sanitizeFetchResults<K, V>(
+    private static objectFromEntries<V>(entries: Iterable<[string, V]>): { [key: string]: V } {
+        const obj: { [key: string]: V } = {}
+        for (const [key, value] of entries) obj[key] = value
+        return obj
+    }
+
+    private static filterSuccessfulFetchResults<V>(
+        source: Iterable<[string, FetchResult<V> | undefined]>,
+        predicate: (key: string) => boolean,
+    ): Iterable<[string, FetchSuccess<V>]> {
+        return [...source].filter(
+            (entry): entry is [string, FetchSuccess<V>] =>
+                entry[1]?.status === 'SUCCESS' && (!predicate || predicate(entry[0])),
+        )
+    }
+
+    private static sanitizeFetchResultsMap<K, V>(
         source: ReadonlyMap<K, FetchResult<V>>,
         addresses?: K[],
     ): ReadonlyMap<K, FetchSuccess<V>> {

@@ -88,7 +88,7 @@ export const MapView = () => {
         if (operationInProgress) return
 
         const annotations = waypoints.map((waypoint, index) => {
-            const fetchedPlace = fetchedPlaces.get(waypoint.address)
+            const fetchedPlace = fetchedPlaces[waypoint.address]
 
             if (fetchedPlace?.status === 'SUCCESS') {
                 const {

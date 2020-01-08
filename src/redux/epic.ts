@@ -162,7 +162,7 @@ const replaceWaypointsEpic: AppEpic = combineEpics(
             ofType<AppAction, ReplaceWaypointsAction>('REPLACE_WAYPOINTS'),
             flatMap(({ waypoints }) => waypoints.map(({ address }) => ({ type: 'FETCH_PLACE', address }))),
         ),
-    (action$) =>
+    action$ =>
         action$.pipe(
             ofType<AppAction, ReplaceWaypointsAction>('REPLACE_WAYPOINTS'),
             map(() => ({ type: 'FETCH_ALL_ROUTES' })),
@@ -238,13 +238,13 @@ const moveWaypointEpic: AppEpic = action$ =>
         map(() => ({ type: 'FETCH_ALL_ROUTES' })),
     )
 
-const moveSelectedWaypointsEpic: AppEpic = (action$) =>
+const moveSelectedWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, MoveSelectedWaypointsAction>('MOVE_SELECTED_WAYPOINTS'),
         map(() => ({ type: 'FETCH_ALL_ROUTES' })),
     )
 
-const reverseWaypointsEpic: AppEpic = (action$) =>
+const reverseWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, ReverseWaypointsAction>('REVERSE_WAYPOINTS'),
         map(() => ({ type: 'FETCH_ALL_ROUTES' })),
@@ -253,7 +253,7 @@ const reverseWaypointsEpic: AppEpic = (action$) =>
 const fetchPlaceEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, FetchPlaceAction>('FETCH_PLACE'),
-        filter(({ address }) => !state$.value.fetchedPlaces.get(address)),
+        filter(({ address }) => !state$.value.fetchedPlaces[address]),
         mergeMap(({ address }) => performLookup(address)),
     )
 
@@ -289,8 +289,8 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
                 of<AppAction>({ type: 'FETCH_PLACE', address: destination }),
                 state$.pipe(
                     mergeMap(state => {
-                        const fetchedOrigin = state.fetchedPlaces.get(origin)
-                        const fetchedDestination = state.fetchedPlaces.get(destination)
+                        const fetchedOrigin = state.fetchedPlaces[origin]
+                        const fetchedDestination = state.fetchedPlaces[destination]
 
                         if (!fetchedOrigin || fetchedOrigin.status === 'IN_PROGRESS') return EMPTY
                         if (fetchedOrigin.status === 'FAILED') {
@@ -418,13 +418,13 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                 state$.pipe(
                     first(state =>
                         optimizationWaypoints.every(waypoint => {
-                            const place = state.fetchedPlaces.get(waypoint)
+                            const place = state.fetchedPlaces[waypoint]
                             return place !== undefined && place.status !== 'IN_PROGRESS'
                         }),
                     ),
                     mergeMap(async state => {
                         const getCoordinates = (waypoint: string): Coordinate => {
-                            const place = state.fetchedPlaces.get(waypoint)
+                            const place = state.fetchedPlaces[waypoint]
 
                             if (!place || place.status === 'IN_PROGRESS') {
                                 throw new Error('Optimization failed: Internal assertion failed')

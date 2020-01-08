@@ -32,7 +32,7 @@ export type Route = {
 }
 
 export type PlaceFetchResult = FetchResult<Place>
-export type FetchedPlaces = ReadonlyMap<string, PlaceFetchResult>
+export type FetchedPlaces = Readonly<{ [key: string]: PlaceFetchResult | undefined }>
 
 export type RouteFetchResult = FetchResult<Route>
 export type FetchedRoutes = ReadonlyMap<string, ReadonlyMap<string, RouteFetchResult>>

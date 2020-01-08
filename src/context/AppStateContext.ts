@@ -8,7 +8,7 @@ export const AppStateContext = createContext<{
 }>({
     state: {
         waypoints: [],
-        fetchedPlaces: new Map(),
+        fetchedPlaces: {},
         fetchedRoutes: new Map(),
         autofitIsEnabled: true,
         mutedMapIsEnabled: false,
