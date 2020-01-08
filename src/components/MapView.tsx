@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash'
 import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useCompactMode } from '../hooks/useCompactMode'
@@ -10,7 +11,7 @@ import { AppState } from '../redux/state'
 export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
-    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const addresses = useSelector((state: AppState) => state.waypoints.map(({ address }) => address), isEqual)
     const fetchedPlaces = useSelector((state: AppState) => state.fetchedPlaces)
     const fetchedRoutes = useSelector((state: AppState) => state.fetchedRoutes)
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
@@ -90,8 +91,8 @@ export const MapView = () => {
         if (status === 'FETCHING') return
         if (operationInProgress) return
 
-        const annotations = waypoints.map((waypoint, index) => {
-            const fetchedPlace = fetchedPlaces[waypoint.address]
+        const annotations = addresses.map((address, index) => {
+            const fetchedPlace = fetchedPlaces[address]
 
             if (fetchedPlace?.status === 'SUCCESS') {
                 const {
@@ -103,17 +104,17 @@ export const MapView = () => {
 
                 return new mapkit.MarkerAnnotation(new mapkit.Coordinate(latitude, longitude), {
                     glyphText: `${index + 1}`,
-                    title: waypoints[index].address,
+                    title: address,
                     subtitle: formattedAddress,
                     animates: false,
                 })
             }
         })
 
-        const overlays = waypoints.map((waypoint, index) => {
+        const overlays = addresses.map((address, index) => {
             if (index === 0) return
 
-            const fetchedRoute = fetchedRoutes[waypoints[index - 1].address]?.[waypoint.address]
+            const fetchedRoute = fetchedRoutes[addresses[index - 1]]?.[address]
 
             if (fetchedRoute?.status === 'SUCCESS') {
                 const {
@@ -136,7 +137,7 @@ export const MapView = () => {
         map.overlays = overlays.filter((a): a is mapkit.PolygonOverlay => !!a)
 
         centerMap(true)
-    }, [map, waypoints, fetchedPlaces, fetchedRoutes])
+    }, [map, addresses, fetchedPlaces, fetchedRoutes])
 
     useEffect(() => centerMap(true), [autofitIsEnabled])
     useEffect(() => centerMap(false), [map, windowSize.width, windowSize.height, editorIsHidden])
