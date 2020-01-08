@@ -26,17 +26,18 @@ export class PersistanceManager {
             waypoints: waypoints.map(waypoint => ({ ...waypoint, selected: undefined })),
             autofitIsEnabled: true,
             fetchedPlaces: PersistanceManager.objectFromEntries(
-                PersistanceManager.filterSuccessfulFetchResults(Object.entries(fetchedPlaces), addresses.includes),
+                PersistanceManager.filterSuccessfulFetchResults(Object.entries(fetchedPlaces), key =>
+                    addresses.includes(key),
+                ),
             ),
             fetchedRoutes: PersistanceManager.objectFromEntries(
                 [...Object.entries(fetchedRoutes)]
-                    .filter(([key]) => !addresses || addresses.includes(key))
+                    .filter(([key]) => addresses.includes(key))
                     .map(([key, value]) => [
                         key,
                         PersistanceManager.objectFromEntries(
-                            PersistanceManager.filterSuccessfulFetchResults(
-                                Object.entries(value ?? {}),
-                                addresses.includes,
+                            PersistanceManager.filterSuccessfulFetchResults(Object.entries(value ?? {}), innerKey =>
+                                addresses.includes(innerKey),
                             ),
                         ),
                     ]),
