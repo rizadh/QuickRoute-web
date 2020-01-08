@@ -13,6 +13,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@reduxjs/toolkit": "^1.2.1",
         "@types/apple-mapkit-js": "^5.18.0",
         "@types/file-saver": "^2.0.1",
         "@types/lodash": "^4.14.134",

@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore } from 'redux'
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { createEpicMiddleware } from 'redux-observable'
 import { Observable } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
@@ -18,7 +18,11 @@ if (searchParams.has('reset')) {
     history.replaceState(undefined, 'QuickRoute', location.origin + location.pathname)
 }
 
-const store = createStore(reducer, PersistanceManager.persistedState(), applyMiddleware(epicMiddleware))
+const store = configureStore({
+    reducer,
+    middleware: [...getDefaultMiddleware(), epicMiddleware],
+    preloadedState: PersistanceManager.persistedState(),
+})
 
 epicMiddleware.run(epic)
 
