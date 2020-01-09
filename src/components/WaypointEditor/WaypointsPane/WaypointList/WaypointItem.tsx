@@ -1,11 +1,11 @@
 import React, { Dispatch, useCallback } from 'react'
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import { useDispatch, useSelector } from 'react-redux'
-import { useInputField } from '../../hooks/useInputField'
-import { AppAction } from '../../redux/actionTypes'
-import { AppState } from '../../redux/state'
-import { isValidAddress } from '../../redux/validator'
-import { Button } from '../Button'
+import { useInputField } from '../../../../hooks/useInputField'
+import { AppAction } from '../../../../redux/actionTypes'
+import { AppState } from '../../../../redux/state'
+import { isValidAddress } from '../../../../redux/validator'
+import { Button } from '../../../Button'
 
 type WaypointItemProps = {
     index: number;
