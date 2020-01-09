@@ -1,7 +1,7 @@
 import { Draft, produce } from 'immer'
-import { AppReducer } from '.'
 import { AppAction } from '../actionTypes'
 import { Waypoints } from '../state'
+import { AppReducer } from './appReducer'
 
 export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft<Waypoints>, action: AppAction) => {
     switch (action.type) {

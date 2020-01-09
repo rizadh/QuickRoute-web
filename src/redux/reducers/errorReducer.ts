@@ -1,4 +1,4 @@
-import { AppReducer } from '.'
+import { AppReducer } from './appReducer'
 
 export const errorReducer: AppReducer<Error | null> = (error = null, action) => {
     switch (action.type) {

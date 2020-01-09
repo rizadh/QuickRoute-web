@@ -1,4 +1,4 @@
-import { AppReducer } from '.'
+import { AppReducer } from './appReducer'
 
 export const autofitIsEnabledReducer: AppReducer<boolean> = (autofitIsEnabled = true, action) => {
     switch (action.type) {

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 import { AppAction } from './actionTypes'
 import epic from './epic'
-import { reducer } from './reducers'
+import { appReducer } from './reducers/appReducer'
 import { AppState } from './state'
 import { createWaypointFromAddress } from './util/createWaypointFromAddress'
 import { PersistanceManager } from './util/PersistanceManager'
@@ -19,7 +19,7 @@ if (searchParams.has('reset')) {
 }
 
 const store = configureStore({
-    reducer,
+    reducer: appReducer,
     middleware: [...getDefaultMiddleware(), epicMiddleware],
     preloadedState: PersistanceManager.persistedState(),
 })

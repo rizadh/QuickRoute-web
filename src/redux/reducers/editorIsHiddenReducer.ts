@@ -1,4 +1,4 @@
-import { AppReducer } from '.'
+import { AppReducer } from './appReducer'
 
 export const editorIsHiddenReducer: AppReducer<boolean> = (editorIsHidden = false, action) => {
     switch (action.type) {

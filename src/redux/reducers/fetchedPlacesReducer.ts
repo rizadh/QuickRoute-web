@@ -1,7 +1,7 @@
 import { Draft, produce } from 'immer'
-import { AppReducer } from '.'
 import { AppAction } from '../actionTypes'
 import { FetchedPlaces } from '../state'
+import { AppReducer } from './appReducer'
 
 export const fetchedPlacesReducer: AppReducer<FetchedPlaces> = produce(
     (fetchedPlaces: Draft<FetchedPlaces>, action: AppAction) => {

@@ -14,7 +14,7 @@ import { waypointsReducer } from './waypointsReducer'
 
 export type AppReducer<T = AppState> = (state: T | undefined, action: AppAction) => T
 
-export const reducer: AppReducer = combineReducers({
+export const appReducer: AppReducer = combineReducers({
     waypoints: waypointsReducer,
     fetchedPlaces: fetchedPlacesReducer,
     fetchedRoutes: fetchedRoutesReducer,

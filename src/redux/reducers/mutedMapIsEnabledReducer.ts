@@ -1,4 +1,4 @@
-import { AppReducer } from '.'
+import { AppReducer } from './appReducer'
 
 export const mutedMapIsEnabledReducer: AppReducer<boolean> = (mutedMapIsEnabled = false, action) => {
     switch (action.type) {

@@ -1,4 +1,4 @@
-import { AppReducer } from '.'
+import { AppReducer } from './appReducer'
 
 export const importInProgressReducer: AppReducer<boolean> = (importInProgress = false, action) => {
     switch (action.type) {
