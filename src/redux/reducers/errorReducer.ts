@@ -5,9 +5,7 @@ export const errorReducer: AppReducer<Error | null> = (error = null, action) => 
         case 'SET_EDITOR_PANE':
             return null
         case 'IMPORT_WAYPOINTS_FAILED':
-            return action.error
         case 'OPTIMIZE_ROUTE_FAILED':
-            return action.error
         case 'ERROR_OCCURRED':
             return action.error
         case 'CLEAR_ERROR':
