@@ -1,28 +1,11 @@
-import React, { ReactNode, SyntheticEvent, useCallback } from 'react'
+import React, { ButtonHTMLAttributes, SyntheticEvent, useCallback } from 'react'
 
-type ButtonType = 'primary' | 'secondary' | 'danger' | 'warning' | 'frosted'
-type ButtonProps = {
-    id?: string;
-    title?: string;
-    type: ButtonType;
-    onClick?: () => void;
-    disabled?: boolean;
-    children: ReactNode;
-}
+type ButtonTheme = 'primary' | 'secondary' | 'danger' | 'warning' | 'frosted'
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { theme: ButtonTheme }
 
-export const Button = ({ id, title, type, onClick, disabled, children }: ButtonProps) => {
+export const Button = (props: ButtonProps) => {
     const preventFocus = useCallback((e: SyntheticEvent) => e.preventDefault(), [])
+    const extraClassName = props.className ? ` ${props.className}` : ''
 
-    return (
-        <button
-            id={id}
-            title={title}
-            className={`btn btn-${type}`}
-            onClick={onClick}
-            disabled={disabled}
-            onMouseDown={preventFocus}
-        >
-            {children}
-        </button>
-    )
+    return <button {...props} className={`btn btn-${props.theme}` + extraClassName} onMouseDown={preventFocus} />
 }

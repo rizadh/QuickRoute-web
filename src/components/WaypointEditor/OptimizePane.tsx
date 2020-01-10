@@ -3,7 +3,7 @@ import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { WaypointEditorTemplate } from '.'
 import { useCompactMode } from '../../hooks/useCompactMode'
-import { useInputField } from '../../hooks/useInputField'
+import { useInput } from '../../hooks/useInput'
 import { AppAction, OptimizationParameter } from '../../redux/actionTypes'
 import { AppState } from '../../redux/state'
 import { Button } from '../Button'
@@ -14,20 +14,11 @@ export const OptimizePane = () => {
     const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
 
-    const { value: startPointFieldValue, setValue: setStartPointFieldValue } = useInputField('', () => undefined)
-    const { value: endPointFieldValue, setValue: setEndPointFieldValue } = useInputField('', () => undefined)
+    const { value: startPointFieldValue, props: startPointFieldProps } = useInput()
+    const { value: endPointFieldValue, props: endPointFieldProps } = useInput()
 
     const startPoint = (startPointFieldValue || endPointFieldValue).trim()
     const endPoint = (endPointFieldValue || startPointFieldValue).trim()
-
-    const handleStartPointFieldChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => setStartPointFieldValue(e.currentTarget.value),
-        [],
-    )
-
-    const handleEndPointFieldChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setEndPointFieldValue(e.currentTarget.value)
-    }, [])
 
     const optimizeDistance = useCallback(
         () =>
@@ -84,8 +75,7 @@ export const OptimizePane = () => {
                 <input
                     type="text"
                     placeholder={`Start Point (${defaultStartPoint()})`}
-                    value={startPointFieldValue}
-                    onChange={handleStartPointFieldChange}
+                    {...startPointFieldProps}
                     disabled={optimizationInProgress}
                     autoFocus={!isMobileDevice}
                 />
@@ -94,8 +84,7 @@ export const OptimizePane = () => {
                 <input
                     type="text"
                     placeholder={`End Point (${defaultEndPoint()})`}
-                    value={endPointFieldValue}
-                    onChange={handleEndPointFieldChange}
+                    {...endPointFieldProps}
                     disabled={optimizationInProgress}
                 />
             </div>
@@ -104,21 +93,21 @@ export const OptimizePane = () => {
 
     const footer = optimizationInProgress ? (
         <>
-            <Button type="primary" disabled={true}>
+            <Button theme="primary" disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" />
                 {!compactMode && ' Optimizing'}
             </Button>
-            <Button type="danger" onClick={cancelOptimize}>
+            <Button theme="danger" onClick={cancelOptimize}>
                 <i className="fas fa-ban" /> Cancel
             </Button>
         </>
     ) : (
         <>
-            <Button type="primary" onClick={optimizeDistance} disabled={insufficientWaypoints}>
+            <Button theme="primary" onClick={optimizeDistance} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-ruler-combined" />
                 {compactMode ? ' Distance' : ' Optimize Distance'}
             </Button>
-            <Button type="primary" onClick={optimizeTime} disabled={insufficientWaypoints}>
+            <Button theme="primary" onClick={optimizeTime} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-clock" />
                 {compactMode ? ' Time' : ' Optimize Time'}
             </Button>

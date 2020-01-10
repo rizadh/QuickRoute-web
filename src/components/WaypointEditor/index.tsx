@@ -52,7 +52,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                 <Button
                     title="Minimize editor"
                     id="waypoint-editor-hide-button"
-                    type="secondary"
+                    theme="secondary"
                     onClick={hideEditorPane}
                 >
                     <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'up')} />
@@ -66,7 +66,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                     </div>
                     <div id="pane-selector">
                         <Button
-                            type={editorPane === EditorPane.List ? 'primary' : 'secondary'}
+                            theme={editorPane === EditorPane.List ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.List ? undefined : setEditorPaneList}
                             disabled={paneIsBusy}
                         >
@@ -74,7 +74,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             {!compactMode && ' Waypoints'}
                         </Button>
                         <Button
-                            type={editorPane === EditorPane.BulkEdit ? 'primary' : 'secondary'}
+                            theme={editorPane === EditorPane.BulkEdit ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.BulkEdit ? undefined : setEditorPaneBulkEdit}
                             disabled={paneIsBusy}
                         >
@@ -82,7 +82,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             {!compactMode && ' Bulk Edit'}
                         </Button>
                         <Button
-                            type={editorPane === EditorPane.Links ? 'primary' : 'secondary'}
+                            theme={editorPane === EditorPane.Links ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.Links ? undefined : setEditorPaneLinks}
                             disabled={paneIsBusy}
                         >
@@ -90,7 +90,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             {!compactMode && ' Links'}
                         </Button>
                         <Button
-                            type={editorPane === EditorPane.Import ? 'primary' : 'secondary'}
+                            theme={editorPane === EditorPane.Import ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.Import ? undefined : setEditorPaneImport}
                             disabled={paneIsBusy}
                         >
@@ -98,7 +98,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             {!compactMode && ' Import'}
                         </Button>
                         <Button
-                            type={editorPane === EditorPane.Optimizer ? 'primary' : 'secondary'}
+                            theme={editorPane === EditorPane.Optimizer ? 'primary' : 'secondary'}
                             onClick={editorPane === EditorPane.Optimizer ? undefined : setEditorPaneOptimizer}
                             disabled={paneIsBusy}
                         >

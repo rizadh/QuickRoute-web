@@ -1,7 +1,7 @@
 import React, { Dispatch, useCallback } from 'react'
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import { useDispatch, useSelector } from 'react-redux'
-import { useInputField } from '../../../../hooks/useInputField'
+import { useInput } from '../../../../hooks/useInput'
 import { AppAction } from '../../../../redux/actionTypes'
 import { AppState } from '../../../../redux/state'
 import { isValidAddress } from '../../../../redux/validator'
@@ -15,23 +15,15 @@ type WaypointItemProps = {
 export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) => {
     const dispatch: Dispatch<AppAction> = useDispatch()
     const waypoint = useSelector((state: AppState) => state.waypoints[index])
+    const isOriginalAddress = (value: string) => value.trim() === waypoint.address
 
-    const {
-        value: waypointFieldValue,
-        setValue: setWaypointFieldValue,
-        changeHandler: handleWaypointFieldValueChange,
-        keyPressHandler: handleWaypointFieldKeyPress,
-    } = useInputField(
-        waypoint.address,
-        () => fieldWasEdited && isValidAddress(waypointFieldValue) && setAddress(waypointFieldValue.trim()),
-    )
-    const fieldWasEdited = waypointFieldValue.trim() !== waypoint.address
+    const { value: waypointFieldValue, props: waypointFieldProps, resetValue: resetWaypointField } = useInput({
+        initialValue: waypoint.address,
+        predicate: value => !isOriginalAddress(value) && isValidAddress(value),
+        onCommit: useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [index]),
+    })
 
-    const setAddress = useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [
-        index,
-    ])
     const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [index])
-    const resetWaypointField = useCallback(() => setWaypointFieldValue(waypoint.address), [waypoint.address])
 
     const placeFetchResult = useSelector((state: AppState) => state.fetchedPlaces[waypoint.address])
 
@@ -115,14 +107,9 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                         <i className="fas fa-fw fa-grip-vertical" /> {index + 1}
                     </span>
 
-                    <input
-                        className="form-control"
-                        value={waypointFieldValue}
-                        onChange={handleWaypointFieldValueChange}
-                        onKeyPress={handleWaypointFieldKeyPress}
-                    />
-                    {fieldWasEdited && (
-                        <Button type="secondary" onClick={resetWaypointField}>
+                    <input className="form-control" {...waypointFieldProps} />
+                    {!isOriginalAddress(waypointFieldValue) && (
+                        <Button theme="secondary" onClick={resetWaypointField}>
                             <i className="fas fa-fw fa-undo" />
                         </Button>
                     )}
@@ -136,7 +123,7 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                             <i className="fas fa-fw fa-circle-notch fa-spin" />
                         </span>
                     )}
-                    <Button type="danger" onClick={deleteWaypoint} title="Delete waypoint">
+                    <Button theme="danger" onClick={deleteWaypoint} title="Delete waypoint">
                         <i className="fas fa-fw fa-trash" />
                     </Button>
                 </div>

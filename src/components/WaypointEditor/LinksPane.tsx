@@ -98,14 +98,14 @@ export const LinksPane = () => {
                 <div key={url} className="input-row">
                     <input type="text" value={url} readOnly={true} />
                     {(navigator as INavigator).share && (
-                        <Button onClick={shareLink(index)} type="primary" title="Share this link">
+                        <Button onClick={shareLink(index)} theme="primary" title="Share this link">
                             <i className="fas fa-fw fa-share" />
                         </Button>
                     )}
-                    <Button onClick={copyLink(index)} type="primary" title="Copy this link to clipboard">
+                    <Button onClick={copyLink(index)} theme="primary" title="Copy this link to clipboard">
                         <i className="fas fa-fw fa-clipboard" />
                     </Button>
-                    <Button onClick={openUrl(index)} type="primary" title="Open this link">
+                    <Button onClick={openUrl(index)} theme="primary" title="Open this link">
                         <i className="fas fa-fw fa-external-link-alt" />
                     </Button>
                 </div>
@@ -116,16 +116,16 @@ export const LinksPane = () => {
     const footer = (
         <>
             {(navigator as INavigator).share && (
-                <Button type="primary" onClick={shareAllLinks} disabled={insufficientWaypoints}>
+                <Button theme="primary" onClick={shareAllLinks} disabled={insufficientWaypoints}>
                     <i className="fas fa-fw fa-share" />
                     {compactMode ? ' Share' : ' Share All'}
                 </Button>
             )}
-            <Button type="primary" onClick={copyAllLinks} disabled={insufficientWaypoints}>
+            <Button theme="primary" onClick={copyAllLinks} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-clipboard" />
                 {compactMode ? ' Copy' : ' Copy All'}
             </Button>
-            <Button type="primary" onClick={openAllLinks} disabled={insufficientWaypoints}>
+            <Button theme="primary" onClick={openAllLinks} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-external-link-alt" />
                 {compactMode ? ' Open' : ' Open All'}
             </Button>

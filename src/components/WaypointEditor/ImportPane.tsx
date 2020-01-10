@@ -2,7 +2,7 @@ import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { WaypointEditorTemplate } from '.'
-import { useInputField } from '../../hooks/useInputField'
+import { useInput } from '../../hooks/useInput'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState } from '../../redux/state'
 import { Button } from '../Button'
@@ -14,14 +14,13 @@ export const ImportPane = () => {
 
     const {
         value: driverNumberFieldValue,
-        changeHandler: handleDriverNumberFieldChange,
-        keyPressHandler: handleDriverNumberFieldKeyPress,
-    } = useInputField('', () => driverNumberFieldValue.length && importWaypoints())
-
-    const importWaypoints = useCallback(
-        () => dispatch({ type: 'IMPORT_WAYPOINTS', driverNumber: driverNumberFieldValue }),
-        [driverNumberFieldValue],
-    )
+        props: driverNumberFieldProps,
+        commitValue: importWaypoints,
+        valueIsValid: driverNumberIsValid,
+    } = useInput({
+        predicate: value => !!value,
+        onCommit: useCallback((value: string) => dispatch({ type: 'IMPORT_WAYPOINTS', driverNumber: value }), []),
+    })
 
     const cancelImport = useCallback(
         () => dispatch({ type: 'IMPORT_WAYPOINTS_CANCEL', driverNumber: driverNumberFieldValue }),
@@ -39,9 +38,7 @@ export const ImportPane = () => {
                 <input
                     type="text"
                     placeholder="Driver number"
-                    value={driverNumberFieldValue}
-                    onChange={handleDriverNumberFieldChange}
-                    onKeyPress={handleDriverNumberFieldKeyPress}
+                    {...driverNumberFieldProps}
                     disabled={importInProgress}
                     autoFocus={!isMobileDevice}
                 />
@@ -56,15 +53,15 @@ export const ImportPane = () => {
 
     const footer = importInProgress ? (
         <>
-            <Button type="primary" disabled={true}>
+            <Button theme="primary" disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
             </Button>
-            <Button type="danger" onClick={cancelImport}>
+            <Button theme="danger" onClick={cancelImport}>
                 <i className="fas fa-ban" /> Cancel
             </Button>
         </>
     ) : (
-        <Button type="primary" onClick={importWaypoints} disabled={!driverNumberFieldValue.length}>
+        <Button theme="primary" onClick={importWaypoints} disabled={!driverNumberIsValid}>
             <i className="fas fa-fw fa-cloud-download-alt" /> Import
         </Button>
     )

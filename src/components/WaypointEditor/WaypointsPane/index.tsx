@@ -5,7 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { WaypointEditorTemplate } from '..'
 import { apiPrefix } from '../../..'
 import { useCompactMode } from '../../../hooks/useCompactMode'
-import { useInputField } from '../../../hooks/useInputField'
+import { useInput } from '../../../hooks/useInput'
 import { AppAction } from '../../../redux/actionTypes'
 import { routeInformation } from '../../../redux/selectors'
 import { AppState } from '../../../redux/state'
@@ -45,23 +45,20 @@ export const WaypointsPaneBody = () => {
 }
 
 export const WaypointsPaneFooter = () => {
-    const {
-        value: newWaypointFieldValue,
-        setValue: setNewWaypointFieldValue,
-        changeHandler: handleNewWaypointFieldChange,
-        keyPressHandler: handleNewWaypointFieldKeyPress,
-    } = useInputField('', () => isValidAddress(newWaypointFieldValue) && addNewWaypoint())
+    const { props: waypointFieldProps, commitValue: addWaypoint, valueIsValid: waypointIsValid } = useInput({
+        predicate: isValidAddress,
+        onCommit: useCallback((waypoint: string) => {
+            dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(waypoint) })
+            return true
+        }, []),
+        resetAfterCommit: true,
+    })
 
     const compactMode = useCompactMode()
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
-
-    const addNewWaypoint = useCallback(() => {
-        dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(newWaypointFieldValue) })
-        setNewWaypointFieldValue('')
-    }, [newWaypointFieldValue])
 
     const deleteSelectedWaypoints = useCallback(() => dispatch({ type: 'DELETE_SELECTED_WAYPOINTS' }), [])
 
@@ -113,43 +110,31 @@ export const WaypointsPaneFooter = () => {
 
     return selectedWaypointsCount > 0 ? (
         <>
-            <Button type="danger" onClick={deleteSelectedWaypoints}>
+            <Button theme="danger" onClick={deleteSelectedWaypoints}>
                 <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
                 {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
             </Button>
-            <Button type="primary" onClick={deselectAllWaypoints}>
+            <Button theme="primary" onClick={deselectAllWaypoints}>
                 <i className="fas fa-fw fa-ban" /> Cancel
             </Button>
         </>
     ) : (
         <>
             <div className="input-row">
-                <input
-                    type="text"
-                    placeholder="New waypoint"
-                    value={newWaypointFieldValue}
-                    onChange={handleNewWaypointFieldChange}
-                    onKeyPress={handleNewWaypointFieldKeyPress}
-                    autoFocus={!isMobileDevice}
-                />
-                <Button
-                    title="Add waypoint"
-                    onClick={addNewWaypoint}
-                    disabled={!isValidAddress(newWaypointFieldValue)}
-                    type="primary"
-                >
+                <input type="text" placeholder="New waypoint" {...waypointFieldProps} autoFocus={!isMobileDevice} />
+                <Button title="Add waypoint" onClick={addWaypoint} disabled={!waypointIsValid} theme="primary">
                     <i className="fas fa-fw fa-plus" />
                 </Button>
             </div>
-            <Button type="primary" onClick={generatePdf} disabled={waypoints.length === 0}>
+            <Button theme="primary" onClick={generatePdf} disabled={waypoints.length === 0}>
                 <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
                 {compactMode ? ' PDF' : ' Save PDF'}
             </Button>
-            <Button type="primary" onClick={reverseWaypoints} disabled={waypoints.length < 2}>
+            <Button theme="primary" onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                 <i className="fas fa-fw fa-exchange-alt" /> Reverse
             </Button>
             {(navigator as INavigator).share && (
-                <Button type="primary" onClick={shareWaypoints} disabled={waypoints.length === 0}>
+                <Button theme="primary" onClick={shareWaypoints} disabled={waypoints.length === 0}>
                     <i className="fas fa-fw fa-share" /> Share
                 </Button>
             )}

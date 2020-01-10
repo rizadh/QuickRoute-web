@@ -21,21 +21,21 @@ export const MapButtons = () => {
     return (
         <div id="map-buttons">
             {editorIsHidden && (
-                <Button type="frosted" onClick={showEditorPane}>
+                <Button theme="frosted" onClick={showEditorPane}>
                     <RouteInformationBar /> <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'down'}`} />
                 </Button>
             )}
             {!compactMode &&
                 (mutedMapIsEnabled ? (
-                    <Button type="primary" onClick={unmuteMap}>
+                    <Button theme="primary" onClick={unmuteMap}>
                         <i className="fas fa-fw fa-map-marked" /> Use Regular Map
                     </Button>
                 ) : (
-                    <Button type="primary" onClick={muteMap}>
+                    <Button theme="primary" onClick={muteMap}>
                         <i className="fas fa-fw fa-map" /> Use Muted Map
                     </Button>
                 ))}
-            <Button type="warning" onClick={enableAutofit} disabled={autofitIsEnabled}>
+            <Button theme="warning" onClick={enableAutofit} disabled={autofitIsEnabled}>
                 <i className="fas fa-fw fa-expand" />
                 {!compactMode && ' Auto-Fit'}
             </Button>
