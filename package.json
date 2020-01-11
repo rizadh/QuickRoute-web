@@ -4,10 +4,14 @@
     "description": "Web app to plan routes with large numbers of waypoints",
     "repository": "https://github.com/rizadh/route-planner",
     "scripts": {
-        "lint": "tsc -p . -noEmit && tslint --project . --format verbose -c tslint.json",
+        "lint": "npm run lint:tsc && npm run lint:tslint",
+        "lint:tsc": "tsc -p . -noEmit",
+        "lint:tslint": "tslint --project . --format verbose -c tslint.json",
         "clean": "rm -rf public",
-        "build": "parcel build --out-dir public --no-source-maps src/index.html",
-        "serve": "parcel --out-dir public --https src/index.html",
+        "build": "npm run clean && npm run build:parcel",
+        "build:parcel": "parcel build --out-dir public --no-source-maps src/index.html",
+        "server": "npm run clean && npm run server:parcel",
+        "serve:parcel": "parcel --out-dir public --https src/index.html",
         "test": "jest"
     },
     "author": "",
