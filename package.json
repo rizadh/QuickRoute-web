@@ -10,7 +10,7 @@
         "clean": "rm -rf public",
         "build": "npm run clean && npm run build:parcel",
         "build:parcel": "parcel build --out-dir public --no-source-maps src/index.html",
-        "server": "npm run clean && npm run server:parcel",
+        "serve": "npm run clean && npm run serve:parcel",
         "serve:parcel": "parcel --out-dir public --https src/index.html",
         "test": "jest"
     },
