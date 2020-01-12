@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash'
+import { sortBy } from 'lodash'
 import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useCompactMode } from '../hooks/useCompactMode'
@@ -11,7 +11,10 @@ import { AppState } from '../redux/state'
 export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
-    const addresses = useSelector((state: AppState) => state.waypoints.map(({ address }) => address), isEqual)
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const selectedWaypointsCount = useSelector(
+        (state: AppState) => state.waypoints.filter(waypoint => waypoint.selected).length,
+    )
     const fetchedPlaces = useSelector((state: AppState) => state.fetchedPlaces)
     const fetchedRoutes = useSelector((state: AppState) => state.fetchedRoutes)
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
@@ -91,8 +94,11 @@ export const MapView = () => {
         if (status === 'FETCHING') return
         if (operationInProgress) return
 
-        const annotations = addresses.map((address, index) => {
-            const fetchedPlace = fetchedPlaces[address]
+        const annotations = sortBy(
+            waypoints.map((waypoint, index) => ({ waypoint, index })),
+            ({ waypoint: { selected } }) => selected ?? 0,
+        ).map(({ waypoint, index }) => {
+            const fetchedPlace = fetchedPlaces[waypoint.address]
 
             if (fetchedPlace?.status === 'SUCCESS') {
                 const {
@@ -104,18 +110,31 @@ export const MapView = () => {
 
                 return new mapkit.MarkerAnnotation(new mapkit.Coordinate(latitude, longitude), {
                     glyphText: `${index + 1}`,
-                    title: address,
+                    title: waypoint.address,
                     subtitle: formattedAddress,
                     animates: false,
+                    color:
+                        !selectedWaypointsCount || waypoint.selected
+                            ? darkMode
+                                ? 'rgb(255, 69, 58)'
+                                : 'rgb(255, 59, 48)'
+                            : 'rgb(142, 142, 147)',
                 })
             }
         })
 
-        const overlays = addresses.map((address, index) => {
-            if (index === 0) return
+        const overlays = sortBy(
+            waypoints
+                .filter((_, index) => index !== 0)
+                .map((waypoint, index) => {
+                    const previousWaypoint = waypoints[index]
+                    const fetchedRoute = fetchedRoutes[previousWaypoint.address]?.[waypoint.address]
+                    const selected = previousWaypoint.selected && waypoint.selected
 
-            const fetchedRoute = fetchedRoutes[addresses[index - 1]]?.[address]
-
+                    return { fetchedRoute, selected }
+                }),
+            ({ selected }) => selected ?? 0,
+        ).map(({ fetchedRoute, selected }) => {
             if (fetchedRoute?.status === 'SUCCESS') {
                 const {
                     result: { points },
@@ -126,7 +145,13 @@ export const MapView = () => {
                     {
                         style: new mapkit.Style({
                             lineWidth: 6,
-                            strokeOpacity: 0.75,
+                            strokeOpacity: !selectedWaypointsCount || selected ? 0.75 : 0.5,
+                            strokeColor:
+                                !selectedWaypointsCount || selected
+                                    ? darkMode
+                                        ? 'rgb(10, 132, 255)'
+                                        : 'rgb(0, 122, 255)'
+                                    : 'rgb(142, 142, 147)',
                         }),
                     },
                 )
@@ -137,7 +162,7 @@ export const MapView = () => {
         map.overlays = overlays.filter((a): a is mapkit.PolygonOverlay => !!a)
 
         centerMap(true)
-    }, [map, addresses, fetchedPlaces, fetchedRoutes])
+    }, [map, waypoints, fetchedPlaces, fetchedRoutes, darkMode])
 
     useEffect(() => centerMap(true), [autofitIsEnabled])
     useEffect(() => centerMap(false), [map, windowSize.width, windowSize.height, editorIsHidden])
