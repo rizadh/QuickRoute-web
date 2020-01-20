@@ -12,6 +12,8 @@ import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
 import { WaypointsPane } from './WaypointsPane'
 
+import './WaypointEditor.scss'
+
 type WaypointEditorTemplateProps = {
     body: JSX.Element;
     footer: JSX.Element;

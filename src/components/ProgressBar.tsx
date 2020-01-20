@@ -4,6 +4,8 @@ import { shallowEqual, useSelector } from 'react-redux'
 import { useDarkMode } from '../hooks/useDarkMode'
 import { routeInformation } from '../redux/selectors'
 
+import './ProgressBar.scss'
+
 export const ProgressBar = () => {
     const darkMode = useDarkMode()
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)

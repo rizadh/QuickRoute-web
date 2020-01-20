@@ -1,0 +1,12 @@
+#progress-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4px;
+    overflow: hidden;
+
+    svg {
+        position: absolute;
+    }
+}

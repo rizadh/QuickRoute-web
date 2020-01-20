@@ -6,6 +6,8 @@ import { AppState } from '../redux/state'
 import { Button } from './Button'
 import { RouteInformationBar } from './RouteInformationBar'
 
+import './MapButtons.scss'
+
 export const MapButtons = () => {
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
     const mutedMapIsEnabled = useSelector((state: AppState) => state.mutedMapIsEnabled)

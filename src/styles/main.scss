@@ -1,7 +1,5 @@
 @import "./variables.scss";
-@import "./btn.scss";
 @import "./colors.scss";
-@import "./mixins.scss";
 @import "./spacings.scss";
 
 #root {
@@ -12,206 +10,124 @@
     height: 100%;
 }
 
-#waypoint-editor {
-    position: absolute;
+html {
+    background-color: var(--app-background-color);
+    color: var(--app-primary-text-color);
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
 
-    left: var(--standard-margin);
-    top: var(--standard-margin);
+a {
+    color: var(--apple-system-blue);
+    text-decoration: none;
+}
 
-    width: $editorWidth;
-    max-height: calc(100% - 2 * var(--standard-margin));
+a:hover {
+    text-decoration: underline;
+}
 
+input,
+textarea {
+    border: none;
+    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
     border-radius: var(--standard-border-radius);
 
+    appearance: none;
+    outline: none;
+
+    box-shadow: none;
+
+    line-height: var(--standard-control-line-height);
+
+    color: var(--app-primary-text-color);
+
+    transition: background-color 0.2s, border 0.2s;
+    background-color: var(--app-form-control-color);
+    border: 1px solid var(--app-heavy-border-color);
+
+    &::placeholder {
+        color: var(--app-secondary-text-color);
+    }
+
+    &:not(:read-only):focus {
+        background-color: var(--app-form-control-focus-color);
+
+        border: 1px solid var(--apple-system-blue);
+    }
+}
+
+.btn {
+    --local-btn-background-color: transparent;
+    --local-btn-text-color: var(--app-text-color);
+
+    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    border-radius: var(--standard-border-radius);
     border: 1px solid var(--app-border-color);
 
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
+    line-height: var(--standard-control-line-height);
 
-    box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.25), 0 16px 32px rgba(0, 0, 0, 0.25);
+    background-color: var(--local-btn-background-color);
+    color: var(--local-btn-text-color);
 
-    @include frosted-colored();
+    transition: opacity 0.1s;
 
-    @media (max-width: $compactBreakpoint) {
-        top: auto;
-        left: 0;
-        bottom: 0;
-
-        width: 100%;
-        max-height: calc(100% - #{$peekWidth});
-
-        box-shadow: 0 0 $peekWidth rgba(0, 0, 0, 0.25);
-
-        border: none;
-        border-top: 1px solid var(--app-border-color);
-        border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
-    }
-}
-
-#waypoint-editor-header,
-#waypoint-editor-footer {
-    position: sticky;
-    z-index: 1;
-
-    border-width: 1px;
-    border-color: var(--app-border-color);
-
-    @include frosted-uncolored();
-}
-
-#waypoint-editor-header {
-    top: 0;
-    border-bottom-style: solid;
-}
-
-#waypoint-editor-footer {
-    bottom: 0;
-    border-top-style: solid;
-}
-
-#waypoint-editor-header-items,
-#waypoint-editor-footer-items,
-#waypoint-editor-body {
-    padding-left: var(--standard-margin);
-    padding-top: var(--standard-margin);
-}
-
-#waypoint-editor-header-items > *,
-#waypoint-editor-footer-items > *,
-#waypoint-editor-body .text,
-#waypoint-editor-body .input-row {
-    margin-right: var(--standard-margin);
-    margin-bottom: var(--standard-margin);
-}
-
-#waypoint-editor-hide-button {
-    position: absolute;
-    z-index: 2;
-    top: var(--standard-margin);
-    right: var(--standard-margin);
-    line-height: 1;
-}
-
-#app-title {
-    font-size: 24px;
-    font-weight: 500;
-}
-
-#app-version {
-    font-size: 16px;
-    color: var(--app-secondary-text-color);
-}
-
-#pane-selector {
-    display: flex;
-    flex-wrap: wrap;
-
-    margin-right: calc(var(--standard-margin) / 2);
-    margin-bottom: calc(var(--standard-margin) / 2);
-
-    .btn {
-        margin-right: calc(var(--standard-margin) / 2);
-        margin-bottom: calc(var(--standard-margin) / 2);
-
-        line-height: 1;
-    }
-}
-
-#route-statusbar {
-    align-items: center;
-    justify-content: space-evenly;
-
-    &:not(.collapsed) {
-        display: flex;
-
-        height: $statusbarHeight;
-        width: 100%;
-
-        border-top: 1px solid var(--app-border-color);
-    }
-
-    &.collapsed {
-        display: inline-flex;
-
-        > :not(:first-child) {
-            margin-left: var(--standard-horizontal-padding);
-        }
-    }
-}
-
-#mapview {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-
-    transition: filter 0.2s;
-    &.updating {
-        transition: filter 0.4s;
-        filter: saturate(0) opacity(0.5);
-
-        * {
-            pointer-events: none;
-        }
-    }
-
-    @media (max-width: $compactBreakpoint) {
-        #root:not(.editor-hidden) & {
-            transition: filter 0.4s;
-            filter: opacity(0.5);
-
-            * {
-                pointer-events: none;
-            }
-        }
-    }
-}
-
-#map-buttons {
-    position: absolute;
-    top: 0;
-    left: calc(#{$editorWidth} + var(--standard-margin));
-    padding: var(--standard-margin);
-
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-
-    display: flex;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-
-    @media (max-width: $compactBreakpoint) {
-        top: initial;
-        left: 0;
-        bottom: 0;
-
-        #root:not(.editor-hidden) & {
-            display: none;
-        }
-    }
-
-    #root.editor-hidden & {
-        left: 0;
-    }
-
-    > button {
-        flex-shrink: 0;
-        margin-right: calc(var(--standard-margin) / 2);
-    }
-}
-
-#progress-bar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 4px;
+    position: relative;
     overflow: hidden;
 
-    svg {
+    &::after {
+        content: "";
+
         position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        transition: background-color 0.1s;
     }
+
+    &:enabled {
+        cursor: pointer;
+
+        &:hover::after {
+            background-color: var(--app-button-hover-highlight-color);
+        }
+
+        &:active::after {
+            background-color: var(--app-button-active-highlight-color);
+        }
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+    }
+}
+
+.btn-primary {
+    --local-btn-background-color: var(--apple-system-blue);
+    --local-btn-text-color: white;
+}
+
+.btn-secondary {
+    --local-btn-background-color: var(--app-form-control-focus-color);
+}
+
+.btn-danger {
+    --local-btn-background-color: var(--apple-system-red);
+    --local-btn-text-color: white;
+}
+
+.btn-warning {
+    --local-btn-background-color: var(--apple-system-yellow);
+    --local-btn-text-color: rgba(0, 0, 0, 0.6);
+}
+
+.btn-frosted {
+    @include frosted-colored();
 }
 
 .input-row {
@@ -259,86 +175,5 @@
         &:focus {
             outline: none;
         }
-    }
-}
-
-.waypoint-item-index {
-    font-variant-numeric: tabular-nums;
-
-    i {
-        opacity: 0.5;
-    }
-}
-
-.waypoint-item-selected .waypoint-item-index {
-    background-color: var(--apple-system-blue);
-    color: white;
-
-    i {
-        opacity: 1;
-    }
-}
-
-.waypoint-item-dragging-along {
-    opacity: 0.5;
-}
-
-.statview {
-    color: var(--app-secondary-text-color);
-
-    > .spacer {
-        width: 8px;
-        display: inline-block;
-    }
-
-    > span {
-        font-weight: 600;
-        color: var(--app-primary-text-color);
-    }
-}
-
-html {
-    background-color: var(--app-background-color);
-    color: var(--app-primary-text-color);
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-}
-
-a {
-    color: var(--apple-system-blue);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-input,
-textarea {
-    border: none;
-    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
-    border-radius: var(--standard-border-radius);
-
-    appearance: none;
-    outline: none;
-
-    box-shadow: none;
-
-    line-height: var(--standard-control-line-height);
-
-    color: var(--app-primary-text-color);
-
-    transition: background-color 0.2s, border 0.2s;
-    background-color: var(--app-form-control-color);
-    border: 1px solid var(--app-heavy-border-color);
-
-    &::placeholder {
-        color: var(--app-secondary-text-color);
-    }
-
-    &:not(:read-only):focus {
-        background-color: var(--app-form-control-focus-color);
-
-        border: 1px solid var(--apple-system-blue);
     }
 }

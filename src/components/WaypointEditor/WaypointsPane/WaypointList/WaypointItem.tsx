@@ -7,6 +7,8 @@ import { AppState } from '../../../../redux/state'
 import { isValidAddress } from '../../../../redux/validator'
 import { Button } from '../../../Button'
 
+import './WaypointItem.scss'
+
 type WaypointItemProps = {
     index: number;
     isBeingDraggedAlong: boolean;
