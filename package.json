@@ -36,7 +36,6 @@
         "ismobilejs": "^1.0.3",
         "lodash": "^4.17.15",
         "query-string": "^6.7.0",
-        "rc-progress": "^2.3.0",
         "react": "^16.8.6",
         "react-beautiful-dnd": "^12.2.0",
         "react-dom": "^16.12.0",
