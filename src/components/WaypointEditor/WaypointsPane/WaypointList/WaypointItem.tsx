@@ -1,18 +1,74 @@
 import React, { Dispatch, useCallback } from 'react'
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import { useDispatch, useSelector } from 'react-redux'
+import styled from 'styled-components'
 import { useInput } from '../../../../hooks/useInput'
 import { AppAction } from '../../../../redux/actionTypes'
 import { AppState } from '../../../../redux/state'
 import { isValidAddress } from '../../../../redux/validator'
 import { Button } from '../../../Button'
 
-import './WaypointItem.scss'
-
 type WaypointItemProps = {
     index: number;
     isBeingDraggedAlong: boolean;
 }
+
+const StyledWaypointItem = styled.div<{ isBeingDraggedAlong: boolean }>`
+    ${({ isBeingDraggedAlong }) => isBeingDraggedAlong && 'opacity: 0.5;'}
+
+    display: flex;
+    align-items: center;
+
+    transition: opacity 0.2s;
+
+    margin-right: var(--standard-margin);
+    margin-bottom: var(--standard-margin);
+
+    > * {
+        border-radius: calc(var(--standard-border-radius) / 2);
+        padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    }
+
+    > :not(input) {
+        flex-shrink: 0;
+    }
+
+    > input {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    > :not(:last-child) {
+        margin-right: calc(var(--standard-margin) / 2);
+    }
+
+    > :first-child {
+        border-top-left-radius: var(--standard-border-radius);
+        border-bottom-left-radius: var(--standard-border-radius);
+    }
+
+    > :last-child {
+        border-top-right-radius: var(--standard-border-radius);
+        border-bottom-right-radius: var(--standard-border-radius);
+    }
+`
+
+const WaypointIndex = styled.span<{ isSelected: boolean }>`
+    ${({ isSelected }) => isSelected && 'color: white;'}
+    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
+    border: 1px solid var(--app-heavy-border-color);
+
+    line-height: var(--standard-control-line-height);
+    font-variant-numeric: tabular-nums;
+
+    &:focus {
+        outline: none;
+    }
+
+    i {
+        opacity: ${({ isSelected }) => (isSelected ? '1' : '0.5')};
+    }
+`
 
 export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) => {
     const dispatch: Dispatch<AppAction> = useDispatch()
@@ -91,24 +147,19 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
     return (
         <Draggable index={index} draggableId={waypoint.uuid}>
             {(provided: DraggableProvided) => (
-                <div
+                <StyledWaypointItem
                     ref={provided.innerRef}
                     {...provided.draggableProps}
-                    className={
-                        'input-row' +
-                        (waypoint.selected ? ' waypoint-item-selected' : '') +
-                        (isBeingDraggedAlong ? ' waypoint-item-dragging-along' : '')
-                    }
+                    isBeingDraggedAlong={isBeingDraggedAlong}
                 >
-                    <span
-                        className="waypoint-item-index"
+                    <WaypointIndex
+                        isSelected={!!waypoint.selected}
                         title="Drag to reorder"
                         onClick={itemWasClicked}
                         {...provided.dragHandleProps}
                     >
                         <i className="fas fa-fw fa-grip-vertical" /> {index + 1}
-                    </span>
-
+                    </WaypointIndex>
                     <input className="form-control" {...waypointFieldProps} />
                     {!isOriginalAddress(waypointFieldValue) && (
                         <Button theme="secondary" onClick={resetWaypointField}>
@@ -128,7 +179,7 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                     <Button theme="danger" onClick={deleteWaypoint} title="Delete waypoint">
                         <i className="fas fa-fw fa-trash" />
                     </Button>
-                </div>
+                </StyledWaypointItem>
             )}
         </Draggable>
     )
