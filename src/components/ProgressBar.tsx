@@ -28,12 +28,10 @@ export const ProgressBar = () => {
     const darkMode = useDarkMode()
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)
 
-    return (
-        currentRouteInformation.status === 'FETCHING' && (
-            <StyledProgressBar>
-                <Track darkMode={darkMode} />
-                <Bar darkMode={darkMode} progress={currentRouteInformation.progress} />
-            </StyledProgressBar>
-        )
-    )
+    return currentRouteInformation.status === 'FETCHING' ? (
+        <StyledProgressBar>
+            <Track darkMode={darkMode} />
+            <Bar darkMode={darkMode} progress={currentRouteInformation.progress} />
+        </StyledProgressBar>
+    ) : null
 }
