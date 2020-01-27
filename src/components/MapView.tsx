@@ -1,6 +1,7 @@
 import { sortBy } from 'lodash'
 import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import styled, { css } from 'styled-components'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { useDarkMode } from '../hooks/useDarkMode'
 import { useWindowSize } from '../hooks/useWindowSize'
@@ -8,7 +9,22 @@ import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
 
-import './MapView.scss'
+const blurredMapView = css`
+    filter: opacity(0.2);
+
+    * {
+        pointer-events: none;
+    }
+`
+
+const StyledMapView = styled.div<{ blur: boolean }>`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    transition: filter 0.2s;
+    ${({ blur }) => blur && blurredMapView}
+`
 
 export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
@@ -80,16 +96,6 @@ export const MapView = () => {
             map.padding = new mapkit.Padding({ top: 16 + 42, left: 16 + 420 + 16, right: 0, bottom: 0 })
         }
     }, [editorIsHidden, map, compactMode])
-
-    useEffect(() => {
-        if (!mapviewRef.current) return
-
-        if (status === 'FETCHING' || operationInProgress) mapviewRef.current.classList.add('updating')
-
-        return () => {
-            if (mapviewRef.current) mapviewRef.current.classList.remove('updating')
-        }
-    }, [status, operationInProgress])
 
     useEffect(() => {
         if (!map) return
@@ -180,5 +186,10 @@ export const MapView = () => {
         }
     }, [map, mutedMapIsEnabled])
 
-    return <div ref={mapviewRef} id="mapview" />
+    return (
+        <StyledMapView
+            blur={status === 'FETCHING' || operationInProgress || (compactMode && !editorIsHidden)}
+            ref={mapviewRef}
+        />
+    )
 }
