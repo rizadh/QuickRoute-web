@@ -7,7 +7,7 @@ import { WaypointEditorTemplate } from '.'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState } from '../../redux/state'
-import { Button } from '../Button'
+import { PrimaryButton } from '../Button'
 
 export const LinksPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -98,16 +98,16 @@ export const LinksPane = () => {
                 <div key={url} className="input-row">
                     <input type="text" value={url} readOnly={true} />
                     {(navigator as INavigator).share && (
-                        <Button onClick={shareLink(index)} theme="primary" title="Share this link">
+                        <PrimaryButton onClick={shareLink(index)} title="Share this link">
                             <i className="fas fa-fw fa-share" />
-                        </Button>
+                        </PrimaryButton>
                     )}
-                    <Button onClick={copyLink(index)} theme="primary" title="Copy this link to clipboard">
+                    <PrimaryButton onClick={copyLink(index)} title="Copy this link to clipboard">
                         <i className="fas fa-fw fa-clipboard" />
-                    </Button>
-                    <Button onClick={openUrl(index)} theme="primary" title="Open this link">
+                    </PrimaryButton>
+                    <PrimaryButton onClick={openUrl(index)} title="Open this link">
                         <i className="fas fa-fw fa-external-link-alt" />
-                    </Button>
+                    </PrimaryButton>
                 </div>
             ))}
         </>
@@ -116,19 +116,19 @@ export const LinksPane = () => {
     const footer = (
         <>
             {(navigator as INavigator).share && (
-                <Button theme="primary" onClick={shareAllLinks} disabled={insufficientWaypoints}>
+                <PrimaryButton onClick={shareAllLinks} disabled={insufficientWaypoints}>
                     <i className="fas fa-fw fa-share" />
                     {compactMode ? ' Share' : ' Share All'}
-                </Button>
+                </PrimaryButton>
             )}
-            <Button theme="primary" onClick={copyAllLinks} disabled={insufficientWaypoints}>
+            <PrimaryButton onClick={copyAllLinks} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-clipboard" />
                 {compactMode ? ' Copy' : ' Copy All'}
-            </Button>
-            <Button theme="primary" onClick={openAllLinks} disabled={insufficientWaypoints}>
+            </PrimaryButton>
+            <PrimaryButton onClick={openAllLinks} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-external-link-alt" />
                 {compactMode ? ' Open' : ' Open All'}
-            </Button>
+            </PrimaryButton>
         </>
     )
 

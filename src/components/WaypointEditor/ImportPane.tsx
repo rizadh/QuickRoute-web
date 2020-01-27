@@ -5,7 +5,7 @@ import { WaypointEditorTemplate } from '.'
 import { useInput } from '../../hooks/useInput'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState } from '../../redux/state'
-import { Button } from '../Button'
+import { DangerButton, PrimaryButton } from '../Button'
 
 export const ImportPane = () => {
     const importInProgress = useSelector((state: AppState) => state.importInProgress)
@@ -53,17 +53,17 @@ export const ImportPane = () => {
 
     const footer = importInProgress ? (
         <>
-            <Button theme="primary" disabled={true}>
+            <PrimaryButton disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
-            </Button>
-            <Button theme="danger" onClick={cancelImport}>
+            </PrimaryButton>
+            <DangerButton onClick={cancelImport}>
                 <i className="fas fa-ban" /> Cancel
-            </Button>
+            </DangerButton>
         </>
     ) : (
-        <Button theme="primary" onClick={importWaypoints} disabled={!driverNumberIsValid}>
+        <PrimaryButton onClick={importWaypoints} disabled={!driverNumberIsValid}>
             <i className="fas fa-fw fa-cloud-download-alt" /> Import
-        </Button>
+        </PrimaryButton>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />

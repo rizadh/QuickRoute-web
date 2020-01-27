@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
-import { Button } from './Button'
+import { FrostedButton, PrimaryButton, WarningButton } from './Button'
 import { RouteInformationBar } from './RouteInformationBar'
 
 import './MapButtons.scss'
@@ -23,24 +23,24 @@ export const MapButtons = () => {
     return (
         <div id="map-buttons">
             {editorIsHidden && (
-                <Button theme="frosted" onClick={showEditorPane}>
+                <FrostedButton onClick={showEditorPane}>
                     <RouteInformationBar /> <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'down'}`} />
-                </Button>
+                </FrostedButton>
             )}
             {!compactMode &&
                 (mutedMapIsEnabled ? (
-                    <Button theme="primary" onClick={unmuteMap}>
+                    <PrimaryButton onClick={unmuteMap}>
                         <i className="fas fa-fw fa-map-marked" /> Use Regular Map
-                    </Button>
+                    </PrimaryButton>
                 ) : (
-                    <Button theme="primary" onClick={muteMap}>
+                    <PrimaryButton onClick={muteMap}>
                         <i className="fas fa-fw fa-map" /> Use Muted Map
-                    </Button>
+                    </PrimaryButton>
                 ))}
-            <Button theme="warning" onClick={enableAutofit} disabled={autofitIsEnabled}>
+            <WarningButton onClick={enableAutofit} disabled={autofitIsEnabled}>
                 <i className="fas fa-fw fa-expand" />
                 {!compactMode && ' Auto-Fit'}
-            </Button>
+            </WarningButton>
         </div>
     )
 }

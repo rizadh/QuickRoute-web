@@ -6,7 +6,7 @@ import { useInput } from '../../../../hooks/useInput'
 import { AppAction } from '../../../../redux/actionTypes'
 import { AppState } from '../../../../redux/state'
 import { isValidAddress } from '../../../../redux/validator'
-import { Button } from '../../../Button'
+import { DangerButton, SecondaryButton } from '../../../Button'
 
 type WaypointItemProps = {
     index: number;
@@ -170,9 +170,9 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                     </WaypointIndex>
                     <input className="form-control" {...waypointFieldProps} />
                     {!isOriginalAddress(waypointFieldValue) && (
-                        <Button theme="secondary" onClick={resetWaypointField}>
+                        <SecondaryButton onClick={resetWaypointField}>
                             <i className="fas fa-fw fa-undo" />
-                        </Button>
+                        </SecondaryButton>
                     )}
                     {fetchFailed && (
                         <span className="text-danger" title={failureMessage}>
@@ -184,9 +184,9 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                             <i className="fas fa-fw fa-circle-notch fa-spin" />
                         </span>
                     )}
-                    <Button theme="danger" onClick={deleteWaypoint} title="Delete waypoint">
+                    <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
                         <i className="fas fa-fw fa-trash" />
-                    </Button>
+                    </DangerButton>
                 </StyledWaypointItem>
             )}
         </Draggable>

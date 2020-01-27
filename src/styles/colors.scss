@@ -52,10 +52,6 @@
     }
 }
 
-.text-primary {
-    color: var(--apple-system-blue);
-}
-
 .text-secondary {
     color: var(--app-secondary-text-color);
 }
@@ -66,26 +62,6 @@
 
 .text-danger {
     color: var(--apple-system-red);
-}
-
-.text-light {
-    color: white;
-}
-
-.border-primary {
-    border-color: var(--apple-system-blue);
-}
-
-.border-danger {
-    border-color: var(--apple-system-red);
-}
-
-.bg-primary {
-    background-color: var(--apple-system-blue);
-}
-
-.bg-danger {
-    background-color: var(--apple-system-red);
 }
 
 $frostedBlurRadius: 128px;

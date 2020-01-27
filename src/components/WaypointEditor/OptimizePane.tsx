@@ -6,7 +6,7 @@ import { useCompactMode } from '../../hooks/useCompactMode'
 import { useInput } from '../../hooks/useInput'
 import { AppAction, OptimizationParameter } from '../../redux/actionTypes'
 import { AppState } from '../../redux/state'
-import { Button } from '../Button'
+import { DangerButton, PrimaryButton } from '../Button'
 
 export const OptimizePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -93,24 +93,24 @@ export const OptimizePane = () => {
 
     const footer = optimizationInProgress ? (
         <>
-            <Button theme="primary" disabled={true}>
+            <PrimaryButton disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" />
                 {!compactMode && ' Optimizing'}
-            </Button>
-            <Button theme="danger" onClick={cancelOptimize}>
+            </PrimaryButton>
+            <DangerButton onClick={cancelOptimize}>
                 <i className="fas fa-ban" /> Cancel
-            </Button>
+            </DangerButton>
         </>
     ) : (
         <>
-            <Button theme="primary" onClick={optimizeDistance} disabled={insufficientWaypoints}>
+            <PrimaryButton onClick={optimizeDistance} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-ruler-combined" />
                 {compactMode ? ' Distance' : ' Optimize Distance'}
-            </Button>
-            <Button theme="primary" onClick={optimizeTime} disabled={insufficientWaypoints}>
+            </PrimaryButton>
+            <PrimaryButton onClick={optimizeTime} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-clock" />
                 {compactMode ? ' Time' : ' Optimize Time'}
-            </Button>
+            </PrimaryButton>
         </>
     )
 

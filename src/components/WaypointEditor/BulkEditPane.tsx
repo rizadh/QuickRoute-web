@@ -8,7 +8,7 @@ import { AppAction } from '../../redux/actionTypes'
 import { AppState, EditorPane } from '../../redux/state'
 import { createWaypointFromAddress } from '../../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../../redux/validator'
-import { Button } from '../Button'
+import { PrimaryButton } from '../Button'
 
 export const BulkEditPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -47,9 +47,9 @@ export const BulkEditPane = () => {
     )
 
     const footer = (
-        <Button theme="primary" onClick={commitBulkEdit}>
+        <PrimaryButton onClick={commitBulkEdit}>
             <i className="fas fa-fw fa-save" /> Save
-        </Button>
+        </PrimaryButton>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />
