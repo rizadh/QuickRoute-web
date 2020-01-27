@@ -2,6 +2,6 @@ os: linux
 language: node_js
 node_js: node
 env:
-    - NPM_CMD=lint
-    - NPM_CMD=test
-script: npm run $NPM_CMD
+    - NPM_SCRIPT=lint
+    - NPM_SCRIPT=test
+script: yarn autoclean && yarn $NPM_SCRIPT
