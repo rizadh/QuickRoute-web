@@ -27,6 +27,7 @@ const StyledWaypointItem = styled.div<{ isBeingDraggedAlong: boolean }>`
     > * {
         border-radius: calc(var(--standard-border-radius) / 2);
         padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+        line-height: var(--standard-control-line-height);
     }
 
     > :not(input) {
@@ -51,19 +52,26 @@ const StyledWaypointItem = styled.div<{ isBeingDraggedAlong: boolean }>`
         border-top-right-radius: var(--standard-border-radius);
         border-bottom-right-radius: var(--standard-border-radius);
     }
+
+    > span {
+        background-color: var(--app-input-row-span-color);
+        border: 1px solid var(--app-heavy-border-color);
+
+        &:focus {
+            outline: none;
+        }
+    }
 `
 
 const WaypointIndex = styled.span<{ isSelected: boolean }>`
-    ${({ isSelected }) => isSelected && 'color: white;'}
-    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
-    border: 1px solid var(--app-heavy-border-color);
-
-    line-height: var(--standard-control-line-height);
-    font-variant-numeric: tabular-nums;
-
-    &:focus {
-        outline: none;
+    &&& {
+        background-color: var(
+            ${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')}
+        );
     }
+
+    ${({ isSelected }) => isSelected && 'color: white;'}
+    font-variant-numeric: tabular-nums;
 
     i {
         opacity: ${({ isSelected }) => (isSelected ? '1' : '0.5')};
