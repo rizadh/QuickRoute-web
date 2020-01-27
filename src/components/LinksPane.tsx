@@ -3,11 +3,11 @@ import chunk from 'lodash/chunk'
 import { stringify } from 'query-string'
 import React, { Dispatch, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { WaypointEditorTemplate } from '.'
-import { useCompactMode } from '../../hooks/useCompactMode'
-import { AppAction } from '../../redux/actionTypes'
-import { AppState } from '../../redux/state'
-import { PrimaryButton } from '../Button'
+import { useCompactMode } from '../hooks/useCompactMode'
+import { AppAction } from '../redux/actionTypes'
+import { AppState } from '../redux/state'
+import { PrimaryButton } from './Button'
+import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const LinksPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)

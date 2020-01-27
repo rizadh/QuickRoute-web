@@ -1,12 +1,12 @@
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { WaypointEditorTemplate } from '.'
-import { useCompactMode } from '../../hooks/useCompactMode'
-import { useInput } from '../../hooks/useInput'
-import { AppAction, OptimizationParameter } from '../../redux/actionTypes'
-import { AppState } from '../../redux/state'
-import { DangerButton, PrimaryButton } from '../Button'
+import { useCompactMode } from '../hooks/useCompactMode'
+import { useInput } from '../hooks/useInput'
+import { AppAction, OptimizationParameter } from '../redux/actionTypes'
+import { AppState } from '../redux/state'
+import { DangerButton, PrimaryButton } from './Button'
+import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const OptimizePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)

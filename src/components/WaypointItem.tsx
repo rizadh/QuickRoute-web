@@ -2,11 +2,11 @@ import React, { Dispatch, useCallback } from 'react'
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { useInput } from '../../../../hooks/useInput'
-import { AppAction } from '../../../../redux/actionTypes'
-import { AppState } from '../../../../redux/state'
-import { isValidAddress } from '../../../../redux/validator'
-import { DangerButton, SecondaryButton } from '../../../Button'
+import { useInput } from '../hooks/useInput'
+import { AppAction } from '../redux/actionTypes'
+import { AppState } from '../redux/state'
+import { isValidAddress } from '../redux/validator'
+import { DangerButton, SecondaryButton } from './Button'
 
 type WaypointItemProps = {
     index: number;

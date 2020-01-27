@@ -1,11 +1,11 @@
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { WaypointEditorTemplate } from '.'
-import { useInput } from '../../hooks/useInput'
-import { AppAction } from '../../redux/actionTypes'
-import { AppState } from '../../redux/state'
-import { DangerButton, PrimaryButton } from '../Button'
+import { useInput } from '../hooks/useInput'
+import { AppAction } from '../redux/actionTypes'
+import { AppState } from '../redux/state'
+import { DangerButton, PrimaryButton } from './Button'
+import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const ImportPane = () => {
     const importInProgress = useSelector((state: AppState) => state.importInProgress)
