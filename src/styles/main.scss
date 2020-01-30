@@ -63,10 +63,7 @@ textarea {
     transition: opacity 0.2s;
 
     > * {
-        border-radius: calc(var(--standard-border-radius) / 2);
-
         padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
-
         line-height: var(--standard-control-line-height);
     }
 
