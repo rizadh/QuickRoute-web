@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { App } from './components/App'
 
-export const appVersion = '2020.01.12'
+export const appVersion = '2020.01.30'
 export const apiPrefix = 'https://api.quickroute.rizadh.com/'
 
 // tslint:disable-next-line:no-var-requires
