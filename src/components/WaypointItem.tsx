@@ -47,7 +47,7 @@ const StyledWaypointItem = styled.div<{ isBeingDraggedAlong: boolean }>`
 const WaypointIndex = styled.span<{ isSelected: boolean }>`
     ${({ isSelected }) => isSelected && 'color: white;'}
     background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
-    border: 1px solid var(--app-heavy-border-color);
+    border: 1px solid var(--app-border-color);
 
     font-variant-numeric: tabular-nums;
 
