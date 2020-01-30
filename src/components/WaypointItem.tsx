@@ -56,6 +56,11 @@ const WaypointIndex = styled.span<{ isSelected: boolean }>`
     }
 `
 
+const StyledSpan = styled.span`
+    background-color: var(--app-input-row-span-color);
+    border: 1px solid var(--app-border-color);
+`
+
 export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) => {
     const dispatch: Dispatch<AppAction> = useDispatch()
     const waypoint = useSelector((state: AppState) => state.waypoints[index])
@@ -153,14 +158,14 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                         </SecondaryButton>
                     )}
                     {fetchFailed && (
-                        <span className="text-danger" title={failureMessage}>
+                        <StyledSpan className="text-danger" title={failureMessage}>
                             {failureIcon}
-                        </span>
+                        </StyledSpan>
                     )}
                     {fetchIsInProgress && (
-                        <span className="text-secondary">
+                        <StyledSpan className="text-secondary">
                             <i className="fas fa-fw fa-circle-notch fa-spin" />
-                        </span>
+                        </StyledSpan>
                     )}
                     <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
                         <i className="fas fa-fw fa-trash" />
