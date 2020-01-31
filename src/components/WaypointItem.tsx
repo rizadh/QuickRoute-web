@@ -7,44 +7,19 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { isValidAddress } from '../redux/validator'
 import { DangerButton, PrimaryButton, SecondaryButton } from './Button'
+import { InputRow } from './InputRow'
 
-type WaypointItemProps = {
-    index: number;
-    isBeingDraggedAlong: boolean;
-}
+const Container = styled(InputRow)`
+    ${({ isBeingDraggedAlong }: { isBeingDraggedAlong: boolean }) => isBeingDraggedAlong && 'opacity: 0.5;'}
 
-const StyledWaypointItem = styled.div<{ isBeingDraggedAlong: boolean }>`
-    ${({ isBeingDraggedAlong }) => isBeingDraggedAlong && 'opacity: 0.5;'}
-
-    display: flex;
-    align-items: center;
-
-    transition: opacity 0.2s;
-
-    margin-right: var(--standard-margin);
-    margin-bottom: var(--standard-margin);
-
-    > * {
+    > span {
         border-radius: var(--standard-border-radius);
         padding: var(--standard-padding);
         line-height: var(--standard-control-line-height);
     }
-
-    > :not(input) {
-        flex-shrink: 0;
-    }
-
-    > input {
-        flex-grow: 1;
-        min-width: 0;
-    }
-
-    > :not(:last-child) {
-        margin-right: calc(var(--standard-margin) / 2);
-    }
 `
 
-const WaypointIndex = styled.span<{ isSelected: boolean }>`
+const DragHandle = styled.span<{ isSelected: boolean }>`
     ${({ isSelected }) => isSelected && 'color: white;'}
     background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
     border: 1px solid var(--app-border-color);
@@ -54,10 +29,15 @@ const WaypointIndex = styled.span<{ isSelected: boolean }>`
     ${({ isSelected }) => !isSelected && 'color: var(--app-secondary-text-color);'}
 `
 
-const StyledSpan = styled.span`
+const StatusIndicator = styled.span`
     background-color: var(--app-input-row-span-color);
     border: 1px solid var(--app-border-color);
 `
+
+type WaypointItemProps = {
+    index: number;
+    isBeingDraggedAlong: boolean;
+}
 
 export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) => {
     const dispatch: Dispatch<AppAction> = useDispatch()
@@ -141,31 +121,31 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
     return (
         <Draggable index={index} draggableId={waypoint.uuid}>
             {(provided: DraggableProvided) => (
-                <StyledWaypointItem
+                <Container
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     isBeingDraggedAlong={isBeingDraggedAlong}
                 >
-                    <WaypointIndex
+                    <DragHandle
                         isSelected={!!waypoint.selected}
                         title="Drag to reorder or click to select"
                         onClick={itemWasClicked}
                         {...provided.dragHandleProps}
                     >
                         <i className="fas fa-fw fa-grip-vertical" /> {index + 1}
-                    </WaypointIndex>
+                    </DragHandle>
                     <input className="form-control" {...waypointFieldProps} />
                     {isOriginalAddress(waypointFieldValue) ? (
                         <>
                             {fetchFailed && (
-                                <StyledSpan className="text-danger" title={failureMessage}>
+                                <StatusIndicator className="text-danger" title={failureMessage}>
                                     {failureIcon}
-                                </StyledSpan>
+                                </StatusIndicator>
                             )}
                             {fetchIsInProgress && (
-                                <StyledSpan className="text-secondary">
+                                <StatusIndicator className="text-secondary" title="Loading">
                                     <i className="fas fa-fw fa-circle-notch fa-spin" />
-                                </StyledSpan>
+                                </StatusIndicator>
                             )}
                             <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
                                 <i className="fas fa-fw fa-trash" />
@@ -181,7 +161,7 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                             </PrimaryButton>
                         </>
                     )}
-                </StyledWaypointItem>
+                </Container>
             )}
         </Draggable>
     )
