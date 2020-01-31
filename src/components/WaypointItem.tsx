@@ -51,9 +51,7 @@ const WaypointIndex = styled.span<{ isSelected: boolean }>`
 
     font-variant-numeric: tabular-nums;
 
-    i {
-        opacity: ${({ isSelected }) => (isSelected ? '1' : '0.5')};
-    }
+    ${({ isSelected }) => !isSelected && 'color: var(--app-secondary-text-color);'}
 `
 
 const StyledSpan = styled.span`
