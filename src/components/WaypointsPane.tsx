@@ -11,6 +11,7 @@ import { AppState } from '../redux/state'
 import { createWaypointFromAddress } from '../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../redux/validator'
 import { DangerButton, PrimaryButton } from './Button'
+import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 import { WaypointList } from './WaypointList'
 
@@ -120,12 +121,12 @@ export const WaypointsPaneFooter = () => {
         </>
     ) : (
         <>
-            <div className="input-row">
+            <InputRow>
                 <input type="text" placeholder="New waypoint" {...waypointFieldProps} autoFocus={!isMobileDevice} />
                 <PrimaryButton title="Add waypoint" onClick={addWaypoint} disabled={!waypointIsValid}>
                     <i className="fas fa-fw fa-plus" />
                 </PrimaryButton>
-            </div>
+            </InputRow>
             <PrimaryButton onClick={generatePdf} disabled={waypoints.length === 0}>
                 <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
                 {compactMode ? ' PDF' : ' Save PDF'}

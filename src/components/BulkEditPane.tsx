@@ -8,6 +8,7 @@ import { AppState, EditorPane } from '../redux/state'
 import { createWaypointFromAddress } from '../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../redux/validator'
 import { PrimaryButton } from './Button'
+import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const BulkEditPane = () => {
@@ -35,14 +36,14 @@ export const BulkEditPane = () => {
             <div className="text text-secondary" role="alert">
                 Enter one address per line
             </div>
-            <div className="input-row">
+            <InputRow>
                 <Textarea
                     minRows={3}
                     {...bulkEditFieldProps}
                     value={bulkEditFieldProps.value?.toString()}
                     autoFocus={!isMobileDevice}
                 />
-            </div>
+            </InputRow>
         </>
     )
 

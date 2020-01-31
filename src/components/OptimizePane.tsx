@@ -6,6 +6,7 @@ import { useInput } from '../hooks/useInput'
 import { AppAction, OptimizationParameter } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { DangerButton, PrimaryButton } from './Button'
+import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const OptimizePane = () => {
@@ -71,7 +72,7 @@ export const OptimizePane = () => {
             <div className="text text-secondary" role="alert">
                 If left unspecified, route will be found from first to last waypoint
             </div>
-            <div className="input-row">
+            <InputRow>
                 <input
                     type="text"
                     placeholder={`Start Point (${defaultStartPoint()})`}
@@ -79,15 +80,15 @@ export const OptimizePane = () => {
                     disabled={optimizationInProgress}
                     autoFocus={!isMobileDevice}
                 />
-            </div>
-            <div className="input-row">
+            </InputRow>
+            <InputRow>
                 <input
                     type="text"
                     placeholder={`End Point (${defaultEndPoint()})`}
                     {...endPointFieldProps}
                     disabled={optimizationInProgress}
                 />
-            </div>
+            </InputRow>
         </>
     )
 

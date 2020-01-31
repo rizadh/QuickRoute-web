@@ -8,12 +8,114 @@ import { AppState, EditorPane } from '../redux/state'
 import { BulkEditPane } from './BulkEditPane'
 import { PrimaryButton, SecondaryButton } from './Button'
 import { ImportPane } from './ImportPane'
+import { InfoBar } from './InfoBar'
+import { InputRow } from './InputRow'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
-import { RouteInformationBar } from './RouteInformationBar'
+import { compactBreakpoint, editorWidth, frostedColored, frostedUncolored, peekWidth } from './styleVariables'
 import { WaypointsPane } from './WaypointsPane'
 
-import './WaypointEditor.scss'
+const Container = styled.div`
+    position: absolute;
+
+    left: var(--standard-margin);
+    top: var(--standard-margin);
+
+    width: ${editorWidth}px;
+    max-height: calc(100% - 2 * var(--standard-margin));
+
+    border-radius: var(--standard-border-radius);
+
+    border: 1px solid var(--app-border-color);
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.25), 0 16px 32px rgba(0, 0, 0, 0.25);
+
+    ${frostedColored}
+
+    @media (max-width: ${compactBreakpoint}px) {
+        top: auto;
+        left: 0;
+        bottom: 0;
+
+        width: 100%;
+        max-height: calc(100% - ${peekWidth}px);
+
+        box-shadow: 0 0 ${peekWidth}px rgba(0, 0, 0, 0.25);
+
+        border: none;
+        border-top: 1px solid var(--app-border-color);
+        border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
+    }
+`
+
+const HeaderFooter = styled.div`
+    position: sticky;
+    z-index: 1;
+
+    border-width: 1px;
+    border-color: var(--app-border-color);
+
+    ${frostedUncolored}
+`
+
+const Items = styled.div`
+    padding-left: var(--standard-margin);
+    padding-top: var(--standard-margin);
+`
+
+const HeaderFooterItems = styled(Items)`
+    > * {
+        margin-right: var(--standard-margin);
+        margin-bottom: var(--standard-margin);
+    }
+`
+
+const BodyItems = styled(Items)`
+    .text,
+    ${InputRow} {
+        margin-right: var(--standard-margin);
+        margin-bottom: var(--standard-margin);
+    }
+`
+
+const Header = styled(HeaderFooter)`
+    top: 0;
+    border-bottom-style: solid;
+`
+
+const Footer = styled(HeaderFooter)`
+    bottom: 0;
+    border-top-style: solid;
+`
+
+const HideButton = styled(SecondaryButton)`
+    position: absolute;
+    z-index: 2;
+    top: var(--standard-margin);
+    right: var(--standard-margin);
+    line-height: 1;
+`
+
+const AppTitle = styled.div`
+    font-size: 24px;
+    font-weight: 500;
+`
+
+const AppVersion = styled.div`
+    font-size: 16px;
+    color: var(--app-secondary-text-color);
+`
+
+const PaneSelector = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+
+    margin-right: calc(var(--standard-margin) / 2);
+    margin-bottom: calc(var(--standard-margin) / 2);
+`
 
 type PaneSelectorButtonProps = {
     pane: EditorPane;
@@ -57,19 +159,21 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
     const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
     return (
-        <div id="waypoint-editor">
-            <div id="waypoint-editor-header">
-                <SecondaryButton title="Minimize editor" id="waypoint-editor-hide-button" onClick={hideEditorPane}>
+        <Container>
+            <Header>
+                <HideButton title="Minimize editor" onClick={hideEditorPane}>
                     <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'up')} />
-                </SecondaryButton>
-                <div id="waypoint-editor-header-items">
-                    <div id="app-title">
-                        QuickRoute
-                        <div id="app-version">
-                            v{appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
-                        </div>
-                    </div>
-                    <div id="pane-selector">
+                </HideButton>
+                <HeaderFooterItems>
+                    {!compactMode && (
+                        <AppTitle>
+                            QuickRoute
+                            <AppVersion>
+                                v{appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
+                            </AppVersion>
+                        </AppTitle>
+                    )}
+                    <PaneSelector>
                         <PaneSelectorButton pane={EditorPane.List}>
                             <i className="fas fa-fw fa-th-list" />
                             {!compactMode && ' Waypoints'}
@@ -90,22 +194,22 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             <i className="fas fa-fw fa-star" />
                             {!compactMode && ' Optimize'}
                         </PaneSelectorButton>
-                    </div>
-                </div>
-            </div>
-            <div id="waypoint-editor-body">
+                    </PaneSelector>
+                </HeaderFooterItems>
+            </Header>
+            <BodyItems>
                 {error && (
                     <div className="text text-danger" role="alert">
                         {error.message}
                     </div>
                 )}
                 {body}
-            </div>
-            <div id="waypoint-editor-footer">
-                <div id="waypoint-editor-footer-items">{footer}</div>
-                <RouteInformationBar />
-            </div>
-        </div>
+            </BodyItems>
+            <Footer>
+                <HeaderFooterItems>{footer}</HeaderFooterItems>
+                <InfoBar />
+            </Footer>
+        </Container>
     )
 }
 

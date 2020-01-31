@@ -1,14 +1,38 @@
 import React from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
+import styled, { css } from 'styled-components'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
 import { StatView } from './StatView'
 
-export const RouteInformationBar = () => {
+const Container = styled.div<{ collapsed: boolean }>`
+    align-items: center;
+    justify-content: space-evenly;
+
+    ${({ collapsed }) =>
+        collapsed
+            ? css`
+                  display: inline-flex;
+
+                  > :not(:first-child) {
+                      margin-left: var(--standard-horizontal-padding);
+                  }
+              `
+            : css`
+                  display: flex;
+
+                  padding: var(--standard-margin);
+
+                  border-top: 1px solid var(--app-border-color);
+              `}
+`
+
+export const InfoBar = () => {
     const compactMode = useCompactMode()
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
+    const showCondensedText = editorIsHidden && compactMode
 
     let statusbarItems: JSX.Element | string
     switch (currentRouteInformation.status) {
@@ -35,11 +59,7 @@ export const RouteInformationBar = () => {
             throw new Error('Invalid route information')
     }
 
-    return (
-        <div id="route-statusbar" className={editorIsHidden ? 'collapsed' : undefined}>
-            {!editorIsHidden || !compactMode ? statusbarItems : 'Show Editor'}
-        </div>
-    )
+    return <Container collapsed={editorIsHidden}>{showCondensedText ? 'Editor' : statusbarItems}</Container>
 }
 
 function stringForTime(seconds: number) {

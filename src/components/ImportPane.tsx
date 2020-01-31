@@ -5,6 +5,7 @@ import { useInput } from '../hooks/useInput'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { DangerButton, PrimaryButton } from './Button'
+import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const ImportPane = () => {
@@ -34,7 +35,7 @@ export const ImportPane = () => {
             <div className="text text-secondary" role="alert">
                 Waypoints are imported from <a href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco</a>
             </div>
-            <div className="input-row">
+            <InputRow>
                 <input
                     type="text"
                     placeholder="Driver number"
@@ -42,7 +43,7 @@ export const ImportPane = () => {
                     disabled={importInProgress}
                     autoFocus={!isMobileDevice}
                 />
-            </div>
+            </InputRow>
             {waypoints.length > 0 && (
                 <div className="text text-warning" role="alert">
                     Existing waypoints will be replaced
