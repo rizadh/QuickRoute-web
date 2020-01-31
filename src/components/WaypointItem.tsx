@@ -6,7 +6,7 @@ import { useInput } from '../hooks/useInput'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { isValidAddress } from '../redux/validator'
-import { DangerButton, SecondaryButton } from './Button'
+import { DangerButton, PrimaryButton, SecondaryButton } from './Button'
 
 type WaypointItemProps = {
     index: number;
@@ -26,7 +26,7 @@ const StyledWaypointItem = styled.div<{ isBeingDraggedAlong: boolean }>`
 
     > * {
         border-radius: var(--standard-border-radius);
-        padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+        padding: var(--standard-padding);
         line-height: var(--standard-control-line-height);
     }
 
@@ -47,7 +47,7 @@ const StyledWaypointItem = styled.div<{ isBeingDraggedAlong: boolean }>`
 const WaypointIndex = styled.span<{ isSelected: boolean }>`
     ${({ isSelected }) => isSelected && 'color: white;'}
     background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
-    border: 1px solid var(--app-heavy-border-color);
+    border: 1px solid var(--app-border-color);
 
     font-variant-numeric: tabular-nums;
 
@@ -56,12 +56,22 @@ const WaypointIndex = styled.span<{ isSelected: boolean }>`
     }
 `
 
+const StyledSpan = styled.span`
+    background-color: var(--app-input-row-span-color);
+    border: 1px solid var(--app-border-color);
+`
+
 export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) => {
     const dispatch: Dispatch<AppAction> = useDispatch()
     const waypoint = useSelector((state: AppState) => state.waypoints[index])
     const isOriginalAddress = (value: string) => value.trim() === waypoint.address
 
-    const { value: waypointFieldValue, props: waypointFieldProps, resetValue: resetWaypointField } = useInput({
+    const {
+        value: waypointFieldValue,
+        props: waypointFieldProps,
+        resetValue: resetWaypointField,
+        commitValue: commitWaypointField,
+    } = useInput({
         initialValue: waypoint.address,
         predicate: value => !isOriginalAddress(value) && isValidAddress(value),
         onCommit: useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [index]),
@@ -140,31 +150,39 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                 >
                     <WaypointIndex
                         isSelected={!!waypoint.selected}
-                        title="Drag to reorder"
+                        title="Drag to reorder or click to select"
                         onClick={itemWasClicked}
                         {...provided.dragHandleProps}
                     >
                         <i className="fas fa-fw fa-grip-vertical" /> {index + 1}
                     </WaypointIndex>
                     <input className="form-control" {...waypointFieldProps} />
-                    {!isOriginalAddress(waypointFieldValue) && (
-                        <SecondaryButton onClick={resetWaypointField}>
-                            <i className="fas fa-fw fa-undo" />
-                        </SecondaryButton>
+                    {isOriginalAddress(waypointFieldValue) ? (
+                        <>
+                            <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
+                                <i className="fas fa-fw fa-trash" />
+                            </DangerButton>
+                            {fetchFailed && (
+                                <StyledSpan className="text-danger" title={failureMessage}>
+                                    {failureIcon}
+                                </StyledSpan>
+                            )}
+                            {fetchIsInProgress && (
+                                <StyledSpan className="text-secondary">
+                                    <i className="fas fa-fw fa-circle-notch fa-spin" />
+                                </StyledSpan>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <SecondaryButton onClick={resetWaypointField} title="Revert waypoint">
+                                <i className="fas fa-fw fa-times" />
+                            </SecondaryButton>
+                            <PrimaryButton onClick={commitWaypointField} title="Change waypoint">
+                                <i className="fas fa-fw fa-check" />
+                            </PrimaryButton>
+                        </>
                     )}
-                    {fetchFailed && (
-                        <span className="text-danger" title={failureMessage}>
-                            {failureIcon}
-                        </span>
-                    )}
-                    {fetchIsInProgress && (
-                        <span className="text-secondary">
-                            <i className="fas fa-fw fa-circle-notch fa-spin" />
-                        </span>
-                    )}
-                    <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
-                        <i className="fas fa-fw fa-trash" />
-                    </DangerButton>
                 </StyledWaypointItem>
             )}
         </Draggable>

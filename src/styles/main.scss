@@ -28,8 +28,7 @@ a:hover {
 
 input,
 textarea {
-    border: none;
-    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    padding: var(--standard-padding);
     border-radius: var(--standard-border-radius);
 
     appearance: none;
@@ -43,7 +42,7 @@ textarea {
 
     transition: background-color 0.2s, border 0.2s;
     background-color: var(--app-form-control-color);
-    border: 1px solid var(--app-heavy-border-color);
+    border: 1px solid var(--app-border-color);
 
     &::placeholder {
         color: var(--app-secondary-text-color);
@@ -63,7 +62,7 @@ textarea {
     transition: opacity 0.2s;
 
     > * {
-        padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+        padding: var(--standard-padding);
         line-height: var(--standard-control-line-height);
     }
 
@@ -93,7 +92,7 @@ textarea {
 
     > span {
         background-color: var(--app-input-row-span-color);
-        border: 1px solid var(--app-heavy-border-color);
+        border: 1px solid var(--app-border-color);
 
         &:focus {
             outline: none;
