@@ -1,12 +1,47 @@
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import styled from 'styled-components'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { FrostedButton, PrimaryButton, WarningButton } from './Button'
-import { RouteInformationBar } from './RouteInformationBar'
+import { InfoBar } from './InfoBar'
+import { compactBreakpoint, editorWidth } from './styleVariables'
 
-import './MapButtons.scss'
+const Container = styled.div`
+    position: absolute;
+    top: 0;
+    left: calc(${editorWidth}px + var(--standard-margin));
+    padding: var(--standard-margin);
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    display: flex;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    @media (max-width: ${compactBreakpoint}px) {
+        top: initial;
+        left: 0;
+        bottom: 0;
+
+        #root:not(.editor-hidden) & {
+            display: none;
+        }
+    }
+
+    #root.editor-hidden & {
+        left: 0;
+    }
+
+    > button {
+        flex-shrink: 0;
+        margin-right: calc(var(--standard-margin) / 2);
+    }
+`
 
 export const MapButtons = () => {
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
@@ -21,10 +56,10 @@ export const MapButtons = () => {
     const showEditorPane = useCallback(() => dispatch({ type: 'SHOW_EDITOR_PANE' }), [])
 
     return (
-        <div id="map-buttons">
+        <Container>
             {editorIsHidden && (
                 <FrostedButton onClick={showEditorPane}>
-                    <RouteInformationBar /> <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'down'}`} />
+                    <InfoBar /> <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'down'}`} />
                 </FrostedButton>
             )}
             {!compactMode &&
@@ -41,6 +76,6 @@ export const MapButtons = () => {
                 <i className="fas fa-fw fa-expand" />
                 {!compactMode && ' Auto-Fit'}
             </WarningButton>
-        </div>
+        </Container>
     )
 }

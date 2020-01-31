@@ -1,11 +1,36 @@
 import React from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
+import styled, { css } from 'styled-components'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
 import { StatView } from './StatView'
+import { infoBarHeight } from './styleVariables'
 
-export const RouteInformationBar = () => {
+const Container = styled.div<{ collapsed: boolean }>`
+    align-items: center;
+    justify-content: space-evenly;
+
+    ${({ collapsed }) =>
+        collapsed
+            ? css`
+                  display: inline-flex;
+
+                  > :not(:first-child) {
+                      margin-left: var(--standard-horizontal-padding);
+                  }
+              `
+            : css`
+                  display: flex;
+
+                  height: ${infoBarHeight}px;
+                  width: 100%;
+
+                  border-top: 1px solid var(--app-border-color);
+              `}
+`
+
+export const InfoBar = () => {
     const compactMode = useCompactMode()
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
@@ -36,9 +61,9 @@ export const RouteInformationBar = () => {
     }
 
     return (
-        <div id="route-statusbar" className={editorIsHidden ? 'collapsed' : undefined}>
+        <Container collapsed={editorIsHidden}>
             {!editorIsHidden || !compactMode ? statusbarItems : 'Show Editor'}
-        </div>
+        </Container>
     )
 }
 
