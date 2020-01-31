@@ -9,7 +9,7 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
     --local-btn-background-color: transparent;
     --local-btn-text-color: var(--app-text-color);
 
-    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    padding: var(--standard-padding);
     border-radius: var(--standard-border-radius);
     border: 1px solid var(--app-border-color);
 

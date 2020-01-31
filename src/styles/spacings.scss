@@ -5,6 +5,8 @@
     --standard-border-radius: 8px;
     --standard-control-line-height: 1.5;
 
+    --standard-padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+
     @media (max-width: $compactBreakpoint) {
         --standard-margin: 12px;
         --standard-vertical-padding: 6px;

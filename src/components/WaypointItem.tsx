@@ -26,7 +26,7 @@ const StyledWaypointItem = styled.div<{ isBeingDraggedAlong: boolean }>`
 
     > * {
         border-radius: var(--standard-border-radius);
-        padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+        padding: var(--standard-padding);
         line-height: var(--standard-control-line-height);
     }
 

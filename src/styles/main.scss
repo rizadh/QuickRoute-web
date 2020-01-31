@@ -28,8 +28,7 @@ a:hover {
 
 input,
 textarea {
-    border: none;
-    padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    padding: var(--standard-padding);
     border-radius: var(--standard-border-radius);
 
     appearance: none;
@@ -63,7 +62,7 @@ textarea {
     transition: opacity 0.2s;
 
     > * {
-        padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+        padding: var(--standard-padding);
         line-height: var(--standard-control-line-height);
     }
 
