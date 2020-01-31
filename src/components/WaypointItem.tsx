@@ -6,7 +6,7 @@ import { useInput } from '../hooks/useInput'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { isValidAddress } from '../redux/validator'
-import { DangerButton, SecondaryButton } from './Button'
+import { DangerButton, PrimaryButton, SecondaryButton } from './Button'
 
 type WaypointItemProps = {
     index: number;
@@ -66,7 +66,12 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
     const waypoint = useSelector((state: AppState) => state.waypoints[index])
     const isOriginalAddress = (value: string) => value.trim() === waypoint.address
 
-    const { value: waypointFieldValue, props: waypointFieldProps, resetValue: resetWaypointField } = useInput({
+    const {
+        value: waypointFieldValue,
+        props: waypointFieldProps,
+        resetValue: resetWaypointField,
+        commitValue: commitWaypointField,
+    } = useInput({
         initialValue: waypoint.address,
         predicate: value => !isOriginalAddress(value) && isValidAddress(value),
         onCommit: useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [index]),
@@ -145,31 +150,39 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                 >
                     <WaypointIndex
                         isSelected={!!waypoint.selected}
-                        title="Drag to reorder"
+                        title="Drag to reorder or click to select"
                         onClick={itemWasClicked}
                         {...provided.dragHandleProps}
                     >
                         <i className="fas fa-fw fa-grip-vertical" /> {index + 1}
                     </WaypointIndex>
                     <input className="form-control" {...waypointFieldProps} />
-                    {!isOriginalAddress(waypointFieldValue) && (
-                        <SecondaryButton onClick={resetWaypointField}>
-                            <i className="fas fa-fw fa-undo" />
-                        </SecondaryButton>
+                    {isOriginalAddress(waypointFieldValue) ? (
+                        <>
+                            <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
+                                <i className="fas fa-fw fa-trash" />
+                            </DangerButton>
+                            {fetchFailed && (
+                                <StyledSpan className="text-danger" title={failureMessage}>
+                                    {failureIcon}
+                                </StyledSpan>
+                            )}
+                            {fetchIsInProgress && (
+                                <StyledSpan className="text-secondary">
+                                    <i className="fas fa-fw fa-circle-notch fa-spin" />
+                                </StyledSpan>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <SecondaryButton onClick={resetWaypointField} title="Revert waypoint">
+                                <i className="fas fa-fw fa-times" />
+                            </SecondaryButton>
+                            <PrimaryButton onClick={commitWaypointField} title="Change waypoint">
+                                <i className="fas fa-fw fa-check" />
+                            </PrimaryButton>
+                        </>
                     )}
-                    {fetchFailed && (
-                        <StyledSpan className="text-danger" title={failureMessage}>
-                            {failureIcon}
-                        </StyledSpan>
-                    )}
-                    {fetchIsInProgress && (
-                        <StyledSpan className="text-secondary">
-                            <i className="fas fa-fw fa-circle-notch fa-spin" />
-                        </StyledSpan>
-                    )}
-                    <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
-                        <i className="fas fa-fw fa-trash" />
-                    </DangerButton>
                 </StyledWaypointItem>
             )}
         </Draggable>
