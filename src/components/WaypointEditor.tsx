@@ -165,12 +165,14 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                     <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'up')} />
                 </HideButton>
                 <HeaderFooterItems>
-                    <AppTitle>
-                        QuickRoute
-                        <AppVersion>
-                            v{appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
-                        </AppVersion>
-                    </AppTitle>
+                    {!compactMode && (
+                        <AppTitle>
+                            QuickRoute
+                            <AppVersion>
+                                v{appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
+                            </AppVersion>
+                        </AppTitle>
+                    )}
                     <PaneSelector>
                         <PaneSelectorButton pane={EditorPane.List}>
                             <i className="fas fa-fw fa-th-list" />

@@ -32,6 +32,7 @@ export const InfoBar = () => {
     const compactMode = useCompactMode()
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
+    const showCondensedText = editorIsHidden && compactMode
 
     let statusbarItems: JSX.Element | string
     switch (currentRouteInformation.status) {
@@ -58,11 +59,7 @@ export const InfoBar = () => {
             throw new Error('Invalid route information')
     }
 
-    return (
-        <Container collapsed={editorIsHidden}>
-            {!editorIsHidden || !compactMode ? statusbarItems : 'Show Editor'}
-        </Container>
-    )
+    return <Container collapsed={editorIsHidden}>{showCondensedText ? 'Editor' : statusbarItems}</Container>
 }
 
 function stringForTime(seconds: number) {
