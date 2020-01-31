@@ -7,6 +7,7 @@ import { useCompactMode } from '../hooks/useCompactMode'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { PrimaryButton } from './Button'
+import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const LinksPane = () => {
@@ -95,7 +96,7 @@ export const LinksPane = () => {
     ) : (
         <>
             {navigationLinks.map((url, index) => (
-                <div key={url} className="input-row">
+                <InputRow key={url}>
                     <input type="text" value={url} readOnly={true} />
                     {(navigator as INavigator).share && (
                         <PrimaryButton onClick={shareLink(index)} title="Share this link">
@@ -108,7 +109,7 @@ export const LinksPane = () => {
                     <PrimaryButton onClick={openUrl(index)} title="Open this link">
                         <i className="fas fa-fw fa-external-link-alt" />
                     </PrimaryButton>
-                </div>
+                </InputRow>
             ))}
         </>
     )

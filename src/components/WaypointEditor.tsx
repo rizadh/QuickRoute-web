@@ -9,6 +9,7 @@ import { BulkEditPane } from './BulkEditPane'
 import { PrimaryButton, SecondaryButton } from './Button'
 import { ImportPane } from './ImportPane'
 import { InfoBar } from './InfoBar'
+import { InputRow } from './InputRow'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
 import { compactBreakpoint, editorWidth, frostedColored, frostedUncolored, peekWidth } from './styleVariables'
@@ -74,7 +75,7 @@ const HeaderFooterItems = styled(Items)`
 
 const BodyItems = styled(Items)`
     .text,
-    .input-row {
+    ${InputRow} {
         margin-right: var(--standard-margin);
         margin-bottom: var(--standard-margin);
     }
