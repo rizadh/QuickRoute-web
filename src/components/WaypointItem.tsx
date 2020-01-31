@@ -157,9 +157,6 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                     <input className="form-control" {...waypointFieldProps} />
                     {isOriginalAddress(waypointFieldValue) ? (
                         <>
-                            <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
-                                <i className="fas fa-fw fa-trash" />
-                            </DangerButton>
                             {fetchFailed && (
                                 <StyledSpan className="text-danger" title={failureMessage}>
                                     {failureIcon}
@@ -170,6 +167,9 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                                     <i className="fas fa-fw fa-circle-notch fa-spin" />
                                 </StyledSpan>
                             )}
+                            <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
+                                <i className="fas fa-fw fa-trash" />
+                            </DangerButton>
                         </>
                     ) : (
                         <>
