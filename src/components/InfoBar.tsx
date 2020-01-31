@@ -5,7 +5,6 @@ import { useCompactMode } from '../hooks/useCompactMode'
 import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
 import { StatView } from './StatView'
-import { infoBarHeight } from './styleVariables'
 
 const Container = styled.div<{ collapsed: boolean }>`
     align-items: center;
@@ -23,8 +22,7 @@ const Container = styled.div<{ collapsed: boolean }>`
             : css`
                   display: flex;
 
-                  height: ${infoBarHeight}px;
-                  width: 100%;
+                  padding: var(--standard-margin);
 
                   border-top: 1px solid var(--app-border-color);
               `}
