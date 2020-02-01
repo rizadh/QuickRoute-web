@@ -4,4 +4,5 @@ node_js: node
 env:
     - NPM_SCRIPT=lint
     - NPM_SCRIPT=test
+    - NPM_SCRIPT=build
 script: yarn autoclean --force && yarn $NPM_SCRIPT
