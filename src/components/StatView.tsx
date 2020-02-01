@@ -9,7 +9,7 @@ type StatViewProps = {
 
 const Title = styled.span`
     color: var(--app-primary-text-color);
-    font-weight: 600;
+    font-weight: 500;
 `
 
 const Value = styled.span`
