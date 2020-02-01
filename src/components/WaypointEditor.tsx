@@ -11,6 +11,7 @@ import { PrimaryButton, SecondaryButton } from './Button'
 import { ImportPane } from './ImportPane'
 import { InfoBar } from './InfoBar'
 import { InputRow } from './InputRow'
+import { Link } from './Link'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
 import { compactBreakpoint, editorWidth, frostedColored, frostedUncolored, peekWidth } from './styleVariables'
@@ -170,7 +171,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                         <AppTitle>
                             QuickRoute
                             <AppVersion>
-                                v{appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
+                                v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
                             </AppVersion>
                         </AppTitle>
                     )}

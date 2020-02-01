@@ -6,9 +6,10 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { Alert, WarningAlert } from './Alert'
 import { DangerButton, PrimaryButton } from './Button'
-import { InputRow } from './InputRow'
-import { WaypointEditorTemplate } from './WaypointEditor'
 import { Input } from './Input'
+import { InputRow } from './InputRow'
+import { Link } from './Link'
+import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const ImportPane = () => {
     const importInProgress = useSelector((state: AppState) => state.importInProgress)
@@ -35,7 +36,8 @@ export const ImportPane = () => {
     const body = (
         <>
             <Alert>
-                Waypoints are imported from <a href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco</a>
+                Waypoints are imported from{' '}
+                <Link href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco</Link>
             </Alert>
             <InputRow>
                 <Input
