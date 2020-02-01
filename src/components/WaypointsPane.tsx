@@ -12,10 +12,10 @@ import { createWaypointFromAddress } from '../redux/util/createWaypointFromAddre
 import { isValidAddress } from '../redux/validator'
 import { Alert } from './Alert'
 import { DangerButton, PrimaryButton } from './Button'
+import { Input } from './Input'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 import { WaypointList } from './WaypointList'
-import { Input } from './Input'
 
 export const WaypointsPane = () => (
     <WaypointEditorTemplate body={<WaypointsPaneBody />} footer={<WaypointsPaneFooter />} />

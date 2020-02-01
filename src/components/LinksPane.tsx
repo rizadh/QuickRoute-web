@@ -8,9 +8,9 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { WarningAlert } from './Alert'
 import { PrimaryButton } from './Button'
+import { Input } from './Input'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
-import { Input } from './Input'
 
 export const LinksPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)

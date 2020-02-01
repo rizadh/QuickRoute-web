@@ -1,7 +1,7 @@
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
+import TextareaAutosize from 'react-textarea-autosize'
 import { useInput } from '../hooks/useInput'
 import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
