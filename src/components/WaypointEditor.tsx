@@ -5,11 +5,13 @@ import { appVersion } from '..'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
+import { Alert, DangerAlert } from './Alert'
 import { BulkEditPane } from './BulkEditPane'
 import { PrimaryButton, SecondaryButton } from './Button'
 import { ImportPane } from './ImportPane'
 import { InfoBar } from './InfoBar'
 import { InputRow } from './InputRow'
+import { Link } from './Link'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
 import { compactBreakpoint, editorWidth, frostedColored, frostedUncolored, peekWidth } from './styleVariables'
@@ -74,7 +76,7 @@ const HeaderFooterItems = styled(Items)`
 `
 
 const BodyItems = styled(Items)`
-    .text,
+    ${Alert},
     ${InputRow} {
         margin-right: var(--standard-margin);
         margin-bottom: var(--standard-margin);
@@ -169,7 +171,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                         <AppTitle>
                             QuickRoute
                             <AppVersion>
-                                v{appVersion} by <a href="https://github.com/rizadh">@rizadh</a>
+                                v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
                             </AppVersion>
                         </AppTitle>
                     )}
@@ -198,11 +200,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                 </HeaderFooterItems>
             </Header>
             <BodyItems>
-                {error && (
-                    <div className="text text-danger" role="alert">
-                        {error.message}
-                    </div>
-                )}
+                {error && <DangerAlert>{error.message}</DangerAlert>}
                 {body}
             </BodyItems>
             <Footer>

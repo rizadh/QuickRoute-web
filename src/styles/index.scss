@@ -1,0 +1,17 @@
+@import "./colors.scss";
+@import "./spacings.scss";
+
+#root {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+html {
+    background-color: var(--app-background-color);
+    color: var(--app-primary-text-color);
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}

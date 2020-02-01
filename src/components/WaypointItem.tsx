@@ -7,6 +7,7 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { isValidAddress } from '../redux/validator'
 import { DangerButton, PrimaryButton, SecondaryButton } from './Button'
+import { Input } from './Input'
 import { InputRow } from './InputRow'
 
 const Container = styled(InputRow)`
@@ -134,7 +135,7 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                     >
                         <i className="fas fa-fw fa-grip-vertical" /> {index + 1}
                     </DragHandle>
-                    <input className="form-control" {...waypointFieldProps} />
+                    <Input {...waypointFieldProps} />
                     {isOriginalAddress(waypointFieldValue) ? (
                         <>
                             {fetchFailed && (

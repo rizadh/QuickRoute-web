@@ -4,8 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useInput } from '../hooks/useInput'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
+import { Alert, WarningAlert } from './Alert'
 import { DangerButton, PrimaryButton } from './Button'
+import { Input } from './Input'
 import { InputRow } from './InputRow'
+import { Link } from './Link'
 import { WaypointEditorTemplate } from './WaypointEditor'
 
 export const ImportPane = () => {
@@ -32,11 +35,12 @@ export const ImportPane = () => {
 
     const body = (
         <>
-            <div className="text text-secondary" role="alert">
-                Waypoints are imported from <a href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco</a>
-            </div>
+            <Alert>
+                Waypoints are imported from{' '}
+                <Link href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco</Link>
+            </Alert>
             <InputRow>
-                <input
+                <Input
                     type="text"
                     placeholder="Driver number"
                     {...driverNumberFieldProps}
@@ -44,11 +48,7 @@ export const ImportPane = () => {
                     autoFocus={!isMobileDevice}
                 />
             </InputRow>
-            {waypoints.length > 0 && (
-                <div className="text text-warning" role="alert">
-                    Existing waypoints will be replaced
-                </div>
-            )}
+            {waypoints.length > 0 && <WarningAlert>Existing waypoints will be replaced</WarningAlert>}
         </>
     )
 

@@ -1,33 +1,6 @@
-@import "./variables.scss";
-@import "./colors.scss";
-@import "./spacings.scss";
+import styled from 'styled-components'
 
-#root {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-}
-
-html {
-    background-color: var(--app-background-color);
-    color: var(--app-primary-text-color);
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-}
-
-a {
-    color: var(--apple-system-blue);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-input,
-textarea {
+export const Input = styled.input`
     padding: var(--standard-padding);
     border-radius: var(--standard-border-radius);
 
@@ -53,4 +26,4 @@ textarea {
 
         border: 1px solid var(--apple-system-blue);
     }
-}
+`
