@@ -10,6 +10,7 @@ import { WarningAlert } from './Alert'
 import { PrimaryButton } from './Button'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
+import { Input } from './Input'
 
 export const LinksPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -96,7 +97,7 @@ export const LinksPane = () => {
         <>
             {navigationLinks.map((url, index) => (
                 <InputRow key={url}>
-                    <input type="text" value={url} readOnly={true} />
+                    <Input type="text" value={url} readOnly={true} />
                     {(navigator as INavigator).share && (
                         <PrimaryButton onClick={shareLink(index)} title="Share this link">
                             <i className="fas fa-fw fa-share" />

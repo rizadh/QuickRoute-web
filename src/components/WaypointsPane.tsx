@@ -15,6 +15,7 @@ import { DangerButton, PrimaryButton } from './Button'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 import { WaypointList } from './WaypointList'
+import { Input } from './Input'
 
 export const WaypointsPane = () => (
     <WaypointEditorTemplate body={<WaypointsPaneBody />} footer={<WaypointsPaneFooter />} />
@@ -115,7 +116,7 @@ export const WaypointsPaneFooter = () => {
     ) : (
         <>
             <InputRow>
-                <input type="text" placeholder="New waypoint" {...waypointFieldProps} autoFocus={!isMobileDevice} />
+                <Input type="text" placeholder="New waypoint" {...waypointFieldProps} autoFocus={!isMobileDevice} />
                 <PrimaryButton title="Add waypoint" onClick={addWaypoint} disabled={!waypointIsValid}>
                     <i className="fas fa-fw fa-plus" />
                 </PrimaryButton>

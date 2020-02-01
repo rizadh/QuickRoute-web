@@ -8,6 +8,7 @@ import { Alert, WarningAlert } from './Alert'
 import { DangerButton, PrimaryButton } from './Button'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
+import { Input } from './Input'
 
 export const ImportPane = () => {
     const importInProgress = useSelector((state: AppState) => state.importInProgress)
@@ -37,7 +38,7 @@ export const ImportPane = () => {
                 Waypoints are imported from <a href="http://pickup.atripcocourier.com/ccwap/(S())/cc.aspx">Atripco</a>
             </Alert>
             <InputRow>
-                <input
+                <Input
                     type="text"
                     placeholder="Driver number"
                     {...driverNumberFieldProps}

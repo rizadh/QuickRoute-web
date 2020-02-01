@@ -1,7 +1,7 @@
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Textarea from 'react-textarea-autosize'
+import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
 import { useInput } from '../hooks/useInput'
 import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
@@ -9,6 +9,7 @@ import { createWaypointFromAddress } from '../redux/util/createWaypointFromAddre
 import { isValidAddress } from '../redux/validator'
 import { Alert } from './Alert'
 import { PrimaryButton } from './Button'
+import { Input } from './Input'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 
@@ -36,7 +37,9 @@ export const BulkEditPane = () => {
         <>
             <Alert>Enter one address per line</Alert>
             <InputRow>
-                <Textarea
+                <Input
+                    // TODO: Fix this once type definition works without 'as any'
+                    as={TextareaAutosize as any}
                     minRows={3}
                     {...bulkEditFieldProps}
                     value={bulkEditFieldProps.value?.toString()}

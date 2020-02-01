@@ -7,6 +7,7 @@ import { AppAction, OptimizationParameter } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
 import { Alert, WarningAlert } from './Alert'
 import { DangerButton, PrimaryButton } from './Button'
+import { Input } from './Input'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 
@@ -68,7 +69,7 @@ export const OptimizePane = () => {
             <Alert>Optimal route from start point to end point through all waypoints will be found</Alert>
             <Alert>If left unspecified, route will be found from first to last waypoint</Alert>
             <InputRow>
-                <input
+                <Input
                     type="text"
                     placeholder={`Start Point (${defaultStartPoint()})`}
                     {...startPointFieldProps}
@@ -77,7 +78,7 @@ export const OptimizePane = () => {
                 />
             </InputRow>
             <InputRow>
-                <input
+                <Input
                     type="text"
                     placeholder={`End Point (${defaultEndPoint()})`}
                     {...endPointFieldProps}
