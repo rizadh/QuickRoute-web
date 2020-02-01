@@ -7,6 +7,7 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
 import { createWaypointFromAddress } from '../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../redux/validator'
+import { Alert } from './Alert'
 import { PrimaryButton } from './Button'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
@@ -33,9 +34,7 @@ export const BulkEditPane = () => {
 
     const body = (
         <>
-            <div className="text text-secondary" role="alert">
-                Enter one address per line
-            </div>
+            <Alert>Enter one address per line</Alert>
             <InputRow>
                 <Textarea
                     minRows={3}

@@ -5,6 +5,7 @@ import { appVersion } from '..'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
+import { Alert, DangerAlert } from './Alert'
 import { BulkEditPane } from './BulkEditPane'
 import { PrimaryButton, SecondaryButton } from './Button'
 import { ImportPane } from './ImportPane'
@@ -74,7 +75,7 @@ const HeaderFooterItems = styled(Items)`
 `
 
 const BodyItems = styled(Items)`
-    .text,
+    ${Alert},
     ${InputRow} {
         margin-right: var(--standard-margin);
         margin-bottom: var(--standard-margin);
@@ -198,11 +199,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                 </HeaderFooterItems>
             </Header>
             <BodyItems>
-                {error && (
-                    <div className="text text-danger" role="alert">
-                        {error.message}
-                    </div>
-                )}
+                {error && <DangerAlert>{error.message}</DangerAlert>}
                 {body}
             </BodyItems>
             <Footer>

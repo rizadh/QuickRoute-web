@@ -5,6 +5,7 @@ import { useCompactMode } from '../hooks/useCompactMode'
 import { useInput } from '../hooks/useInput'
 import { AppAction, OptimizationParameter } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
+import { Alert, WarningAlert } from './Alert'
 import { DangerButton, PrimaryButton } from './Button'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
@@ -61,17 +62,11 @@ export const OptimizePane = () => {
     const isMobileDevice = isMobileFn().any
 
     const body = insufficientWaypoints ? (
-        <div className="text text-warning" role="alert">
-            Add three or more waypoints to optimize routes
-        </div>
+        <WarningAlert>Add three or more waypoints to optimize routes</WarningAlert>
     ) : (
         <>
-            <div className="text text-secondary" role="alert">
-                Optimal route from start point to end point through all waypoints will be found
-            </div>
-            <div className="text text-secondary" role="alert">
-                If left unspecified, route will be found from first to last waypoint
-            </div>
+            <Alert>Optimal route from start point to end point through all waypoints will be found</Alert>
+            <Alert>If left unspecified, route will be found from first to last waypoint</Alert>
             <InputRow>
                 <input
                     type="text"

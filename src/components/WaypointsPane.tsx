@@ -10,6 +10,7 @@ import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
 import { createWaypointFromAddress } from '../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../redux/validator'
+import { Alert } from './Alert'
 import { DangerButton, PrimaryButton } from './Button'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
@@ -30,16 +31,8 @@ export const WaypointsPaneBody = () => {
                     One or more waypoints could not be routed
                 </div>
             )}
-            {waypointCount === 0 && (
-                <div className="text text-secondary" role="alert">
-                    Enter an address to begin
-                </div>
-            )}
-            {waypointCount === 1 && (
-                <div className="text text-secondary" role="alert">
-                    Enter another address to show route information
-                </div>
-            )}
+            {waypointCount === 0 && <Alert>Enter an address to begin</Alert>}
+            {waypointCount === 1 && <Alert>Enter another address to show route information</Alert>}
             <WaypointList />
         </>
     )

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
+import { WarningAlert } from './Alert'
 import { PrimaryButton } from './Button'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
@@ -90,9 +91,7 @@ export const LinksPane = () => {
     const insufficientWaypoints = waypoints.length === 0
 
     const body = insufficientWaypoints ? (
-        <div className="text text-warning" role="alert">
-            Add one or more waypoints to generate links
-        </div>
+        <WarningAlert>Add one or more waypoints to generate links</WarningAlert>
     ) : (
         <>
             {navigationLinks.map((url, index) => (
