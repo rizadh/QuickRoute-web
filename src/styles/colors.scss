@@ -61,23 +61,3 @@
 .text-danger {
     color: var(--apple-system-red);
 }
-
-$frostedBlurRadius: 128px;
-
-@mixin frosted-colored {
-    background-color: var(--app-frost-fallback-color);
-
-    @supports (backdrop-filter: blur($frostedBlurRadius)) {
-        backdrop-filter: blur($frostedBlurRadius);
-        background-color: var(--app-frost-color);
-    }
-}
-
-@mixin frosted-uncolored {
-    background-color: var(--app-frost-fallback-color);
-
-    @supports (backdrop-filter: blur($frostedBlurRadius)) {
-        backdrop-filter: blur($frostedBlurRadius);
-        background-color: initial;
-    }
-}
