@@ -5,7 +5,7 @@ import { App } from './components/App'
 import { GetTokenQuery, GetTokenQueryVariables } from './generated/graphql'
 import { GetToken } from './queries'
 
-export const appVersion = '2020.02.01'
+export const appVersion = '2020.02.13'
 export const apolloClient = new ApolloClient({ uri: 'https://api.quickroute.rizadh.com/graphql' })
 
 // tslint:disable-next-line:no-var-requires
