@@ -74,14 +74,3 @@ export const WarningButton = styled(Button)`
     --local-btn-background-color: var(--apple-system-yellow);
     --local-btn-text-color: rgba(0, 0, 0, 0.6);
 `
-
-const frostedBlurRadius = '128px'
-
-export const FrostedButton = styled(Button)`
-    background-color: var(--app-frost-fallback-color);
-
-    @supports (backdrop-filter: blur(${frostedBlurRadius})) {
-        backdrop-filter: blur(${frostedBlurRadius});
-        background-color: var(--app-frost-color);
-    }
-`
