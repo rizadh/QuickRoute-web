@@ -1,0 +1,8 @@
+overwrite: true
+schema: "https://api.quickroute.rizadh.com/graphql"
+documents: "src/queries.ts"
+generates:
+    src/generated/graphql.ts:
+        plugins:
+            - "typescript"
+            - "typescript-operations"

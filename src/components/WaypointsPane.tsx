@@ -1,10 +1,13 @@
+import b64toblob from 'b64-to-blob'
 import { saveAs } from 'file-saver'
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { apiPrefix } from '..'
+import { apolloClient } from '..'
+import { GeneratePdfQuery, GeneratePdfQueryVariables } from '../generated/graphql'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { useInput } from '../hooks/useInput'
+import { GeneratePDF } from '../queries'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
@@ -62,23 +65,19 @@ export const WaypointsPaneFooter = () => {
     const generatePdf = useCallback(async () => {
         dispatch({ type: 'CLEAR_ERROR' })
 
-        const response = await fetch(apiPrefix + 'pdf', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ waypoints: waypoints.map(w => w.address) }),
-        })
+        try {
+            const response = await apolloClient.query<GeneratePdfQuery, GeneratePdfQueryVariables>({
+                query: GeneratePDF,
+                variables: { waypoints: waypoints.map(w => w.address) },
+            })
 
-        if (!response.ok) {
+            saveAs(b64toblob(response.data.pdf), 'waypoints.pdf')
+        } catch (error) {
             dispatch({
                 type: 'ERROR_OCCURRED',
-                error: new Error(`Failed to generate PDF (ERROR: '${await response.text()}')`),
+                error: new Error(`Failed to generate PDF (ERROR: '${error}')`),
             })
-            return
         }
-
-        saveAs(await response.blob(), 'waypoints.pdf')
     }, [waypoints])
 
     const shareWaypoints = useCallback(async () => {

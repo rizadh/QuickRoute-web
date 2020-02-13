@@ -19,5 +19,8 @@
         "arrow-parens": false,
         "jsx-no-multiline-js": false
     },
-    "rulesDirectory": []
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": ["src/generated/*.*"]
+    }
 }
