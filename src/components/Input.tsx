@@ -21,6 +21,10 @@ export const Input = styled.input`
         color: var(--app-secondary-text-color);
     }
 
+    &:not(:read-only):hover {
+        border: 1px solid var(--apple-system-blue);
+    }
+
     &:not(:read-only):focus {
         background-color: var(--app-form-control-focus-color);
 
