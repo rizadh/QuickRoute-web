@@ -30,12 +30,12 @@ const Container = styled.div`
 
     background-color: var(--app-background-color);
 
+    border-right: 1px solid var(--app-border-color);
+
     @media (max-width: ${compactBreakpoint}px) {
         width: 100%;
 
         border: none;
-        border-top: 1px solid var(--app-border-color);
-        border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
     }
 `
 

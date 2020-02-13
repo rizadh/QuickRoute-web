@@ -17,8 +17,6 @@ const StyledMapView = styled.div<{ blur: boolean; editorHidden: boolean }>`
     top: 0;
     bottom: 0;
 
-    border-left: 1px solid var(--app-border-color);
-
     @media (max-width: ${compactBreakpoint}px) {
         ${({ editorHidden }) =>
             !editorHidden &&
@@ -26,8 +24,6 @@ const StyledMapView = styled.div<{ blur: boolean; editorHidden: boolean }>`
                 display: none;
             `}
         left: 0;
-
-        border-left: none;
     }
 
     transition: filter 0.2s;
