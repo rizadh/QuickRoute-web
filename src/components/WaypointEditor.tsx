@@ -14,7 +14,7 @@ import { InputRow } from './InputRow'
 import { Link } from './Link'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
-import { compactBreakpoint, editorWidth, frostedUncolored } from './styleVariables'
+import { compactBreakpoint, editorWidth } from './styleVariables'
 import { WaypointsPane } from './WaypointsPane'
 
 const Container = styled.div`
@@ -27,8 +27,6 @@ const Container = styled.div`
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-
-    background-color: var(--app-background-color);
 
     border-right: 1px solid var(--app-border-color);
 
@@ -46,7 +44,7 @@ const HeaderFooter = styled.div`
     border-width: 1px;
     border-color: var(--app-border-color);
 
-    ${frostedUncolored}
+    background-color: var(--app-background-color);
 `
 
 const Items = styled.div`
