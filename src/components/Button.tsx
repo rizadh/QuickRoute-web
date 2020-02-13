@@ -6,7 +6,7 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
 
     return <button {...props} onMouseDown={preventFocus} />
 })`
-    --local-btn-background-color: transparent;
+    --local-btn-background-color: var(--app-background-color);
     --local-btn-text-color: var(--app-text-color);
 
     padding: var(--standard-padding);

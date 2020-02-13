@@ -14,38 +14,24 @@ import { InputRow } from './InputRow'
 import { Link } from './Link'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
-import { compactBreakpoint, editorWidth, frostedColored, frostedUncolored, peekWidth } from './styleVariables'
+import { compactBreakpoint, editorWidth, frostedUncolored } from './styleVariables'
 import { WaypointsPane } from './WaypointsPane'
 
 const Container = styled.div`
     position: absolute;
-
-    left: var(--standard-margin);
-    top: var(--standard-margin);
+    display: flex;
+    flex-direction: column;
 
     width: ${editorWidth}px;
-    max-height: calc(100% - 2 * var(--standard-margin));
-
-    border-radius: var(--standard-border-radius);
-
-    border: 1px solid var(--app-border-color);
+    height: 100%;
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 
-    box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.25), 0 16px 32px rgba(0, 0, 0, 0.25);
-
-    ${frostedColored}
+    background-color: var(--app-background-color);
 
     @media (max-width: ${compactBreakpoint}px) {
-        top: auto;
-        left: 0;
-        bottom: 0;
-
         width: 100%;
-        max-height: calc(100% - ${peekWidth}px);
-
-        box-shadow: 0 0 ${peekWidth}px rgba(0, 0, 0, 0.25);
 
         border: none;
         border-top: 1px solid var(--app-border-color);
@@ -164,17 +150,17 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
         <Container>
             <Header>
                 <HideButton title="Minimize editor" onClick={hideEditorPane}>
-                    <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'up')} />
+                    <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'left')} />
                 </HideButton>
                 <HeaderFooterItems>
-                    {!compactMode && (
-                        <AppTitle>
-                            QuickRoute
+                    <AppTitle>
+                        QuickRoute
+                        {!compactMode && (
                             <AppVersion>
                                 v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
                             </AppVersion>
-                        </AppTitle>
-                    )}
+                        )}
+                    </AppTitle>
                     <PaneSelector>
                         <PaneSelectorButton pane={EditorPane.List}>
                             <i className="fas fa-fw fa-th-list" />
