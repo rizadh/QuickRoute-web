@@ -315,11 +315,11 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
         ),
     )
 
-const importWaypoints = async (driverNumber: string) => {
+const importWaypoints = async (driverNumber: string, password: string) => {
     try {
         const response = await apolloClient.query<ImportWaypointsQuery, ImportWaypointsQueryVariables>({
             query: ImportWaypoints,
-            variables: { driverNumber },
+            variables: { driverNumber, password },
         })
 
         return response.data
@@ -336,10 +336,10 @@ const extractAddress = (address: string) => {
 const importWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, ImportWaypointsAction>('IMPORT_WAYPOINTS'),
-        mergeMap(({ driverNumber }) =>
+        mergeMap(({ driverNumber, password }) =>
             concat(
                 of<AppAction>({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber }),
-                from(importWaypoints(driverNumber)).pipe(
+                from(importWaypoints(driverNumber, password)).pipe(
                     mergeMap<ImportWaypointsQuery, ObservableInput<AppAction>>(
                         ({ waypoints: { dispatched, inprogress } }) =>
                             dispatched.length + inprogress.length > 0

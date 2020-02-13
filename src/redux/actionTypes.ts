@@ -145,6 +145,7 @@ export type ShowEditorPaneAction = Readonly<{
 export type ImportWaypointsAction = Readonly<{
     type: 'IMPORT_WAYPOINTS';
     driverNumber: string;
+    password: string;
 }>
 
 export type ImportWaypointsCancelAction = Readonly<{
