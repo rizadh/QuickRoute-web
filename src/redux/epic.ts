@@ -2,7 +2,14 @@ import { range as _range } from 'lodash'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { catchError, filter, first, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
-import { apiPrefix } from '..'
+import { apolloClient } from '..'
+import {
+    ImportWaypointsQuery,
+    ImportWaypointsQueryVariables,
+    OptimizeQuery,
+    OptimizeQueryVariables,
+} from '../generated/graphql'
+import { ImportWaypoints, Optimize } from '../queries'
 import {
     AddWaypointAction,
     AppAction,
@@ -33,23 +40,6 @@ import { createWaypointFromAddress } from './util/createWaypointFromAddress'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
-
-type Waypoint = {
-    address: string;
-    city: string;
-    postalCode: string;
-}
-
-type WaypointsSet = {
-    dispatched: Waypoint[];
-    inprogress: Waypoint[];
-}
-
-type WaypointsResponse = {
-    date: string;
-    driverNumber: string;
-    waypoints: WaypointsSet;
-}
 
 const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
 const directions = new mapkit.Directions()
@@ -325,15 +315,17 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
         ),
     )
 
-const importWaypoints = async (driverNumber: string) => {
-    const httpResponse = await fetch(apiPrefix + 'waypoints/' + driverNumber)
-    if (!httpResponse.ok) {
-        throw new Error(
-            `Failed to import waypoints for driver ${driverNumber} (ERROR: '${await httpResponse.text()}')`,
-        )
-    }
+const importWaypoints = async (driverNumber: string, password: string) => {
+    try {
+        const response = await apolloClient.query<ImportWaypointsQuery, ImportWaypointsQueryVariables>({
+            query: ImportWaypoints,
+            variables: { driverNumber, password },
+        })
 
-    return (await httpResponse.json()) as WaypointsResponse
+        return response.data
+    } catch (error) {
+        throw new Error(`Failed to import waypoints for driver ${driverNumber} (ERROR: '${error}')`)
+    }
 }
 
 const extractAddress = (address: string) => {
@@ -344,11 +336,11 @@ const extractAddress = (address: string) => {
 const importWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, ImportWaypointsAction>('IMPORT_WAYPOINTS'),
-        mergeMap(({ driverNumber }) =>
+        mergeMap(({ driverNumber, password }) =>
             concat(
                 of<AppAction>({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber }),
-                from(importWaypoints(driverNumber)).pipe(
-                    mergeMap<WaypointsResponse, ObservableInput<AppAction>>(
+                from(importWaypoints(driverNumber, password)).pipe(
+                    mergeMap<ImportWaypointsQuery, ObservableInput<AppAction>>(
                         ({ waypoints: { dispatched, inprogress } }) =>
                             dispatched.length + inprogress.length > 0
                                 ? [
@@ -381,25 +373,17 @@ const importWaypointsEpic: AppEpic = action$ =>
         ),
     )
 
-interface IOptimizeResponse {
-    result: number[]
-}
-
 const optimizeRoute = async (coordinates: Coordinate[], optimizationParameter: OptimizationParameter) => {
-    const response = await fetch(apiPrefix + 'optimize', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ coordinates, optimizationParameter }),
-    })
+    try {
+        const response = await apolloClient.query<OptimizeQuery, OptimizeQueryVariables>({
+            query: Optimize,
+            variables: { coordinates, optimizationParameter },
+        })
 
-    if (!response.ok) {
-        throw new Error(`Failed to optimize route ${await response.text()}`)
+        return response.data.optimize
+    } catch (error) {
+        throw new Error(`Failed to optimize route ${error}`)
     }
-
-    const jsonResponse: IOptimizeResponse = await response.json()
-    return jsonResponse.result
 }
 
 const optimizeRouteEpic: AppEpic = (action$, state$) =>

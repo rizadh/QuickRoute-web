@@ -2,7 +2,6 @@ import { css } from 'styled-components'
 
 export const editorWidth = 420
 export const compactBreakpoint = 800
-export const peekWidth = 48
 
 const frostedBlurRadius = 128
 

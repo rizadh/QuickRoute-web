@@ -8,22 +8,34 @@ import { useWindowSize } from '../hooks/useWindowSize'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
+import { compactBreakpoint, editorWidth } from './styleVariables'
 
-const blurredMapView = css`
-    filter: opacity(0.2);
-
-    * {
-        pointer-events: none;
-    }
-`
-
-const StyledMapView = styled.div<{ blur: boolean }>`
+const StyledMapView = styled.div<{ blur: boolean; editorHidden: boolean }>`
     position: absolute;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    left: ${({ editorHidden }) => (editorHidden ? 0 : editorWidth)}px;
+    top: 0;
+    bottom: 0;
+
+    @media (max-width: ${compactBreakpoint}px) {
+        ${({ editorHidden }) =>
+            !editorHidden &&
+            css`
+                display: none;
+            `}
+        left: 0;
+    }
 
     transition: filter 0.2s;
-    ${({ blur }) => blur && blurredMapView}
+    ${({ blur }) =>
+        blur &&
+        css`
+            filter: opacity(0.2);
+
+            * {
+                pointer-events: none;
+            }
+        `}
 `
 
 export const MapView = () => {
@@ -90,12 +102,10 @@ export const MapView = () => {
 
         if (compactMode) {
             map.padding = new mapkit.Padding({ top: 0, left: 12, right: 0, bottom: 12 + 42 })
-        } else if (editorIsHidden) {
-            map.padding = new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 })
         } else {
-            map.padding = new mapkit.Padding({ top: 16 + 42, left: 16 + 420 + 16, right: 0, bottom: 0 })
+            map.padding = new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 })
         }
-    }, [editorIsHidden, map, compactMode])
+    }, [map, compactMode])
 
     useEffect(() => {
         if (!map) return
@@ -188,7 +198,8 @@ export const MapView = () => {
 
     return (
         <StyledMapView
-            blur={status === 'FETCHING' || operationInProgress || (compactMode && !editorIsHidden)}
+            blur={status === 'FETCHING' || operationInProgress}
+            editorHidden={editorIsHidden}
             ref={mapviewRef}
         />
     )

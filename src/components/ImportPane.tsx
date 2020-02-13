@@ -19,12 +19,20 @@ export const ImportPane = () => {
     const {
         value: driverNumberFieldValue,
         props: driverNumberFieldProps,
-        commitValue: importWaypoints,
         valueIsValid: driverNumberIsValid,
     } = useInput({
         predicate: value => !!value,
-        onCommit: useCallback((value: string) => dispatch({ type: 'IMPORT_WAYPOINTS', driverNumber: value }), []),
     })
+
+    const { value: passwordFieldValue, props: passwordFieldProps, valueIsValid: passwordIsValid } = useInput({
+        predicate: value => !!value,
+    })
+
+    const importWaypoints = useCallback(
+        () =>
+            dispatch({ type: 'IMPORT_WAYPOINTS', driverNumber: driverNumberFieldValue, password: passwordFieldValue }),
+        [driverNumberFieldValue, passwordFieldValue],
+    )
 
     const cancelImport = useCallback(
         () => dispatch({ type: 'IMPORT_WAYPOINTS_CANCEL', driverNumber: driverNumberFieldValue }),
@@ -48,6 +56,15 @@ export const ImportPane = () => {
                     autoFocus={!isMobileDevice}
                 />
             </InputRow>
+            <InputRow>
+                <Input
+                    type="password"
+                    placeholder="Password"
+                    {...passwordFieldProps}
+                    disabled={importInProgress}
+                    autoFocus={!isMobileDevice}
+                />
+            </InputRow>
             {waypoints.length > 0 && <WarningAlert>Existing waypoints will be replaced</WarningAlert>}
         </>
     )
@@ -62,7 +79,7 @@ export const ImportPane = () => {
             </DangerButton>
         </>
     ) : (
-        <PrimaryButton onClick={importWaypoints} disabled={!driverNumberIsValid}>
+        <PrimaryButton onClick={importWaypoints} disabled={!driverNumberIsValid || !passwordIsValid}>
             <i className="fas fa-fw fa-cloud-download-alt" /> Import
         </PrimaryButton>
     )

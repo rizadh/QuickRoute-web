@@ -6,7 +6,7 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
 
     return <button {...props} onMouseDown={preventFocus} />
 })`
-    --local-btn-background-color: transparent;
+    --local-btn-background-color: var(--app-background-color);
     --local-btn-text-color: var(--app-text-color);
 
     padding: var(--standard-padding);
@@ -73,15 +73,4 @@ export const DangerButton = styled(Button)`
 export const WarningButton = styled(Button)`
     --local-btn-background-color: var(--apple-system-yellow);
     --local-btn-text-color: rgba(0, 0, 0, 0.6);
-`
-
-const frostedBlurRadius = '128px'
-
-export const FrostedButton = styled(Button)`
-    background-color: var(--app-frost-fallback-color);
-
-    @supports (backdrop-filter: blur(${frostedBlurRadius})) {
-        backdrop-filter: blur(${frostedBlurRadius});
-        background-color: var(--app-frost-color);
-    }
 `
