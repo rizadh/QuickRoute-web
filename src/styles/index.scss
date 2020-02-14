@@ -9,9 +9,7 @@
     height: 100%;
 }
 
-html {
-    --border-width: 1px;
-
+:root {
     background-color: var(--app-background-color);
     color: var(--app-primary-text-color);
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
