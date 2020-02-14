@@ -25,9 +25,6 @@ const Container = styled.div`
     width: ${editorWidth}px;
     height: 100%;
 
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-
     border-right: var(--border-width) solid var(--app-border-color);
 
     @media (max-width: ${compactBreakpoint}px) {
@@ -38,11 +35,8 @@ const Container = styled.div`
 `
 
 const HeaderFooter = styled.div`
-    position: sticky;
     z-index: 1;
     border-color: var(--app-border-color);
-
-    background-color: var(--app-background-color);
 `
 
 const Items = styled.div`
@@ -58,6 +52,10 @@ const HeaderFooterItems = styled(Items)`
 `
 
 const BodyItems = styled(Items)`
+    flex-grow: 1;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
     ${Alert},
     ${InputRow} {
         margin-right: var(--standard-margin);
