@@ -28,7 +28,7 @@ const Container = styled.div`
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 
-    border-right: 1px solid var(--app-border-color);
+    border-right: var(--border-width) solid var(--app-border-color);
 
     @media (max-width: ${compactBreakpoint}px) {
         width: 100%;
@@ -40,8 +40,6 @@ const Container = styled.div`
 const HeaderFooter = styled.div`
     position: sticky;
     z-index: 1;
-
-    border-width: 1px;
     border-color: var(--app-border-color);
 
     background-color: var(--app-background-color);
@@ -69,12 +67,12 @@ const BodyItems = styled(Items)`
 
 const Header = styled(HeaderFooter)`
     top: 0;
-    border-bottom-style: solid;
+    border-bottom: var(--border-width) solid var(--app-border-color);
 `
 
 const Footer = styled(HeaderFooter)`
     bottom: 0;
-    border-top-style: solid;
+    border-top: var(--border-width) solid var(--app-border-color);
 `
 
 const HideButton = styled(SecondaryButton)`

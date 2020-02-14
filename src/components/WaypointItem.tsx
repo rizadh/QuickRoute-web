@@ -23,7 +23,7 @@ const Container = styled(InputRow)`
 const DragHandle = styled.span<{ isSelected: boolean }>`
     ${({ isSelected }) => isSelected && 'color: white;'}
     background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
-    border: 1px solid var(--app-border-color);
+    border: var(--border-width) solid var(--app-border-color);
 
     font-variant-numeric: tabular-nums;
 
@@ -32,7 +32,7 @@ const DragHandle = styled.span<{ isSelected: boolean }>`
 
 const StatusIndicator = styled.span`
     background-color: var(--app-input-row-span-color);
-    border: 1px solid var(--app-border-color);
+    border: var(--border-width) solid var(--app-border-color);
 `
 
 type WaypointItemProps = {

@@ -24,7 +24,7 @@ const Container = styled.div<{ collapsed: boolean }>`
 
                   padding: var(--standard-margin);
 
-                  border-top: 1px solid var(--app-border-color);
+                  border-top: var(--border-width) solid var(--app-border-color);
               `}
 `
 

@@ -15,19 +15,19 @@ export const Input = styled.input`
 
     transition: background-color 0.2s, border 0.2s;
     background-color: var(--app-form-control-color);
-    border: 1px solid var(--app-border-color);
+    border: var(--border-width) solid var(--app-border-color);
 
     &::placeholder {
         color: var(--app-secondary-text-color);
     }
 
     &:not(:read-only):hover {
-        border: 1px solid var(--apple-system-blue);
+        border: var(--border-width) solid var(--apple-system-blue);
     }
 
     &:not(:read-only):focus {
         background-color: var(--app-form-control-focus-color);
 
-        border: 1px solid var(--apple-system-blue);
+        border: var(--border-width) solid var(--apple-system-blue);
     }
 `

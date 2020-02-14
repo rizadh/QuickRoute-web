@@ -11,7 +11,7 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
 
     padding: var(--standard-padding);
     border-radius: var(--standard-border-radius);
-    border: 1px solid var(--app-border-color);
+    border: var(--border-width) solid var(--app-border-color);
 
     line-height: var(--standard-control-line-height);
 
