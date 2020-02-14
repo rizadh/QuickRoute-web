@@ -12,27 +12,37 @@ import { InputRow } from './InputRow'
 
 const Container = styled(InputRow)`
     ${({ isBeingDraggedAlong }: { isBeingDraggedAlong: boolean }) => isBeingDraggedAlong && 'opacity: 0.5;'}
-
-    > span {
-        border-radius: var(--standard-border-radius);
-        padding: var(--standard-padding);
-        line-height: var(--standard-control-line-height);
-    }
 `
 
 const DragHandle = styled.span<{ isSelected: boolean }>`
-    ${({ isSelected }) => isSelected && 'color: white;'}
-    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
+    padding: var(--standard-padding);
+
     border: var(--border-width) solid var(--app-border-color);
+    border-radius: var(--standard-border-radius);
 
+    color: ${({ isSelected }) => (isSelected ? 'white' : 'var(--app-secondary-text-color)')};
+    line-height: var(--standard-control-line-height);
     font-variant-numeric: tabular-nums;
+    font-weight: 500;
 
-    ${({ isSelected }) => !isSelected && 'color: var(--app-secondary-text-color);'}
+    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
 `
 
 const StatusIndicator = styled.span`
+    padding: var(--standard-padding);
+
     background-color: var(--app-input-row-span-color);
+
     border: var(--border-width) solid var(--app-border-color);
+    border-radius: var(--standard-border-radius);
+
+    line-height: var(--standard-control-line-height);
+`
+const SecondaryStatusIndicator = styled(StatusIndicator)`
+    color: var(--app-secondary-text-color);
+`
+const DangerStatusIndicator = styled(StatusIndicator)`
+    color: var(--apple-system-red);
 `
 
 type WaypointItemProps = {
@@ -139,14 +149,12 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                     {isOriginalAddress(waypointFieldValue) ? (
                         <>
                             {fetchFailed && (
-                                <StatusIndicator className="text-danger" title={failureMessage}>
-                                    {failureIcon}
-                                </StatusIndicator>
+                                <DangerStatusIndicator title={failureMessage}>{failureIcon}</DangerStatusIndicator>
                             )}
                             {fetchIsInProgress && (
-                                <StatusIndicator className="text-secondary" title="Loading">
+                                <SecondaryStatusIndicator title="Loading">
                                     <i className="fas fa-fw fa-circle-notch fa-spin" />
-                                </StatusIndicator>
+                                </SecondaryStatusIndicator>
                             )}
                             <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
                                 <i className="fas fa-fw fa-trash" />
