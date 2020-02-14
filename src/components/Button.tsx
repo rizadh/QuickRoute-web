@@ -13,6 +13,7 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
     border-radius: var(--standard-border-radius);
     border: var(--border-width) solid var(--app-border-color);
 
+    font-weight: 500;
     line-height: var(--standard-control-line-height);
 
     background-color: var(--local-btn-background-color);
