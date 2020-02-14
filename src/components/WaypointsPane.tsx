@@ -14,6 +14,7 @@ import { AppState } from '../redux/state'
 import { createWaypointFromAddress } from '../redux/util/createWaypointFromAddress'
 import { isValidAddress } from '../redux/validator'
 import { Alert } from './Alert'
+import { DangerAlert } from './Alert'
 import { DangerButton, PrimaryButton } from './Button'
 import { Input } from './Input'
 import { InputRow } from './InputRow'
@@ -31,9 +32,7 @@ export const WaypointsPaneBody = () => {
     return (
         <>
             {currentRouteInformation.status === 'FAILED' && (
-                <div className="text text-danger" role="alert">
-                    One or more waypoints could not be routed
-                </div>
+                <DangerAlert>One or more waypoints could not be routed</DangerAlert>
             )}
             {waypointCount === 0 && <Alert>Enter an address to begin</Alert>}
             {waypointCount === 1 && <Alert>Enter another address to show route information</Alert>}
