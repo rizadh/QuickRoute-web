@@ -57,13 +57,7 @@ export const ImportPane = () => {
                 />
             </InputRow>
             <InputRow>
-                <Input
-                    type="password"
-                    placeholder="Password"
-                    {...passwordFieldProps}
-                    disabled={importInProgress}
-                    autoFocus={!isMobileDevice}
-                />
+                <Input type="password" placeholder="Password" {...passwordFieldProps} disabled={importInProgress} />
             </InputRow>
             {waypoints.length > 0 && <WarningAlert>Existing waypoints will be replaced</WarningAlert>}
         </>
