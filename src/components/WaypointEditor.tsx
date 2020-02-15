@@ -19,8 +19,6 @@ import { WaypointsPane } from './WaypointsPane'
 
 const Container = styled.div`
     position: absolute;
-    display: flex;
-    flex-direction: column;
 
     width: ${editorWidth}px;
     height: 100%;
@@ -52,7 +50,6 @@ const HeaderFooterItems = styled(Items)`
 `
 
 const BodyItems = styled(Items)`
-    flex-grow: 1;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 
@@ -92,9 +89,6 @@ const AppVersion = styled.div`
 `
 
 const PaneSelector = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-
     margin-right: calc(var(--standard-margin) / 2);
     margin-bottom: calc(var(--standard-margin) / 2);
 `
