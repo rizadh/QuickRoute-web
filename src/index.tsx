@@ -15,7 +15,7 @@ mapkit.init({
     authorizationCallback: done =>
         apolloClient
             .query<GetTokenQuery, GetTokenQueryVariables>({ query: GetToken })
-            .then(result => done(result.data.token)),
+            .then(result => done(result.data.mapkitToken)),
 })
 
 render(<App />, document.getElementById('root'))

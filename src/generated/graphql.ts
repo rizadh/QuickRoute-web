@@ -32,17 +32,17 @@ export enum OptimizationParameter {
 
 export type Query = {
    __typename?: 'Query',
-  token: Scalars['String'],
-  waypoints: ImportedWaypoints,
-  demoWaypoints: ImportedWaypoints,
+  mapkitToken: Scalars['String'],
+  importedWaypoints: ImportedWaypoints,
+  demoWaypoints: Array<Waypoint>,
   pdf: Scalars['String'],
-  optimize: Array<Scalars['Float']>,
+  optimizedRoute: Array<Scalars['Float']>,
 };
 
 
-export type QueryWaypointsArgs = {
+export type QueryImportedWaypointsArgs = {
   driverNumber: Scalars['String'],
-  password?: Maybe<Scalars['String']>
+  password: Scalars['String']
 };
 
 
@@ -57,7 +57,7 @@ export type QueryPdfArgs = {
 };
 
 
-export type QueryOptimizeArgs = {
+export type QueryOptimizedRouteArgs = {
   coordinates: Array<Coordinates>,
   optimizationParameter: OptimizationParameter
 };
@@ -75,18 +75,18 @@ export type GetTokenQueryVariables = {};
 
 export type GetTokenQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'token'>
+  & Pick<Query, 'mapkitToken'>
 );
 
 export type ImportWaypointsQueryVariables = {
   driverNumber: Scalars['String'],
-  password?: Maybe<Scalars['String']>
+  password: Scalars['String']
 };
 
 
 export type ImportWaypointsQuery = (
   { __typename?: 'Query' }
-  & { waypoints: (
+  & { importedWaypoints: (
     { __typename?: 'ImportedWaypoints' }
     & { dispatched: Array<(
       { __typename?: 'Waypoint' }
@@ -106,7 +106,7 @@ export type OptimizeQueryVariables = {
 
 export type OptimizeQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'optimize'>
+  & Pick<Query, 'optimizedRoute'>
 );
 
 export type GeneratePdfQueryVariables = {

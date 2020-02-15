@@ -2,13 +2,13 @@ import { gql } from 'apollo-boost'
 
 export const GetToken = gql`
     query GetToken {
-        token
+        mapkitToken
     }
 `
 
 export const ImportWaypoints = gql`
-    query ImportWaypoints($driverNumber: String!, $password: String) {
-        waypoints(driverNumber: $driverNumber, password: $password) {
+    query ImportWaypoints($driverNumber: String!, $password: String!) {
+        importedWaypoints(driverNumber: $driverNumber, password: $password) {
             dispatched {
                 address
                 city
@@ -25,7 +25,7 @@ export const ImportWaypoints = gql`
 
 export const Optimize = gql`
     query Optimize($coordinates: [Coordinates!]!, $optimizationParameter: OptimizationParameter!) {
-        optimize(coordinates: $coordinates, optimizationParameter: $optimizationParameter)
+        optimizedRoute(coordinates: $coordinates, optimizationParameter: $optimizationParameter)
     }
 `
 
