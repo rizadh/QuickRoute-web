@@ -1,31 +1,18 @@
 import React from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
 import { StatView } from './StatView'
 
-const Container = styled.div<{ collapsed: boolean }>`
+const Container = styled.div`
+    display: flex;
     align-items: center;
     justify-content: space-evenly;
+    padding: var(--standard-margin);
 
-    ${({ collapsed }) =>
-        collapsed
-            ? css`
-                  display: inline-flex;
-
-                  > :not(:first-child) {
-                      margin-left: var(--standard-horizontal-padding);
-                  }
-              `
-            : css`
-                  display: flex;
-
-                  padding: var(--standard-margin);
-
-                  border-top: var(--border-width) solid var(--app-border-color);
-              `}
+    border-top: var(--border-width) solid var(--app-border-color);
 `
 
 export const InfoBar = () => {
@@ -59,7 +46,7 @@ export const InfoBar = () => {
             throw new Error('Invalid route information')
     }
 
-    return <Container collapsed={editorIsHidden}>{showCondensedText ? 'Editor' : statusbarItems}</Container>
+    return <Container>{showCondensedText ? 'Editor' : statusbarItems}</Container>
 }
 
 function stringForTime(seconds: number) {

@@ -1,4 +1,4 @@
-import React, { Dispatch, useCallback, useEffect } from 'react'
+import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { appVersion } from '..'
@@ -18,10 +18,8 @@ import { compactBreakpoint, editorWidth } from './styleVariables'
 import { WaypointsPane } from './WaypointsPane'
 
 const Container = styled.div`
-    position: absolute;
-
+    position: relative;
     width: ${editorWidth}px;
-    height: 100%;
 
     border-right: var(--border-width) solid var(--app-border-color);
 
@@ -75,7 +73,6 @@ const HideButton = styled(SecondaryButton)`
     z-index: 2;
     top: var(--standard-margin);
     right: var(--standard-margin);
-    line-height: 1;
 `
 
 const AppTitle = styled.div`
@@ -187,17 +184,6 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
 
 export const WaypointEditor = () => {
     const editorPane = useSelector((state: AppState) => state.editorPane)
-    const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
-
-    useEffect(() => {
-        const root = document.getElementById('root')
-        if (!root) return
-
-        if (editorIsHidden) root.classList.add('editor-hidden')
-        else root.classList.remove('editor-hidden')
-    }, [editorIsHidden])
-
-    if (editorIsHidden) return null
 
     switch (editorPane) {
         case EditorPane.List:

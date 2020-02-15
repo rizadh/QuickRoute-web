@@ -1,9 +1,11 @@
 import ApolloClient from 'apollo-boost'
 import React from 'react'
 import { render } from 'react-dom'
+import { Provider } from 'react-redux'
 import { App } from './components/App'
 import { GetTokenQuery, GetTokenQueryVariables } from './generated/graphql'
 import { GetToken } from './queries'
+import store from './redux/store'
 
 export const appVersion = '2020.02.13'
 export const apolloClient = new ApolloClient({ uri: 'https://api.quickroute.rizadh.com/graphql' })
@@ -18,4 +20,10 @@ mapkit.init({
             .then(result => done(result.data.mapkitToken)),
 })
 
-render(<App />, document.getElementById('root'))
+const providedApp = (
+    <Provider store={store}>
+        <App />
+    </Provider>
+)
+
+render(providedApp, document.getElementById('root'))
