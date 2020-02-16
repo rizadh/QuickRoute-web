@@ -329,8 +329,7 @@ const importWaypoints = async (driverNumber: string, password: string) => {
 }
 
 const extractAddress = (address: string) => {
-    const result = /^(.*?)[,\n]/.exec(address)
-    return result ? result[1] : address
+    return /(\d+ [\w ]+)/.exec(address)?.[1] ?? address
 }
 
 const importWaypointsEpic: AppEpic = action$ =>
