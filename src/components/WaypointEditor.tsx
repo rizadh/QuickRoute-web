@@ -7,7 +7,7 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
 import { Alert, DangerAlert } from './Alert'
 import { BulkEditPane } from './BulkEditPane'
-import { PrimaryButton, SecondaryButton, StyledButton } from './Button'
+import { Button, PrimaryButton, SecondaryButton } from './Button'
 import { ImportPane } from './ImportPane'
 import { InfoBar } from './InfoBar'
 import { InputRow } from './InputRow'
@@ -62,11 +62,11 @@ const Footer = styled.div`
 
     padding: calc(var(--standard-margin) / 2);
 
-    ${StyledButton}, ${InputRow} {
+    ${Button}, ${InputRow} {
         margin: calc(var(--standard-margin) / 2);
     }
 
-    ${InputRow} ${StyledButton} {
+    ${InputRow} ${Button} {
         margin: initial;
     }
 `
