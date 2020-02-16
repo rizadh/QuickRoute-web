@@ -159,7 +159,7 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                                 </SecondaryStatusIndicator>
                             )}
                             <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
-                                <i className="fas fa-fw fa-trash" />
+                                <i className="fas fa-fw fa-trash-alt" />
                             </DangerButton>
                         </>
                     ) : (
