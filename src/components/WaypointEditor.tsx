@@ -20,8 +20,14 @@ import { WaypointsPane } from './WaypointsPane'
 const Container = styled.div`
     position: relative;
     width: 420px;
+    display: flex;
+    flex-direction: column;
 
     border-right: var(--standard-border);
+
+    ${InfoBar.Container} {
+        flex-shrink: 0;
+    }
 
     @media (max-width: ${compactBreakpoint}px) {
         width: 100%;
@@ -32,6 +38,8 @@ const Container = styled.div`
 
 const Header = styled.div`
     top: 0;
+    flex-shrink: 0;
+
     border-bottom: var(--standard-border);
 `
 
@@ -48,6 +56,8 @@ const Body = styled.div`
 
 const Footer = styled.div`
     bottom: 0;
+    flex-shrink: 0;
+
     border-top: var(--standard-border);
 
     padding: calc(var(--standard-margin) / 2);
@@ -117,6 +127,10 @@ const PaneSelectorButton = styled(({ pane, children, className }: PaneSelectorBu
     line-height: 1;
 `
 
+const Spacer = styled.div`
+    flex-grow: 1;
+`
+
 type WaypointEditorTemplateProps = {
     body: JSX.Element;
     footer: JSX.Element;
@@ -172,6 +186,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                 {body}
             </Body>
             <Footer>{footer}</Footer>
+            <Spacer />
             <InfoBar />
         </Container>
     )

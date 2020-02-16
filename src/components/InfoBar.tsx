@@ -49,6 +49,8 @@ export const InfoBar = () => {
     return <Container>{showCondensedText ? 'Editor' : statusbarItems}</Container>
 }
 
+InfoBar.Container = Container
+
 function stringForTime(seconds: number) {
     if (seconds < 60) {
         return `${Math.floor(seconds)} s`
