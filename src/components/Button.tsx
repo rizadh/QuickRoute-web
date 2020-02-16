@@ -1,7 +1,7 @@
 import React, { ButtonHTMLAttributes, SyntheticEvent, useCallback } from 'react'
 import styled from 'styled-components'
 
-const StyledButton = styled.button`
+export const StyledButton = styled.button`
     --local-btn-background-color: var(--secondary-fill-color);
     --local-btn-text-color: var(--primary-text-color);
 

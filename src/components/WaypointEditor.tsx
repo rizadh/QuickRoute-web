@@ -7,7 +7,7 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
 import { Alert, DangerAlert } from './Alert'
 import { BulkEditPane } from './BulkEditPane'
-import { PrimaryButton, SecondaryButton } from './Button'
+import { PrimaryButton, SecondaryButton, StyledButton } from './Button'
 import { ImportPane } from './ImportPane'
 import { InfoBar } from './InfoBar'
 import { InputRow } from './InputRow'
@@ -30,42 +30,35 @@ const Container = styled.div`
     }
 `
 
-const HeaderFooter = styled.div`
-    z-index: 1;
-    border-color: var(--standard-border-color);
-`
-
-const Items = styled.div`
-    padding-left: var(--standard-margin);
-    padding-top: var(--standard-margin);
-`
-
-const HeaderFooterItems = styled(Items)`
-    > * {
-        margin-right: var(--standard-margin);
-        margin-bottom: var(--standard-margin);
-    }
-`
-
-const BodyItems = styled(Items)`
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-
-    ${Alert},
-    ${InputRow} {
-        margin-right: var(--standard-margin);
-        margin-bottom: var(--standard-margin);
-    }
-`
-
-const Header = styled(HeaderFooter)`
+const Header = styled.div`
     top: 0;
     border-bottom: var(--standard-border);
 `
 
-const Footer = styled(HeaderFooter)`
+const Body = styled.div`
+    padding: calc(var(--standard-margin) / 2);
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    ${Alert}, ${InputRow} {
+        padding: calc(var(--standard-margin) / 2);
+    }
+`
+
+const Footer = styled.div`
     bottom: 0;
     border-top: var(--standard-border);
+
+    padding: calc(var(--standard-margin) / 2);
+
+    ${StyledButton}, ${InputRow} {
+        margin: calc(var(--standard-margin) / 2);
+    }
+
+    ${InputRow} ${StyledButton} {
+        margin: initial;
+    }
 `
 
 const HideButton = styled(SecondaryButton)`
@@ -78,6 +71,8 @@ const HideButton = styled(SecondaryButton)`
 const AppTitle = styled.div`
     font-size: 24px;
     font-weight: 500;
+
+    margin: var(--standard-margin);
 `
 
 const AppVersion = styled.div`
@@ -85,9 +80,12 @@ const AppVersion = styled.div`
     color: var(--secondary-text-color);
 `
 
+const PaneSelectorWrapper = styled.div`
+    margin: var(--standard-margin);
+`
+
 const PaneSelector = styled.div`
-    margin-right: calc(var(--standard-margin) / 2);
-    margin-bottom: calc(var(--standard-margin) / 2);
+    margin: calc(var(--standard-margin) / -4);
 `
 
 type PaneSelectorButtonProps = {
@@ -114,8 +112,7 @@ const PaneSelectorButton = styled(({ pane, children, className }: PaneSelectorBu
         </SecondaryButton>
     )
 })`
-    margin-right: calc(var(--standard-margin) / 2);
-    margin-bottom: calc(var(--standard-margin) / 2);
+    margin: calc(var(--standard-margin) / 4);
 
     line-height: 1;
 `
@@ -137,15 +134,15 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                 <HideButton title="Minimize editor" onClick={hideEditorPane}>
                     <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'left')} />
                 </HideButton>
-                <HeaderFooterItems>
-                    <AppTitle>
-                        QuickRoute
-                        {!compactMode && (
-                            <AppVersion>
-                                v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
-                            </AppVersion>
-                        )}
-                    </AppTitle>
+                <AppTitle>
+                    QuickRoute
+                    {!compactMode && (
+                        <AppVersion>
+                            v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
+                        </AppVersion>
+                    )}
+                </AppTitle>
+                <PaneSelectorWrapper>
                     <PaneSelector>
                         <PaneSelectorButton pane={EditorPane.List}>
                             <i className="fas fa-fw fa-th-list" />
@@ -168,16 +165,14 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             {!compactMode && ' Optimize'}
                         </PaneSelectorButton>
                     </PaneSelector>
-                </HeaderFooterItems>
+                </PaneSelectorWrapper>
             </Header>
-            <BodyItems>
+            <Body>
                 {error && <DangerAlert>{error.message}</DangerAlert>}
                 {body}
-            </BodyItems>
-            <Footer>
-                <HeaderFooterItems>{footer}</HeaderFooterItems>
-                <InfoBar />
-            </Footer>
+            </Body>
+            <Footer>{footer}</Footer>
+            <InfoBar />
         </Container>
     )
 }
