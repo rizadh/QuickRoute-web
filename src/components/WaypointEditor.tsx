@@ -14,12 +14,12 @@ import { InputRow } from './InputRow'
 import { Link } from './Link'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
-import { compactBreakpoint, editorWidth } from './styleVariables'
+import { compactBreakpoint } from './styleVariables'
 import { WaypointsPane } from './WaypointsPane'
 
 const Container = styled.div`
     position: relative;
-    width: ${editorWidth}px;
+    width: 420px;
 
     border-right: var(--border-width) solid var(--app-border-color);
 
