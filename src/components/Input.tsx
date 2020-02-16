@@ -30,4 +30,9 @@ export const Input = styled.input`
         background-color: var(--input-focus-color);
         border-color: var(--apple-system-blue);
     }
+
+    :read-only {
+        background-color: var(--input-focus-color);
+        color: var(--secondary-text-color);
+    }
 `
