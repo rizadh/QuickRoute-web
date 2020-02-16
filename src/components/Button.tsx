@@ -7,7 +7,7 @@ const StyledButton = styled.button`
 
     padding: var(--standard-padding);
     border-radius: var(--standard-border-radius);
-    border: var(--border-width) solid var(--app-border-color);
+    border: var(--standard-border);
 
     font-weight: 500;
     line-height: var(--standard-control-line-height);
@@ -36,11 +36,11 @@ const StyledButton = styled.button`
         cursor: pointer;
 
         &:hover::after {
-            background-color: var(--app-button-hover-highlight-color);
+            background-color: var(--button-hover-highlight-color);
         }
 
         &:active::after {
-            background-color: var(--app-button-active-highlight-color);
+            background-color: var(--button-active-highlight-color);
         }
     }
 
@@ -65,7 +65,7 @@ export const PrimaryButton = styled(Button)`
 `
 
 export const SecondaryButton = styled(Button)`
-    --local-btn-background-color: var(--app-form-control-focus-color);
+    --local-btn-background-color: var(--input-focus-color);
 `
 
 export const DangerButton = styled(Button)`

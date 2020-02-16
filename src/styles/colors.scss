@@ -11,18 +11,15 @@
     --apple-system-yellow: rgb(255, 204, 0);
 
     // App Colors
-    --app-background-color: rgb(224, 224, 224);
     --app-background-color: hsl(40, 50%, 95%);
-    --app-primary-text-color: rgb(0, 0, 0);
-    --app-secondary-text-color: rgba(0, 0, 0, 0.5);
-    --app-form-control-color: rgba(0, 0, 0, 0.05);
-    --app-form-control-focus-color: rgba(255, 255, 255, 0.5);
-    --app-border-color: rgba(0, 0, 0, 0.1);
-    --app-frost-color: rgba(255, 255, 255, 0.5);
-    --app-frost-fallback-color: rgba(255, 255, 255, 0.9);
-    --app-input-row-span-color: rgba(255, 255, 255, 0.5);
-    --app-button-hover-highlight-color: rgba(0, 0, 0, 0.1);
-    --app-button-active-highlight-color: rgba(0, 0, 0, 0.2);
+    --primary-text-color: rgb(0, 0, 0);
+    --secondary-text-color: rgba(0, 0, 0, 0.5);
+    --input-color: rgba(0, 0, 0, 0.05);
+    --input-focus-color: rgba(255, 255, 255, 0.5);
+    --standard-border-color: rgba(0, 0, 0, 0.1);
+    --input-row-item-color: rgba(255, 255, 255, 0.5);
+    --button-hover-highlight-color: rgba(0, 0, 0, 0.1);
+    --button-active-highlight-color: rgba(0, 0, 0, 0.2);
 
     @media (prefers-color-scheme: dark) {
         // Apple System Colors
@@ -37,17 +34,14 @@
         --apple-system-yellow: rgb(255, 214, 10);
 
         // App Colors
-        --app-background-color: rgb(64, 64, 64);
         --app-background-color: hsl(210, 5%, 20%);
-        --app-primary-text-color: rgb(255, 255, 255);
-        --app-secondary-text-color: rgba(255, 255, 255, 0.5);
-        --app-form-control-color: rgba(0, 0, 0, 0.2);
-        --app-form-control-focus-color: rgba(255, 255, 255, 0.05);
-        --app-border-color: rgba(255, 255, 255, 0.05);
-        --app-frost-color: rgba(0, 0, 0, 0.2);
-        --app-frost-fallback-color: rgb(32, 32, 32, 0.9);
-        --app-input-row-span-color: rgba(255, 255, 255, 0.05);
-        --app-button-hover-highlight-color: rgba(255, 255, 255, 0.1);
-        --app-button-active-highlight-color: rgba(255, 255, 255, 0.2);
+        --primary-text-color: rgb(255, 255, 255);
+        --secondary-text-color: rgba(255, 255, 255, 0.5);
+        --input-color: rgba(0, 0, 0, 0.2);
+        --input-focus-color: rgba(255, 255, 255, 0.05);
+        --standard-border-color: rgba(255, 255, 255, 0.05);
+        --input-row-item-color: rgba(255, 255, 255, 0.05);
+        --button-hover-highlight-color: rgba(255, 255, 255, 0.1);
+        --button-active-highlight-color: rgba(255, 255, 255, 0.2);
     }
 }

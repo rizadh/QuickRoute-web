@@ -12,7 +12,7 @@ const Container = styled.div`
     justify-content: space-evenly;
     padding: var(--standard-margin);
 
-    border-top: var(--border-width) solid var(--app-border-color);
+    border-top: var(--standard-border);
 `
 
 export const InfoBar = () => {

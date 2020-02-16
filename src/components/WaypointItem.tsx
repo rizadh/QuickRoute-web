@@ -17,29 +17,29 @@ const Container = styled(InputRow)`
 const DragHandle = styled.span<{ isSelected: boolean }>`
     padding: var(--standard-padding);
 
-    border: var(--border-width) solid var(--app-border-color);
+    border: var(--standard-border);
     border-radius: var(--standard-border-radius);
 
-    color: ${({ isSelected }) => (isSelected ? 'white' : 'var(--app-secondary-text-color)')};
+    color: ${({ isSelected }) => (isSelected ? 'white' : 'var(--secondary-text-color)')};
     line-height: var(--standard-control-line-height);
     font-variant-numeric: tabular-nums;
     font-weight: 500;
 
-    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--app-input-row-span-color')});
+    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--input-row-item-color')});
 `
 
 const StatusIndicator = styled.span`
     padding: var(--standard-padding);
 
-    background-color: var(--app-input-row-span-color);
+    background-color: var(--input-row-item-color);
 
-    border: var(--border-width) solid var(--app-border-color);
+    border: var(--standard-border);
     border-radius: var(--standard-border-radius);
 
     line-height: var(--standard-control-line-height);
 `
 const SecondaryStatusIndicator = styled(StatusIndicator)`
-    color: var(--app-secondary-text-color);
+    color: var(--secondary-text-color);
 `
 const DangerStatusIndicator = styled(StatusIndicator)`
     color: var(--apple-system-red);

@@ -21,7 +21,7 @@ const Container = styled.div`
     position: relative;
     width: 420px;
 
-    border-right: var(--border-width) solid var(--app-border-color);
+    border-right: var(--standard-border);
 
     @media (max-width: ${compactBreakpoint}px) {
         width: 100%;
@@ -32,7 +32,7 @@ const Container = styled.div`
 
 const HeaderFooter = styled.div`
     z-index: 1;
-    border-color: var(--app-border-color);
+    border-color: var(--standard-border-color);
 `
 
 const Items = styled.div`
@@ -60,12 +60,12 @@ const BodyItems = styled(Items)`
 
 const Header = styled(HeaderFooter)`
     top: 0;
-    border-bottom: var(--border-width) solid var(--app-border-color);
+    border-bottom: var(--standard-border);
 `
 
 const Footer = styled(HeaderFooter)`
     bottom: 0;
-    border-top: var(--border-width) solid var(--app-border-color);
+    border-top: var(--standard-border);
 `
 
 const HideButton = styled(SecondaryButton)`
@@ -82,7 +82,7 @@ const AppTitle = styled.div`
 
 const AppVersion = styled.div`
     font-size: 16px;
-    color: var(--app-secondary-text-color);
+    color: var(--secondary-text-color);
 `
 
 const PaneSelector = styled.div`
