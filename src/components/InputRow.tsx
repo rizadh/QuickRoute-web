@@ -4,8 +4,6 @@ export const InputRow = styled.div`
     display: flex;
     align-items: center;
 
-    transition: opacity 0.2s;
-
     > :not(:last-child) {
         margin-right: calc(var(--standard-margin) / 2);
     }

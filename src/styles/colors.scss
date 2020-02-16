@@ -10,14 +10,23 @@
     --apple-system-red: rgb(255, 59, 48);
     --apple-system-yellow: rgb(255, 204, 0);
 
-    // App Colors
-    --app-background-color: hsl(40, 50%, 95%);
-    --primary-text-color: rgb(0, 0, 0);
-    --secondary-text-color: rgba(0, 0, 0, 0.5);
-    --input-color: rgba(0, 0, 0, 0.05);
-    --input-focus-color: rgba(255, 255, 255, 0.5);
+    // Border Color
     --standard-border-color: rgba(0, 0, 0, 0.1);
-    --input-row-item-color: rgba(255, 255, 255, 0.5);
+
+    // Fill Colors
+    --primary-fill-color: hsl(40, 50%, 95%);
+    --secondary-fill-color: hsl(40, 50%, 100%);
+
+    // Text Colors
+    --primary-text-color: hsl(210, 5%, 00%);
+    --secondary-text-color: hsl(210, 5%, 40%);
+
+    // Input Colors
+    --input-color: hsl(40, 20%, 90%);
+    --input-focus-color: hsl(40, 20%, 100%);
+    --input-border-color: hsl(40, 20%, 80%);
+
+    // Button Colors
     --button-hover-highlight-color: rgba(0, 0, 0, 0.1);
     --button-active-highlight-color: rgba(0, 0, 0, 0.2);
 
@@ -33,14 +42,23 @@
         --apple-system-red: rgb(255, 69, 58);
         --apple-system-yellow: rgb(255, 214, 10);
 
-        // App Colors
-        --app-background-color: hsl(210, 5%, 20%);
+        // Fill Colors
+        --primary-fill-color: hsl(210, 5%, 20%);
+        --secondary-fill-color: hsl(210, 5%, 25%);
+
+        // Text Colors
         --primary-text-color: rgb(255, 255, 255);
         --secondary-text-color: rgba(255, 255, 255, 0.5);
-        --input-color: rgba(0, 0, 0, 0.2);
-        --input-focus-color: rgba(255, 255, 255, 0.05);
+
+        // Border Color
         --standard-border-color: rgba(255, 255, 255, 0.05);
-        --input-row-item-color: rgba(255, 255, 255, 0.05);
+
+        // Input Colors
+        --input-color: hsl(210, 5%, 15%);
+        --input-focus-color: hsl(210, 5%, 10%);
+        --input-border-color: hsl(210, 5%, 25%);
+
+        // Button Colors
         --button-hover-highlight-color: rgba(255, 255, 255, 0.1);
         --button-active-highlight-color: rgba(255, 255, 255, 0.2);
     }

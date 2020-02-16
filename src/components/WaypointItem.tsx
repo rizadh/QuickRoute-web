@@ -11,6 +11,8 @@ import { Input } from './Input'
 import { InputRow } from './InputRow'
 
 const Container = styled(InputRow)`
+    transition: opacity 0.2s;
+
     ${({ isBeingDraggedAlong }: { isBeingDraggedAlong: boolean }) => isBeingDraggedAlong && 'opacity: 0.5;'}
 `
 
@@ -20,18 +22,18 @@ const DragHandle = styled.span<{ isSelected: boolean }>`
     border: var(--standard-border);
     border-radius: var(--standard-border-radius);
 
-    color: ${({ isSelected }) => (isSelected ? 'white' : 'var(--secondary-text-color)')};
+    color: ${({ isSelected }) => (isSelected ? 'white' : 'var(--primary-text-color)')};
     line-height: var(--standard-control-line-height);
     font-variant-numeric: tabular-nums;
     font-weight: 500;
 
-    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--input-row-item-color')});
+    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--secondary-fill-color')});
 `
 
 const StatusIndicator = styled.span`
     padding: var(--standard-padding);
 
-    background-color: var(--input-row-item-color);
+    background-color: var(--secondary-fill-color);
 
     border: var(--standard-border);
     border-radius: var(--standard-border-radius);

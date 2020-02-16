@@ -16,19 +16,18 @@ export const Input = styled.input`
     transition: background-color 0.2s, border 0.2s;
     background-color: var(--input-color);
     border: var(--standard-border);
-    border-color: var(--input-color);
+    border-color: var(--input-border-color);
 
     &::placeholder {
         color: var(--secondary-text-color);
     }
 
     &:not(:read-only):hover {
-        border-color: var(--apple-system-blue);
+        background-color: var(--input-focus-color);
     }
 
     &:not(:read-only):focus {
         background-color: var(--input-focus-color);
-
         border-color: var(--apple-system-blue);
     }
 `
