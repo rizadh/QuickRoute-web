@@ -8,12 +8,12 @@ type StatViewProps = {
 }
 
 const Title = styled.span`
-    color: var(--app-primary-text-color);
+    color: var(--primary-text-color);
     font-weight: 500;
 `
 
 const Value = styled.span`
-    color: var(--app-secondary-text-color);
+    color: var(--secondary-text-color);
 `
 
 const Spacer = styled.div`

@@ -11,23 +11,28 @@ export const Input = styled.input`
 
     line-height: var(--standard-control-line-height);
 
-    color: var(--app-primary-text-color);
+    color: var(--primary-text-color);
 
     transition: background-color 0.2s, border 0.2s;
-    background-color: var(--app-form-control-color);
-    border: 1px solid var(--app-border-color);
+    background-color: var(--input-color);
+    border: var(--standard-border);
+    border-color: var(--input-border-color);
 
     &::placeholder {
-        color: var(--app-secondary-text-color);
+        color: var(--secondary-text-color);
     }
 
     &:not(:read-only):hover {
-        border: 1px solid var(--apple-system-blue);
+        background-color: var(--input-focus-color);
     }
 
     &:not(:read-only):focus {
-        background-color: var(--app-form-control-focus-color);
+        background-color: var(--input-focus-color);
+        border-color: var(--apple-system-blue);
+    }
 
-        border: 1px solid var(--apple-system-blue);
+    :read-only {
+        background-color: var(--input-focus-color);
+        color: var(--secondary-text-color);
     }
 `

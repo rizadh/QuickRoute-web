@@ -9,9 +9,9 @@
     height: 100%;
 }
 
-html {
-    background-color: var(--app-background-color);
-    color: var(--app-primary-text-color);
+:root {
+    background-color: var(--primary-fill-color);
+    color: var(--primary-text-color);
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     -webkit-tap-highlight-color: transparent;
 }

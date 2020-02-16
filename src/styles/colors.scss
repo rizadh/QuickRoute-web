@@ -10,19 +10,25 @@
     --apple-system-red: rgb(255, 59, 48);
     --apple-system-yellow: rgb(255, 204, 0);
 
-    // App Colors
-    --app-background-color: rgb(224, 224, 224);
-    --app-background-color: hsl(40, 50%, 95%);
-    --app-primary-text-color: rgb(0, 0, 0);
-    --app-secondary-text-color: rgba(0, 0, 0, 0.5);
-    --app-form-control-color: rgba(0, 0, 0, 0.05);
-    --app-form-control-focus-color: rgba(255, 255, 255, 0.5);
-    --app-border-color: rgba(0, 0, 0, 0.1);
-    --app-frost-color: rgba(255, 255, 255, 0.5);
-    --app-frost-fallback-color: rgba(255, 255, 255, 0.9);
-    --app-input-row-span-color: rgba(255, 255, 255, 0.5);
-    --app-button-hover-highlight-color: rgba(0, 0, 0, 0.1);
-    --app-button-active-highlight-color: rgba(0, 0, 0, 0.2);
+    // Border Color
+    --standard-border-color: rgba(0, 0, 0, 0.1);
+
+    // Fill Colors
+    --primary-fill-color: hsl(40, 50%, 95%);
+    --secondary-fill-color: hsl(40, 50%, 99%);
+
+    // Text Colors
+    --primary-text-color: hsl(40, 5%, 00%);
+    --secondary-text-color: hsl(40, 5%, 50%);
+
+    // Input Colors
+    --input-color: hsl(40, 20%, 90%);
+    --input-focus-color: hsl(40, 20%, 99%);
+    --input-border-color: hsl(40, 20%, 80%);
+
+    // Button Colors
+    --button-hover-highlight-color: rgba(0, 0, 0, 0.1);
+    --button-active-highlight-color: rgba(0, 0, 0, 0.2);
 
     @media (prefers-color-scheme: dark) {
         // Apple System Colors
@@ -36,18 +42,24 @@
         --apple-system-red: rgb(255, 69, 58);
         --apple-system-yellow: rgb(255, 214, 10);
 
-        // App Colors
-        --app-background-color: rgb(64, 64, 64);
-        --app-background-color: hsl(210, 5%, 20%);
-        --app-primary-text-color: rgb(255, 255, 255);
-        --app-secondary-text-color: rgba(255, 255, 255, 0.5);
-        --app-form-control-color: rgba(0, 0, 0, 0.2);
-        --app-form-control-focus-color: rgba(255, 255, 255, 0.05);
-        --app-border-color: rgba(255, 255, 255, 0.05);
-        --app-frost-color: rgba(0, 0, 0, 0.2);
-        --app-frost-fallback-color: rgb(32, 32, 32, 0.9);
-        --app-input-row-span-color: rgba(255, 255, 255, 0.05);
-        --app-button-hover-highlight-color: rgba(255, 255, 255, 0.1);
-        --app-button-active-highlight-color: rgba(255, 255, 255, 0.2);
+        // Fill Colors
+        --primary-fill-color: hsl(210, 5%, 20%);
+        --secondary-fill-color: hsl(210, 5%, 25%);
+
+        // Text Colors
+        --primary-text-color: rgb(255, 255, 255);
+        --secondary-text-color: rgba(255, 255, 255, 0.5);
+
+        // Border Color
+        --standard-border-color: rgba(255, 255, 255, 0.05);
+
+        // Input Colors
+        --input-color: hsl(210, 5%, 15%);
+        --input-focus-color: hsl(210, 5%, 10%);
+        --input-border-color: hsl(210, 5%, 25%);
+
+        // Button Colors
+        --button-hover-highlight-color: rgba(255, 255, 255, 0.1);
+        --button-active-highlight-color: rgba(255, 255, 255, 0.2);
     }
 }

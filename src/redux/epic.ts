@@ -341,7 +341,7 @@ const importWaypointsEpic: AppEpic = action$ =>
                 of<AppAction>({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber }),
                 from(importWaypoints(driverNumber, password)).pipe(
                     mergeMap<ImportWaypointsQuery, ObservableInput<AppAction>>(
-                        ({ waypoints: { dispatched, inprogress } }) =>
+                        ({ importedWaypoints: { dispatched, inprogress } }) =>
                             dispatched.length + inprogress.length > 0
                                 ? [
                                       { type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber },
@@ -380,7 +380,7 @@ const optimizeRoute = async (coordinates: Coordinate[], optimizationParameter: O
             variables: { coordinates, optimizationParameter },
         })
 
-        return response.data.optimize
+        return response.data.optimizedRoute
     } catch (error) {
         throw new Error(`Failed to optimize route ${error}`)
     }

@@ -8,6 +8,8 @@ $compactBreakpoint: 800px;
     --standard-control-line-height: 1.5;
 
     --standard-padding: var(--standard-vertical-padding) var(--standard-horizontal-padding);
+    --standard-border-width: 1px;
+    --standard-border: var(--standard-border-width) solid var(--standard-border-color);
 
     @media (max-width: $compactBreakpoint) {
         --standard-margin: 12px;

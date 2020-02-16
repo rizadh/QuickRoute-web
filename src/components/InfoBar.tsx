@@ -1,48 +1,28 @@
 import React from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
-import styled, { css } from 'styled-components'
-import { useCompactMode } from '../hooks/useCompactMode'
+import styled from 'styled-components'
 import { routeInformation } from '../redux/selectors'
-import { AppState } from '../redux/state'
 import { StatView } from './StatView'
 
-const Container = styled.div<{ collapsed: boolean }>`
+const Container = styled.div`
+    display: flex;
     align-items: center;
     justify-content: space-evenly;
+    padding: var(--standard-margin);
 
-    ${({ collapsed }) =>
-        collapsed
-            ? css`
-                  display: inline-flex;
-
-                  > :not(:first-child) {
-                      margin-left: var(--standard-horizontal-padding);
-                  }
-              `
-            : css`
-                  display: flex;
-
-                  padding: var(--standard-margin);
-
-                  border-top: 1px solid var(--app-border-color);
-              `}
+    border-top: var(--standard-border);
 `
 
 export const InfoBar = () => {
-    const compactMode = useCompactMode()
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)
-    const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
-    const showCondensedText = editorIsHidden && compactMode
 
-    let statusbarItems: JSX.Element | string
+    let items: React.ReactNode
     switch (currentRouteInformation.status) {
         case 'FETCHING':
-            statusbarItems = (
-                <StatView title="Routing" value={stringForUpdateProgress(currentRouteInformation.progress)} />
-            )
+            items = <StatView title="Routing" value={stringForUpdateProgress(currentRouteInformation.progress)} />
             break
         case 'FETCHED':
-            statusbarItems = (
+            items = (
                 <>
                     <StatView title="Distance" value={stringForDistance(currentRouteInformation.totalDistance)} />
                     <StatView title="Time" value={stringForTime(currentRouteInformation.totalTime)} />
@@ -50,17 +30,19 @@ export const InfoBar = () => {
             )
             break
         case 'FAILED':
-            statusbarItems = 'Routing failed'
+            items = 'Routing failed'
             break
         case 'NO_ROUTE':
-            statusbarItems = 'Enter more waypoints'
+            items = 'Enter more waypoints'
             break
         default:
             throw new Error('Invalid route information')
     }
 
-    return <Container collapsed={editorIsHidden}>{showCondensedText ? 'Editor' : statusbarItems}</Container>
+    return <Container>{items}</Container>
 }
+
+InfoBar.Container = Container
 
 function stringForTime(seconds: number) {
     if (seconds < 60) {

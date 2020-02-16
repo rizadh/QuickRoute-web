@@ -1,4 +1,4 @@
-import React, { Dispatch, useCallback, useEffect } from 'react'
+import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { appVersion } from '..'
@@ -7,30 +7,27 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
 import { Alert, DangerAlert } from './Alert'
 import { BulkEditPane } from './BulkEditPane'
-import { PrimaryButton, SecondaryButton } from './Button'
+import { Button, PrimaryButton, SecondaryButton } from './Button'
 import { ImportPane } from './ImportPane'
 import { InfoBar } from './InfoBar'
 import { InputRow } from './InputRow'
 import { Link } from './Link'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
-import { compactBreakpoint, editorWidth, frostedUncolored } from './styleVariables'
+import { compactBreakpoint } from './styleVariables'
 import { WaypointsPane } from './WaypointsPane'
 
 const Container = styled.div`
-    position: absolute;
+    position: relative;
+    width: 420px;
     display: flex;
     flex-direction: column;
 
-    width: ${editorWidth}px;
-    height: 100%;
+    border-right: var(--standard-border);
 
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-
-    background-color: var(--app-background-color);
-
-    border-right: 1px solid var(--app-border-color);
+    ${InfoBar.Container} {
+        flex-shrink: 0;
+    }
 
     @media (max-width: ${compactBreakpoint}px) {
         width: 100%;
@@ -39,44 +36,39 @@ const Container = styled.div`
     }
 `
 
-const HeaderFooter = styled.div`
-    position: sticky;
-    z-index: 1;
-
-    border-width: 1px;
-    border-color: var(--app-border-color);
-
-    ${frostedUncolored}
-`
-
-const Items = styled.div`
-    padding-left: var(--standard-margin);
-    padding-top: var(--standard-margin);
-`
-
-const HeaderFooterItems = styled(Items)`
-    > * {
-        margin-right: var(--standard-margin);
-        margin-bottom: var(--standard-margin);
-    }
-`
-
-const BodyItems = styled(Items)`
-    ${Alert},
-    ${InputRow} {
-        margin-right: var(--standard-margin);
-        margin-bottom: var(--standard-margin);
-    }
-`
-
-const Header = styled(HeaderFooter)`
+const Header = styled.div`
     top: 0;
-    border-bottom-style: solid;
+    flex-shrink: 0;
+
+    border-bottom: var(--standard-border);
 `
 
-const Footer = styled(HeaderFooter)`
+const Body = styled.div`
+    padding: calc(var(--standard-margin) / 2);
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    ${Alert}, ${InputRow} {
+        padding: calc(var(--standard-margin) / 2);
+    }
+`
+
+const Footer = styled.div`
     bottom: 0;
-    border-top-style: solid;
+    flex-shrink: 0;
+
+    border-top: var(--standard-border);
+
+    padding: calc(var(--standard-margin) / 2);
+
+    ${Button}, ${InputRow} {
+        margin: calc(var(--standard-margin) / 2);
+    }
+
+    ${InputRow} ${Button} {
+        margin: initial;
+    }
 `
 
 const HideButton = styled(SecondaryButton)`
@@ -84,25 +76,26 @@ const HideButton = styled(SecondaryButton)`
     z-index: 2;
     top: var(--standard-margin);
     right: var(--standard-margin);
-    line-height: 1;
 `
 
 const AppTitle = styled.div`
     font-size: 24px;
     font-weight: 500;
+
+    margin: var(--standard-margin);
 `
 
 const AppVersion = styled.div`
     font-size: 16px;
-    color: var(--app-secondary-text-color);
+    color: var(--secondary-text-color);
+`
+
+const PaneSelectorWrapper = styled.div`
+    margin: var(--standard-margin);
 `
 
 const PaneSelector = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-
-    margin-right: calc(var(--standard-margin) / 2);
-    margin-bottom: calc(var(--standard-margin) / 2);
+    margin: calc(var(--standard-margin) / -4);
 `
 
 type PaneSelectorButtonProps = {
@@ -129,10 +122,13 @@ const PaneSelectorButton = styled(({ pane, children, className }: PaneSelectorBu
         </SecondaryButton>
     )
 })`
-    margin-right: calc(var(--standard-margin) / 2);
-    margin-bottom: calc(var(--standard-margin) / 2);
+    margin: calc(var(--standard-margin) / 4);
 
     line-height: 1;
+`
+
+const Spacer = styled.div`
+    flex-grow: 1;
 `
 
 type WaypointEditorTemplateProps = {
@@ -152,15 +148,15 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                 <HideButton title="Minimize editor" onClick={hideEditorPane}>
                     <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'left')} />
                 </HideButton>
-                <HeaderFooterItems>
-                    <AppTitle>
-                        QuickRoute
-                        {!compactMode && (
-                            <AppVersion>
-                                v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
-                            </AppVersion>
-                        )}
-                    </AppTitle>
+                <AppTitle>
+                    QuickRoute
+                    {!compactMode && (
+                        <AppVersion>
+                            v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
+                        </AppVersion>
+                    )}
+                </AppTitle>
+                <PaneSelectorWrapper>
                     <PaneSelector>
                         <PaneSelectorButton pane={EditorPane.List}>
                             <i className="fas fa-fw fa-th-list" />
@@ -183,33 +179,21 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             {!compactMode && ' Optimize'}
                         </PaneSelectorButton>
                     </PaneSelector>
-                </HeaderFooterItems>
+                </PaneSelectorWrapper>
             </Header>
-            <BodyItems>
+            <Body>
                 {error && <DangerAlert>{error.message}</DangerAlert>}
                 {body}
-            </BodyItems>
-            <Footer>
-                <HeaderFooterItems>{footer}</HeaderFooterItems>
-                <InfoBar />
-            </Footer>
+            </Body>
+            <Footer>{footer}</Footer>
+            <Spacer />
+            <InfoBar />
         </Container>
     )
 }
 
 export const WaypointEditor = () => {
     const editorPane = useSelector((state: AppState) => state.editorPane)
-    const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
-
-    useEffect(() => {
-        const root = document.getElementById('root')
-        if (!root) return
-
-        if (editorIsHidden) root.classList.add('editor-hidden')
-        else root.classList.remove('editor-hidden')
-    }, [editorIsHidden])
-
-    if (editorIsHidden) return null
 
     switch (editorPane) {
         case EditorPane.List:

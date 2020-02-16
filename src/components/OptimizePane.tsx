@@ -66,8 +66,7 @@ export const OptimizePane = () => {
         <WarningAlert>Add three or more waypoints to optimize routes</WarningAlert>
     ) : (
         <>
-            <Alert>Optimal route from start point to end point through all waypoints will be found</Alert>
-            <Alert>If left unspecified, route will be found from first to last waypoint</Alert>
+            <Alert>Find optimal route from start point to end point passing through all intermediate waypoints</Alert>
             <InputRow>
                 <Input
                     type="text"

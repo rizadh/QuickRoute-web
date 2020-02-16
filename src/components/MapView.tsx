@@ -8,23 +8,10 @@ import { useWindowSize } from '../hooks/useWindowSize'
 import { AppAction } from '../redux/actionTypes'
 import { routeInformation } from '../redux/selectors'
 import { AppState } from '../redux/state'
-import { compactBreakpoint, editorWidth } from './styleVariables'
 
-const StyledMapView = styled.div<{ blur: boolean; editorHidden: boolean }>`
-    position: absolute;
-    right: 0;
-    left: ${({ editorHidden }) => (editorHidden ? 0 : editorWidth)}px;
-    top: 0;
-    bottom: 0;
-
-    @media (max-width: ${compactBreakpoint}px) {
-        ${({ editorHidden }) =>
-            !editorHidden &&
-            css`
-                display: none;
-            `}
-        left: 0;
-    }
+const Container = styled.div<{ blur: boolean; editorHidden: boolean }>`
+    width: 100%;
+    height: 100%;
 
     transition: filter 0.2s;
     ${({ blur }) =>
@@ -197,10 +184,6 @@ export const MapView = () => {
     }, [map, mutedMapIsEnabled])
 
     return (
-        <StyledMapView
-            blur={status === 'FETCHING' || operationInProgress}
-            editorHidden={editorIsHidden}
-            ref={mapviewRef}
-        />
+        <Container blur={status === 'FETCHING' || operationInProgress} editorHidden={editorIsHidden} ref={mapviewRef} />
     )
 }

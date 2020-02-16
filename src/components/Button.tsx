@@ -1,18 +1,21 @@
 import React, { ButtonHTMLAttributes, SyntheticEvent, useCallback } from 'react'
 import styled from 'styled-components'
 
-export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+const PreventFocusButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
     const preventFocus = useCallback((e: SyntheticEvent) => e.preventDefault(), [])
 
     return <button {...props} onMouseDown={preventFocus} />
-})`
-    --local-btn-background-color: var(--app-background-color);
-    --local-btn-text-color: var(--app-text-color);
+}
+
+export const Button = styled(PreventFocusButton)`
+    --local-btn-background-color: var(--secondary-fill-color);
+    --local-btn-text-color: var(--primary-text-color);
 
     padding: var(--standard-padding);
     border-radius: var(--standard-border-radius);
-    border: 1px solid var(--app-border-color);
+    border: var(--standard-border);
 
+    font-weight: 500;
     line-height: var(--standard-control-line-height);
 
     background-color: var(--local-btn-background-color);
@@ -39,11 +42,11 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
         cursor: pointer;
 
         &:hover::after {
-            background-color: var(--app-button-hover-highlight-color);
+            background-color: var(--button-hover-highlight-color);
         }
 
         &:active::after {
-            background-color: var(--app-button-active-highlight-color);
+            background-color: var(--button-active-highlight-color);
         }
     }
 
@@ -62,7 +65,8 @@ export const PrimaryButton = styled(Button)`
 `
 
 export const SecondaryButton = styled(Button)`
-    --local-btn-background-color: var(--app-form-control-focus-color);
+    --local-btn-background-color: var(--secondary-fill-color);
+    --local-btn-text-color: var(--primary-text-color);
 `
 
 export const DangerButton = styled(Button)`

@@ -4,14 +4,12 @@ import styled from 'styled-components'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
-import { Button, PrimaryButton, WarningButton } from './Button'
-import { InfoBar } from './InfoBar'
-import { compactBreakpoint, editorWidth } from './styleVariables'
+import { PrimaryButton, SecondaryButton, WarningButton } from './Button'
+import { compactBreakpoint } from './styleVariables'
 
 const Container = styled.div`
     position: absolute;
     top: 0;
-    left: ${editorWidth}px;
     padding: var(--standard-margin);
 
     overflow: auto;
@@ -25,16 +23,7 @@ const Container = styled.div`
 
     @media (max-width: ${compactBreakpoint}px) {
         top: initial;
-        left: 0;
         bottom: 0;
-
-        #root:not(.editor-hidden) & {
-            display: none;
-        }
-    }
-
-    #root.editor-hidden & {
-        left: 0;
     }
 
     > button {
@@ -58,9 +47,9 @@ export const MapButtons = () => {
     return (
         <Container>
             {editorIsHidden && (
-                <Button onClick={showEditorPane}>
-                    <InfoBar /> <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'right'}`} />
-                </Button>
+                <SecondaryButton onClick={showEditorPane}>
+                    <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'right'}`} />
+                </SecondaryButton>
             )}
             {!compactMode &&
                 (mutedMapIsEnabled ? (

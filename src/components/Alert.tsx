@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const Alert = styled.div`
-    color: var(--app-secondary-text-color);
+    color: var(--secondary-text-color);
 `
 
 export const DangerAlert = styled(Alert)`
