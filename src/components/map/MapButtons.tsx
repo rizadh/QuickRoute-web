@@ -1,11 +1,11 @@
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { useCompactMode } from '../hooks/useCompactMode'
-import { AppAction } from '../redux/actionTypes'
-import { AppState } from '../redux/state'
-import { PrimaryButton, SecondaryButton, WarningButton } from './Button'
-import { compactBreakpoint } from './styleVariables'
+import { useCompactMode } from '../../hooks/useCompactMode'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState } from '../../redux/state'
+import { PrimaryButton, SecondaryButton, WarningButton } from '../common/Button'
+import compactBreakpoint from '../constants/compactBreakpoint'
 
 const Container = styled.div`
     position: absolute;

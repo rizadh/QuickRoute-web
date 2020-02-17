@@ -2,12 +2,12 @@ import { sortBy } from 'lodash'
 import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { useCompactMode } from '../hooks/useCompactMode'
-import { useDarkMode } from '../hooks/useDarkMode'
-import { useWindowSize } from '../hooks/useWindowSize'
-import { AppAction } from '../redux/actionTypes'
-import { routeInformation } from '../redux/selectors'
-import { AppState } from '../redux/state'
+import { useCompactMode } from '../../hooks/useCompactMode'
+import { useDarkMode } from '../../hooks/useDarkMode'
+import { useWindowSize } from '../../hooks/useWindowSize'
+import { AppAction } from '../../redux/actionTypes'
+import { routeInformation } from '../../redux/selectors'
+import { AppState } from '../../redux/state'
 
 const Container = styled.div<{ blur: boolean; editorHidden: boolean }>`
     width: 100%;

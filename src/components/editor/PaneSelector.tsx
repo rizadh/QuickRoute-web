@@ -1,10 +1,10 @@
 import React, { ButtonHTMLAttributes, Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { useCompactMode } from '../hooks/useCompactMode'
-import { AppAction } from '../redux/actionTypes'
-import { AppState, EditorPane } from '../redux/state'
-import { PrimaryButton, SecondaryButton } from './Button'
+import { useCompactMode } from '../../hooks/useCompactMode'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState, EditorPane } from '../../redux/state'
+import { PrimaryButton, SecondaryButton } from '../common/Button'
 
 const Wrapper = styled.div`
     margin: var(--standard-margin);

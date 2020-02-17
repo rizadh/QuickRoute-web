@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { routeInformation } from '../redux/selectors'
+import { routeInformation } from '../../redux/selectors'
 import { StatView } from './StatView'
 
 const Container = styled.div`

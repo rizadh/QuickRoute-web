@@ -6,9 +6,9 @@ import styled, { css } from 'styled-components'
 import { ProgressBar } from '../components/ProgressBar'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { AppState } from '../redux/state'
-import { MapButtons } from './MapButtons'
-import { MapView } from './MapView'
-import { WaypointEditor } from './WaypointEditor'
+import { WaypointEditor } from './editor/WaypointEditor'
+import { MapButtons } from './map/MapButtons'
+import { MapView } from './map/MapView'
 
 const Container = styled.div`
     display: flex;
