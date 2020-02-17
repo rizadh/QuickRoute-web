@@ -99,6 +99,8 @@ export const MapView = () => {
         if (status === 'FETCHING') return
         if (operationInProgress) return
 
+        const grayColor = 'rgb(142, 142, 147)'
+
         const annotations = sortBy(
             waypoints.map((waypoint, index) => ({ waypoint, index })),
             ({ waypoint: { selected } }) => selected ?? 0,
@@ -113,17 +115,14 @@ export const MapView = () => {
                     },
                 } = fetchedPlace
 
+                const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--error-color')
+
                 return new mapkit.MarkerAnnotation(new mapkit.Coordinate(latitude, longitude), {
                     glyphText: `${index + 1}`,
                     title: waypoint.address,
                     subtitle: formattedAddress,
                     animates: false,
-                    color:
-                        !selectedWaypointsCount || waypoint.selected
-                            ? darkMode
-                                ? 'rgb(255, 69, 58)'
-                                : 'rgb(255, 59, 48)'
-                            : 'rgb(142, 142, 147)',
+                    color: !selectedWaypointsCount || waypoint.selected ? errorColor : grayColor,
                 })
             }
         })
@@ -145,18 +144,15 @@ export const MapView = () => {
                     result: { points },
                 } = fetchedRoute
 
+                const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color')
+
                 return new mapkit.PolylineOverlay(
                     points.map(({ latitude, longitude }) => new mapkit.Coordinate(latitude, longitude)),
                     {
                         style: new mapkit.Style({
                             lineWidth: 6,
                             strokeOpacity: !selectedWaypointsCount || selected ? 0.75 : 0.5,
-                            strokeColor:
-                                !selectedWaypointsCount || selected
-                                    ? darkMode
-                                        ? 'rgb(10, 132, 255)'
-                                        : 'rgb(0, 122, 255)'
-                                    : 'rgb(142, 142, 147)',
+                            strokeColor: !selectedWaypointsCount || selected ? accentColor : grayColor,
                         }),
                     },
                 )
