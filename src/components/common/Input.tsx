@@ -28,7 +28,7 @@ export const Input = styled.input`
 
     &:not(:read-only):focus {
         background-color: var(--input-focus-color);
-        border-color: var(--apple-system-blue);
+        border-color: var(--accent-color);
     }
 
     :read-only {

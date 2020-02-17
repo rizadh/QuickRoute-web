@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const Link = styled.a`
-    color: var(--apple-system-blue);
+    color: var(--accent-color);
     text-decoration: none;
 
     :hover {

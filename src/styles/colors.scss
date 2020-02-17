@@ -17,9 +17,11 @@
     --primary-fill-color: hsl(40, 50%, 95%);
     --secondary-fill-color: hsl(40, 50%, 97%);
     --tertiary-fill-color: hsl(40, 50%, 99%);
+    --accent-color: hsl(35, 90%, 50%);
+    --error-color: hsl(5, 80%, 60%);
 
     // Text Colors
-    --primary-text-color: hsl(40, 5%, 00%);
+    --primary-text-color: hsl(40, 5%, 0%);
     --secondary-text-color: hsl(40, 5%, 50%);
 
     // Input Colors
@@ -47,6 +49,8 @@
         --primary-fill-color: hsl(210, 5%, 18%);
         --secondary-fill-color: hsl(210, 5%, 22%);
         --tertiary-fill-color: hsl(210, 5%, 27%);
+        --accent-color: hsl(210, 80%, 50%);
+        --error-color: hsl(5, 50%, 50%);
 
         // Text Colors
         --primary-text-color: rgb(255, 255, 255);

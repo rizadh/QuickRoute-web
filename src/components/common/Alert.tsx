@@ -7,7 +7,7 @@ export const Alert = styled.div`
 `
 
 export const DangerAlert = styled(Alert)`
-    color: var(--apple-system-red);
+    color: var(--error-color);
 `
 
 export const WarningAlert = styled(Alert)`

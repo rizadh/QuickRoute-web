@@ -27,7 +27,7 @@ const DragHandle = styled.span<{ isSelected: boolean }>`
     font-variant-numeric: tabular-nums;
     font-weight: 500;
 
-    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--tertiary-fill-color')});
+    background-color: var(${({ isSelected }) => (isSelected ? '--accent-color' : '--tertiary-fill-color')});
 `
 
 const StatusIndicator = styled.span`
@@ -44,7 +44,7 @@ const SecondaryStatusIndicator = styled(StatusIndicator)`
     color: var(--secondary-text-color);
 `
 const DangerStatusIndicator = styled(StatusIndicator)`
-    color: var(--apple-system-red);
+    color: var(--error-color);
 `
 
 type WaypointItemProps = {

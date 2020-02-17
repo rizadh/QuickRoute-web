@@ -60,7 +60,7 @@ export const Button = styled(PreventFocusButton)`
 `
 
 export const PrimaryButton = styled(Button)`
-    --local-btn-background-color: var(--apple-system-blue);
+    --local-btn-background-color: var(--accent-color);
     --local-btn-text-color: white;
 `
 
@@ -70,7 +70,7 @@ export const SecondaryButton = styled(Button)`
 `
 
 export const DangerButton = styled(Button)`
-    --local-btn-background-color: var(--apple-system-red);
+    --local-btn-background-color: var(--error-color);
     --local-btn-text-color: white;
 `
 
