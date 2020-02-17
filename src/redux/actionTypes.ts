@@ -1,3 +1,4 @@
+import { OptimizationParameter } from '../generated/graphql'
 import { EditorPane, Place, Route, Waypoint } from './state'
 
 export type ReplaceWaypointsAction = Readonly<{
@@ -168,11 +169,6 @@ export type ImportWaypointsFailedAction = Readonly<{
     driverNumber: string;
     error: Error;
 }>
-
-export enum OptimizationParameter {
-    Time = 'time',
-    Distance = 'distance',
-}
 
 export type OptimizeRouteAction = Readonly<{
     type: 'OPTIMIZE_ROUTE';

@@ -6,6 +6,7 @@ import { apolloClient } from '..'
 import {
     ImportWaypointsQuery,
     ImportWaypointsQueryVariables,
+    OptimizationParameter,
     OptimizeQuery,
     OptimizeQueryVariables,
 } from '../generated/graphql'
@@ -28,7 +29,6 @@ import {
     ImportWaypointsCancelAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
-    OptimizationParameter,
     OptimizeRouteAction,
     OptimizeRouteCancelAction,
     ReplaceWaypointsAction,
