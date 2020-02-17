@@ -7,13 +7,14 @@ import { AppAction } from '../redux/actionTypes'
 import { AppState, EditorPane } from '../redux/state'
 import { Alert, DangerAlert } from './Alert'
 import { BulkEditPane } from './BulkEditPane'
-import { Button, PrimaryButton, SecondaryButton } from './Button'
+import { Button, SecondaryButton } from './Button'
 import { ImportPane } from './ImportPane'
 import { InfoBar } from './InfoBar'
 import { InputRow } from './InputRow'
 import { Link } from './Link'
 import { LinksPane } from './LinksPane'
 import { OptimizePane } from './OptimizePane'
+import { PaneSelector } from './PaneSelector'
 import { compactBreakpoint } from './styleVariables'
 import { WaypointsPane } from './WaypointsPane'
 
@@ -90,43 +91,6 @@ const AppVersion = styled.div`
     color: var(--secondary-text-color);
 `
 
-const PaneSelectorWrapper = styled.div`
-    margin: var(--standard-margin);
-`
-
-const PaneSelector = styled.div`
-    margin: calc(var(--standard-margin) / -4);
-`
-
-type PaneSelectorButtonProps = {
-    pane: EditorPane;
-    children?: React.ReactNode;
-    className?: string;
-}
-
-const PaneSelectorButton = styled(({ pane, children, className }: PaneSelectorButtonProps) => {
-    const selected = useSelector((state: AppState) => state.editorPane === pane)
-    const paneIsBusy = useSelector(
-        ({ importInProgress, optimizationInProgress }: AppState) => importInProgress || optimizationInProgress,
-    )
-    const dispatch: Dispatch<AppAction> = useDispatch()
-    const setPane = useCallback(() => dispatch({ type: 'SET_EDITOR_PANE', editorPane: pane }), [])
-
-    return selected ? (
-        <PrimaryButton disabled={paneIsBusy} className={className}>
-            {children}
-        </PrimaryButton>
-    ) : (
-        <SecondaryButton disabled={paneIsBusy} className={className} onClick={setPane}>
-            {children}
-        </SecondaryButton>
-    )
-})`
-    margin: calc(var(--standard-margin) / 4);
-
-    line-height: 1;
-`
-
 const Spacer = styled.div`
     flex-grow: 1;
 `
@@ -156,30 +120,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                         </AppVersion>
                     )}
                 </AppTitle>
-                <PaneSelectorWrapper>
-                    <PaneSelector>
-                        <PaneSelectorButton pane={EditorPane.List}>
-                            <i className="fas fa-fw fa-th-list" />
-                            {!compactMode && ' Waypoints'}
-                        </PaneSelectorButton>
-                        <PaneSelectorButton pane={EditorPane.BulkEdit}>
-                            <i className="fas fa-fw fa-list-alt" />
-                            {!compactMode && ' Bulk Edit'}
-                        </PaneSelectorButton>
-                        <PaneSelectorButton pane={EditorPane.Links}>
-                            <i className="fas fa-fw fa-link" />
-                            {!compactMode && ' Links'}
-                        </PaneSelectorButton>
-                        <PaneSelectorButton pane={EditorPane.Import}>
-                            <i className="fas fa-fw fa-cloud-download-alt" />
-                            {!compactMode && ' Import'}
-                        </PaneSelectorButton>
-                        <PaneSelectorButton pane={EditorPane.Optimizer}>
-                            <i className="fas fa-fw fa-star" />
-                            {!compactMode && ' Optimize'}
-                        </PaneSelectorButton>
-                    </PaneSelector>
-                </PaneSelectorWrapper>
+                <PaneSelector />
             </Header>
             <Body>
                 {error && <DangerAlert>{error.message}</DangerAlert>}
