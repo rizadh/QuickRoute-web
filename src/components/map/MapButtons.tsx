@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState } from '../../redux/state'
-import { PrimaryButton, SecondaryButton, WarningButton } from '../common/Button'
+import { PrimaryButton, WarningButton } from '../common/Button'
 import compactBreakpoint from '../constants/compactBreakpoint'
 
 const Container = styled.div`
@@ -47,9 +47,9 @@ export const MapButtons = () => {
     return (
         <Container>
             {editorIsHidden && (
-                <SecondaryButton onClick={showEditorPane}>
+                <PrimaryButton onClick={showEditorPane}>
                     <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'right'}`} />
-                </SecondaryButton>
+                </PrimaryButton>
             )}
             {!compactMode &&
                 (mutedMapIsEnabled ? (
