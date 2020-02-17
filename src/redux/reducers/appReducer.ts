@@ -8,7 +8,6 @@ import { errorReducer } from './errorReducer'
 import { fetchedPlacesReducer } from './fetchedPlacesReducer'
 import { fetchedRoutesReducer } from './fetchedRoutesReducer'
 import { importInProgressReducer } from './importInProgressReducer'
-import { mutedMapIsEnabledReducer } from './mutedMapIsEnabledReducer'
 import { optimizationInProgressReducer } from './optimizationInProgressReducer'
 import { waypointsReducer } from './waypointsReducer'
 
@@ -19,7 +18,6 @@ export const appReducer: AppReducer = combineReducers({
     fetchedPlaces: fetchedPlacesReducer,
     fetchedRoutes: fetchedRoutesReducer,
     autofitIsEnabled: autofitIsEnabledReducer,
-    mutedMapIsEnabled: mutedMapIsEnabledReducer,
     editorPane: editorPaneReducer,
     editorIsHidden: editorIsHiddenReducer,
     importInProgress: importInProgressReducer,

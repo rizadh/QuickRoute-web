@@ -35,7 +35,6 @@ export const MapView = () => {
     const fetchedPlaces = useSelector((state: AppState) => state.fetchedPlaces)
     const fetchedRoutes = useSelector((state: AppState) => state.fetchedRoutes)
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
-    const mutedMapIsEnabled = useSelector((state: AppState) => state.mutedMapIsEnabled)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const operationInProgress = useSelector(
@@ -68,6 +67,8 @@ export const MapView = () => {
         const newMap = new mapkit.Map(mapviewRef.current, {
             showsMapTypeControl: false,
             showsScale: mapkit.FeatureVisibility.Adaptive,
+            showsPointsOfInterest: false,
+            mapType: mapkit.Map.MapTypes.MutedStandard,
         })
 
         const mapDidMove = () => {
@@ -171,13 +172,6 @@ export const MapView = () => {
     useEffect(() => {
         if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light
     }, [map, darkMode])
-
-    useEffect(() => {
-        if (map) {
-            map.mapType = mutedMapIsEnabled ? mapkit.Map.MapTypes.MutedStandard : mapkit.Map.MapTypes.Standard
-            map.showsPointsOfInterest = !mutedMapIsEnabled
-        }
-    }, [map, mutedMapIsEnabled])
 
     return (
         <Container blur={status === 'FETCHING' || operationInProgress} editorHidden={editorIsHidden} ref={mapviewRef} />

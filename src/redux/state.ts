@@ -60,7 +60,6 @@ export type AppState = Readonly<{
     fetchedPlaces: FetchedPlaces;
     fetchedRoutes: FetchedRoutes;
     autofitIsEnabled: boolean;
-    mutedMapIsEnabled: boolean;
     editorPane: EditorPane;
     editorIsHidden: boolean;
     importInProgress: boolean;
