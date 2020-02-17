@@ -46,11 +46,11 @@ export type Waypoint = Readonly<{
 }>
 
 export enum EditorPane {
-    List = 'list',
+    Waypoints = 'list',
     BulkEdit = 'bulkEdit',
     Import = 'import',
-    Links = 'urls',
-    Optimizer = 'optimizer',
+    Navigate = 'urls',
+    Optimize = 'optimizer',
 }
 
 export type Waypoints = ReadonlyArray<Waypoint>

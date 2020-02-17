@@ -6,13 +6,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useCompactMode } from '../hooks/useCompactMode'
 import { AppAction } from '../redux/actionTypes'
 import { AppState } from '../redux/state'
-import { WarningAlert } from './Alert'
+import { Alert, WarningAlert } from './Alert'
 import { PrimaryButton } from './Button'
 import { Input } from './Input'
 import { InputRow } from './InputRow'
 import { WaypointEditorTemplate } from './WaypointEditor'
 
-export const LinksPane = () => {
+export const NavigatePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
@@ -95,6 +95,10 @@ export const LinksPane = () => {
         <WarningAlert>Add one or more waypoints to generate links</WarningAlert>
     ) : (
         <>
+            <Alert>
+                Use the links below to navigate using Google Maps. Each link contains up to ten waypoints due to
+                Google's limitations
+            </Alert>
             {navigationLinks.map((url, index) => (
                 <InputRow key={url}>
                     <Input type="text" value={url} readOnly={true} />

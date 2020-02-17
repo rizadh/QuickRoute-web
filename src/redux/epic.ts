@@ -350,7 +350,7 @@ const importWaypointsEpic: AppEpic = action$ =>
                                               .map(w => `${extractAddress(w.address)} ${w.postalCode}`)
                                               .map(createWaypointFromAddress),
                                       },
-                                      { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
+                                      { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
                                   ]
                                 : of({
                                       type: 'IMPORT_WAYPOINTS_FAILED',
@@ -437,7 +437,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                             type: 'REPLACE_WAYPOINTS',
                             waypoints: optimalOrdering.map(createWaypointFromAddress),
                         },
-                        { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
+                        { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
                     ]),
                     catchError(error => of({ type: 'OPTIMIZE_ROUTE_FAILED', optimizationParameter, error })),
                     takeUntil(

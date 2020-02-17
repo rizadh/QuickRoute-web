@@ -12,7 +12,7 @@ import { ImportPane } from './ImportPane'
 import { InfoBar } from './InfoBar'
 import { InputRow } from './InputRow'
 import { Link } from './Link'
-import { LinksPane } from './LinksPane'
+import { NavigatePane } from './NavigatePane'
 import { OptimizePane } from './OptimizePane'
 import { PaneSelector } from './PaneSelector'
 import { compactBreakpoint } from './styleVariables'
@@ -137,15 +137,15 @@ export const WaypointEditor = () => {
     const editorPane = useSelector((state: AppState) => state.editorPane)
 
     switch (editorPane) {
-        case EditorPane.List:
+        case EditorPane.Waypoints:
             return <WaypointsPane />
-        case EditorPane.Links:
-            return <LinksPane />
+        case EditorPane.Navigate:
+            return <NavigatePane />
         case EditorPane.BulkEdit:
             return <BulkEditPane />
         case EditorPane.Import:
             return <ImportPane />
-        case EditorPane.Optimizer:
+        case EditorPane.Optimize:
             return <OptimizePane />
     }
 }

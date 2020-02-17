@@ -43,7 +43,7 @@ export const PaneSelector = () => {
     return (
         <Wrapper>
             <Container>
-                <StyledSelectorButton pane={EditorPane.List}>
+                <StyledSelectorButton pane={EditorPane.Waypoints}>
                     <i className="fas fa-fw fa-stream" />
                     {!compactMode && ' Waypoints'}
                 </StyledSelectorButton>
@@ -51,15 +51,15 @@ export const PaneSelector = () => {
                     <i className="fas fa-fw fa-pencil-alt" />
                     {!compactMode && ' Bulk Edit'}
                 </StyledSelectorButton>
-                <StyledSelectorButton pane={EditorPane.Links}>
+                <StyledSelectorButton pane={EditorPane.Navigate}>
                     <i className="fas fa-fw fa-directions" />
-                    {!compactMode && ' Links'}
+                    {!compactMode && ' Navigate'}
                 </StyledSelectorButton>
                 <StyledSelectorButton pane={EditorPane.Import}>
                     <i className="fas fa-fw fa-arrow-alt-circle-down" />
                     {!compactMode && ' Import'}
                 </StyledSelectorButton>
-                <StyledSelectorButton pane={EditorPane.Optimizer}>
+                <StyledSelectorButton pane={EditorPane.Optimize}>
                     <i className="fas fa-fw fa-star-half-alt" />
                     {!compactMode && ' Optimize'}
                 </StyledSelectorButton>
