@@ -101,11 +101,11 @@ export const OptimizePane = () => {
     ) : (
         <>
             <PrimaryButton onClick={optimizeDistance} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-ruler-combined" />
+                <i className="fas fa-fw fa-ruler-vertical" />
                 {compactMode ? ' Distance' : ' Optimize Distance'}
             </PrimaryButton>
             <PrimaryButton onClick={optimizeTime} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-clock" />
+                <i className="fas fa-fw fa-stopwatch" />
                 {compactMode ? ' Time' : ' Optimize Time'}
             </PrimaryButton>
         </>

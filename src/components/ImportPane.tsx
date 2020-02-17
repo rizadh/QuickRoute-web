@@ -74,7 +74,7 @@ export const ImportPane = () => {
         </>
     ) : (
         <PrimaryButton onClick={importWaypoints} disabled={!driverNumberIsValid || !passwordIsValid}>
-            <i className="fas fa-fw fa-cloud-download-alt" /> Import
+            <i className="fas fa-fw fa-arrow-alt-circle-down" /> Import
         </PrimaryButton>
     )
 

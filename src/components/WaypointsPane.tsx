@@ -120,7 +120,7 @@ export const WaypointsPaneFooter = () => {
                 </PrimaryButton>
             </InputRow>
             <PrimaryButton onClick={generatePdf} disabled={waypoints.length === 0}>
-                <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
+                <i className={'fas fa-fw fa-file-download'} />
                 {compactMode ? ' PDF' : ' Save PDF'}
             </PrimaryButton>
             <PrimaryButton onClick={reverseWaypoints} disabled={waypoints.length < 2}>

@@ -56,11 +56,11 @@ export const PaneSelector = () => {
                     {!compactMode && ' Links'}
                 </StyledSelectorButton>
                 <StyledSelectorButton pane={EditorPane.Import}>
-                    <i className="fas fa-fw fa-angle-double-down" />
+                    <i className="fas fa-fw fa-arrow-alt-circle-down" />
                     {!compactMode && ' Import'}
                 </StyledSelectorButton>
                 <StyledSelectorButton pane={EditorPane.Optimizer}>
-                    <i className="fas fa-fw fa-magic" />
+                    <i className="fas fa-fw fa-star-half-alt" />
                     {!compactMode && ' Optimize'}
                 </StyledSelectorButton>
             </Container>
