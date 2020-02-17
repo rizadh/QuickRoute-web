@@ -42,6 +42,8 @@ const Header = styled.div`
     flex-shrink: 0;
 
     border-bottom: var(--standard-border);
+
+    background-color: var(--secondary-fill-color);
 `
 
 const Body = styled.div`
@@ -58,10 +60,13 @@ const Body = styled.div`
 const Footer = styled.div`
     bottom: 0;
     flex-shrink: 0;
+    flex-grow: 1;
 
     border-top: var(--standard-border);
 
     padding: calc(var(--standard-margin) / 2);
+
+    background-color: var(--secondary-fill-color);
 
     ${Button}, ${InputRow} {
         margin: calc(var(--standard-margin) / 2);
@@ -89,10 +94,6 @@ const AppTitle = styled.div`
 const AppVersion = styled.div`
     font-size: 16px;
     color: var(--secondary-text-color);
-`
-
-const Spacer = styled.div`
-    flex-grow: 1;
 `
 
 type WaypointEditorTemplateProps = {
@@ -127,7 +128,6 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                 {body}
             </Body>
             <Footer>{footer}</Footer>
-            <Spacer />
             <InfoBar />
         </Container>
     )

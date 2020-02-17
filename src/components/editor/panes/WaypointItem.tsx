@@ -27,7 +27,7 @@ const DragHandle = styled.span<{ isSelected: boolean }>`
     font-variant-numeric: tabular-nums;
     font-weight: 500;
 
-    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--secondary-fill-color')});
+    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--tertiary-fill-color')});
 `
 
 const StatusIndicator = styled.span`

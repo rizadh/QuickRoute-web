@@ -11,6 +11,8 @@ const Container = styled.div`
     padding: var(--standard-margin);
 
     border-top: var(--standard-border);
+
+    background-color: var(--secondary-fill-color);
 `
 
 export const InfoBar = () => {

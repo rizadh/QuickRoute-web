@@ -8,7 +8,7 @@ const PreventFocusButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
 }
 
 export const Button = styled(PreventFocusButton)`
-    --local-btn-background-color: var(--secondary-fill-color);
+    --local-btn-background-color: var(--tertiary-fill-color);
     --local-btn-text-color: var(--primary-text-color);
 
     padding: var(--standard-padding);
@@ -65,7 +65,7 @@ export const PrimaryButton = styled(Button)`
 `
 
 export const SecondaryButton = styled(Button)`
-    --local-btn-background-color: var(--secondary-fill-color);
+    --local-btn-background-color: var(--tertiary-fill-color);
     --local-btn-text-color: var(--primary-text-color);
 `
 
