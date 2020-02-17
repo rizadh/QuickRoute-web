@@ -24,8 +24,6 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
 
-    border-right: var(--standard-border);
-
     ${InfoBar.Container} {
         flex-shrink: 0;
     }
@@ -42,6 +40,11 @@ const Header = styled.div`
     flex-shrink: 0;
 
     border-bottom: var(--standard-border);
+    border-right: var(--standard-border);
+
+    @media (max-width: ${compactBreakpoint}px) {
+        border-right: none;
+    }
 
     background-color: var(--secondary-fill-color);
 `
@@ -51,6 +54,12 @@ const Body = styled.div`
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+
+    border-right: var(--standard-border);
+
+    @media (max-width: ${compactBreakpoint}px) {
+        border-right: none;
+    }
 
     ${Alert}, ${InputRow} {
         padding: calc(var(--standard-margin) / 2);
@@ -63,6 +72,11 @@ const Footer = styled.div`
     flex-grow: 1;
 
     border-top: var(--standard-border);
+    border-right: var(--standard-border);
+
+    @media (max-width: ${compactBreakpoint}px) {
+        border-right: none;
+    }
 
     padding: calc(var(--standard-margin) / 2);
 

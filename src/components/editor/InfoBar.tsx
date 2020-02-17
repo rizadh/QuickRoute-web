@@ -2,6 +2,7 @@ import React from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { routeInformation } from '../../redux/selectors'
+import compactBreakpoint from '../constants/compactBreakpoint'
 import { StatView } from './StatView'
 
 const Container = styled.div`
@@ -11,6 +12,11 @@ const Container = styled.div`
     padding: var(--standard-margin);
 
     border-top: var(--standard-border);
+    border-right: var(--standard-border);
+
+    @media (max-width: ${compactBreakpoint}px) {
+        border-right: none;
+    }
 
     background-color: var(--secondary-fill-color);
 `
