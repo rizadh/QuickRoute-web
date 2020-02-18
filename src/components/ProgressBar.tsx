@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { useDarkMode } from '../hooks/useDarkMode'
+import { useAccentColor } from '../hooks/useAccentColor'
 import { routeInformation } from '../redux/selectors'
 
 const StyledProgressBar = styled.div`
@@ -10,28 +10,29 @@ const StyledProgressBar = styled.div`
     height: 4px;
 `
 
-const Track = styled.div<{ darkMode: boolean }>`
+const Track = styled.div<{ color: string }>`
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: ${({ darkMode }) => (darkMode ? 'rgba(10, 132, 255, 0.2)' : 'rgb(0, 122, 255, 0.2)')};
+    background-color: ${({ color }) => color};
+    opacity: 0.2;
 `
 
-const Bar = styled.div<{ darkMode: boolean; progress: number }>`
+const Bar = styled.div<{ color: string; progress: number }>`
     position: absolute;
     width: ${({ progress }) => progress * 100}%;
     height: 100%;
-    background-color: ${({ darkMode }) => (darkMode ? 'rgba(10, 132, 255)' : 'rgb(0, 122, 255)')};
+    background-color: ${({ color }) => color};
 `
 
 export const ProgressBar = () => {
-    const darkMode = useDarkMode()
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)
+    const accentColor = useAccentColor()
 
     return currentRouteInformation.status === 'FETCHING' ? (
         <StyledProgressBar>
-            <Track darkMode={darkMode} />
-            <Bar darkMode={darkMode} progress={currentRouteInformation.progress} />
+            <Track color={accentColor} />
+            <Bar color={accentColor} progress={currentRouteInformation.progress} />
         </StyledProgressBar>
     ) : null
 }

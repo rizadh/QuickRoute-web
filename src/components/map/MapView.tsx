@@ -2,6 +2,7 @@ import { sortBy } from 'lodash'
 import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
+import { useAccentColor } from '../../hooks/useAccentColor'
 import { useDarkMode } from '../../hooks/useDarkMode'
 import { useWindowSize } from '../../hooks/useWindowSize'
 import { AppAction } from '../../redux/actionTypes'
@@ -41,6 +42,7 @@ export const MapView = () => {
     )
     const status = useSelector((state: AppState) => routeInformation(state).status)
     const darkMode = useDarkMode()
+    const accentColor = useAccentColor()
     const windowSize = useWindowSize()
     const centerMap = useCallback(
         (animate: boolean) => {
@@ -127,8 +129,6 @@ export const MapView = () => {
                 const {
                     result: { points },
                 } = fetchedRoute
-
-                const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color')
 
                 return new mapkit.PolylineOverlay(
                     points.map(({ latitude, longitude }) => new mapkit.Coordinate(latitude, longitude)),
