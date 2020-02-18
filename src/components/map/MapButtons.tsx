@@ -1,5 +1,6 @@
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { CSSTransition } from 'react-transition-group'
 import styled from 'styled-components'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
@@ -52,11 +53,11 @@ export const MapButtons = () => {
                     )}
                 </PrimaryButton>
             )}
-            {!autofitIsEnabled && (
+            <CSSTransition timeout={100} in={!autofitIsEnabled} classNames="transition" unmountOnExit={true}>
                 <WarningButton onClick={enableAutofit}>
                     <i className="fas fa-fw fa-route" /> Show Route
                 </WarningButton>
-            )}
+            </CSSTransition>
         </Container>
     )
 }

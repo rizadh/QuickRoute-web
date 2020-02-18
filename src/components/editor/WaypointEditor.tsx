@@ -6,7 +6,7 @@ import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState, EditorPane } from '../../redux/state'
 import { Alert, DangerAlert } from '../common/Alert'
-import { Button, PrimaryButton } from '../common/Button'
+import { PrimaryButton } from '../common/Button'
 import { InputRow } from '../common/InputRow'
 import { Link } from '../common/Link'
 import compactBreakpoint from '../constants/compactBreakpoint'
@@ -82,11 +82,12 @@ const Footer = styled.div`
 
     background-color: var(--secondary-fill-color);
 
-    ${Button}, ${InputRow} {
+    button,
+    ${InputRow} {
         margin: calc(var(--standard-margin) / 2);
     }
 
-    ${InputRow} ${Button} {
+    ${InputRow} button {
         margin: initial;
     }
 `
