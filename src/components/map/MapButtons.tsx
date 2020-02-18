@@ -2,7 +2,6 @@ import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
 import styled from 'styled-components'
-import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState, attributesForEditorPane } from '../../redux/state'
 import { PrimaryButton, WarningButton } from '../common/Button'
@@ -37,7 +36,6 @@ export const MapButtons = () => {
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
     const editorPane = useSelector((state: AppState) => state.editorPane)
     const dispatch: Dispatch<AppAction> = useDispatch()
-    const compactMode = useCompactMode()
 
     const enableAutofit = useCallback(() => dispatch({ type: 'ENABLE_AUTOFIT' }), [])
     const showEditorPane = useCallback(() => dispatch({ type: 'SHOW_EDITOR_PANE' }), [])
@@ -46,11 +44,7 @@ export const MapButtons = () => {
         <Container>
             {editorIsHidden && (
                 <PrimaryButton onClick={showEditorPane}>
-                    {compactMode ? (
-                        <i className={`fas fa-fw fa-${attributesForEditorPane(editorPane).iconName}`} />
-                    ) : (
-                        <i className="fas fa-fw fa-chevron-right" />
-                    )}
+                    <i className={`fas fa-fw fa-${attributesForEditorPane(editorPane).iconName}`} />
                 </PrimaryButton>
             )}
             <CSSTransition timeout={100} in={!autofitIsEnabled} classNames="transition" unmountOnExit={true}>
