@@ -48,10 +48,11 @@ export const MapButtons = () => {
                     <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'right'}`} />
                 </PrimaryButton>
             )}
-            <WarningButton onClick={enableAutofit} disabled={autofitIsEnabled}>
-                <i className="fas fa-fw fa-expand" />
-                {!compactMode && ' Auto-Fit'}
-            </WarningButton>
+            {!autofitIsEnabled && (
+                <WarningButton onClick={enableAutofit}>
+                    <i className="fas fa-fw fa-route" /> Show Route
+                </WarningButton>
+            )}
         </Container>
     )
 }
