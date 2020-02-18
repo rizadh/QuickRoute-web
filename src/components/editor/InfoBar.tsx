@@ -11,14 +11,11 @@ const Container = styled.div`
     justify-content: space-evenly;
     padding: var(--standard-margin);
 
-    border-top: var(--standard-border);
     border-right: var(--standard-border);
 
     @media (max-width: ${compactBreakpoint}px) {
         border-right: none;
     }
-
-    background-color: var(--tertiary-fill-color);
 `
 
 export const InfoBar = () => {

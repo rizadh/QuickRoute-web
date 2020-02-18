@@ -73,6 +73,7 @@ const Footer = styled.div`
 
     border-top: var(--standard-border);
     border-right: var(--standard-border);
+    border-bottom: var(--standard-border);
 
     @media (max-width: ${compactBreakpoint}px) {
         border-right: none;
