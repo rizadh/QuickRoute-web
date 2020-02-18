@@ -2,7 +2,6 @@ import { sortBy } from 'lodash'
 import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { useCompactMode } from '../../hooks/useCompactMode'
 import { useDarkMode } from '../../hooks/useDarkMode'
 import { useWindowSize } from '../../hooks/useWindowSize'
 import { AppAction } from '../../redux/actionTypes'
@@ -42,7 +41,6 @@ export const MapView = () => {
     )
     const status = useSelector((state: AppState) => routeInformation(state).status)
     const darkMode = useDarkMode()
-    const compactMode = useCompactMode()
     const windowSize = useWindowSize()
     const centerMap = useCallback(
         (animate: boolean) => {
@@ -50,12 +48,6 @@ export const MapView = () => {
 
             map.showItems([...(map.annotations || []), ...map.overlays], {
                 animate,
-                padding: new mapkit.Padding({
-                    top: compactMode ? 12 : 16,
-                    right: compactMode ? 12 : 16,
-                    bottom: compactMode ? 12 : 16,
-                    left: compactMode ? 12 : 16,
-                }),
             })
         },
         [autofitIsEnabled, map],
@@ -69,6 +61,7 @@ export const MapView = () => {
             showsScale: mapkit.FeatureVisibility.Adaptive,
             showsPointsOfInterest: false,
             mapType: mapkit.Map.MapTypes.MutedStandard,
+            padding: new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 }),
         })
 
         const mapDidMove = () => {
@@ -84,16 +77,6 @@ export const MapView = () => {
 
         return () => newMap.destroy()
     }, [])
-
-    useEffect(() => {
-        if (!map) return
-
-        if (compactMode) {
-            map.padding = new mapkit.Padding({ top: 0, left: 12, right: 0, bottom: 12 + 42 })
-        } else {
-            map.padding = new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 })
-        }
-    }, [map, compactMode])
 
     useEffect(() => {
         if (!map) return

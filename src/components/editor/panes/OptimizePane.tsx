@@ -2,7 +2,6 @@ import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OptimizationParameter } from '../../../generated/graphql'
-import { useCompactMode } from '../../../hooks/useCompactMode'
 import { useInput } from '../../../hooks/useInput'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
@@ -16,7 +15,6 @@ export const OptimizePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const optimizationInProgress = useSelector((state: AppState) => state.optimizationInProgress)
     const dispatch: Dispatch<AppAction> = useDispatch()
-    const compactMode = useCompactMode()
 
     const { value: startPointFieldValue, props: startPointFieldProps } = useInput()
     const { value: endPointFieldValue, props: endPointFieldProps } = useInput()
@@ -91,8 +89,7 @@ export const OptimizePane = () => {
     const footer = optimizationInProgress ? (
         <>
             <PrimaryButton disabled={true}>
-                <i className="fas fa-fw fa-spin fa-circle-notch" />
-                {!compactMode && ' Optimizing'}
+                <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing
             </PrimaryButton>
             <DangerButton onClick={cancelOptimize}>
                 <i className="fas fa-ban" /> Cancel
@@ -101,12 +98,10 @@ export const OptimizePane = () => {
     ) : (
         <>
             <PrimaryButton onClick={optimizeDistance} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-ruler-vertical" />
-                {compactMode ? ' Distance' : ' Optimize Distance'}
+                <i className="fas fa-fw fa-ruler-vertical" /> Optimize Distance
             </PrimaryButton>
             <PrimaryButton onClick={optimizeTime} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-stopwatch" />
-                {compactMode ? ' Time' : ' Optimize Time'}
+                <i className="fas fa-fw fa-stopwatch" /> Optimize Route
             </PrimaryButton>
         </>
     )

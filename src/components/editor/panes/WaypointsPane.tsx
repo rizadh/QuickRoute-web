@@ -5,7 +5,6 @@ import React, { Dispatch, useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { apolloClient } from '../../..'
 import { GeneratePdfQuery, GeneratePdfQueryVariables } from '../../../generated/graphql'
-import { useCompactMode } from '../../../hooks/useCompactMode'
 import { useInput } from '../../../hooks/useInput'
 import { GeneratePDF } from '../../../queries'
 import { AppAction } from '../../../redux/actionTypes'
@@ -51,7 +50,6 @@ export const WaypointsPaneFooter = () => {
         resetAfterCommit: true,
     })
 
-    const compactMode = useCompactMode()
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
@@ -120,8 +118,7 @@ export const WaypointsPaneFooter = () => {
                 </PrimaryButton>
             </InputRow>
             <PrimaryButton onClick={generatePdf} disabled={waypoints.length === 0}>
-                <i className={'fas fa-fw fa-file-download'} />
-                {compactMode ? ' PDF' : ' Save PDF'}
+                <i className={'fas fa-fw fa-file-download'} /> Save PDF
             </PrimaryButton>
             <PrimaryButton onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                 <i className="fas fa-fw fa-exchange-alt" /> Reverse

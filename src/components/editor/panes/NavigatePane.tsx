@@ -3,7 +3,6 @@ import chunk from 'lodash/chunk'
 import { stringify } from 'query-string'
 import React, { Dispatch, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useCompactMode } from '../../../hooks/useCompactMode'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
 import { Alert, WarningAlert } from '../../common/Alert'
@@ -15,7 +14,6 @@ import { WaypointEditorTemplate } from '../WaypointEditor'
 export const NavigatePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
-    const compactMode = useCompactMode()
 
     const navigationLinks = useMemo(() => {
         return chunk(waypoints, 10)
@@ -122,17 +120,14 @@ export const NavigatePane = () => {
         <>
             {(navigator as INavigator).share && (
                 <PrimaryButton onClick={shareAllLinks} disabled={insufficientWaypoints}>
-                    <i className="fas fa-fw fa-share" />
-                    {compactMode ? ' Share' : ' Share All'}
+                    <i className="fas fa-fw fa-share" /> Share All
                 </PrimaryButton>
             )}
             <PrimaryButton onClick={copyAllLinks} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-clipboard" />
-                {compactMode ? ' Copy' : ' Copy All'}
+                <i className="fas fa-fw fa-clipboard" /> Copy All
             </PrimaryButton>
             <PrimaryButton onClick={openAllLinks} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-external-link-alt" />
-                {compactMode ? ' Open' : ' Open All'}
+                <i className="fas fa-fw fa-external-link-alt" /> Open All
             </PrimaryButton>
         </>
     )

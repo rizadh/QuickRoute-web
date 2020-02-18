@@ -10,25 +10,24 @@ import compactBreakpoint from '../constants/compactBreakpoint'
 const Container = styled.div`
     position: absolute;
     top: 0;
-    padding: var(--standard-margin);
+    padding: calc(3 * var(--standard-margin) / 4);
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 
     display: flex;
 
+    @media (max-width: ${compactBreakpoint}px) {
+        right: 0;
+        flex-direction: row-reverse;
+    }
+
     &::-webkit-scrollbar {
         display: none;
     }
 
-    @media (max-width: ${compactBreakpoint}px) {
-        top: initial;
-        bottom: 0;
-    }
-
     > button {
-        flex-shrink: 0;
-        margin-right: calc(var(--standard-margin) / 2);
+        margin: calc(var(--standard-margin) / 4);
     }
 `
 
@@ -45,7 +44,7 @@ export const MapButtons = () => {
         <Container>
             {editorIsHidden && (
                 <PrimaryButton onClick={showEditorPane}>
-                    <i className={`fas fa-fw fa-chevron-${compactMode ? 'up' : 'right'}`} />
+                    <i className={`fas fa-fw fa-chevron-${compactMode ? 'down' : 'right'}`} />
                 </PrimaryButton>
             )}
             {!autofitIsEnabled && (

@@ -125,15 +125,13 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
         <Container>
             <Header>
                 <HideButton title="Minimize editor" onClick={hideEditorPane}>
-                    <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'down' : 'left')} />
+                    <i className={'fas fa-fw fa-chevron-' + (compactMode ? 'up' : 'left')} />
                 </HideButton>
                 <AppTitle>
                     QuickRoute
-                    {!compactMode && (
-                        <AppVersion>
-                            v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
-                        </AppVersion>
-                    )}
+                    <AppVersion>
+                        v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
+                    </AppVersion>
                 </AppTitle>
                 <PaneSelector />
             </Header>
