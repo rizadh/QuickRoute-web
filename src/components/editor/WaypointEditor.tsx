@@ -92,10 +92,8 @@ const Footer = styled.div`
 `
 
 const HideButton = styled(SecondaryButton)`
-    position: absolute;
-    z-index: 2;
-    top: var(--standard-margin);
-    right: var(--standard-margin);
+    float: right;
+    margin: var(--standard-margin);
 `
 
 const AppTitle = styled.div`

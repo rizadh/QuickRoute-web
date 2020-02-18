@@ -8,6 +8,7 @@ import { PrimaryButton, SecondaryButton } from '../common/Button'
 
 const Wrapper = styled.div`
     margin: var(--standard-margin);
+    clear: both;
 `
 
 const Container = styled.div`
