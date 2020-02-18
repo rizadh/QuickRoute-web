@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
-import { AppState } from '../../redux/state'
+import { AppState, attributesForEditorPane } from '../../redux/state'
 import { PrimaryButton, WarningButton } from '../common/Button'
 import compactBreakpoint from '../constants/compactBreakpoint'
 
@@ -34,6 +34,7 @@ const Container = styled.div`
 export const MapButtons = () => {
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
+    const editorPane = useSelector((state: AppState) => state.editorPane)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
 
@@ -44,7 +45,11 @@ export const MapButtons = () => {
         <Container>
             {editorIsHidden && (
                 <PrimaryButton onClick={showEditorPane}>
-                    <i className={`fas fa-fw fa-chevron-${compactMode ? 'down' : 'right'}`} />
+                    {compactMode ? (
+                        <i className={`fas fa-fw fa-${attributesForEditorPane(editorPane).iconName}`} />
+                    ) : (
+                        <i className="fas fa-fw fa-chevron-right" />
+                    )}
                 </PrimaryButton>
             )}
             {!autofitIsEnabled && (
