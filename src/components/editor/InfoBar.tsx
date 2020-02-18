@@ -18,7 +18,7 @@ const Container = styled.div`
         border-right: none;
     }
 
-    background-color: var(--secondary-fill-color);
+    background-color: var(--tertiary-fill-color);
 `
 
 export const InfoBar = () => {
