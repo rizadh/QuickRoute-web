@@ -22,8 +22,10 @@ export const Input = styled.input`
         color: var(--secondary-text-color);
     }
 
-    &:not(:read-only):hover {
-        background-color: var(--input-focus-color);
+    @media (hover: hover) {
+        &:not(:read-only):hover {
+            background-color: var(--input-focus-color);
+        }
     }
 
     &:not(:read-only):focus {

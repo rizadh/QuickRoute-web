@@ -41,8 +41,10 @@ export const Button = styled(PreventFocusButton)`
     &:enabled {
         cursor: pointer;
 
-        &:hover::after {
-            background-color: var(--button-hover-highlight-color);
+        @media (hover: hover) {
+            &:hover::after {
+                background-color: var(--button-hover-highlight-color);
+            }
         }
 
         &:active::after {
