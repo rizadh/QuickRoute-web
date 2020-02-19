@@ -14,7 +14,7 @@
     --standard-border-color: rgba(0, 0, 0, 0.1);
 
     // Fill Colors
-    --primary-fill-color: hsl(40, 50%, 95%);
+    --primary-fill-color: hsl(40, 30%, 95%);
     --secondary-fill-color: hsl(40, 50%, 97%);
     --tertiary-fill-color: hsl(40, 50%, 99%);
     --accent-color: hsl(35, 90%, 50%);
@@ -27,6 +27,7 @@
     // Input Colors
     --input-color: hsl(40, 20%, 90%);
     --input-focus-color: hsl(40, 20%, 99%);
+    --input-disabled-color: hsl(40, 20%, 85%);
     --input-border-color: hsl(40, 20%, 80%);
 
     // Button Colors
@@ -62,6 +63,7 @@
         // Input Colors
         --input-color: hsl(210, 5%, 15%);
         --input-focus-color: hsl(210, 5%, 10%);
+        --input-disabled-color: hsl(210, 5%, 17%);
         --input-border-color: hsl(210, 5%, 25%);
 
         // Button Colors

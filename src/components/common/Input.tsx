@@ -34,7 +34,7 @@ export const Input = styled.input`
     }
 
     :read-only {
-        background-color: var(--input-focus-color);
+        background-color: var(--input-disabled-color);
         color: var(--secondary-text-color);
     }
 `
