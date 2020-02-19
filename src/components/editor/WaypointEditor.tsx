@@ -165,34 +165,38 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
         config: config.stiff,
     })
 
-    return transitions.map(({ item, props }) =>
-        item ? null : (
-            <Container style={props}>
-                <Header>
-                    <HideButton title="Minimize editor" onClick={hideEditorPane}>
-                        {compactMode ? (
-                            <i className="fas fa-fw fa-map-marked" />
-                        ) : (
-                            <i className="fas fa-fw fa-chevron-left" />
-                        )}
-                    </HideButton>
+    return (
+        <>
+            {transitions.map(({ item, props, key }) =>
+                item ? null : (
+                    <Container style={props} key={key}>
+                        <Header>
+                            <HideButton title="Minimize editor" onClick={hideEditorPane}>
+                                {compactMode ? (
+                                    <i className="fas fa-fw fa-map-marked" />
+                                ) : (
+                                    <i className="fas fa-fw fa-chevron-left" />
+                                )}
+                            </HideButton>
 
-                    <AppTitle>
-                        QuickRoute
-                        <AppVersion>
-                            v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
-                        </AppVersion>
-                    </AppTitle>
-                    <PaneSelector />
-                </Header>
-                <Body>
-                    {error && <DangerAlert>{error.message}</DangerAlert>}
-                    {body}
-                </Body>
-                <Footer>{footer}</Footer>
-                <InfoBar />
-            </Container>
-        ),
+                            <AppTitle>
+                                QuickRoute
+                                <AppVersion>
+                                    v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
+                                </AppVersion>
+                            </AppTitle>
+                            <PaneSelector />
+                        </Header>
+                        <Body>
+                            {error && <DangerAlert>{error.message}</DangerAlert>}
+                            {body}
+                        </Body>
+                        <Footer>{footer}</Footer>
+                        <InfoBar />
+                    </Container>
+                ),
+            )}
+        </>
     )
 }
 
