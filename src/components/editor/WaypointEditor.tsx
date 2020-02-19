@@ -1,5 +1,6 @@
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { animated, config, useTransition } from 'react-spring'
 import styled from 'styled-components'
 import { appVersion } from '../..'
 import { useCompactMode } from '../../hooks/useCompactMode'
@@ -18,7 +19,7 @@ import { OptimizePane } from './panes/OptimizePane'
 import { WaypointsPane } from './panes/WaypointsPane'
 import { PaneSelector } from './PaneSelector'
 
-const Container = styled.div`
+const Container = animated(styled.div`
     position: absolute;
     width: 420px;
     height: 100%;
@@ -67,7 +68,7 @@ const Container = styled.div`
 
         border: none;
     }
-`
+`)
 
 const Header = styled.div`
     top: 0;
@@ -151,36 +152,47 @@ type WaypointEditorTemplateProps = {
 
 export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateProps) => {
     const error = useSelector((state: AppState) => state.error)
+    const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
     const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
-    return (
-        <Container>
-            <Header>
-                <HideButton title="Minimize editor" onClick={hideEditorPane}>
-                    {compactMode ? (
-                        <i className="fas fa-fw fa-map-marked" />
-                    ) : (
-                        <i className="fas fa-fw fa-chevron-left" />
-                    )}
-                </HideButton>
+    const transitions = useTransition(editorIsHidden, null, {
+        initial: { transform: 'translateX(0%)' },
+        from: { transform: `translateX(${compactMode ? '' : '-'}100%)` },
+        enter: { transform: 'translateX(0%)' },
+        leave: { transform: `translateX(${compactMode ? '' : '-'}100%)` },
+        config: config.stiff,
+    })
 
-                <AppTitle>
-                    QuickRoute
-                    <AppVersion>
-                        v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
-                    </AppVersion>
-                </AppTitle>
-                <PaneSelector />
-            </Header>
-            <Body>
-                {error && <DangerAlert>{error.message}</DangerAlert>}
-                {body}
-            </Body>
-            <Footer>{footer}</Footer>
-            <InfoBar />
-        </Container>
+    return transitions.map(({ item, props }) =>
+        item ? null : (
+            <Container style={props}>
+                <Header>
+                    <HideButton title="Minimize editor" onClick={hideEditorPane}>
+                        {compactMode ? (
+                            <i className="fas fa-fw fa-map-marked" />
+                        ) : (
+                            <i className="fas fa-fw fa-chevron-left" />
+                        )}
+                    </HideButton>
+
+                    <AppTitle>
+                        QuickRoute
+                        <AppVersion>
+                            v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
+                        </AppVersion>
+                    </AppTitle>
+                    <PaneSelector />
+                </Header>
+                <Body>
+                    {error && <DangerAlert>{error.message}</DangerAlert>}
+                    {body}
+                </Body>
+                <Footer>{footer}</Footer>
+                <InfoBar />
+            </Container>
+        ),
     )
 }
 
