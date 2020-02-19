@@ -1,6 +1,6 @@
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { animated, config, useTransition } from 'react-spring'
+import { animated, useTransition } from 'react-spring'
 import styled from 'styled-components'
 import { appVersion } from '../..'
 import { useCompactMode } from '../../hooks/useCompactMode'
@@ -162,7 +162,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
         from: { transform: `translateX(${compactMode ? '' : '-'}100%)` },
         enter: { transform: 'translateX(0%)' },
         leave: { transform: `translateX(${compactMode ? '' : '-'}100%)` },
-        config: config.stiff,
+        config: { mass: 1, tension: 350, friction: 35 },
     })
 
     return (

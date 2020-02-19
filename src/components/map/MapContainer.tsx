@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { animated, config, useSpring } from 'react-spring'
+import { animated, useSpring } from 'react-spring'
 import styled from 'styled-components'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppState } from '../../redux/state'
@@ -22,7 +22,7 @@ export const MapContainer = () => {
 
     const props = useSpring({
         left: fullscreen ? '0px' : '420px',
-        config: config.stiff,
+        config: { mass: 1, tension: 350, friction: 35 },
     })
 
     return (
