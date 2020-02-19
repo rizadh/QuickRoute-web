@@ -6,16 +6,20 @@ import { AppState } from '../../redux/state'
 import { MapButtons } from './MapButtons'
 import { MapView } from './MapView'
 
-const Container = styled.div<{ hidden: boolean }>`
-    position: relative;
+const Container = styled.div<{ fullscreen: boolean }>`
+    position: absolute;
+    left: 420px;
+    right: 0;
+    height: 100%;
     display: flex;
     flex-grow: 1;
 
-    /* Must use 'display: none' because removing MapContainer leads to empty map */
-    ${({ hidden }) =>
-        hidden &&
+    transition: left 0.2s;
+
+    ${({ fullscreen }) =>
+        fullscreen &&
         css`
-            display: none;
+            left: 0;
         `}
 `
 
@@ -24,7 +28,7 @@ export const MapContainer = () => {
     const compactMode = useCompactMode()
 
     return (
-        <Container hidden={compactMode && !editorIsHidden}>
+        <Container fullscreen={compactMode || editorIsHidden}>
             <MapView />
             <MapButtons />
         </Container>

@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { useAccentColor } from '../../hooks/useAccentColor'
 import { useDarkMode } from '../../hooks/useDarkMode'
-import { useWindowSize } from '../../hooks/useWindowSize'
 import { AppAction } from '../../redux/actionTypes'
 import { routeInformation } from '../../redux/selectors'
 import { AppState } from '../../redux/state'
@@ -43,12 +42,11 @@ export const MapView = () => {
     const status = useSelector((state: AppState) => routeInformation(state).status)
     const darkMode = useDarkMode()
     const accentColor = useAccentColor()
-    const windowSize = useWindowSize()
     const centerMap = useCallback(
         (animate: boolean) => {
-            if (!autofitIsEnabled || !map) return
+            if (!autofitIsEnabled) return
 
-            map.showItems([...(map.annotations || []), ...map.overlays], {
+            map?.showItems([...(map.annotations || []), ...map.overlays], {
                 animate,
             })
         },
@@ -150,7 +148,15 @@ export const MapView = () => {
     }, [map, waypoints, fetchedPlaces, fetchedRoutes, darkMode])
 
     useEffect(() => centerMap(true), [autofitIsEnabled])
-    useEffect(() => centerMap(false), [map, windowSize.width, windowSize.height, editorIsHidden])
+    useEffect(() => {
+        if (!mapviewRef.current) return
+
+        if (window.ResizeObserver) {
+            new window.ResizeObserver(() => {
+                centerMap(false)
+            }).observe(mapviewRef.current)
+        }
+    }, [centerMap])
 
     useEffect(() => {
         if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light

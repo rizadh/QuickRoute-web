@@ -42,11 +42,11 @@ export const MapButtons = () => {
 
     return (
         <Container>
-            {editorIsHidden && (
+            <CSSTransition timeout={100} in={editorIsHidden} classNames="transition" unmountOnExit={true}>
                 <PrimaryButton onClick={showEditorPane}>
                     <i className={`fas fa-fw fa-${attributesForEditorPane(editorPane).iconName}`} />
                 </PrimaryButton>
-            )}
+            </CSSTransition>
             <CSSTransition timeout={100} in={!autofitIsEnabled} classNames="transition" unmountOnExit={true}>
                 <WarningButton onClick={enableAutofit}>
                     <i className="fas fa-fw fa-route" /> Show Route
