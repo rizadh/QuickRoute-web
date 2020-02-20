@@ -35,9 +35,9 @@ export const ErrorDialog = () => {
     const clearError = useCallback(() => dispatch({ type: 'CLEAR_ERROR' }), [])
 
     const containerTransitions = useTransition(error, null, {
-        from: { transform: 'translateY(-100%)' },
-        enter: { transform: 'translateY(0%)' },
-        leave: { transform: 'translateY(-100%)' },
+        from: { transform: 'translateY(-100%)', opacity: 0 },
+        enter: { transform: 'translateY(0%)', opacity: 1 },
+        leave: { transform: 'translateY(-100%)', opacity: 0 },
         config: { mass: 1, tension: 350, friction: 35 },
     })
 
