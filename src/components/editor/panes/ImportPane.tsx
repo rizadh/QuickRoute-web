@@ -5,7 +5,7 @@ import { useInput } from '../../../hooks/useInput'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
 import { Alert, WarningAlert } from '../../common/Alert'
-import { DangerButton, PrimaryButton } from '../../common/Button'
+import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
 import { Link } from '../../common/Link'
@@ -65,17 +65,17 @@ export const ImportPane = () => {
 
     const footer = importInProgress ? (
         <>
-            <PrimaryButton disabled={true}>
+            <Button variant={Variant.Primary} disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
-            </PrimaryButton>
-            <DangerButton onClick={cancelImport}>
+            </Button>
+            <Button variant={Variant.Danger} onClick={cancelImport}>
                 <i className="fas fa-ban" /> Cancel
-            </DangerButton>
+            </Button>
         </>
     ) : (
-        <PrimaryButton onClick={importWaypoints} disabled={!driverNumberIsValid || !passwordIsValid}>
+        <Button variant={Variant.Primary} onClick={importWaypoints} disabled={!driverNumberIsValid || !passwordIsValid}>
             <i className="fas fa-fw fa-arrow-alt-circle-down" /> Import
-        </PrimaryButton>
+        </Button>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />

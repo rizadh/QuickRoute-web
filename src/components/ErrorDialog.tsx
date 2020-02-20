@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { animated, useTransition } from 'react-spring'
 import styled from 'styled-components'
 import { AppState } from '../redux/state'
-import { SecondaryButton } from './common/Button'
+import { Button, Variant } from './common/Button'
 
 const Container = animated(styled.div`
     position: absolute;
@@ -47,9 +47,9 @@ export const ErrorDialog = () => {
                 ({ item, key, props }) =>
                     item && (
                         <Container key={key} style={props}>
-                            <SecondaryButton onClick={clearError}>
+                            <Button variant={Variant.Secondary} onClick={clearError}>
                                 <i className="fa fa-fw fa-times" />
-                            </SecondaryButton>
+                            </Button>
                             {item}
                         </Container>
                     ),

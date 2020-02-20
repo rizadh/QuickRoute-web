@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group'
 import styled from 'styled-components'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState, attributesForEditorPane } from '../../redux/state'
-import { PrimaryButton, WarningButton } from '../common/Button'
+import { Button, Variant } from '../common/Button'
 import compactBreakpoint from '../constants/compactBreakpoint'
 
 const Container = styled.div`
@@ -43,14 +43,14 @@ export const MapButtons = () => {
     return (
         <Container>
             <CSSTransition timeout={200} in={editorIsHidden} classNames="transition" unmountOnExit={true}>
-                <PrimaryButton onClick={showEditorPane}>
+                <Button variant={Variant.Primary} onClick={showEditorPane}>
                     <i className={`fas fa-fw fa-${attributesForEditorPane(editorPane).iconName}`} />
-                </PrimaryButton>
+                </Button>
             </CSSTransition>
             <CSSTransition timeout={200} in={!autofitIsEnabled} classNames="transition" unmountOnExit={true}>
-                <WarningButton onClick={enableAutofit}>
+                <Button variant={Variant.Warning} onClick={enableAutofit}>
                     <i className="fas fa-fw fa-route" /> Show Route
-                </WarningButton>
+                </Button>
             </CSSTransition>
         </Container>
     )

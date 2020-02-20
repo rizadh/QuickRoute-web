@@ -6,7 +6,7 @@ import { useInput } from '../../../hooks/useInput'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
 import { Alert, WarningAlert } from '../../common/Alert'
-import { DangerButton, PrimaryButton } from '../../common/Button'
+import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
 import { WaypointEditorTemplate } from '../WaypointEditor'
@@ -88,21 +88,21 @@ export const OptimizePane = () => {
 
     const footer = optimizationInProgress ? (
         <>
-            <PrimaryButton disabled={true}>
+            <Button variant={Variant.Primary} disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing
-            </PrimaryButton>
-            <DangerButton onClick={cancelOptimize}>
+            </Button>
+            <Button variant={Variant.Danger} onClick={cancelOptimize}>
                 <i className="fas fa-ban" /> Cancel
-            </DangerButton>
+            </Button>
         </>
     ) : (
         <>
-            <PrimaryButton onClick={optimizeDistance} disabled={insufficientWaypoints}>
+            <Button variant={Variant.Primary} onClick={optimizeDistance} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-ruler-vertical" /> Optimize Distance
-            </PrimaryButton>
-            <PrimaryButton onClick={optimizeTime} disabled={insufficientWaypoints}>
+            </Button>
+            <Button variant={Variant.Primary} onClick={optimizeTime} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-stopwatch" /> Optimize Route
-            </PrimaryButton>
+            </Button>
         </>
     )
 

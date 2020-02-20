@@ -14,7 +14,7 @@ import { createWaypointFromAddress } from '../../../redux/util/createWaypointFro
 import { isValidAddress } from '../../../redux/validator'
 import { Alert } from '../../common/Alert'
 import { DangerAlert } from '../../common/Alert'
-import { DangerButton, PrimaryButton } from '../../common/Button'
+import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
 import { WaypointEditorTemplate } from '../WaypointEditor'
@@ -101,32 +101,37 @@ export const WaypointsPaneFooter = () => {
 
     return selectedWaypointsCount > 0 ? (
         <>
-            <DangerButton onClick={deleteSelectedWaypoints}>
+            <Button variant={Variant.Danger} onClick={deleteSelectedWaypoints}>
                 <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
                 {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
-            </DangerButton>
-            <PrimaryButton onClick={deselectAllWaypoints}>
+            </Button>
+            <Button variant={Variant.Primary} onClick={deselectAllWaypoints}>
                 <i className="fas fa-fw fa-ban" /> Cancel
-            </PrimaryButton>
+            </Button>
         </>
     ) : (
         <>
             <InputRow>
                 <Input type="text" placeholder="New waypoint" {...waypointFieldProps} autoFocus={!isMobileDevice} />
-                <PrimaryButton title="Add waypoint" onClick={addWaypoint} disabled={!waypointIsValid}>
+                <Button
+                    variant={Variant.Primary}
+                    title="Add waypoint"
+                    onClick={addWaypoint}
+                    disabled={!waypointIsValid}
+                >
                     <i className="fas fa-fw fa-plus" />
-                </PrimaryButton>
+                </Button>
             </InputRow>
-            <PrimaryButton onClick={generatePdf} disabled={waypoints.length === 0}>
+            <Button variant={Variant.Primary} onClick={generatePdf} disabled={waypoints.length === 0}>
                 <i className={'fas fa-fw fa-file-download'} /> Save PDF
-            </PrimaryButton>
-            <PrimaryButton onClick={reverseWaypoints} disabled={waypoints.length < 2}>
+            </Button>
+            <Button variant={Variant.Primary} onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                 <i className="fas fa-fw fa-exchange-alt" /> Reverse
-            </PrimaryButton>
+            </Button>
             {(navigator as INavigator).share && (
-                <PrimaryButton onClick={shareWaypoints} disabled={waypoints.length === 0}>
+                <Button variant={Variant.Primary} onClick={shareWaypoints} disabled={waypoints.length === 0}>
                     <i className="fas fa-fw fa-share" /> Share
-                </PrimaryButton>
+                </Button>
             )}
         </>
     )

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
 import { Alert, WarningAlert } from '../../common/Alert'
-import { PrimaryButton } from '../../common/Button'
+import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
 import { WaypointEditorTemplate } from '../WaypointEditor'
@@ -101,16 +101,16 @@ export const NavigatePane = () => {
                 <InputRow key={url}>
                     <Input type="text" value={url} readOnly={true} />
                     {(navigator as INavigator).share && (
-                        <PrimaryButton onClick={shareLink(index)} title="Share this link">
+                        <Button variant={Variant.Primary} onClick={shareLink(index)} title="Share this link">
                             <i className="fas fa-fw fa-share" />
-                        </PrimaryButton>
+                        </Button>
                     )}
-                    <PrimaryButton onClick={copyLink(index)} title="Copy this link to clipboard">
+                    <Button variant={Variant.Primary} onClick={copyLink(index)} title="Copy this link to clipboard">
                         <i className="fas fa-fw fa-clipboard" />
-                    </PrimaryButton>
-                    <PrimaryButton onClick={openUrl(index)} title="Open this link">
+                    </Button>
+                    <Button variant={Variant.Primary} onClick={openUrl(index)} title="Open this link">
                         <i className="fas fa-fw fa-external-link-alt" />
-                    </PrimaryButton>
+                    </Button>
                 </InputRow>
             ))}
         </>
@@ -119,16 +119,16 @@ export const NavigatePane = () => {
     const footer = (
         <>
             {(navigator as INavigator).share && (
-                <PrimaryButton onClick={shareAllLinks} disabled={insufficientWaypoints}>
+                <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
                     <i className="fas fa-fw fa-share" /> Share All
-                </PrimaryButton>
+                </Button>
             )}
-            <PrimaryButton onClick={copyAllLinks} disabled={insufficientWaypoints}>
+            <Button variant={Variant.Primary} onClick={copyAllLinks} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-clipboard" /> Copy All
-            </PrimaryButton>
-            <PrimaryButton onClick={openAllLinks} disabled={insufficientWaypoints}>
+            </Button>
+            <Button variant={Variant.Primary} onClick={openAllLinks} disabled={insufficientWaypoints}>
                 <i className="fas fa-fw fa-external-link-alt" /> Open All
-            </PrimaryButton>
+            </Button>
         </>
     )
 

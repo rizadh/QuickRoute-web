@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState, attributesForEditorPane, EditorPane } from '../../redux/state'
-import { PrimaryButton, SecondaryButton } from '../common/Button'
+import { Button, Variant } from '../common/Button'
 
 const Wrapper = styled.div`
     margin: var(--standard-margin);
@@ -20,7 +20,7 @@ type SelectorButtonProps = {
     className?: ButtonHTMLAttributes<HTMLButtonElement>['className'];
 }
 
-const SelectorButton = ({ pane, className }: SelectorButtonProps) => {
+const SelectorButton = styled(({ pane, className }: SelectorButtonProps) => {
     const selected = useSelector((state: AppState) => state.editorPane === pane)
     const paneIsBusy = useSelector(
         ({ importInProgress, optimizationInProgress }: AppState) => importInProgress || optimizationInProgress,
@@ -29,19 +29,20 @@ const SelectorButton = ({ pane, className }: SelectorButtonProps) => {
     const setPane = useCallback(() => dispatch({ type: 'SET_EDITOR_PANE', editorPane: pane }), [])
     const compactMode = useCompactMode()
 
-    const Button = selected ? PrimaryButton : SecondaryButton
-
     const attributes = attributesForEditorPane(pane)
 
     return (
-        <Button className={className} disabled={paneIsBusy} onClick={selected ? undefined : setPane}>
+        <Button
+            variant={selected ? Variant.Primary : Variant.Secondary}
+            className={className}
+            disabled={paneIsBusy}
+            onClick={selected ? undefined : setPane}
+        >
             <i className={`fas fa-fw fa-${attributes.iconName}`} />
             {!compactMode && ` ${attributes.displayName}`}
         </Button>
     )
-}
-
-const StyledSelectorButton = styled(SelectorButton)`
+})`
     margin: calc(var(--standard-margin) / 4);
 
     line-height: 1;
@@ -50,11 +51,11 @@ const StyledSelectorButton = styled(SelectorButton)`
 export const PaneSelector = () => (
     <Wrapper>
         <Container>
-            <StyledSelectorButton pane={EditorPane.Waypoints} />
-            <StyledSelectorButton pane={EditorPane.BulkEdit} />
-            <StyledSelectorButton pane={EditorPane.Navigate} />
-            <StyledSelectorButton pane={EditorPane.Import} />
-            <StyledSelectorButton pane={EditorPane.Optimize} />
+            <SelectorButton pane={EditorPane.Waypoints} />
+            <SelectorButton pane={EditorPane.BulkEdit} />
+            <SelectorButton pane={EditorPane.Navigate} />
+            <SelectorButton pane={EditorPane.Import} />
+            <SelectorButton pane={EditorPane.Optimize} />
         </Container>
     </Wrapper>
 )

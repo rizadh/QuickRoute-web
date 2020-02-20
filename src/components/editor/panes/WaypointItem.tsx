@@ -6,7 +6,7 @@ import { useInput } from '../../../hooks/useInput'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
 import { isValidAddress } from '../../../redux/validator'
-import { DangerButton, PrimaryButton, SecondaryButton } from '../../common/Button'
+import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
 
@@ -158,18 +158,18 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                                     <i className="fas fa-fw fa-circle-notch fa-spin" />
                                 </SecondaryStatusIndicator>
                             )}
-                            <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
+                            <Button variant={Variant.Danger} onClick={deleteWaypoint} title="Delete waypoint">
                                 <i className="fas fa-fw fa-trash-alt" />
-                            </DangerButton>
+                            </Button>
                         </>
                     ) : (
                         <>
-                            <SecondaryButton onClick={resetWaypointField} title="Revert waypoint">
+                            <Button variant={Variant.Secondary} onClick={resetWaypointField} title="Revert waypoint">
                                 <i className="fas fa-fw fa-times" />
-                            </SecondaryButton>
-                            <PrimaryButton onClick={commitWaypointField} title="Change waypoint">
+                            </Button>
+                            <Button variant={Variant.Primary} onClick={commitWaypointField} title="Change waypoint">
                                 <i className="fas fa-fw fa-check" />
-                            </PrimaryButton>
+                            </Button>
                         </>
                     )}
                 </Container>

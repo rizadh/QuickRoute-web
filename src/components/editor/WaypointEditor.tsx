@@ -7,7 +7,7 @@ import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState, EditorPane } from '../../redux/state'
 import { Alert } from '../common/Alert'
-import { PrimaryButton } from '../common/Button'
+import { Button, Variant } from '../common/Button'
 import { InputRow } from '../common/InputRow'
 import { Link } from '../common/Link'
 import compactBreakpoint from '../constants/compactBreakpoint'
@@ -128,7 +128,7 @@ const Footer = styled.div`
     }
 `
 
-const HideButton = styled(PrimaryButton)`
+const HideButton = styled(Button)`
     float: right;
     margin: var(--standard-margin);
 `
@@ -170,7 +170,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                 item ? null : (
                     <Container style={props} key={key}>
                         <Header>
-                            <HideButton title="Minimize editor" onClick={hideEditorPane}>
+                            <HideButton title="Minimize editor" onClick={hideEditorPane} variant={Variant.Primary}>
                                 {compactMode ? (
                                     <i className="fas fa-fw fa-map-marked" />
                                 ) : (
