@@ -37,7 +37,7 @@ if (queryWaypointsValue) {
     } catch {
         store.dispatch({
             type: 'ERROR_OCCURRED',
-            error: new Error('Waypoint were provided in URL but could not be parsed'),
+            error: 'Waypoints provided in URL could not be parsed',
         })
     }
 }

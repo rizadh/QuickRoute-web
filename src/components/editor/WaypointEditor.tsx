@@ -6,7 +6,7 @@ import { appVersion } from '../..'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
 import { AppState, EditorPane } from '../../redux/state'
-import { Alert, DangerAlert } from '../common/Alert'
+import { Alert } from '../common/Alert'
 import { PrimaryButton } from '../common/Button'
 import { InputRow } from '../common/InputRow'
 import { Link } from '../common/Link'
@@ -151,7 +151,6 @@ type WaypointEditorTemplateProps = {
 }
 
 export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateProps) => {
-    const error = useSelector((state: AppState) => state.error)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
@@ -187,10 +186,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             </AppTitle>
                             <PaneSelector />
                         </Header>
-                        <Body>
-                            {error && <DangerAlert>{error.message}</DangerAlert>}
-                            {body}
-                        </Body>
+                        <Body>{body}</Body>
                         <Footer>{footer}</Footer>
                         <InfoBar />
                     </Container>

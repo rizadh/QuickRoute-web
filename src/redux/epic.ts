@@ -355,11 +355,13 @@ const importWaypointsEpic: AppEpic = action$ =>
                                 : of({
                                       type: 'IMPORT_WAYPOINTS_FAILED',
                                       driverNumber,
-                                      error: new Error(`No waypoints returned for driver ${driverNumber}`),
+                                      error: `No waypoints returned for driver ${driverNumber}`,
                                   }),
                     ),
                     catchError<AppAction, ObservableInput<AppAction>>(error =>
-                        error instanceof Error ? of({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error }) : EMPTY,
+                        error instanceof Error
+                            ? of({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error: error.message })
+                            : EMPTY,
                     ),
                     takeUntil(
                         action$.pipe(

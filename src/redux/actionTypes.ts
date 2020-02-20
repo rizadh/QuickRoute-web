@@ -159,7 +159,7 @@ export type ImportWaypointsSuccessAction = Readonly<{
 export type ImportWaypointsFailedAction = Readonly<{
     type: 'IMPORT_WAYPOINTS_FAILED';
     driverNumber: string;
-    error: Error;
+    error: string;
 }>
 
 export type OptimizeRouteAction = Readonly<{
@@ -194,12 +194,12 @@ export type OptimizeRouteFailedAction = Readonly<{
     optimizationParameter: OptimizationParameter;
     startPoint?: string;
     endPoint?: string;
-    error: Error;
+    error: string;
 }>
 
 export type SetErrorAction = Readonly<{
     type: 'ERROR_OCCURRED';
-    error: Error;
+    error: string;
 }>
 
 export type ClearErrorAction = Readonly<{

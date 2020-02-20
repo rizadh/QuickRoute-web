@@ -72,7 +72,7 @@ export const WaypointsPaneFooter = () => {
         } catch (error) {
             dispatch({
                 type: 'ERROR_OCCURRED',
-                error: new Error(`Failed to generate PDF (ERROR: '${error}')`),
+                error: `Failed to generate PDF (ERROR: '${error}')`,
             })
         }
     }, [waypoints])
@@ -89,7 +89,7 @@ export const WaypointsPaneFooter = () => {
             if (e instanceof Error && e.name !== 'AbortError') {
                 dispatch({
                     type: 'ERROR_OCCURRED',
-                    error: new Error(`Share failed: ${e.message}`),
+                    error: `Share failed: ${e.message}`,
                 })
             }
         }

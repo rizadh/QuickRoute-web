@@ -98,5 +98,5 @@ export type AppState = Readonly<{
     editorIsHidden: boolean;
     importInProgress: boolean;
     optimizationInProgress: boolean;
-    error: Error | null;
+    error: string | null;
 }>
