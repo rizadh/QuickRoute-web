@@ -1,3 +1,4 @@
+import { OptimizationParameter } from '../generated/graphql'
 import { EditorPane, Place, Route, Waypoint } from './state'
 
 export type ReplaceWaypointsAction = Readonly<{
@@ -121,14 +122,6 @@ export type DisableAutofitAction = Readonly<{
     type: 'DISABLE_AUTOFIT';
 }>
 
-export type UseMutedMapAction = Readonly<{
-    type: 'USE_MUTED_MAP';
-}>
-
-export type UseRegularMapAction = Readonly<{
-    type: 'USE_REGULAR_MAP';
-}>
-
 export type SetEditorPaneAction = Readonly<{
     type: 'SET_EDITOR_PANE';
     editorPane: EditorPane;
@@ -166,13 +159,8 @@ export type ImportWaypointsSuccessAction = Readonly<{
 export type ImportWaypointsFailedAction = Readonly<{
     type: 'IMPORT_WAYPOINTS_FAILED';
     driverNumber: string;
-    error: Error;
+    error: string;
 }>
-
-export enum OptimizationParameter {
-    Time = 'time',
-    Distance = 'distance',
-}
 
 export type OptimizeRouteAction = Readonly<{
     type: 'OPTIMIZE_ROUTE';
@@ -206,12 +194,12 @@ export type OptimizeRouteFailedAction = Readonly<{
     optimizationParameter: OptimizationParameter;
     startPoint?: string;
     endPoint?: string;
-    error: Error;
+    error: string;
 }>
 
 export type SetErrorAction = Readonly<{
     type: 'ERROR_OCCURRED';
-    error: Error;
+    error: string;
 }>
 
 export type ClearErrorAction = Readonly<{
@@ -242,8 +230,6 @@ export type AppAction =
     | FetchRouteFailedAction
     | EnableAutofitAction
     | DisableAutofitAction
-    | UseMutedMapAction
-    | UseRegularMapAction
     | SetEditorPaneAction
     | HideEditorPaneAction
     | ShowEditorPaneAction

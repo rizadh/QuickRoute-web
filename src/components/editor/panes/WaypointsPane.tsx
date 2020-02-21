@@ -3,22 +3,21 @@ import { saveAs } from 'file-saver'
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { apolloClient } from '..'
-import { GeneratePdfQuery, GeneratePdfQueryVariables } from '../generated/graphql'
-import { useCompactMode } from '../hooks/useCompactMode'
-import { useInput } from '../hooks/useInput'
-import { GeneratePDF } from '../queries'
-import { AppAction } from '../redux/actionTypes'
-import { routeInformation } from '../redux/selectors'
-import { AppState } from '../redux/state'
-import { createWaypointFromAddress } from '../redux/util/createWaypointFromAddress'
-import { isValidAddress } from '../redux/validator'
-import { Alert } from './Alert'
-import { DangerAlert } from './Alert'
-import { DangerButton, PrimaryButton } from './Button'
-import { Input } from './Input'
-import { InputRow } from './InputRow'
-import { WaypointEditorTemplate } from './WaypointEditor'
+import { apolloClient } from '../../..'
+import { GeneratePdfQuery, GeneratePdfQueryVariables } from '../../../generated/graphql'
+import { useInput } from '../../../hooks/useInput'
+import { GeneratePDF } from '../../../queries'
+import { AppAction } from '../../../redux/actionTypes'
+import { routeInformation } from '../../../redux/selectors'
+import { AppState } from '../../../redux/state'
+import { createWaypointFromAddress } from '../../../redux/util/createWaypointFromAddress'
+import { isValidAddress } from '../../../redux/validator'
+import { Alert } from '../../common/Alert'
+import { DangerAlert } from '../../common/Alert'
+import { Button, Variant } from '../../common/Button'
+import { Input } from '../../common/Input'
+import { InputRow } from '../../common/InputRow'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 import { WaypointList } from './WaypointList'
 
 export const WaypointsPane = () => (
@@ -34,8 +33,8 @@ export const WaypointsPaneBody = () => {
             {currentRouteInformation.status === 'FAILED' && (
                 <DangerAlert>One or more waypoints could not be routed</DangerAlert>
             )}
-            {waypointCount === 0 && <Alert>Enter an address to begin</Alert>}
-            {waypointCount === 1 && <Alert>Enter another address to show route information</Alert>}
+            {waypointCount === 0 && <Alert>Add a waypoint to begin</Alert>}
+            {waypointCount === 1 && <Alert>Add another waypoint to show route information</Alert>}
             <WaypointList />
         </>
     )
@@ -51,7 +50,6 @@ export const WaypointsPaneFooter = () => {
         resetAfterCommit: true,
     })
 
-    const compactMode = useCompactMode()
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
@@ -74,7 +72,7 @@ export const WaypointsPaneFooter = () => {
         } catch (error) {
             dispatch({
                 type: 'ERROR_OCCURRED',
-                error: new Error(`Failed to generate PDF (ERROR: '${error}')`),
+                error: `Failed to generate PDF (ERROR: '${error}')`,
             })
         }
     }, [waypoints])
@@ -91,7 +89,7 @@ export const WaypointsPaneFooter = () => {
             if (e instanceof Error && e.name !== 'AbortError') {
                 dispatch({
                     type: 'ERROR_OCCURRED',
-                    error: new Error(`Share failed: ${e.message}`),
+                    error: `Share failed: ${e.message}`,
                 })
             }
         }
@@ -103,33 +101,37 @@ export const WaypointsPaneFooter = () => {
 
     return selectedWaypointsCount > 0 ? (
         <>
-            <DangerButton onClick={deleteSelectedWaypoints}>
+            <Button variant={Variant.Danger} onClick={deleteSelectedWaypoints}>
                 <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
                 {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
-            </DangerButton>
-            <PrimaryButton onClick={deselectAllWaypoints}>
+            </Button>
+            <Button variant={Variant.Primary} onClick={deselectAllWaypoints}>
                 <i className="fas fa-fw fa-ban" /> Cancel
-            </PrimaryButton>
+            </Button>
         </>
     ) : (
         <>
             <InputRow>
                 <Input type="text" placeholder="New waypoint" {...waypointFieldProps} autoFocus={!isMobileDevice} />
-                <PrimaryButton title="Add waypoint" onClick={addWaypoint} disabled={!waypointIsValid}>
+                <Button
+                    variant={Variant.Primary}
+                    title="Add waypoint"
+                    onClick={addWaypoint}
+                    disabled={!waypointIsValid}
+                >
                     <i className="fas fa-fw fa-plus" />
-                </PrimaryButton>
+                </Button>
             </InputRow>
-            <PrimaryButton onClick={generatePdf} disabled={waypoints.length === 0}>
-                <i className={'fas fa-fw fa-' + (compactMode ? 'download' : 'file-pdf')} />
-                {compactMode ? ' PDF' : ' Save PDF'}
-            </PrimaryButton>
-            <PrimaryButton onClick={reverseWaypoints} disabled={waypoints.length < 2}>
+            <Button variant={Variant.Primary} onClick={generatePdf} disabled={waypoints.length === 0}>
+                <i className={'fas fa-fw fa-file-download'} /> Save PDF
+            </Button>
+            <Button variant={Variant.Primary} onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                 <i className="fas fa-fw fa-exchange-alt" /> Reverse
-            </PrimaryButton>
+            </Button>
             {(navigator as INavigator).share && (
-                <PrimaryButton onClick={shareWaypoints} disabled={waypoints.length === 0}>
+                <Button variant={Variant.Primary} onClick={shareWaypoints} disabled={waypoints.length === 0}>
                     <i className="fas fa-fw fa-share" /> Share
-                </PrimaryButton>
+                </Button>
             )}
         </>
     )

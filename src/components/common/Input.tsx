@@ -22,17 +22,19 @@ export const Input = styled.input`
         color: var(--secondary-text-color);
     }
 
-    &:not(:read-only):hover {
-        background-color: var(--input-focus-color);
+    @media (hover: hover) {
+        &:not(:read-only):hover {
+            background-color: var(--input-focus-color);
+        }
     }
 
     &:not(:read-only):focus {
         background-color: var(--input-focus-color);
-        border-color: var(--apple-system-blue);
+        border-color: var(--accent-color);
     }
 
     :read-only {
-        background-color: var(--input-focus-color);
+        background-color: var(--input-disabled-color);
         color: var(--secondary-text-color);
     }
 `

@@ -2,13 +2,13 @@ import React, { Dispatch, useCallback } from 'react'
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { useInput } from '../hooks/useInput'
-import { AppAction } from '../redux/actionTypes'
-import { AppState } from '../redux/state'
-import { isValidAddress } from '../redux/validator'
-import { DangerButton, PrimaryButton, SecondaryButton } from './Button'
-import { Input } from './Input'
-import { InputRow } from './InputRow'
+import { useInput } from '../../../hooks/useInput'
+import { AppAction } from '../../../redux/actionTypes'
+import { AppState } from '../../../redux/state'
+import { isValidAddress } from '../../../redux/validator'
+import { Button, Variant } from '../../common/Button'
+import { Input } from '../../common/Input'
+import { InputRow } from '../../common/InputRow'
 
 const Container = styled(InputRow)`
     transition: opacity 0.2s;
@@ -27,7 +27,7 @@ const DragHandle = styled.span<{ isSelected: boolean }>`
     font-variant-numeric: tabular-nums;
     font-weight: 500;
 
-    background-color: var(${({ isSelected }) => (isSelected ? '--apple-system-blue' : '--secondary-fill-color')});
+    background-color: var(${({ isSelected }) => (isSelected ? '--accent-color' : '--tertiary-fill-color')});
 `
 
 const StatusIndicator = styled.span`
@@ -44,7 +44,7 @@ const SecondaryStatusIndicator = styled(StatusIndicator)`
     color: var(--secondary-text-color);
 `
 const DangerStatusIndicator = styled(StatusIndicator)`
-    color: var(--apple-system-red);
+    color: var(--error-color);
 `
 
 type WaypointItemProps = {
@@ -158,18 +158,18 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                                     <i className="fas fa-fw fa-circle-notch fa-spin" />
                                 </SecondaryStatusIndicator>
                             )}
-                            <DangerButton onClick={deleteWaypoint} title="Delete waypoint">
+                            <Button variant={Variant.Danger} onClick={deleteWaypoint} title="Delete waypoint">
                                 <i className="fas fa-fw fa-trash-alt" />
-                            </DangerButton>
+                            </Button>
                         </>
                     ) : (
                         <>
-                            <SecondaryButton onClick={resetWaypointField} title="Revert waypoint">
+                            <Button variant={Variant.Secondary} onClick={resetWaypointField} title="Revert waypoint">
                                 <i className="fas fa-fw fa-times" />
-                            </SecondaryButton>
-                            <PrimaryButton onClick={commitWaypointField} title="Change waypoint">
+                            </Button>
+                            <Button variant={Variant.Primary} onClick={commitWaypointField} title="Change waypoint">
                                 <i className="fas fa-fw fa-check" />
-                            </PrimaryButton>
+                            </Button>
                         </>
                     )}
                 </Container>

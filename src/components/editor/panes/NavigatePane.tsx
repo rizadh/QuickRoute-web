@@ -3,19 +3,17 @@ import chunk from 'lodash/chunk'
 import { stringify } from 'query-string'
 import React, { Dispatch, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useCompactMode } from '../hooks/useCompactMode'
-import { AppAction } from '../redux/actionTypes'
-import { AppState } from '../redux/state'
-import { WarningAlert } from './Alert'
-import { PrimaryButton } from './Button'
-import { Input } from './Input'
-import { InputRow } from './InputRow'
-import { WaypointEditorTemplate } from './WaypointEditor'
+import { AppAction } from '../../../redux/actionTypes'
+import { AppState } from '../../../redux/state'
+import { Alert, WarningAlert } from '../../common/Alert'
+import { Button, Variant } from '../../common/Button'
+import { Input } from '../../common/Input'
+import { InputRow } from '../../common/InputRow'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 
-export const LinksPane = () => {
+export const NavigatePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
-    const compactMode = useCompactMode()
 
     const navigationLinks = useMemo(() => {
         return chunk(waypoints, 10)
@@ -65,7 +63,7 @@ export const LinksPane = () => {
                 if (e instanceof Error && e.name !== 'AbortError') {
                     dispatch({
                         type: 'ERROR_OCCURRED',
-                        error: new Error(`Share failed: ${e.message}`),
+                        error: `Share failed: ${e.message}`,
                     })
                 }
             }
@@ -83,7 +81,7 @@ export const LinksPane = () => {
             if (e instanceof Error && e.name !== 'AbortError') {
                 dispatch({
                     type: 'ERROR_OCCURRED',
-                    error: new Error(`Share failed: ${e.message}`),
+                    error: `Share failed: ${e.message}`,
                 })
             }
         }
@@ -95,20 +93,24 @@ export const LinksPane = () => {
         <WarningAlert>Add one or more waypoints to generate links</WarningAlert>
     ) : (
         <>
+            <Alert>
+                Use the links below to navigate using Google Maps. Each link contains up to ten waypoints due to
+                Google's limitations
+            </Alert>
             {navigationLinks.map((url, index) => (
                 <InputRow key={url}>
                     <Input type="text" value={url} readOnly={true} />
                     {(navigator as INavigator).share && (
-                        <PrimaryButton onClick={shareLink(index)} title="Share this link">
+                        <Button variant={Variant.Primary} onClick={shareLink(index)} title="Share this link">
                             <i className="fas fa-fw fa-share" />
-                        </PrimaryButton>
+                        </Button>
                     )}
-                    <PrimaryButton onClick={copyLink(index)} title="Copy this link to clipboard">
+                    <Button variant={Variant.Primary} onClick={copyLink(index)} title="Copy this link to clipboard">
                         <i className="fas fa-fw fa-clipboard" />
-                    </PrimaryButton>
-                    <PrimaryButton onClick={openUrl(index)} title="Open this link">
+                    </Button>
+                    <Button variant={Variant.Primary} onClick={openUrl(index)} title="Open this link">
                         <i className="fas fa-fw fa-external-link-alt" />
-                    </PrimaryButton>
+                    </Button>
                 </InputRow>
             ))}
         </>
@@ -117,19 +119,16 @@ export const LinksPane = () => {
     const footer = (
         <>
             {(navigator as INavigator).share && (
-                <PrimaryButton onClick={shareAllLinks} disabled={insufficientWaypoints}>
-                    <i className="fas fa-fw fa-share" />
-                    {compactMode ? ' Share' : ' Share All'}
-                </PrimaryButton>
+                <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
+                    <i className="fas fa-fw fa-share" /> Share All
+                </Button>
             )}
-            <PrimaryButton onClick={copyAllLinks} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-clipboard" />
-                {compactMode ? ' Copy' : ' Copy All'}
-            </PrimaryButton>
-            <PrimaryButton onClick={openAllLinks} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-external-link-alt" />
-                {compactMode ? ' Open' : ' Open All'}
-            </PrimaryButton>
+            <Button variant={Variant.Primary} onClick={copyAllLinks} disabled={insufficientWaypoints}>
+                <i className="fas fa-fw fa-clipboard" /> Copy All
+            </Button>
+            <Button variant={Variant.Primary} onClick={openAllLinks} disabled={insufficientWaypoints}>
+                <i className="fas fa-fw fa-external-link-alt" /> Open All
+            </Button>
         </>
     )
 

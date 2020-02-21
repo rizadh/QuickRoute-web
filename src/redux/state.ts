@@ -44,13 +44,47 @@ export type Waypoint = Readonly<{
     uuid: string;
     selected?: number;
 }>
+type EditorPaneAttributes = {
+    displayName: string;
+    iconName: string;
+}
+
+export const attributesForEditorPane = (editorPane: EditorPane): EditorPaneAttributes => {
+    switch (editorPane) {
+        case EditorPane.Waypoints:
+            return {
+                displayName: 'Waypoints',
+                iconName: 'stream',
+            }
+        case EditorPane.BulkEdit:
+            return {
+                displayName: 'Bulk Edit',
+                iconName: 'pencil-alt',
+            }
+        case EditorPane.Navigate:
+            return {
+                displayName: 'Navigate',
+                iconName: 'directions',
+            }
+        case EditorPane.Import:
+            return {
+                displayName: 'Import',
+                iconName: 'arrow-alt-circle-down',
+            }
+        case EditorPane.Optimize:
+            return {
+                displayName: 'Optimize',
+                iconName: 'star-half-alt',
+            }
+    }
+}
 
 export enum EditorPane {
-    List = 'list',
+    Waypoints = 'list',
     BulkEdit = 'bulkEdit',
     Import = 'import',
-    Links = 'urls',
-    Optimizer = 'optimizer',
+    Navigate = 'urls',
+    Optimize = 'optimizer',
 }
 
 export type Waypoints = ReadonlyArray<Waypoint>
@@ -60,10 +94,9 @@ export type AppState = Readonly<{
     fetchedPlaces: FetchedPlaces;
     fetchedRoutes: FetchedRoutes;
     autofitIsEnabled: boolean;
-    mutedMapIsEnabled: boolean;
     editorPane: EditorPane;
     editorIsHidden: boolean;
     importInProgress: boolean;
     optimizationInProgress: boolean;
-    error: Error | null;
+    error: string | null;
 }>

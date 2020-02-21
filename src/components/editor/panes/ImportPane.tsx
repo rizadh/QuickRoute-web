@@ -1,15 +1,15 @@
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useInput } from '../hooks/useInput'
-import { AppAction } from '../redux/actionTypes'
-import { AppState } from '../redux/state'
-import { Alert, WarningAlert } from './Alert'
-import { DangerButton, PrimaryButton } from './Button'
-import { Input } from './Input'
-import { InputRow } from './InputRow'
-import { Link } from './Link'
-import { WaypointEditorTemplate } from './WaypointEditor'
+import { useInput } from '../../../hooks/useInput'
+import { AppAction } from '../../../redux/actionTypes'
+import { AppState } from '../../../redux/state'
+import { Alert, WarningAlert } from '../../common/Alert'
+import { Button, Variant } from '../../common/Button'
+import { Input } from '../../common/Input'
+import { InputRow } from '../../common/InputRow'
+import { Link } from '../../common/Link'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const ImportPane = () => {
     const importInProgress = useSelector((state: AppState) => state.importInProgress)
@@ -65,17 +65,17 @@ export const ImportPane = () => {
 
     const footer = importInProgress ? (
         <>
-            <PrimaryButton disabled={true}>
+            <Button variant={Variant.Primary} disabled={true}>
                 <i className="fas fa-fw fa-spin fa-circle-notch" /> Importing
-            </PrimaryButton>
-            <DangerButton onClick={cancelImport}>
+            </Button>
+            <Button variant={Variant.Danger} onClick={cancelImport}>
                 <i className="fas fa-ban" /> Cancel
-            </DangerButton>
+            </Button>
         </>
     ) : (
-        <PrimaryButton onClick={importWaypoints} disabled={!driverNumberIsValid || !passwordIsValid}>
-            <i className="fas fa-fw fa-cloud-download-alt" /> Import
-        </PrimaryButton>
+        <Button variant={Variant.Primary} onClick={importWaypoints} disabled={!driverNumberIsValid || !passwordIsValid}>
+            <i className="fas fa-fw fa-arrow-alt-circle-down" /> Import
+        </Button>
     )
 
     return <WaypointEditorTemplate body={body} footer={footer} />

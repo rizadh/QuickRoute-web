@@ -2,12 +2,11 @@ import { sortBy } from 'lodash'
 import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { useCompactMode } from '../hooks/useCompactMode'
-import { useDarkMode } from '../hooks/useDarkMode'
-import { useWindowSize } from '../hooks/useWindowSize'
-import { AppAction } from '../redux/actionTypes'
-import { routeInformation } from '../redux/selectors'
-import { AppState } from '../redux/state'
+import { useAccentColor } from '../../hooks/useAccentColor'
+import { useDarkMode } from '../../hooks/useDarkMode'
+import { AppAction } from '../../redux/actionTypes'
+import { routeInformation } from '../../redux/selectors'
+import { AppState } from '../../redux/state'
 
 const Container = styled.div<{ blur: boolean; editorHidden: boolean }>`
     width: 100%;
@@ -35,7 +34,6 @@ export const MapView = () => {
     const fetchedPlaces = useSelector((state: AppState) => state.fetchedPlaces)
     const fetchedRoutes = useSelector((state: AppState) => state.fetchedRoutes)
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
-    const mutedMapIsEnabled = useSelector((state: AppState) => state.mutedMapIsEnabled)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const operationInProgress = useSelector(
@@ -43,22 +41,9 @@ export const MapView = () => {
     )
     const status = useSelector((state: AppState) => routeInformation(state).status)
     const darkMode = useDarkMode()
-    const compactMode = useCompactMode()
-    const windowSize = useWindowSize()
+    const accentColor = useAccentColor()
     const centerMap = useCallback(
-        (animate: boolean) => {
-            if (!autofitIsEnabled || !map) return
-
-            map.showItems([...(map.annotations || []), ...map.overlays], {
-                animate,
-                padding: new mapkit.Padding({
-                    top: compactMode ? 12 : 16,
-                    right: compactMode ? 12 : 16,
-                    bottom: compactMode ? 12 : 16,
-                    left: compactMode ? 12 : 16,
-                }),
-            })
-        },
+        (animate: boolean) => void map?.showItems([...map.annotations, ...map.overlays], { animate }),
         [autofitIsEnabled, map],
     )
 
@@ -68,6 +53,9 @@ export const MapView = () => {
         const newMap = new mapkit.Map(mapviewRef.current, {
             showsMapTypeControl: false,
             showsScale: mapkit.FeatureVisibility.Adaptive,
+            showsPointsOfInterest: false,
+            mapType: mapkit.Map.MapTypes.MutedStandard,
+            padding: new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 }),
         })
 
         const mapDidMove = () => {
@@ -86,18 +74,10 @@ export const MapView = () => {
 
     useEffect(() => {
         if (!map) return
-
-        if (compactMode) {
-            map.padding = new mapkit.Padding({ top: 0, left: 12, right: 0, bottom: 12 + 42 })
-        } else {
-            map.padding = new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 })
-        }
-    }, [map, compactMode])
-
-    useEffect(() => {
-        if (!map) return
         if (status === 'FETCHING') return
         if (operationInProgress) return
+
+        const grayColor = 'rgb(142, 142, 147)'
 
         const annotations = sortBy(
             waypoints.map((waypoint, index) => ({ waypoint, index })),
@@ -113,17 +93,14 @@ export const MapView = () => {
                     },
                 } = fetchedPlace
 
+                const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--error-color')
+
                 return new mapkit.MarkerAnnotation(new mapkit.Coordinate(latitude, longitude), {
                     glyphText: `${index + 1}`,
                     title: waypoint.address,
                     subtitle: formattedAddress,
                     animates: false,
-                    color:
-                        !selectedWaypointsCount || waypoint.selected
-                            ? darkMode
-                                ? 'rgb(255, 69, 58)'
-                                : 'rgb(255, 59, 48)'
-                            : 'rgb(142, 142, 147)',
+                    color: !selectedWaypointsCount || waypoint.selected ? errorColor : grayColor,
                 })
             }
         })
@@ -151,12 +128,7 @@ export const MapView = () => {
                         style: new mapkit.Style({
                             lineWidth: 6,
                             strokeOpacity: !selectedWaypointsCount || selected ? 0.75 : 0.5,
-                            strokeColor:
-                                !selectedWaypointsCount || selected
-                                    ? darkMode
-                                        ? 'rgb(10, 132, 255)'
-                                        : 'rgb(0, 122, 255)'
-                                    : 'rgb(142, 142, 147)',
+                            strokeColor: !selectedWaypointsCount || selected ? accentColor : grayColor,
                         }),
                     },
                 )
@@ -166,22 +138,28 @@ export const MapView = () => {
         map.annotations = annotations.filter((a): a is mapkit.MarkerAnnotation => !!a)
         map.overlays = overlays.filter((a): a is mapkit.PolygonOverlay => !!a)
 
-        centerMap(true)
+        if (autofitIsEnabled) centerMap(true)
     }, [map, waypoints, fetchedPlaces, fetchedRoutes, darkMode])
 
-    useEffect(() => centerMap(true), [autofitIsEnabled])
-    useEffect(() => centerMap(false), [map, windowSize.width, windowSize.height, editorIsHidden])
+    // Center map when autofit is enabled
+    useEffect(() => {
+        if (autofitIsEnabled) centerMap(true)
+    }, [autofitIsEnabled])
 
+    // Center map when map is resized with autofit enabled
+    useEffect(() => {
+        if (!mapviewRef.current || !autofitIsEnabled || !window.ResizeObserver) return
+
+        const observer = new window.ResizeObserver(() => centerMap(false))
+        observer.observe(mapviewRef.current)
+
+        return () => observer.disconnect()
+    }, [map, autofitIsEnabled])
+
+    // Switch map color scheme based on dark mode
     useEffect(() => {
         if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light
     }, [map, darkMode])
-
-    useEffect(() => {
-        if (map) {
-            map.mapType = mutedMapIsEnabled ? mapkit.Map.MapTypes.MutedStandard : mapkit.Map.MapTypes.Standard
-            map.showsPointsOfInterest = !mutedMapIsEnabled
-        }
-    }, [map, mutedMapIsEnabled])
 
     return (
         <Container blur={status === 'FETCHING' || operationInProgress} editorHidden={editorIsHidden} ref={mapviewRef} />

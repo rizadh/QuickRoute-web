@@ -6,6 +6,7 @@ import { apolloClient } from '..'
 import {
     ImportWaypointsQuery,
     ImportWaypointsQueryVariables,
+    OptimizationParameter,
     OptimizeQuery,
     OptimizeQueryVariables,
 } from '../generated/graphql'
@@ -28,7 +29,6 @@ import {
     ImportWaypointsCancelAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
-    OptimizationParameter,
     OptimizeRouteAction,
     OptimizeRouteCancelAction,
     ReplaceWaypointsAction,
@@ -329,8 +329,7 @@ const importWaypoints = async (driverNumber: string, password: string) => {
 }
 
 const extractAddress = (address: string) => {
-    const result = /^(.*?)[,\n]/.exec(address)
-    return result ? result[1] : address
+    return /(\d+ [\w ]+)/.exec(address)?.[1] ?? address
 }
 
 const importWaypointsEpic: AppEpic = action$ =>
@@ -351,16 +350,18 @@ const importWaypointsEpic: AppEpic = action$ =>
                                               .map(w => `${extractAddress(w.address)} ${w.postalCode}`)
                                               .map(createWaypointFromAddress),
                                       },
-                                      { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
+                                      { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
                                   ]
                                 : of({
                                       type: 'IMPORT_WAYPOINTS_FAILED',
                                       driverNumber,
-                                      error: new Error(`No waypoints returned for driver ${driverNumber}`),
+                                      error: `No waypoints returned for driver ${driverNumber}`,
                                   }),
                     ),
                     catchError<AppAction, ObservableInput<AppAction>>(error =>
-                        error instanceof Error ? of({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error }) : EMPTY,
+                        error instanceof Error
+                            ? of({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error: error.message })
+                            : EMPTY,
                     ),
                     takeUntil(
                         action$.pipe(
@@ -438,7 +439,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                             type: 'REPLACE_WAYPOINTS',
                             waypoints: optimalOrdering.map(createWaypointFromAddress),
                         },
-                        { type: 'SET_EDITOR_PANE', editorPane: EditorPane.List },
+                        { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
                     ]),
                     catchError(error => of({ type: 'OPTIMIZE_ROUTE_FAILED', optimizationParameter, error })),
                     takeUntil(

@@ -1,21 +1,20 @@
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useCompactMode } from '../hooks/useCompactMode'
-import { useInput } from '../hooks/useInput'
-import { AppAction, OptimizationParameter } from '../redux/actionTypes'
-import { AppState } from '../redux/state'
-import { Alert, WarningAlert } from './Alert'
-import { DangerButton, PrimaryButton } from './Button'
-import { Input } from './Input'
-import { InputRow } from './InputRow'
-import { WaypointEditorTemplate } from './WaypointEditor'
+import { OptimizationParameter } from '../../../generated/graphql'
+import { useInput } from '../../../hooks/useInput'
+import { AppAction } from '../../../redux/actionTypes'
+import { AppState } from '../../../redux/state'
+import { Alert, WarningAlert } from '../../common/Alert'
+import { Button, Variant } from '../../common/Button'
+import { Input } from '../../common/Input'
+import { InputRow } from '../../common/InputRow'
+import { WaypointEditorTemplate } from '../WaypointEditor'
 
 export const OptimizePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const optimizationInProgress = useSelector((state: AppState) => state.optimizationInProgress)
     const dispatch: Dispatch<AppAction> = useDispatch()
-    const compactMode = useCompactMode()
 
     const { value: startPointFieldValue, props: startPointFieldProps } = useInput()
     const { value: endPointFieldValue, props: endPointFieldProps } = useInput()
@@ -89,24 +88,21 @@ export const OptimizePane = () => {
 
     const footer = optimizationInProgress ? (
         <>
-            <PrimaryButton disabled={true}>
-                <i className="fas fa-fw fa-spin fa-circle-notch" />
-                {!compactMode && ' Optimizing'}
-            </PrimaryButton>
-            <DangerButton onClick={cancelOptimize}>
+            <Button variant={Variant.Primary} disabled={true}>
+                <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing
+            </Button>
+            <Button variant={Variant.Danger} onClick={cancelOptimize}>
                 <i className="fas fa-ban" /> Cancel
-            </DangerButton>
+            </Button>
         </>
     ) : (
         <>
-            <PrimaryButton onClick={optimizeDistance} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-ruler-combined" />
-                {compactMode ? ' Distance' : ' Optimize Distance'}
-            </PrimaryButton>
-            <PrimaryButton onClick={optimizeTime} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-clock" />
-                {compactMode ? ' Time' : ' Optimize Time'}
-            </PrimaryButton>
+            <Button variant={Variant.Primary} onClick={optimizeDistance} disabled={insufficientWaypoints}>
+                <i className="fas fa-fw fa-ruler-vertical" /> Optimize Distance
+            </Button>
+            <Button variant={Variant.Primary} onClick={optimizeTime} disabled={insufficientWaypoints}>
+                <i className="fas fa-fw fa-stopwatch" /> Optimize Route
+            </Button>
         </>
     )
 

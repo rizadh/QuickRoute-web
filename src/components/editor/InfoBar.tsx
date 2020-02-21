@@ -1,7 +1,8 @@
 import React from 'react'
 import { shallowEqual, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { routeInformation } from '../redux/selectors'
+import { routeInformation } from '../../redux/selectors'
+import compactBreakpoint from '../constants/compactBreakpoint'
 import { StatView } from './StatView'
 
 const Container = styled.div`
@@ -10,7 +11,13 @@ const Container = styled.div`
     justify-content: space-evenly;
     padding: var(--standard-margin);
 
-    border-top: var(--standard-border);
+    background-color: var(--primary-fill-color);
+
+    border-right: var(--standard-border);
+
+    @media (max-width: ${compactBreakpoint}px) {
+        border-right: none;
+    }
 `
 
 export const InfoBar = () => {
@@ -33,7 +40,7 @@ export const InfoBar = () => {
             items = 'Routing failed'
             break
         case 'NO_ROUTE':
-            items = 'Enter more waypoints'
+            items = 'Add more waypoints'
             break
         default:
             throw new Error('Invalid route information')
