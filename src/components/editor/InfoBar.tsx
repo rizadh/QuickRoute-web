@@ -40,7 +40,7 @@ export const InfoBar = () => {
             items = 'Routing failed'
             break
         case 'NO_ROUTE':
-            items = 'Enter more waypoints'
+            items = 'Add more waypoints'
             break
         default:
             throw new Error('Invalid route information')

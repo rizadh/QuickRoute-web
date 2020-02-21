@@ -33,8 +33,8 @@ export const WaypointsPaneBody = () => {
             {currentRouteInformation.status === 'FAILED' && (
                 <DangerAlert>One or more waypoints could not be routed</DangerAlert>
             )}
-            {waypointCount === 0 && <Alert>Enter an address to begin</Alert>}
-            {waypointCount === 1 && <Alert>Enter another address to show route information</Alert>}
+            {waypointCount === 0 && <Alert>Add a waypoint to begin</Alert>}
+            {waypointCount === 1 && <Alert>Add another waypoint to show route information</Alert>}
             <WaypointList />
         </>
     )
