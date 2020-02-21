@@ -43,13 +43,7 @@ export const MapView = () => {
     const darkMode = useDarkMode()
     const accentColor = useAccentColor()
     const centerMap = useCallback(
-        (animate: boolean) => {
-            if (!autofitIsEnabled) return
-
-            map?.showItems([...(map.annotations || []), ...map.overlays], {
-                animate,
-            })
-        },
+        (animate: boolean) => void map?.showItems([...map.annotations, ...map.overlays], { animate }),
         [autofitIsEnabled, map],
     )
 
@@ -144,20 +138,25 @@ export const MapView = () => {
         map.annotations = annotations.filter((a): a is mapkit.MarkerAnnotation => !!a)
         map.overlays = overlays.filter((a): a is mapkit.PolygonOverlay => !!a)
 
-        centerMap(true)
+        if (autofitIsEnabled) centerMap(true)
     }, [map, waypoints, fetchedPlaces, fetchedRoutes, darkMode])
 
-    useEffect(() => centerMap(true), [autofitIsEnabled])
+    // Center map when autofit is enabled
     useEffect(() => {
-        if (!mapviewRef.current) return
+        if (autofitIsEnabled) centerMap(true)
+    }, [autofitIsEnabled])
 
-        if (window.ResizeObserver) {
-            new window.ResizeObserver(() => {
-                centerMap(false)
-            }).observe(mapviewRef.current)
-        }
-    }, [centerMap])
+    // Center map when map is resized with autofit enabled
+    useEffect(() => {
+        if (!mapviewRef.current || !autofitIsEnabled || !window.ResizeObserver) return
 
+        const observer = new window.ResizeObserver(() => centerMap(false))
+        observer.observe(mapviewRef.current)
+
+        return () => observer.disconnect()
+    }, [map, autofitIsEnabled])
+
+    // Switch map color scheme based on dark mode
     useEffect(() => {
         if (map) map.colorScheme = darkMode ? mapkit.Map.ColorSchemes.Dark : mapkit.Map.ColorSchemes.Light
     }, [map, darkMode])
