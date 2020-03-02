@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { appVersion } from '../..'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
-import { AppState, EditorPane } from '../../redux/state'
+import { AppState, attributesForEditorPane, EditorPane } from '../../redux/state'
 import { Alert } from '../common/Alert'
 import { Button, Variant } from '../common/Button'
 import { InputRow } from '../common/InputRow'
@@ -32,37 +32,6 @@ const Container = animated(styled.div`
         flex-shrink: 0;
     }
 
-    transform-origin: top right;
-
-    &.transition-enter {
-        transform: translateX(-100%);
-
-        @media (max-width: ${compactBreakpoint}px) {
-            transform: translateX(100%);
-        }
-    }
-
-    &.transition-enter-active {
-        transform: none;
-    }
-
-    &.transition-exit {
-        transform: none;
-    }
-
-    &.transition-exit-active {
-        transform: translateX(-100%);
-
-        @media (max-width: ${compactBreakpoint}px) {
-            transform: translateX(100%);
-        }
-    }
-
-    &.transition-enter-active,
-    &.transition-exit-active {
-        transition: transform 0.2s;
-    }
-
     @media (max-width: ${compactBreakpoint}px) {
         width: 100%;
 
@@ -84,7 +53,7 @@ const Header = styled.div`
     background-color: var(--secondary-fill-color);
 `
 
-const Body = styled.div`
+export const Body = styled.div`
     padding: calc(var(--standard-margin) / 2);
 
     overflow: auto;
@@ -101,7 +70,7 @@ const Body = styled.div`
     }
 `
 
-const Footer = styled.div`
+export const Footer = styled.div`
     bottom: 0;
     flex-shrink: 0;
     flex-grow: 1;
@@ -145,22 +114,21 @@ const AppVersion = styled.div`
     color: var(--secondary-text-color);
 `
 
-type WaypointEditorTemplateProps = {
-    body: JSX.Element;
-    footer: JSX.Element;
-}
-
-export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateProps) => {
+export const Editor = () => {
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
-    const dispatch: Dispatch<AppAction> = useDispatch()
+    const editorPane = useSelector((state: AppState) => state.editorPane)
+    const title = attributesForEditorPane(editorPane).displayName
     const compactMode = useCompactMode()
+
+    const dispatch: Dispatch<AppAction> = useDispatch()
     const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
+    const translationAxis = compactMode ? 'Y' : 'X'
     const transitions = useTransition(editorIsHidden, null, {
-        initial: { transform: 'translateX(0%)' },
-        from: { transform: `translateX(${compactMode ? '' : '-'}100%)` },
-        enter: { transform: 'translateX(0%)' },
-        leave: { transform: `translateX(${compactMode ? '' : '-'}100%)` },
+        initial: { transform: `translate${translationAxis}(0%)` },
+        from: { transform: `translate${translationAxis}(-100%)` },
+        enter: { transform: `translate${translationAxis}(0%)` },
+        leave: { transform: `translate${translationAxis}(-100%)` },
         config: { mass: 1, tension: 350, friction: 35 },
     })
 
@@ -179,15 +147,15 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             </HideButton>
 
                             <AppTitle>
-                                QuickRoute
+                                {compactMode ? title : 'QuickRoute'}
                                 <AppVersion>
-                                    v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
+                                    {compactMode ? 'QuickRoute' : `v${appVersion}`} by{' '}
+                                    <Link href="https://github.com/rizadh">@rizadh</Link>
                                 </AppVersion>
                             </AppTitle>
                             <PaneSelector />
                         </Header>
-                        <Body>{body}</Body>
-                        <Footer>{footer}</Footer>
+                        <Content />
                         <InfoBar />
                     </Container>
                 ),
@@ -196,7 +164,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
     )
 }
 
-export const WaypointEditor = () => {
+const Content = () => {
     const editorPane = useSelector((state: AppState) => state.editorPane)
 
     switch (editorPane) {

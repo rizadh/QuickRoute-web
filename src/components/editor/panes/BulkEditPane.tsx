@@ -11,7 +11,7 @@ import { Alert } from '../../common/Alert'
 import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
-import { WaypointEditorTemplate } from '../WaypointEditor'
+import { Body, Footer } from '../Editor'
 
 export const BulkEditPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -33,27 +33,27 @@ export const BulkEditPane = () => {
 
     const isMobileDevice = isMobileFn().any
 
-    const body = (
+    return (
         <>
-            <Alert>Enter one address per line</Alert>
-            <InputRow>
-                <Input
-                    // TODO: Fix this once type definition works without 'as any'
-                    as={TextareaAutosize as any}
-                    minRows={3}
-                    {...bulkEditFieldProps}
-                    value={bulkEditFieldProps.value?.toString()}
-                    autoFocus={!isMobileDevice}
-                />
-            </InputRow>
+            <Body>
+                <Alert>Enter one address per line</Alert>
+                <InputRow>
+                    <Input
+                        // TODO: Fix this once type definition works without 'as any'
+                        as={TextareaAutosize as any}
+                        minRows={3}
+                        {...bulkEditFieldProps}
+                        value={bulkEditFieldProps.value?.toString()}
+                        autoFocus={!isMobileDevice}
+                    />
+                </InputRow>
+            </Body>
+
+            <Footer>
+                <Button variant={Variant.Primary} onClick={commitBulkEdit}>
+                    <i className="fas fa-fw fa-save" /> Save
+                </Button>
+            </Footer>
         </>
     )
-
-    const footer = (
-        <Button variant={Variant.Primary} onClick={commitBulkEdit}>
-            <i className="fas fa-fw fa-save" /> Save
-        </Button>
-    )
-
-    return <WaypointEditorTemplate body={body} footer={footer} />
 }

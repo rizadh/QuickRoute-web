@@ -308,7 +308,12 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
                         ),
                     ),
                     catchError(error => {
-                        return of({ type: 'FETCH_ROUTE_FAILED', origin, destination, error } as FetchRouteFailedAction)
+                        return of({
+                            type: 'FETCH_ROUTE_FAILED',
+                            origin,
+                            destination,
+                            error: error instanceof Error ? error.message : error.toString(),
+                        } as FetchRouteFailedAction)
                     }),
                 ),
             ),
@@ -359,9 +364,11 @@ const importWaypointsEpic: AppEpic = action$ =>
                                   }),
                     ),
                     catchError<AppAction, ObservableInput<AppAction>>(error =>
-                        error instanceof Error
-                            ? of({ type: 'IMPORT_WAYPOINTS_FAILED', driverNumber, error: error.message })
-                            : EMPTY,
+                        of({
+                            type: 'IMPORT_WAYPOINTS_FAILED',
+                            driverNumber,
+                            error: error instanceof Error ? error.message : error.toString(),
+                        }),
                     ),
                     takeUntil(
                         action$.pipe(
@@ -441,7 +448,13 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                         },
                         { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
                     ]),
-                    catchError(error => of({ type: 'OPTIMIZE_ROUTE_FAILED', optimizationParameter, error })),
+                    catchError(error =>
+                        of({
+                            type: 'OPTIMIZE_ROUTE_FAILED',
+                            optimizationParameter,
+                            error: error instanceof Error ? error.message : error.toString(),
+                        }),
+                    ),
                     takeUntil(
                         action$.pipe(
                             ofType<AppAction, OptimizeRouteCancelAction>('OPTIMIZE_ROUTE_CANCEL'),
