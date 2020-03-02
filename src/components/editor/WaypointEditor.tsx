@@ -120,11 +120,13 @@ export const WaypointEditor = () => {
     const compactMode = useCompactMode()
     const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
+    const translationAxis = compactMode ? 'Y' : 'X'
+
     const transitions = useTransition(editorIsHidden, null, {
-        initial: { transform: 'translateX(0%)' },
-        from: { transform: `translateX(${compactMode ? '' : '-'}100%)` },
-        enter: { transform: 'translateX(0%)' },
-        leave: { transform: `translateX(${compactMode ? '' : '-'}100%)` },
+        initial: { transform: `translate${translationAxis}(0%)` },
+        from: { transform: `translate${translationAxis}(-100%)` },
+        enter: { transform: `translate${translationAxis}(0%)` },
+        leave: { transform: `translate${translationAxis}(-100%)` },
         config: { mass: 1, tension: 350, friction: 35 },
     })
 
