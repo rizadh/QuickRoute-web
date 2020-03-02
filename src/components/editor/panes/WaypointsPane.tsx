@@ -17,7 +17,7 @@ import { DangerAlert } from '../../common/Alert'
 import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
-import { Body, Footer } from '../WaypointEditor'
+import { Body, Footer } from '../Editor'
 import { WaypointList } from './WaypointList'
 
 export const WaypointsPane = () => {

@@ -114,7 +114,7 @@ const AppVersion = styled.div`
     color: var(--secondary-text-color);
 `
 
-export const WaypointEditor = () => {
+export const Editor = () => {
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()

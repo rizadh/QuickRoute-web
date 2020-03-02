@@ -9,7 +9,7 @@ import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
 import { Link } from '../../common/Link'
-import { Body, Footer } from '../WaypointEditor'
+import { Body, Footer } from '../Editor'
 
 export const ImportPane = () => {
     const importInProgress = useSelector((state: AppState) => state.importInProgress)

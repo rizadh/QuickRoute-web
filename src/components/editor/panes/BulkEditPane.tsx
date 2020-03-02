@@ -11,7 +11,7 @@ import { Alert } from '../../common/Alert'
 import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
-import { Body, Footer } from '../WaypointEditor'
+import { Body, Footer } from '../Editor'
 
 export const BulkEditPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
