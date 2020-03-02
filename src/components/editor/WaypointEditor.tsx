@@ -84,7 +84,7 @@ const Header = styled.div`
     background-color: var(--secondary-fill-color);
 `
 
-const Body = styled.div`
+export const Body = styled.div`
     padding: calc(var(--standard-margin) / 2);
 
     overflow: auto;
@@ -101,7 +101,7 @@ const Body = styled.div`
     }
 `
 
-const Footer = styled.div`
+export const Footer = styled.div`
     bottom: 0;
     flex-shrink: 0;
     flex-grow: 1;
@@ -145,12 +145,7 @@ const AppVersion = styled.div`
     color: var(--secondary-text-color);
 `
 
-type WaypointEditorTemplateProps = {
-    body: JSX.Element;
-    footer: JSX.Element;
-}
-
-export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateProps) => {
+export const WaypointEditor = () => {
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const compactMode = useCompactMode()
@@ -186,8 +181,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
                             </AppTitle>
                             <PaneSelector />
                         </Header>
-                        <Body>{body}</Body>
-                        <Footer>{footer}</Footer>
+                        <Content />
                         <InfoBar />
                     </Container>
                 ),
@@ -196,7 +190,7 @@ export const WaypointEditorTemplate = ({ body, footer }: WaypointEditorTemplateP
     )
 }
 
-export const WaypointEditor = () => {
+const Content = () => {
     const editorPane = useSelector((state: AppState) => state.editorPane)
 
     switch (editorPane) {

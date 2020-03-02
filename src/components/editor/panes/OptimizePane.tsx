@@ -9,7 +9,7 @@ import { Alert, WarningAlert } from '../../common/Alert'
 import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
-import { WaypointEditorTemplate } from '../WaypointEditor'
+import { Body, Footer } from '../WaypointEditor'
 
 export const OptimizePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -61,50 +61,58 @@ export const OptimizePane = () => {
 
     const isMobileDevice = isMobileFn().any
 
-    const body = insufficientWaypoints ? (
-        <WarningAlert>Add three or more waypoints to optimize routes</WarningAlert>
-    ) : (
+    return (
         <>
-            <Alert>Find optimal route from start point to end point passing through all intermediate waypoints</Alert>
-            <InputRow>
-                <Input
-                    type="text"
-                    placeholder={`Start Point (${defaultStartPoint()})`}
-                    {...startPointFieldProps}
-                    disabled={optimizationInProgress}
-                    autoFocus={!isMobileDevice}
-                />
-            </InputRow>
-            <InputRow>
-                <Input
-                    type="text"
-                    placeholder={`End Point (${defaultEndPoint()})`}
-                    {...endPointFieldProps}
-                    disabled={optimizationInProgress}
-                />
-            </InputRow>
+            <Body>
+                {insufficientWaypoints ? (
+                    <WarningAlert>Add three or more waypoints to optimize routes</WarningAlert>
+                ) : (
+                    <>
+                        <Alert>
+                            Find optimal route from start point to end point passing through all intermediate waypoints
+                        </Alert>
+                        <InputRow>
+                            <Input
+                                type="text"
+                                placeholder={`Start Point (${defaultStartPoint()})`}
+                                {...startPointFieldProps}
+                                disabled={optimizationInProgress}
+                                autoFocus={!isMobileDevice}
+                            />
+                        </InputRow>
+                        <InputRow>
+                            <Input
+                                type="text"
+                                placeholder={`End Point (${defaultEndPoint()})`}
+                                {...endPointFieldProps}
+                                disabled={optimizationInProgress}
+                            />
+                        </InputRow>
+                    </>
+                )}
+            </Body>
+
+            <Footer>
+                {optimizationInProgress ? (
+                    <>
+                        <Button variant={Variant.Primary} disabled={true}>
+                            <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing
+                        </Button>
+                        <Button variant={Variant.Danger} onClick={cancelOptimize}>
+                            <i className="fas fa-ban" /> Cancel
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <Button variant={Variant.Primary} onClick={optimizeDistance} disabled={insufficientWaypoints}>
+                            <i className="fas fa-fw fa-ruler-vertical" /> Optimize Distance
+                        </Button>
+                        <Button variant={Variant.Primary} onClick={optimizeTime} disabled={insufficientWaypoints}>
+                            <i className="fas fa-fw fa-stopwatch" /> Optimize Time
+                        </Button>
+                    </>
+                )}
+            </Footer>
         </>
     )
-
-    const footer = optimizationInProgress ? (
-        <>
-            <Button variant={Variant.Primary} disabled={true}>
-                <i className="fas fa-fw fa-spin fa-circle-notch" /> Optimizing
-            </Button>
-            <Button variant={Variant.Danger} onClick={cancelOptimize}>
-                <i className="fas fa-ban" /> Cancel
-            </Button>
-        </>
-    ) : (
-        <>
-            <Button variant={Variant.Primary} onClick={optimizeDistance} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-ruler-vertical" /> Optimize Distance
-            </Button>
-            <Button variant={Variant.Primary} onClick={optimizeTime} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-stopwatch" /> Optimize Time
-            </Button>
-        </>
-    )
-
-    return <WaypointEditorTemplate body={body} footer={footer} />
 }

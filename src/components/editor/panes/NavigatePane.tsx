@@ -9,7 +9,7 @@ import { Alert, WarningAlert } from '../../common/Alert'
 import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
-import { WaypointEditorTemplate } from '../WaypointEditor'
+import { Body, Footer } from '../WaypointEditor'
 
 export const NavigatePane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -89,48 +89,54 @@ export const NavigatePane = () => {
 
     const insufficientWaypoints = waypoints.length === 0
 
-    const body = insufficientWaypoints ? (
-        <WarningAlert>Add one or more waypoints to generate links</WarningAlert>
-    ) : (
+    return (
         <>
-            <Alert>
-                Use the links below to navigate using Google Maps. Each link contains up to ten waypoints due to
-                Google's limitations
-            </Alert>
-            {navigationLinks.map((url, index) => (
-                <InputRow key={url}>
-                    <Input type="text" value={url} readOnly={true} />
-                    {(navigator as INavigator).share && (
-                        <Button variant={Variant.Primary} onClick={shareLink(index)} title="Share this link">
-                            <i className="fas fa-fw fa-share" />
-                        </Button>
-                    )}
-                    <Button variant={Variant.Primary} onClick={copyLink(index)} title="Copy this link to clipboard">
-                        <i className="fas fa-fw fa-clipboard" />
-                    </Button>
-                    <Button variant={Variant.Primary} onClick={openUrl(index)} title="Open this link">
-                        <i className="fas fa-fw fa-external-link-alt" />
-                    </Button>
-                </InputRow>
-            ))}
-        </>
-    )
-
-    const footer = (
-        <>
-            {(navigator as INavigator).share && (
-                <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
-                    <i className="fas fa-fw fa-share" /> Share All
-                </Button>
+            {insufficientWaypoints ? (
+                <Body>
+                    <WarningAlert>Add one or more waypoints to generate links</WarningAlert>
+                </Body>
+            ) : (
+                <Body>
+                    <Alert>
+                        Use the links below to navigate using Google Maps. Each link contains up to ten waypoints due to
+                        Google's limitations
+                    </Alert>
+                    {navigationLinks.map((url, index) => (
+                        <InputRow key={url}>
+                            <Input type="text" value={url} readOnly={true} />
+                            {(navigator as INavigator).share && (
+                                <Button variant={Variant.Primary} onClick={shareLink(index)} title="Share this link">
+                                    <i className="fas fa-fw fa-share" />
+                                </Button>
+                            )}
+                            <Button
+                                variant={Variant.Primary}
+                                onClick={copyLink(index)}
+                                title="Copy this link to clipboard"
+                            >
+                                <i className="fas fa-fw fa-clipboard" />
+                            </Button>
+                            <Button variant={Variant.Primary} onClick={openUrl(index)} title="Open this link">
+                                <i className="fas fa-fw fa-external-link-alt" />
+                            </Button>
+                        </InputRow>
+                    ))}
+                </Body>
             )}
-            <Button variant={Variant.Primary} onClick={copyAllLinks} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-clipboard" /> Copy All
-            </Button>
-            <Button variant={Variant.Primary} onClick={openAllLinks} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-external-link-alt" /> Open All
-            </Button>
+
+            <Footer>
+                {(navigator as INavigator).share && (
+                    <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
+                        <i className="fas fa-fw fa-share" /> Share All
+                    </Button>
+                )}
+                <Button variant={Variant.Primary} onClick={copyAllLinks} disabled={insufficientWaypoints}>
+                    <i className="fas fa-fw fa-clipboard" /> Copy All
+                </Button>
+                <Button variant={Variant.Primary} onClick={openAllLinks} disabled={insufficientWaypoints}>
+                    <i className="fas fa-fw fa-external-link-alt" /> Open All
+                </Button>
+            </Footer>
         </>
     )
-
-    return <WaypointEditorTemplate body={body} footer={footer} />
 }

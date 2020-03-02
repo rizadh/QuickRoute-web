@@ -17,30 +17,13 @@ import { DangerAlert } from '../../common/Alert'
 import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
-import { WaypointEditorTemplate } from '../WaypointEditor'
+import { Body, Footer } from '../WaypointEditor'
 import { WaypointList } from './WaypointList'
 
-export const WaypointsPane = () => (
-    <WaypointEditorTemplate body={<WaypointsPaneBody />} footer={<WaypointsPaneFooter />} />
-)
-
-export const WaypointsPaneBody = () => {
-    const waypointCount = useSelector((state: AppState) => state.waypoints.length)
+export const WaypointsPane = () => {
+    const waypoints = useSelector((state: AppState) => state.waypoints)
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)
 
-    return (
-        <>
-            {currentRouteInformation.status === 'FAILED' && (
-                <DangerAlert>One or more waypoints could not be routed</DangerAlert>
-            )}
-            {waypointCount === 0 && <Alert>Add a waypoint to begin</Alert>}
-            {waypointCount === 1 && <Alert>Add another waypoint to show route information</Alert>}
-            <WaypointList />
-        </>
-    )
-}
-
-export const WaypointsPaneFooter = () => {
     const { props: waypointFieldProps, commitValue: addWaypoint, valueIsValid: waypointIsValid } = useInput({
         predicate: isValidAddress,
         onCommit: useCallback((waypoint: string) => {
@@ -50,13 +33,9 @@ export const WaypointsPaneFooter = () => {
         resetAfterCommit: true,
     })
 
-    const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
-
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
-
     const deleteSelectedWaypoints = useCallback(() => dispatch({ type: 'DELETE_SELECTED_WAYPOINTS' }), [])
-
     const deselectAllWaypoints = useCallback(() => dispatch({ type: 'DESELECT_ALL_WAYPOINTS' }), [])
 
     const generatePdf = useCallback(async () => {
@@ -99,40 +78,63 @@ export const WaypointsPaneFooter = () => {
 
     const selectedWaypointsCount = waypoints.filter(waypoint => waypoint.selected).length
 
-    return selectedWaypointsCount > 0 ? (
+    return (
         <>
-            <Button variant={Variant.Danger} onClick={deleteSelectedWaypoints}>
-                <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
-                {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
-            </Button>
-            <Button variant={Variant.Primary} onClick={deselectAllWaypoints}>
-                <i className="fas fa-fw fa-ban" /> Cancel
-            </Button>
-        </>
-    ) : (
-        <>
-            <InputRow>
-                <Input type="text" placeholder="New waypoint" {...waypointFieldProps} autoFocus={!isMobileDevice} />
-                <Button
-                    variant={Variant.Primary}
-                    title="Add waypoint"
-                    onClick={addWaypoint}
-                    disabled={!waypointIsValid}
-                >
-                    <i className="fas fa-fw fa-plus" />
-                </Button>
-            </InputRow>
-            <Button variant={Variant.Primary} onClick={generatePdf} disabled={waypoints.length === 0}>
-                <i className={'fas fa-fw fa-file-download'} /> Save PDF
-            </Button>
-            <Button variant={Variant.Primary} onClick={reverseWaypoints} disabled={waypoints.length < 2}>
-                <i className="fas fa-fw fa-exchange-alt" /> Reverse
-            </Button>
-            {(navigator as INavigator).share && (
-                <Button variant={Variant.Primary} onClick={shareWaypoints} disabled={waypoints.length === 0}>
-                    <i className="fas fa-fw fa-share" /> Share
-                </Button>
-            )}
+            <Body>
+                {currentRouteInformation.status === 'FAILED' && (
+                    <DangerAlert>One or more waypoints could not be routed</DangerAlert>
+                )}
+                {waypoints.length === 0 && <Alert>Add a waypoint to begin</Alert>}
+                {waypoints.length === 1 && <Alert>Add another waypoint to show route information</Alert>}
+                <WaypointList />
+            </Body>
+            <Footer>
+                {selectedWaypointsCount > 0 ? (
+                    <>
+                        <Button variant={Variant.Danger} onClick={deleteSelectedWaypoints}>
+                            <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
+                            {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
+                        </Button>
+                        <Button variant={Variant.Primary} onClick={deselectAllWaypoints}>
+                            <i className="fas fa-fw fa-ban" /> Cancel
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <InputRow>
+                            <Input
+                                type="text"
+                                placeholder="New waypoint"
+                                {...waypointFieldProps}
+                                autoFocus={!isMobileDevice}
+                            />
+                            <Button
+                                variant={Variant.Primary}
+                                title="Add waypoint"
+                                onClick={addWaypoint}
+                                disabled={!waypointIsValid}
+                            >
+                                <i className="fas fa-fw fa-plus" />
+                            </Button>
+                        </InputRow>
+                        <Button variant={Variant.Primary} onClick={generatePdf} disabled={waypoints.length === 0}>
+                            <i className={'fas fa-fw fa-file-download'} /> Save PDF
+                        </Button>
+                        <Button variant={Variant.Primary} onClick={reverseWaypoints} disabled={waypoints.length < 2}>
+                            <i className="fas fa-fw fa-exchange-alt" /> Reverse
+                        </Button>
+                        {(navigator as INavigator).share && (
+                            <Button
+                                variant={Variant.Primary}
+                                onClick={shareWaypoints}
+                                disabled={waypoints.length === 0}
+                            >
+                                <i className="fas fa-fw fa-share" /> Share
+                            </Button>
+                        )}
+                    </>
+                )}
+            </Footer>
         </>
     )
 }
