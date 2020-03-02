@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { appVersion } from '../..'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
-import { AppState, EditorPane } from '../../redux/state'
+import { AppState, attributesForEditorPane, EditorPane } from '../../redux/state'
 import { Alert } from '../common/Alert'
 import { Button, Variant } from '../common/Button'
 import { InputRow } from '../common/InputRow'
@@ -116,12 +116,14 @@ const AppVersion = styled.div`
 
 export const Editor = () => {
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
-    const dispatch: Dispatch<AppAction> = useDispatch()
+    const editorPane = useSelector((state: AppState) => state.editorPane)
+    const title = attributesForEditorPane(editorPane).displayName
     const compactMode = useCompactMode()
+
+    const dispatch: Dispatch<AppAction> = useDispatch()
     const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
     const translationAxis = compactMode ? 'Y' : 'X'
-
     const transitions = useTransition(editorIsHidden, null, {
         initial: { transform: `translate${translationAxis}(0%)` },
         from: { transform: `translate${translationAxis}(-100%)` },
@@ -145,9 +147,10 @@ export const Editor = () => {
                             </HideButton>
 
                             <AppTitle>
-                                QuickRoute
+                                {compactMode ? title : 'QuickRoute'}
                                 <AppVersion>
-                                    v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
+                                    {compactMode ? 'QuickRoute' : `v${appVersion}`} by{' '}
+                                    <Link href="https://github.com/rizadh">@rizadh</Link>
                                 </AppVersion>
                             </AppTitle>
                             <PaneSelector />
