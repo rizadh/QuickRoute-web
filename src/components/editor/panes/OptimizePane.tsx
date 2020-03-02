@@ -101,7 +101,7 @@ export const OptimizePane = () => {
                 <i className="fas fa-fw fa-ruler-vertical" /> Optimize Distance
             </Button>
             <Button variant={Variant.Primary} onClick={optimizeTime} disabled={insufficientWaypoints}>
-                <i className="fas fa-fw fa-stopwatch" /> Optimize Route
+                <i className="fas fa-fw fa-stopwatch" /> Optimize Time
             </Button>
         </>
     )
