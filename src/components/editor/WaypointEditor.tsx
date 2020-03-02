@@ -32,37 +32,6 @@ const Container = animated(styled.div`
         flex-shrink: 0;
     }
 
-    transform-origin: top right;
-
-    &.transition-enter {
-        transform: translateX(-100%);
-
-        @media (max-width: ${compactBreakpoint}px) {
-            transform: translateX(100%);
-        }
-    }
-
-    &.transition-enter-active {
-        transform: none;
-    }
-
-    &.transition-exit {
-        transform: none;
-    }
-
-    &.transition-exit-active {
-        transform: translateX(-100%);
-
-        @media (max-width: ${compactBreakpoint}px) {
-            transform: translateX(100%);
-        }
-    }
-
-    &.transition-enter-active,
-    &.transition-exit-active {
-        transition: transform 0.2s;
-    }
-
     @media (max-width: ${compactBreakpoint}px) {
         width: 100%;
 
