@@ -34,7 +34,6 @@ export type Query = {
    __typename?: 'Query',
   mapkitToken: Scalars['String'],
   importedWaypoints: ImportedWaypoints,
-  demoWaypoints: Array<Waypoint>,
   pdf: Scalars['String'],
   optimizedRoute: Array<Scalars['Float']>,
 };
@@ -43,12 +42,6 @@ export type Query = {
 export type QueryImportedWaypointsArgs = {
   driverNumber: Scalars['String'],
   password: Scalars['String']
-};
-
-
-export type QueryDemoWaypointsArgs = {
-  count: Scalars['Int'],
-  delay?: Maybe<Scalars['Int']>
 };
 
 
