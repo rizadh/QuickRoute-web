@@ -71,6 +71,13 @@ export const OptimizePane = () => {
                         <Alert>
                             Find optimal route from start point to end point passing through all intermediate waypoints
                         </Alert>
+                        <WarningAlert>
+                            NOTE FROM THE DEVELOPER (10/MAR/2020): QuickRoute has recently seen a large influx of
+                            optimization requests. Please be advised that optimization is an expensive operation limited
+                            to 50 requests per month across <u>all</u> users of this application. Once this quota has
+                            been reached, optimization <u>will no longer be available</u>. Please use this service
+                            sparingly and avoid performing optimizations on waypoints that have already been optimized.
+                        </WarningAlert>
                         <InputRow>
                             <Input
                                 type="text"

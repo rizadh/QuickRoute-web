@@ -1,6 +1,6 @@
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { animated, useTransition } from 'react-spring'
+import { animated, useSpring } from 'react-spring'
 import styled from 'styled-components'
 import { appVersion } from '../..'
 import { useCompactMode } from '../../hooks/useCompactMode'
@@ -123,44 +123,34 @@ export const Editor = () => {
     const dispatch: Dispatch<AppAction> = useDispatch()
     const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
-    const translationAxis = compactMode ? 'Y' : 'X'
-    const transitions = useTransition(editorIsHidden, null, {
-        initial: { transform: `translate${translationAxis}(0%)` },
-        from: { transform: `translate${translationAxis}(-100%)` },
-        enter: { transform: `translate${translationAxis}(0%)` },
-        leave: { transform: `translate${translationAxis}(-100%)` },
+    const props = useSpring({
+        transform: `translateX(${editorIsHidden ? -100 : 0}%)`,
         config: { mass: 1, tension: 350, friction: 35 },
     })
 
     return (
-        <>
-            {transitions.map(({ item, props, key }) =>
-                item ? null : (
-                    <Container style={props} key={key}>
-                        <Header>
-                            <HideButton title="Minimize editor" onClick={hideEditorPane} variant={Variant.Primary}>
-                                {compactMode ? (
-                                    <i className="fas fa-fw fa-map-marked" />
-                                ) : (
-                                    <i className="fas fa-fw fa-chevron-left" />
-                                )}
-                            </HideButton>
+        <Container style={props}>
+            <Header>
+                <HideButton title="Minimize editor" onClick={hideEditorPane} variant={Variant.Primary}>
+                    {compactMode ? (
+                        <i className="fas fa-fw fa-map-marked" />
+                    ) : (
+                        <i className="fas fa-fw fa-chevron-left" />
+                    )}
+                </HideButton>
 
-                            <AppTitle>
-                                {compactMode ? title : 'QuickRoute'}
-                                <AppVersion>
-                                    {compactMode ? 'QuickRoute' : `v${appVersion}`} by{' '}
-                                    <Link href="https://github.com/rizadh">@rizadh</Link>
-                                </AppVersion>
-                            </AppTitle>
-                            <PaneSelector />
-                        </Header>
-                        <Content />
-                        <InfoBar />
-                    </Container>
-                ),
-            )}
-        </>
+                <AppTitle>
+                    {compactMode ? title : 'QuickRoute'}
+                    <AppVersion>
+                        {compactMode ? 'QuickRoute' : `v${appVersion}`} by{' '}
+                        <Link href="https://github.com/rizadh">@rizadh</Link>
+                    </AppVersion>
+                </AppTitle>
+                <PaneSelector />
+            </Header>
+            <Content />
+            <InfoBar />
+        </Container>
     )
 }
 
