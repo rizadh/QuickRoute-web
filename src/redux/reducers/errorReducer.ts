@@ -3,8 +3,6 @@ import { AppReducer } from './appReducer'
 
 export const errorReducer: AppReducer<AppState['error']> = (error = null, action) => {
     switch (action.type) {
-        case 'SET_EDITOR_PANE':
-            return null
         case 'IMPORT_WAYPOINTS_FAILED':
         case 'OPTIMIZE_ROUTE_FAILED':
         case 'ERROR_OCCURRED':
