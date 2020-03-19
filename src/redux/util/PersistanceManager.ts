@@ -2,11 +2,7 @@ import { AppState } from '../state'
 import { createWaypointFromAddress } from './createWaypointFromAddress'
 
 export class PersistanceManager {
-    static persistState(state: AppState) {
-        localStorage.setItem(PersistanceManager.STATE_STORAGE_KEY, JSON.stringify(state.waypoints.map(w => w.address)))
-    }
-
-    static persistedState(): Partial<AppState> {
+    static get persistedState(): Partial<AppState> {
         const persisted = localStorage.getItem(PersistanceManager.STATE_STORAGE_KEY)
         if (!persisted) return {}
 
@@ -16,8 +12,13 @@ export class PersistanceManager {
         return { waypoints: addresses.map(createWaypointFromAddress) }
     }
 
+    static persistState(state: AppState) {
+        localStorage.setItem(PersistanceManager.STATE_STORAGE_KEY, JSON.stringify(state.waypoints.map(w => w.address)))
+    }
+
     static resetState() {
         localStorage.removeItem(PersistanceManager.STATE_STORAGE_KEY)
     }
+
     private static STATE_STORAGE_KEY = 'com.rizadh.QuickRoute.state'
 }

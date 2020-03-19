@@ -21,7 +21,7 @@ if (searchParams.has('reset')) {
 const store = configureStore({
     reducer: appReducer,
     middleware: [...getDefaultMiddleware(), epicMiddleware],
-    preloadedState: PersistanceManager.persistedState(),
+    preloadedState: PersistanceManager.persistedState,
 })
 
 epicMiddleware.run(epic)
