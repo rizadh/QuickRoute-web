@@ -135,33 +135,6 @@ export type ShowEditorPaneAction = Readonly<{
     type: 'SHOW_EDITOR_PANE';
 }>
 
-export type ImportWaypointsAction = Readonly<{
-    type: 'IMPORT_WAYPOINTS';
-    driverNumber: string;
-    password: string;
-}>
-
-export type ImportWaypointsCancelAction = Readonly<{
-    type: 'IMPORT_WAYPOINTS_CANCEL';
-    driverNumber: string;
-}>
-
-export type ImportWaypointsInProgressAction = Readonly<{
-    type: 'IMPORT_WAYPOINTS_IN_PROGRESS';
-    driverNumber: string;
-}>
-
-export type ImportWaypointsSuccessAction = Readonly<{
-    type: 'IMPORT_WAYPOINTS_SUCCESS';
-    driverNumber: string;
-}>
-
-export type ImportWaypointsFailedAction = Readonly<{
-    type: 'IMPORT_WAYPOINTS_FAILED';
-    driverNumber: string;
-    error: string;
-}>
-
 export type OptimizeRouteAction = Readonly<{
     type: 'OPTIMIZE_ROUTE';
     optimizationParameter: OptimizationParameter;
@@ -206,6 +179,14 @@ export type ClearErrorAction = Readonly<{
     type: 'CLEAR_ERROR';
 }>
 
+export type ShowImportDialogAction = Readonly<{
+    type: 'SHOW_IMPORT_DIALOG';
+}>
+
+export type HideImportDialogAction = Readonly<{
+    type: 'HIDE_IMPORT_DIALOG';
+}>
+
 export type AppAction =
     | ReplaceWaypointsAction
     | AddWaypointAction
@@ -233,11 +214,6 @@ export type AppAction =
     | SetEditorPaneAction
     | HideEditorPaneAction
     | ShowEditorPaneAction
-    | ImportWaypointsAction
-    | ImportWaypointsCancelAction
-    | ImportWaypointsInProgressAction
-    | ImportWaypointsSuccessAction
-    | ImportWaypointsFailedAction
     | OptimizeRouteAction
     | OptimizeRouteCancelAction
     | OptimizeRouteInProgressAction
@@ -245,3 +221,5 @@ export type AppAction =
     | OptimizeRouteFailedAction
     | SetErrorAction
     | ClearErrorAction
+    | ShowImportDialogAction
+    | HideImportDialogAction

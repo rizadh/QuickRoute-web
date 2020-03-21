@@ -5,6 +5,8 @@ export const editorPaneReducer: AppReducer<EditorPane> = (editorPane = EditorPan
     switch (action.type) {
         case 'SET_EDITOR_PANE':
             return action.editorPane
+        case 'HIDE_IMPORT_DIALOG':
+            return EditorPane.Waypoints
     }
 
     return editorPane

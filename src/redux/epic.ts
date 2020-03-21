@@ -1,16 +1,10 @@
 import { range as _range } from 'lodash'
 import { combineEpics, Epic, ofType } from 'redux-observable'
-import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
+import { EMPTY, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { catchError, filter, first, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
 import { apolloClient } from '..'
-import {
-    ImportWaypointsQuery,
-    ImportWaypointsQueryVariables,
-    OptimizationParameter,
-    OptimizeQuery,
-    OptimizeQueryVariables,
-} from '../generated/graphql'
-import { ImportWaypoints, Optimize } from '../queries'
+import { OptimizationParameter, OptimizeQuery, OptimizeQueryVariables } from '../generated/graphql'
+import { Optimize } from '../queries'
 import {
     AddWaypointAction,
     AppAction,
@@ -25,8 +19,6 @@ import {
     FetchRouteFailedAction,
     FetchRouteInProgressAction,
     FetchRouteSuccessAction,
-    ImportWaypointsAction,
-    ImportWaypointsCancelAction,
     MoveSelectedWaypointsAction,
     MoveWaypointAction,
     OptimizeRouteAction,
@@ -320,67 +312,6 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
         ),
     )
 
-const importWaypoints = async (driverNumber: string, password: string) => {
-    try {
-        const response = await apolloClient.query<ImportWaypointsQuery, ImportWaypointsQueryVariables>({
-            query: ImportWaypoints,
-            variables: { driverNumber, password },
-        })
-
-        return response.data
-    } catch (error) {
-        throw new Error(`Failed to import waypoints for driver ${driverNumber} (ERROR: '${error}')`)
-    }
-}
-
-const extractAddress = (address: string) => {
-    return /(\d+ [\w ]+)/.exec(address)?.[1] ?? address
-}
-
-const importWaypointsEpic: AppEpic = action$ =>
-    action$.pipe(
-        ofType<AppAction, ImportWaypointsAction>('IMPORT_WAYPOINTS'),
-        mergeMap(({ driverNumber, password }) =>
-            concat(
-                of<AppAction>({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber }),
-                from(importWaypoints(driverNumber, password)).pipe(
-                    mergeMap<ImportWaypointsQuery, ObservableInput<AppAction>>(
-                        ({ importedWaypoints: { dispatched, inprogress } }) =>
-                            dispatched.length + inprogress.length > 0
-                                ? [
-                                      { type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber },
-                                      {
-                                          type: 'REPLACE_WAYPOINTS',
-                                          waypoints: [...dispatched, ...inprogress]
-                                              .map(w => `${extractAddress(w.address)} ${w.postalCode}`)
-                                              .map(createWaypointFromAddress),
-                                      },
-                                      { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
-                                  ]
-                                : of({
-                                      type: 'IMPORT_WAYPOINTS_FAILED',
-                                      driverNumber,
-                                      error: `No waypoints returned for driver ${driverNumber}`,
-                                  }),
-                    ),
-                    catchError<AppAction, ObservableInput<AppAction>>(error =>
-                        of({
-                            type: 'IMPORT_WAYPOINTS_FAILED',
-                            driverNumber,
-                            error: error instanceof Error ? error.message : error.toString(),
-                        }),
-                    ),
-                    takeUntil(
-                        action$.pipe(
-                            ofType<AppAction, ImportWaypointsCancelAction>('IMPORT_WAYPOINTS_CANCEL'),
-                            filter(action => action.driverNumber === driverNumber),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    )
-
 const optimizeRoute = async (coordinates: Coordinate[], optimizationParameter: OptimizationParameter) => {
     try {
         const response = await apolloClient.query<OptimizeQuery, OptimizeQueryVariables>({
@@ -478,6 +409,5 @@ export default combineEpics(
     fetchPlaceEpic,
     fetchAllRoutesEpic,
     fetchRouteEpic,
-    importWaypointsEpic,
     optimizeRouteEpic,
 )

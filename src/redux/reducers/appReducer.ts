@@ -7,9 +7,9 @@ import { editorPaneReducer } from './editorPaneReducer'
 import { errorReducer } from './errorReducer'
 import { fetchedPlacesReducer } from './fetchedPlacesReducer'
 import { fetchedRoutesReducer } from './fetchedRoutesReducer'
-import { importInProgressReducer } from './importInProgressReducer'
 import { optimizationInProgressReducer } from './optimizationInProgressReducer'
 import { waypointsReducer } from './waypointsReducer'
+import { importDialogIsShownReducer } from './importDialogIsShownReducer'
 
 export type AppReducer<T = AppState> = (state: T | undefined, action: AppAction) => T
 
@@ -20,7 +20,7 @@ export const appReducer: AppReducer = combineReducers({
     autofitIsEnabled: autofitIsEnabledReducer,
     editorPane: editorPaneReducer,
     editorIsHidden: editorIsHiddenReducer,
-    importInProgress: importInProgressReducer,
     optimizationInProgress: optimizationInProgressReducer,
     error: errorReducer,
+    importDialogIsShown: importDialogIsShownReducer,
 })

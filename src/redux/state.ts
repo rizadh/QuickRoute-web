@@ -96,7 +96,7 @@ export type AppState = Readonly<{
     autofitIsEnabled: boolean;
     editorPane: EditorPane;
     editorIsHidden: boolean;
-    importInProgress: boolean;
     optimizationInProgress: boolean;
     error: string | null;
+    importDialogIsShown: boolean;
 }>

@@ -22,9 +22,7 @@ type SelectorButtonProps = {
 
 const SelectorButton = styled(({ pane, className }: SelectorButtonProps) => {
     const selected = useSelector((state: AppState) => state.editorPane === pane)
-    const paneIsBusy = useSelector(
-        ({ importInProgress, optimizationInProgress }: AppState) => importInProgress || optimizationInProgress,
-    )
+    const paneIsBusy = useSelector(({ optimizationInProgress }: AppState) => optimizationInProgress)
     const dispatch: Dispatch<AppAction> = useDispatch()
     const setPane = useCallback(() => dispatch({ type: 'SET_EDITOR_PANE', editorPane: pane }), [])
     const compactMode = useCompactMode()

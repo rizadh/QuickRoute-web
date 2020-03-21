@@ -36,9 +36,7 @@ export const MapView = () => {
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
     const dispatch: Dispatch<AppAction> = useDispatch()
-    const operationInProgress = useSelector(
-        (state: AppState) => state.importInProgress || state.optimizationInProgress,
-    )
+    const operationInProgress = useSelector((state: AppState) => state.optimizationInProgress)
     const status = useSelector((state: AppState) => routeInformation(state).status)
     const darkMode = useDarkMode()
     const accentColor = useAccentColor()
