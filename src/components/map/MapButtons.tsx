@@ -49,7 +49,7 @@ export const MapButtons = () => {
             </CSSTransition>
             <CSSTransition timeout={200} in={!autofitIsEnabled} classNames="transition" unmountOnExit={true}>
                 <Button variant={Variant.Warning} onClick={enableAutofit}>
-                    <i className="fas fa-fw fa-route" /> Show Route
+                    <i className="fas fa-fw fa-route" /> Center Map
                 </Button>
             </CSSTransition>
         </Container>

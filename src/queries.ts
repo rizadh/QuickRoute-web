@@ -34,3 +34,9 @@ export const GeneratePDF = gql`
         pdf(waypoints: $waypoints)
     }
 `
+
+export const SolveTSP = gql`
+    query SolveTSP($costMatrix: [[Float!]!]!) {
+        tsp(costMatrix: $costMatrix)
+    }
+`
