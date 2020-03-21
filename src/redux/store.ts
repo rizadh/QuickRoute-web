@@ -28,18 +28,11 @@ epicMiddleware.run(epic)
 
 const queryWaypointsValue = searchParams.get('waypoints')
 if (queryWaypointsValue) {
-    try {
-        store.dispatch({
-            type: 'REPLACE_WAYPOINTS',
-            waypoints: JSON.parse(queryWaypointsValue).map(createWaypointFromAddress),
-        })
-        history.replaceState(undefined, 'QuickRoute', location.origin + location.pathname)
-    } catch {
-        store.dispatch({
-            type: 'ERROR_OCCURRED',
-            error: 'Waypoints provided in URL could not be parsed',
-        })
-    }
+    store.dispatch({
+        type: 'REPLACE_WAYPOINTS',
+        waypoints: queryWaypointsValue.split(',').map(createWaypointFromAddress),
+    })
+    history.replaceState(undefined, 'QuickRoute', '/')
 }
 
 store.dispatch({ type: 'FETCH_ALL_ROUTES' })
