@@ -9,8 +9,10 @@ import {
     OptimizationParameter,
     OptimizeQuery,
     OptimizeQueryVariables,
+    SolveTspQuery,
+    SolveTspQueryVariables,
 } from '../generated/graphql'
-import { ImportWaypoints, Optimize } from '../queries'
+import { ImportWaypoints, Optimize, SolveTSP } from '../queries'
 import {
     AddWaypointAction,
     AppAction,
@@ -394,6 +396,119 @@ const optimizeRoute = async (coordinates: Coordinate[], optimizationParameter: O
     }
 }
 
+const solveTsp = async (costMatrix: number[][]) => {
+    try {
+        const response = await apolloClient.query<SolveTspQuery, SolveTspQueryVariables>({
+            query: SolveTSP,
+            variables: { costMatrix },
+        })
+
+        return response.data.tsp
+    } catch (error) {
+        throw new Error(`Failed to optimize route ${error}`)
+    }
+}
+
+const slowOptimizeRouteEpic: AppEpic = (action$, state$) =>
+    action$.pipe(
+        ofType<AppAction, OptimizeRouteAction>('OPTIMIZE_ROUTE'),
+        mergeMap<OptimizeRouteAction, ObservableInput<AppAction>>(({ optimizationParameter, startPoint, endPoint }) => {
+            const optimizationWaypoints = [...state$.value.waypoints.map(w => w.address)]
+            if (startPoint) optimizationWaypoints.splice(0, 0, startPoint)
+            if (endPoint) optimizationWaypoints.push(endPoint)
+
+            const pairs: Array<[string, string]> = []
+            optimizationWaypoints.forEach(a => optimizationWaypoints.forEach(b => pairs.push([a, b])))
+
+            return merge<AppAction, AppAction>(
+                [
+                    { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
+                    ...optimizationWaypoints.map<AppAction>(waypoint => ({
+                        type: 'FETCH_PLACE',
+                        address: waypoint,
+                    })),
+                    ...pairs
+                        .filter(([a, b]) => a !== b)
+                        .map<AppAction>(([origin, destination]) => ({
+                            type: 'FETCH_ROUTE',
+                            origin,
+                            destination,
+                        })),
+                ],
+                state$.pipe(
+                    first(
+                        state =>
+                            optimizationWaypoints.every(waypoint => {
+                                const place = state.fetchedPlaces[waypoint]
+                                return place !== undefined && place.status !== 'IN_PROGRESS'
+                            }) &&
+                            pairs
+                                .filter(([a, b]) => a !== b)
+                                .every(([origin, destination]) => {
+                                    const route = state.fetchedRoutes[origin]?.[destination]
+                                    return route !== undefined && route.status !== 'IN_PROGRESS'
+                                }),
+                    ),
+                    mergeMap(async state => {
+                        const getCost = (origin: string, desination: string): number => {
+                            if (origin === desination) return 0
+
+                            const route = state.fetchedRoutes[origin]?.[desination]
+
+                            if (!route || route.status === 'IN_PROGRESS') {
+                                throw new Error('Optimization failed: Internal assertion failed')
+                            }
+
+                            if (route.status === 'FAILED') {
+                                throw new Error(`Optimization failed: ${route.error.message}`)
+                            }
+
+                            switch (optimizationParameter) {
+                                case 'DISTANCE':
+                                    return route.result.distance
+                                case 'TIME':
+                                    return route.result.time
+                                default:
+                                    throw new Error('Optimization failed: Internal assertion failed')
+                            }
+                        }
+
+                        const costMatrix = optimizationWaypoints.map(a =>
+                            optimizationWaypoints.map(b => getCost(a, b)),
+                        )
+
+                        let optimalOrdering = await solveTsp(costMatrix)
+                        if (startPoint) optimalOrdering = optimalOrdering.slice(1).map(i => i - 1)
+                        if (endPoint) optimalOrdering = optimalOrdering.slice(0, -1)
+                        return optimalOrdering.map(i => state.waypoints[i].address)
+                    }),
+                    mergeMap(optimalOrdering => [
+                        { type: 'OPTIMIZE_ROUTE_SUCCESS', optimizationParameter },
+                        {
+                            type: 'REPLACE_WAYPOINTS',
+                            waypoints: optimalOrdering.map(createWaypointFromAddress),
+                        },
+                        { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
+                    ]),
+                    catchError(error =>
+                        of({
+                            type: 'OPTIMIZE_ROUTE_FAILED',
+                            optimizationParameter,
+                            error: error instanceof Error ? error.message : error.toString(),
+                        }),
+                    ),
+                    takeUntil(
+                        action$.pipe(
+                            ofType<AppAction, OptimizeRouteCancelAction>('OPTIMIZE_ROUTE_CANCEL'),
+                            filter(action => action.startPoint === startPoint && action.endPoint === endPoint),
+                        ),
+                    ),
+                ),
+            )
+        }),
+    )
+
+// @ts-ignore
 const optimizeRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, OptimizeRouteAction>('OPTIMIZE_ROUTE'),
@@ -479,5 +594,5 @@ export default combineEpics(
     fetchAllRoutesEpic,
     fetchRouteEpic,
     importWaypointsEpic,
-    optimizeRouteEpic,
+    slowOptimizeRouteEpic,
 )

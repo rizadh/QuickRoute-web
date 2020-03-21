@@ -36,6 +36,7 @@ export type Query = {
   importedWaypoints: ImportedWaypoints,
   pdf: Scalars['String'],
   optimizedRoute: Array<Scalars['Float']>,
+  tsp: Array<Scalars['Int']>,
 };
 
 
@@ -53,6 +54,11 @@ export type QueryPdfArgs = {
 export type QueryOptimizedRouteArgs = {
   coordinates: Array<Coordinates>,
   optimizationParameter: OptimizationParameter
+};
+
+
+export type QueryTspArgs = {
+  costMatrix: Array<Array<Scalars['Float']>>
 };
 
 
@@ -110,4 +116,14 @@ export type GeneratePdfQueryVariables = {
 export type GeneratePdfQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'pdf'>
+);
+
+export type SolveTspQueryVariables = {
+  costMatrix: Array<Array<Scalars['Float']>>
+};
+
+
+export type SolveTspQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'tsp'>
 );

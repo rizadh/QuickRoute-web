@@ -5,7 +5,7 @@ import { OptimizationParameter } from '../../../generated/graphql'
 import { useInput } from '../../../hooks/useInput'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
-import { Alert, WarningAlert } from '../../common/Alert'
+import { Alert, DangerAlert, WarningAlert } from '../../common/Alert'
 import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
@@ -71,13 +71,12 @@ export const OptimizePane = () => {
                         <Alert>
                             Find optimal route from start point to end point passing through all intermediate waypoints
                         </Alert>
-                        <WarningAlert>
-                            NOTE FROM THE DEVELOPER (10/MAR/2020): QuickRoute has recently seen a large influx of
-                            optimization requests. Please be advised that optimization is an expensive operation limited
-                            to 50 requests per month across <u>all</u> users of this application. Once this quota has
-                            been reached, optimization <u>will no longer be available</u>. Please use this service
-                            sparingly and avoid performing optimizations on waypoints that have already been optimized.
-                        </WarningAlert>
+                        <DangerAlert>
+                            NOTE FROM THE DEVELOPER (19/MAR/2020): Due to a large volume of optimization requests
+                            performed recently, QuickRoute has fallen back to a slower optimization strategy.
+                            Optimizations will be noticeably slower, especially when optimizing more than 30 waypoints.
+                            The regular service is expect to return shortly after April 2, 2020.
+                        </DangerAlert>
                         <InputRow>
                             <Input
                                 type="text"

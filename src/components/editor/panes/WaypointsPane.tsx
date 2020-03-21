@@ -58,7 +58,7 @@ export const WaypointsPane = () => {
 
     const shareWaypoints = useCallback(async () => {
         const searchParams = new URLSearchParams()
-        searchParams.set('waypoints', JSON.stringify(waypoints.map(w => w.address)))
+        searchParams.set('waypoints', waypoints.map(w => w.address).join(','))
 
         try {
             await (navigator as INavigator).share({
