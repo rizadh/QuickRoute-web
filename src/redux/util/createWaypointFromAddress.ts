@@ -1,7 +1,7 @@
-import uuid from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import { Waypoint } from '../state'
 
 export const createWaypointFromAddress = (address: string): Waypoint => ({
     address,
-    uuid: uuid(),
+    uuid: uuidv4(),
 })
