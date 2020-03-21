@@ -15,7 +15,7 @@ const searchParams = new URLSearchParams(location.search)
 
 if (searchParams.has('reset')) {
     PersistanceManager.resetState()
-    history.replaceState(undefined, 'QuickRoute', location.origin + location.pathname)
+    history.replaceState(undefined, 'QuickRoute', '/')
 }
 
 const store = configureStore({
