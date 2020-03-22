@@ -11,6 +11,7 @@ import { optimizationInProgressReducer } from './optimizationInProgressReducer'
 import { waypointsReducer } from './waypointsReducer'
 import { importDialogIsShownReducer } from './importDialogIsShownReducer'
 import { optimizeDialogIsShownReducer } from './optimizeDialogIsShownReducer'
+import { navigationDialogIsShownReducer } from './navigationDialogIsShownReducer'
 
 export type AppReducer<T = AppState> = (state: T | undefined, action: AppAction) => T
 
@@ -25,4 +26,5 @@ export const appReducer: AppReducer = combineReducers({
     error: errorReducer,
     importDialogIsShown: importDialogIsShownReducer,
     optimizeDialogIsShown: optimizeDialogIsShownReducer,
+    navigationDialogIsShown: navigationDialogIsShownReducer,
 })

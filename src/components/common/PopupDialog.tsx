@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Button, Variant } from './Button'
 import { Alert } from './Alert'
 import { InputRow } from './InputRow'
-import compactBreakpoint from '../constants/compactBreakpoint'
 
 const Overlay = styled.div`
     position: fixed;
@@ -28,7 +27,7 @@ const Container = styled.div`
     border-radius: var(--standard-border-radius);
     box-shadow: 0 calc(var(--standard-margin) / 1) calc(var(--standard-margin) * 2) rgba(0, 0, 0, 0.4);
 
-    @media (max-width: ${compactBreakpoint}px) {
+    @media (max-width: 420px) {
         align-self: flex-end;
     }
 `
@@ -43,7 +42,7 @@ const Header = styled.div`
     border: var(--standard-border);
     border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
 
-    @media (max-width: ${compactBreakpoint}px) {
+    @media (max-width: 420px) {
         border-left: none;
         border-right: none;
     }
@@ -72,7 +71,7 @@ const Content = styled.div`
         padding: calc(var(--standard-margin) / 2);
     }
 
-    @media (max-width: ${compactBreakpoint}px) {
+    @media (max-width: 420px) {
         border: none;
     }
 `
@@ -88,7 +87,7 @@ const Footer = styled.div`
     border: var(--standard-border);
     border-radius: 0 0 var(--standard-border-radius) var(--standard-border-radius);
 
-    @media (max-width: ${compactBreakpoint}px) {
+    @media (max-width: 420px) {
         border-radius: 0;
         border-left: none;
         border-right: none;

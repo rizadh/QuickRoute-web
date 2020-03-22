@@ -3,17 +3,17 @@ import chunk from 'lodash/chunk'
 import { stringify } from 'query-string'
 import React, { Dispatch, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppAction } from '../../../redux/actionTypes'
-import { AppState } from '../../../redux/state'
-import { Alert, WarningAlert } from '../../common/Alert'
-import { Button, Variant } from '../../common/Button'
-import { Input } from '../../common/Input'
-import { InputRow } from '../../common/InputRow'
-import { Body, Footer } from '../Editor'
+import { AppAction } from '../redux/actionTypes'
+import { AppState } from '../redux/state'
+import { Alert, WarningAlert } from './common/Alert'
+import { Button, Variant } from './common/Button'
+import { Input } from './common/Input'
+import { InputRow } from './common/InputRow'
+import { PopupDialog } from './common/PopupDialog'
 
-export const NavigatePane = () => {
+export const NavigationDialog = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
-    const dispatch: Dispatch<AppAction> = useDispatch()
+    const insufficientWaypoints = waypoints.length === 0
 
     const navigationLinks = useMemo(() => {
         return chunk(waypoints, 10)
@@ -31,7 +31,8 @@ export const NavigatePane = () => {
             })
     }, [waypoints])
 
-    const openUrl = useCallback(
+    const dispatch: Dispatch<AppAction> = useDispatch()
+    const openLink = useCallback(
         (index: number) => () => {
             window.open(navigationLinks[index])
         },
@@ -52,7 +53,6 @@ export const NavigatePane = () => {
     const copyAllLinks = useCallback(() => {
         copyToClipboard(navigationLinks.join('\n'))
     }, [navigationLinks])
-
     const shareLink = useCallback(
         (index: number) => async () => {
             try {
@@ -70,7 +70,6 @@ export const NavigatePane = () => {
         },
         [navigationLinks],
     )
-
     const shareAllLinks = useCallback(async () => {
         try {
             await (navigator as INavigator).share({
@@ -87,16 +86,30 @@ export const NavigatePane = () => {
         }
     }, [navigationLinks])
 
-    const insufficientWaypoints = waypoints.length === 0
+    const hideDialog = useCallback(() => dispatch({ type: 'HIDE_NAVIGATION_DIALOG' }), [])
+
+    const footer = (
+        <>
+            {(navigator as INavigator).share && (
+                <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
+                    <i className="fas fa-fw fa-share" /> Share All
+                </Button>
+            )}
+            <Button variant={Variant.Primary} onClick={copyAllLinks} disabled={insufficientWaypoints}>
+                <i className="fas fa-fw fa-clipboard" /> Copy All
+            </Button>
+            <Button variant={Variant.Primary} onClick={openAllLinks} disabled={insufficientWaypoints}>
+                <i className="fas fa-fw fa-external-link-alt" /> Open All
+            </Button>
+        </>
+    )
 
     return (
-        <>
+        <PopupDialog title="Navigation Links" footer={footer} onClose={hideDialog}>
             {insufficientWaypoints ? (
-                <Body>
-                    <WarningAlert>Add one or more waypoints to generate links</WarningAlert>
-                </Body>
+                <WarningAlert>Add one or more waypoints to generate links</WarningAlert>
             ) : (
-                <Body>
+                <>
                     <Alert>
                         Use the links below to navigate using Google Maps. Each link contains up to ten waypoints due to
                         Google's limitations
@@ -116,27 +129,13 @@ export const NavigatePane = () => {
                             >
                                 <i className="fas fa-fw fa-clipboard" />
                             </Button>
-                            <Button variant={Variant.Primary} onClick={openUrl(index)} title="Open this link">
+                            <Button variant={Variant.Primary} onClick={openLink(index)} title="Open this link">
                                 <i className="fas fa-fw fa-external-link-alt" />
                             </Button>
                         </InputRow>
                     ))}
-                </Body>
+                </>
             )}
-
-            <Footer>
-                {(navigator as INavigator).share && (
-                    <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
-                        <i className="fas fa-fw fa-share" /> Share All
-                    </Button>
-                )}
-                <Button variant={Variant.Primary} onClick={copyAllLinks} disabled={insufficientWaypoints}>
-                    <i className="fas fa-fw fa-clipboard" /> Copy All
-                </Button>
-                <Button variant={Variant.Primary} onClick={openAllLinks} disabled={insufficientWaypoints}>
-                    <i className="fas fa-fw fa-external-link-alt" /> Open All
-                </Button>
-            </Footer>
-        </>
+        </PopupDialog>
     )
 }

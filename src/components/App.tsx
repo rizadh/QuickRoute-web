@@ -9,10 +9,12 @@ import { ImportDialog } from './ImportDialog'
 import { useSelector } from 'react-redux'
 import { AppState } from '../redux/state'
 import { OptimizeDialog } from './OptimizeDialog'
+import { NavigationDialog } from './NavigationDialog'
 
 export const App = hot(module)(() => {
     const importDialogIsShown = useSelector((state: AppState) => state.importDialogIsShown)
     const optimizeDialogIsShown = useSelector((state: AppState) => state.optimizeDialogIsShown)
+    const navigationDialogIsShown = useSelector((state: AppState) => state.navigationDialogIsShown)
 
     return (
         <>
@@ -22,6 +24,7 @@ export const App = hot(module)(() => {
             <ErrorDialog />
             {importDialogIsShown && <ImportDialog />}
             {optimizeDialogIsShown && <OptimizeDialog />}
+            {navigationDialogIsShown && <NavigationDialog />}
         </>
     )
 })

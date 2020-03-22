@@ -13,7 +13,6 @@ import { Link } from '../common/Link'
 import compactBreakpoint from '../constants/compactBreakpoint'
 import { InfoBar } from './InfoBar'
 import { BulkEditPane } from './panes/BulkEditPane'
-import { NavigatePane } from './panes/NavigatePane'
 import { WaypointsPane } from './panes/WaypointsPane'
 import { PaneSelector } from './PaneSelector'
 
@@ -159,9 +158,8 @@ const Content = () => {
         case EditorPane.Waypoints:
         case EditorPane.Import:
         case EditorPane.Optimize:
+        case EditorPane.Navigation:
             return <WaypointsPane />
-        case EditorPane.Navigate:
-            return <NavigatePane />
         case EditorPane.BulkEdit:
             return <BulkEditPane />
     }

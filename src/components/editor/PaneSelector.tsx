@@ -51,7 +51,7 @@ export const PaneSelector = () => (
         <Container>
             <SelectorButton pane={EditorPane.Waypoints} />
             <SelectorButton pane={EditorPane.BulkEdit} />
-            <SelectorButton pane={EditorPane.Navigate} />
+            <SelectorButton pane={EditorPane.Navigation} />
             <SelectorButton pane={EditorPane.Import} />
             <SelectorButton pane={EditorPane.Optimize} />
         </Container>

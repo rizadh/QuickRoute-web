@@ -61,9 +61,9 @@ export const attributesForEditorPane = (editorPane: EditorPane): EditorPaneAttri
                 displayName: 'Bulk Edit',
                 iconName: 'pencil-alt',
             }
-        case EditorPane.Navigate:
+        case EditorPane.Navigation:
             return {
-                displayName: 'Navigate',
+                displayName: 'Navigation',
                 iconName: 'directions',
             }
         case EditorPane.Import:
@@ -83,7 +83,7 @@ export enum EditorPane {
     Waypoints = 'list',
     BulkEdit = 'bulkEdit',
     Import = 'import',
-    Navigate = 'urls',
+    Navigation = 'urls',
     Optimize = 'optimizer',
 }
 
@@ -100,4 +100,5 @@ export type AppState = Readonly<{
     error: string | null;
     importDialogIsShown: boolean;
     optimizeDialogIsShown: boolean;
+    navigationDialogIsShown: boolean;
 }>
