@@ -417,7 +417,7 @@ const slowOptimizeRouteEpic: AppEpic = (action$, state$) =>
             if (startPoint) optimizationWaypoints.splice(0, 0, startPoint)
             if (endPoint) optimizationWaypoints.push(endPoint)
 
-            const pairs: Array<[string, string]> = []
+            const pairs: [string, string][] = []
             optimizationWaypoints.forEach(a => optimizationWaypoints.forEach(b => pairs.push([a, b])))
 
             return merge<AppAction, AppAction>(
