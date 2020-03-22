@@ -8,9 +8,11 @@ import { MapContainer } from './map/MapContainer'
 import { ImportDialog } from './ImportDialog'
 import { useSelector } from 'react-redux'
 import { AppState } from '../redux/state'
+import { OptimizeDialog } from './OptimizeDialog'
 
 export const App = hot(module)(() => {
     const importDialogIsShown = useSelector((state: AppState) => state.importDialogIsShown)
+    const optimizeDialogIsShown = useSelector((state: AppState) => state.optimizeDialogIsShown)
 
     return (
         <>
@@ -19,6 +21,7 @@ export const App = hot(module)(() => {
             <ProgressBar />
             <ErrorDialog />
             {importDialogIsShown && <ImportDialog />}
+            {optimizeDialogIsShown && <OptimizeDialog />}
         </>
     )
 })

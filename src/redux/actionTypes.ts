@@ -187,6 +187,14 @@ export type HideImportDialogAction = Readonly<{
     type: 'HIDE_IMPORT_DIALOG';
 }>
 
+export type ShowOptimizeDialogAction = Readonly<{
+    type: 'SHOW_OPTIMIZE_DIALOG';
+}>
+
+export type HideOptimizeDialogAction = Readonly<{
+    type: 'HIDE_OPTIMIZE_DIALOG';
+}>
+
 export type AppAction =
     | ReplaceWaypointsAction
     | AddWaypointAction
@@ -223,3 +231,5 @@ export type AppAction =
     | ClearErrorAction
     | ShowImportDialogAction
     | HideImportDialogAction
+    | ShowOptimizeDialogAction
+    | HideOptimizeDialogAction

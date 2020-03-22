@@ -14,7 +14,6 @@ import compactBreakpoint from '../constants/compactBreakpoint'
 import { InfoBar } from './InfoBar'
 import { BulkEditPane } from './panes/BulkEditPane'
 import { NavigatePane } from './panes/NavigatePane'
-import { OptimizePane } from './panes/OptimizePane'
 import { WaypointsPane } from './panes/WaypointsPane'
 import { PaneSelector } from './PaneSelector'
 
@@ -158,14 +157,12 @@ const Content = () => {
 
     switch (editorPane) {
         case EditorPane.Waypoints:
+        case EditorPane.Import:
+        case EditorPane.Optimize:
             return <WaypointsPane />
         case EditorPane.Navigate:
             return <NavigatePane />
         case EditorPane.BulkEdit:
             return <BulkEditPane />
-        case EditorPane.Import:
-            return <WaypointsPane />
-        case EditorPane.Optimize:
-            return <OptimizePane />
     }
 }

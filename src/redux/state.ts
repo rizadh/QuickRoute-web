@@ -99,4 +99,5 @@ export type AppState = Readonly<{
     optimizationInProgress: boolean;
     error: string | null;
     importDialogIsShown: boolean;
+    optimizeDialogIsShown: boolean;
 }>
