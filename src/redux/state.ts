@@ -12,7 +12,7 @@ export type FetchInProgress = Readonly<{
 
 export type FetchFailed = Readonly<{
     status: 'FAILED';
-    error: Error;
+    error: string;
 }>
 
 export type Coordinate = {

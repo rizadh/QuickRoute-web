@@ -80,7 +80,7 @@ export type FetchPlaceSuccessAction = Readonly<{
 export type FetchPlaceFailedAction = Readonly<{
     type: 'FETCH_PLACE_FAILED';
     address: string;
-    error: Error;
+    error: string;
 }>
 
 export type FetchAllRoutesAction = Readonly<{
@@ -111,7 +111,7 @@ export type FetchRouteFailedAction = Readonly<{
     type: 'FETCH_ROUTE_FAILED';
     origin: string;
     destination: string;
-    error: Error;
+    error: string;
 }>
 
 export type EnableAutofitAction = Readonly<{

@@ -50,7 +50,7 @@ const performLookup = (address: string) =>
     new Observable<FetchPlaceResultAction>(observer => {
         const fetchId = geocoder.lookup(address, (error, data) => {
             if (error) {
-                observer.next({ type: 'FETCH_PLACE_FAILED', address, error: new Error(`${error} ('${address}')`) })
+                observer.next({ type: 'FETCH_PLACE_FAILED', address, error: `${error} ('${address}')` })
                 observer.complete()
 
                 return
@@ -62,7 +62,7 @@ const performLookup = (address: string) =>
                 observer.next({
                     type: 'FETCH_PLACE_FAILED',
                     address,
-                    error: new Error(`No places returned ('${address}')`),
+                    error: `No places returned ('${address}')`,
                 })
                 observer.complete()
 
@@ -106,7 +106,7 @@ const performRoute = (
                         type: 'FETCH_ROUTE_FAILED',
                         origin: origin.address,
                         destination: destination.address,
-                        error: new Error(`${error} ('${origin.address}' -> '${origin.address}')`),
+                        error: `${error} ('${origin.address}' -> '${origin.address}')`,
                     })
                     observer.complete()
 
@@ -120,7 +120,7 @@ const performRoute = (
                         type: 'FETCH_ROUTE_FAILED',
                         origin: origin.address,
                         destination: destination.address,
-                        error: new Error(`No routes returned ('${origin.address}' -> '${origin.address}')`),
+                        error: `No routes returned ('${origin.address}' -> '${origin.address}')`,
                     })
                     observer.complete()
 
@@ -289,12 +289,12 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
 
                         if (!fetchedOrigin || fetchedOrigin.status === 'IN_PROGRESS') return EMPTY
                         if (fetchedOrigin.status === 'FAILED') {
-                            throw new Error(`Route fetching failed: ${fetchedOrigin.error.message}`)
+                            throw new Error(`Route fetching failed: ${fetchedOrigin.error}`)
                         }
 
                         if (!fetchedDestination || fetchedDestination.status === 'IN_PROGRESS') return EMPTY
                         if (fetchedDestination.status === 'FAILED') {
-                            throw new Error(`Route fetching failed: ${fetchedDestination.error.message}`)
+                            throw new Error(`Route fetching failed: ${fetchedDestination.error}`)
                         }
 
                         return of({
@@ -460,7 +460,7 @@ const slowOptimizeRouteEpic: AppEpic = (action$, state$) =>
                             }
 
                             if (route.status === 'FAILED') {
-                                throw new Error(`Optimization failed: ${route.error.message}`)
+                                throw new Error(`Optimization failed: ${route.error}`)
                             }
 
                             switch (optimizationParameter) {
@@ -541,7 +541,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                             }
 
                             if (place.status === 'FAILED') {
-                                throw new Error(`Optimization failed: ${place.error.message}`)
+                                throw new Error(`Optimization failed: ${place.error}`)
                             }
 
                             return place.result.coordinate
