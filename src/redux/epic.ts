@@ -39,6 +39,7 @@ import {
 } from './actionTypes'
 import { AppState, Coordinate, EditorPane } from './state'
 import { createWaypointFromAddress } from './util/createWaypointFromAddress'
+import haversine from 'haversine'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
@@ -409,6 +410,7 @@ const solveTsp = async (costMatrix: number[][]) => {
     }
 }
 
+// @ts-ignore
 const slowOptimizeRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, OptimizeRouteAction>('OPTIMIZE_ROUTE'),
@@ -471,6 +473,85 @@ const slowOptimizeRouteEpic: AppEpic = (action$, state$) =>
                                 default:
                                     throw new Error('Optimization failed: Internal assertion failed')
                             }
+                        }
+
+                        const costMatrix = optimizationWaypoints.map(a =>
+                            optimizationWaypoints.map(b => getCost(a, b)),
+                        )
+
+                        let optimalOrdering = await solveTsp(costMatrix)
+                        if (startPoint) optimalOrdering = optimalOrdering.slice(1).map(i => i - 1)
+                        if (endPoint) optimalOrdering = optimalOrdering.slice(0, -1)
+                        return optimalOrdering.map(i => state.waypoints[i].address)
+                    }),
+                    mergeMap(optimalOrdering => [
+                        { type: 'OPTIMIZE_ROUTE_SUCCESS', optimizationParameter },
+                        {
+                            type: 'REPLACE_WAYPOINTS',
+                            waypoints: optimalOrdering.map(createWaypointFromAddress),
+                        },
+                        { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
+                    ]),
+                    catchError(error =>
+                        of({
+                            type: 'OPTIMIZE_ROUTE_FAILED',
+                            optimizationParameter,
+                            error: error instanceof Error ? error.message : error.toString(),
+                        }),
+                    ),
+                    takeUntil(
+                        action$.pipe(
+                            ofType<AppAction, OptimizeRouteCancelAction>('OPTIMIZE_ROUTE_CANCEL'),
+                            filter(action => action.startPoint === startPoint && action.endPoint === endPoint),
+                        ),
+                    ),
+                ),
+            )
+        }),
+    )
+
+const quickOptimizeRouteEpic: AppEpic = (action$, state$) =>
+    action$.pipe(
+        ofType<AppAction, OptimizeRouteAction>('OPTIMIZE_ROUTE'),
+        mergeMap<OptimizeRouteAction, ObservableInput<AppAction>>(({ optimizationParameter, startPoint, endPoint }) => {
+            const optimizationWaypoints = [...state$.value.waypoints.map(w => w.address)]
+            if (startPoint) optimizationWaypoints.splice(0, 0, startPoint)
+            if (endPoint) optimizationWaypoints.push(endPoint)
+
+            return merge<AppAction, AppAction>(
+                [
+                    { type: 'OPTIMIZE_ROUTE_IN_PROGRESS', optimizationParameter },
+                    ...optimizationWaypoints.map<AppAction>(waypoint => ({
+                        type: 'FETCH_PLACE',
+                        address: waypoint,
+                    })),
+                ],
+                state$.pipe(
+                    first(state =>
+                        optimizationWaypoints.every(waypoint => {
+                            const place = state.fetchedPlaces[waypoint]
+                            return place !== undefined && place.status !== 'IN_PROGRESS'
+                        }),
+                    ),
+                    mergeMap(async state => {
+                        const getCoordinates = (waypoint: string): Coordinate => {
+                            const place = state.fetchedPlaces[waypoint]
+
+                            if (!place || place.status === 'IN_PROGRESS') {
+                                throw new Error('Optimization failed: Internal assertion failed')
+                            }
+
+                            if (place.status === 'FAILED') {
+                                throw new Error(`Optimization failed: ${place.error}`)
+                            }
+
+                            return place.result.coordinate
+                        }
+
+                        const getCost = (origin: string, destination: string): number => {
+                            if (origin === destination) return 0
+
+                            return haversine(getCoordinates(origin), getCoordinates(destination))
                         }
 
                         const costMatrix = optimizationWaypoints.map(a =>
@@ -594,5 +675,5 @@ export default combineEpics(
     fetchAllRoutesEpic,
     fetchRouteEpic,
     importWaypointsEpic,
-    slowOptimizeRouteEpic,
+    quickOptimizeRouteEpic,
 )

@@ -72,10 +72,10 @@ export const OptimizePane = () => {
                             Find optimal route from start point to end point passing through all intermediate waypoints
                         </Alert>
                         <DangerAlert>
-                            NOTE FROM THE DEVELOPER (19/MAR/2020): Due to a large volume of optimization requests
-                            performed recently, QuickRoute has fallen back to a slower optimization strategy.
-                            Optimizations will be noticeably slower, especially when optimizing more than 30 waypoints.
-                            The regular service is expect to return shortly after April 2, 2020.
+                            Note: Due to a large volume of recent requests, QuickRoute has fallen back to a less
+                            effective optimization strategy. Suboptimal results may be obtained during this time so
+                            ensure that the route provided is checked for obvious errors and manually corrected. Regular
+                            service is expected to return shortly after April 2, 2020. -&nbsp;Rizadh&nbsp;(22/Mar/2020)
                         </DangerAlert>
                         <InputRow>
                             <Input
