@@ -3,7 +3,6 @@ import { AppAction } from '../actionTypes'
 import { AppState } from '../state'
 import { autofitIsEnabledReducer } from './autofitIsEnabledReducer'
 import { editorIsHiddenReducer } from './editorIsHiddenReducer'
-import { editorPaneReducer } from './editorPaneReducer'
 import { errorReducer } from './errorReducer'
 import { fetchedPlacesReducer } from './fetchedPlacesReducer'
 import { fetchedRoutesReducer } from './fetchedRoutesReducer'
@@ -20,7 +19,6 @@ export const appReducer: AppReducer = combineReducers({
     fetchedPlaces: fetchedPlacesReducer,
     fetchedRoutes: fetchedRoutesReducer,
     autofitIsEnabled: autofitIsEnabledReducer,
-    editorPane: editorPaneReducer,
     editorIsHidden: editorIsHiddenReducer,
     optimizationInProgress: optimizationInProgressReducer,
     error: errorReducer,

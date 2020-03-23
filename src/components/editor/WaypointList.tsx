@@ -1,8 +1,8 @@
 import React, { Dispatch, useCallback, useState } from 'react'
 import { DragDropContext, DragStart, Droppable, DropResult } from 'react-beautiful-dnd'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppAction } from '../../../redux/actionTypes'
-import { AppState, Waypoint } from '../../../redux/state'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState, Waypoint } from '../../redux/state'
 import { WaypointItem } from './WaypointItem'
 
 export const WaypointList = () => {

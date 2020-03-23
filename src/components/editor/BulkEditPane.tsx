@@ -2,16 +2,16 @@ import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import TextareaAutosize from 'react-textarea-autosize'
-import { useInput } from '../../../hooks/useInput'
-import { AppAction } from '../../../redux/actionTypes'
-import { AppState, EditorPane } from '../../../redux/state'
-import { createWaypointFromAddress } from '../../../redux/util/createWaypointFromAddress'
-import { isValidAddress } from '../../../redux/validator'
-import { Alert } from '../../common/Alert'
-import { Button, Variant } from '../../common/Button'
-import { Input } from '../../common/Input'
-import { InputRow } from '../../common/InputRow'
-import { Body, Footer } from '../Editor'
+import { useInput } from '../../hooks/useInput'
+import { AppAction } from '../../redux/actionTypes'
+import { AppState } from '../../redux/state'
+import { createWaypointFromAddress } from '../../redux/util/createWaypointFromAddress'
+import { isValidAddress } from '../../redux/validator'
+import { Alert } from '../common/Alert'
+import { Button, Variant } from '../common/Button'
+import { Input } from '../common/Input'
+import { InputRow } from '../common/InputRow'
+import { Body, Footer } from './Editor'
 
 export const BulkEditPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -27,7 +27,6 @@ export const BulkEditPane = () => {
                 .map(address => address.trim())
 
             dispatch({ type: 'REPLACE_WAYPOINTS', waypoints: validAddresses.map(createWaypointFromAddress) })
-            dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints })
         }, []),
     })
 

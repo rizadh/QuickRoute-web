@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
 import styled from 'styled-components'
 import { AppAction } from '../../redux/actionTypes'
-import { AppState, attributesForEditorPane } from '../../redux/state'
+import { AppState } from '../../redux/state'
 import { Button, Variant } from '../common/Button'
 import compactBreakpoint from '../constants/compactBreakpoint'
 
@@ -34,7 +34,6 @@ const Container = styled.div`
 export const MapButtons = () => {
     const autofitIsEnabled = useSelector((state: AppState) => state.autofitIsEnabled)
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
-    const editorPane = useSelector((state: AppState) => state.editorPane)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
     const enableAutofit = useCallback(() => dispatch({ type: 'ENABLE_AUTOFIT' }), [])
@@ -44,7 +43,7 @@ export const MapButtons = () => {
         <Container>
             <CSSTransition timeout={200} in={editorIsHidden} classNames="transition" unmountOnExit={true}>
                 <Button variant={Variant.Primary} onClick={showEditorPane}>
-                    <i className={`fas fa-fw fa-${attributesForEditorPane(editorPane).iconName}`} />
+                    <i className="fas fa-fw fa-list" />
                 </Button>
             </CSSTransition>
             <CSSTransition timeout={200} in={!autofitIsEnabled} classNames="transition" unmountOnExit={true}>

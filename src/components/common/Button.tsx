@@ -6,6 +6,7 @@ export enum Variant {
     Secondary,
     Danger,
     Warning,
+    PrimaryPlain,
 }
 
 export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) => {
@@ -13,31 +14,6 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
 
     return <button {...props} onMouseDown={preventFocus} />
 })`
-    ${({ variant }: { variant: Variant }) => {
-        switch (variant) {
-            case Variant.Primary:
-                return css`
-                    background-color: var(--accent-color);
-                    color: white;
-                `
-            case Variant.Secondary:
-                return css`
-                    background-color: var(--tertiary-fill-color);
-                    color: var(--primary-text-color);
-                `
-            case Variant.Danger:
-                return css`
-                    background-color: var(--error-color);
-                    color: white;
-                `
-            case Variant.Warning:
-                return css`
-                    background-color: var(--apple-system-yellow);
-                    color: rgba(0, 0, 0, 0.6);
-                `
-        }
-    }};
-
     padding: var(--standard-padding);
     border-radius: var(--standard-border-radius);
     border: var(--standard-border);
@@ -106,4 +82,38 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
     &:disabled {
         opacity: 0.5;
     }
+
+    ${({ variant }: { variant: Variant }) => {
+        switch (variant) {
+            case Variant.PrimaryPlain:
+                return css`
+                    background-color: transparent;
+                    color: var(--accent-color);
+
+                    padding: calc(var(--standard-vertical-padding) / 2) calc(var(--standard-horizontal-padding) / 2);
+                    border: none;
+                    border-radius: calc(var(--standard-border-radius) / 2);
+                `
+            case Variant.Primary:
+                return css`
+                    background-color: var(--accent-color);
+                    color: white;
+                `
+            case Variant.Secondary:
+                return css`
+                    background-color: var(--tertiary-fill-color);
+                    color: var(--primary-text-color);
+                `
+            case Variant.Danger:
+                return css`
+                    background-color: var(--error-color);
+                    color: white;
+                `
+            case Variant.Warning:
+                return css`
+                    background-color: var(--apple-system-yellow);
+                    color: rgba(0, 0, 0, 0.6);
+                `
+        }
+    }}
 `

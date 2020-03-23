@@ -31,6 +31,7 @@ export const Input = styled.input`
     &:not(:read-only):focus {
         background-color: var(--input-focus-color);
         border-color: var(--accent-color);
+        border-width: 2px;
     }
 
     :read-only {

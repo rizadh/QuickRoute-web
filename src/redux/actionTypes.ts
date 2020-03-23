@@ -1,5 +1,5 @@
 import { OptimizationParameter } from '../generated/graphql'
-import { EditorPane, Place, Route, Waypoint } from './state'
+import { Place, Route, Waypoint } from './state'
 
 export type ReplaceWaypointsAction = Readonly<{
     type: 'REPLACE_WAYPOINTS';
@@ -122,11 +122,6 @@ export type DisableAutofitAction = Readonly<{
     type: 'DISABLE_AUTOFIT';
 }>
 
-export type SetEditorPaneAction = Readonly<{
-    type: 'SET_EDITOR_PANE';
-    editorPane: EditorPane;
-}>
-
 export type HideEditorPaneAction = Readonly<{
     type: 'HIDE_EDITOR_PANE';
 }>
@@ -227,7 +222,6 @@ export type AppAction =
     | FetchRouteFailedAction
     | EnableAutofitAction
     | DisableAutofitAction
-    | SetEditorPaneAction
     | HideEditorPaneAction
     | ShowEditorPaneAction
     | OptimizeRouteAction
