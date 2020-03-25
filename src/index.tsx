@@ -16,7 +16,7 @@ require('babel-polyfill')
 mapkit.init({
     authorizationCallback: done =>
         apolloClient
-            .query<GetTokenQuery, GetTokenQueryVariables>({ query: GetToken })
+            .query<GetTokenQuery, GetTokenQueryVariables>({ query: GetToken, variables: { origin: document.origin } })
             .then(result => done(result.data.mapkitToken)),
 })
 

@@ -1,12 +1,12 @@
 export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string,
-  String: string,
-  Boolean: boolean,
-  Int: number,
-  Float: number,
-  Upload: any,
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  Upload: any;
 };
 
 export enum CacheControlScope {
@@ -15,14 +15,14 @@ export enum CacheControlScope {
 }
 
 export type Coordinates = {
-  latitude: Scalars['Float'],
-  longitude: Scalars['Float'],
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
 };
 
 export type ImportedWaypoints = {
-   __typename?: 'ImportedWaypoints',
-  dispatched: Array<Waypoint>,
-  inprogress: Array<Waypoint>,
+   __typename?: 'ImportedWaypoints';
+  dispatched: Array<Waypoint>;
+  inprogress: Array<Waypoint>;
 };
 
 export enum OptimizationParameter {
@@ -31,45 +31,52 @@ export enum OptimizationParameter {
 }
 
 export type Query = {
-   __typename?: 'Query',
-  mapkitToken: Scalars['String'],
-  importedWaypoints: ImportedWaypoints,
-  pdf: Scalars['String'],
-  optimizedRoute: Array<Scalars['Float']>,
-  tsp: Array<Scalars['Int']>,
+   __typename?: 'Query';
+  mapkitToken: Scalars['String'];
+  importedWaypoints: ImportedWaypoints;
+  pdf: Scalars['String'];
+  optimizedRoute: Array<Scalars['Float']>;
+  tsp: Array<Scalars['Int']>;
+};
+
+
+export type QueryMapkitTokenArgs = {
+  origin?: Maybe<Scalars['String']>;
 };
 
 
 export type QueryImportedWaypointsArgs = {
-  driverNumber: Scalars['String'],
-  password: Scalars['String']
+  driverNumber: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
 export type QueryPdfArgs = {
-  waypoints: Array<Scalars['String']>
+  waypoints: Array<Scalars['String']>;
 };
 
 
 export type QueryOptimizedRouteArgs = {
-  coordinates: Array<Coordinates>,
-  optimizationParameter: OptimizationParameter
+  coordinates: Array<Coordinates>;
+  optimizationParameter: OptimizationParameter;
 };
 
 
 export type QueryTspArgs = {
-  costMatrix: Array<Array<Scalars['Float']>>
+  costMatrix: Array<Array<Scalars['Float']>>;
 };
 
 
 export type Waypoint = {
-   __typename?: 'Waypoint',
-  address: Scalars['String'],
-  city: Scalars['String'],
-  postalCode: Scalars['String'],
+   __typename?: 'Waypoint';
+  address: Scalars['String'];
+  city: Scalars['String'];
+  postalCode: Scalars['String'];
 };
 
-export type GetTokenQueryVariables = {};
+export type GetTokenQueryVariables = {
+  origin?: Maybe<Scalars['String']>;
+};
 
 
 export type GetTokenQuery = (
@@ -78,8 +85,8 @@ export type GetTokenQuery = (
 );
 
 export type ImportWaypointsQueryVariables = {
-  driverNumber: Scalars['String'],
-  password: Scalars['String']
+  driverNumber: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -98,8 +105,8 @@ export type ImportWaypointsQuery = (
 );
 
 export type OptimizeQueryVariables = {
-  coordinates: Array<Coordinates>,
-  optimizationParameter: OptimizationParameter
+  coordinates: Array<Coordinates>;
+  optimizationParameter: OptimizationParameter;
 };
 
 
@@ -109,7 +116,7 @@ export type OptimizeQuery = (
 );
 
 export type GeneratePdfQueryVariables = {
-  waypoints: Array<Scalars['String']>
+  waypoints: Array<Scalars['String']>;
 };
 
 
@@ -119,7 +126,7 @@ export type GeneratePdfQuery = (
 );
 
 export type SolveTspQueryVariables = {
-  costMatrix: Array<Array<Scalars['Float']>>
+  costMatrix: Array<Array<Scalars['Float']>>;
 };
 
 

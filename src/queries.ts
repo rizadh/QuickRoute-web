@@ -1,8 +1,8 @@
 import { gql } from 'apollo-boost'
 
 export const GetToken = gql`
-    query GetToken {
-        mapkitToken
+    query GetToken($origin: String) {
+        mapkitToken(origin: $origin)
     }
 `
 
