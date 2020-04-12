@@ -510,6 +510,7 @@ const slowOptimizeRouteEpic: AppEpic = (action$, state$) =>
         }),
     )
 
+// @ts-ignore
 const quickOptimizeRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, OptimizeRouteAction>('OPTIMIZE_ROUTE'),
@@ -675,5 +676,5 @@ export default combineEpics(
     fetchAllRoutesEpic,
     fetchRouteEpic,
     importWaypointsEpic,
-    quickOptimizeRouteEpic,
+    optimizeRouteEpic,
 )
