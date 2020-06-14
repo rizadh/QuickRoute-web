@@ -6,7 +6,7 @@
     "scripts": {
         "lint": "concurrently -n tsc,eslint \"yarn lint:tsc\" \"yarn lint:eslint\"",
         "lint:tsc": "tsc -p . -noEmit",
-        "lint:eslint": "eslint ./src",
+        "lint:eslint": "eslint src",
         "clean": "rm -rf public",
         "build": "parcel build --out-dir public --no-source-maps src/index.html",
         "develop": "parcel --out-dir public --https src/index.html",
