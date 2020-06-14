@@ -61,7 +61,7 @@ export const WaypointsPane = () => {
         searchParams.set('waypoints', waypoints.map(w => w.address).join(','))
 
         try {
-            await (navigator as INavigator).share({
+            await navigator.share({
                 url: location.origin + location.pathname + '?' + searchParams.toString(),
             })
         } catch (e) {
@@ -123,7 +123,7 @@ export const WaypointsPane = () => {
                         <Button variant={Variant.Primary} onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                             <i className="fas fa-fw fa-exchange-alt" /> Reverse
                         </Button>
-                        {(navigator as INavigator).share && (
+                        {navigator.share && (
                             <Button
                                 variant={Variant.Primary}
                                 onClick={shareWaypoints}
