@@ -47,6 +47,7 @@ export const MapView = () => {
         [autofitIsEnabled, map],
     )
 
+    // Initialize map 
     useEffect(() => {
         if (mapviewRef.current == null) return
 
@@ -72,6 +73,7 @@ export const MapView = () => {
         return () => newMap.destroy()
     }, [])
 
+    // Update annotations and overlays 
     useEffect(() => {
         if (!map) return
         if (status === 'FETCHING') return
