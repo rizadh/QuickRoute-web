@@ -1,4 +1,3 @@
-import { range as _range } from 'lodash'
 import { combineEpics, Epic, ofType } from 'redux-observable'
 import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
 import { catchError, filter, first, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
@@ -9,10 +8,8 @@ import {
     OptimizationParameter,
     OptimizeQuery,
     OptimizeQueryVariables,
-    SolveTspQuery,
-    SolveTspQueryVariables,
 } from '../generated/graphql'
-import { ImportWaypoints, Optimize, SolveTSP } from '../queries'
+import { ImportWaypoints, Optimize } from '../queries'
 import {
     AddWaypointAction,
     AppAction,
@@ -39,7 +36,6 @@ import {
 } from './actionTypes'
 import { AppState, Coordinate, EditorPane } from './state'
 import { createWaypointFromAddress } from './util/createWaypointFromAddress'
-import haversine from 'haversine'
 
 type AppEpic = Epic<AppAction, AppAction, AppState>
 type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
@@ -392,19 +388,6 @@ const optimizeRoute = async (coordinates: Coordinate[], optimizationParameter: O
         })
 
         return response.data.optimizedRoute
-    } catch (error) {
-        throw new Error(`Failed to optimize route ${error}`)
-    }
-}
-
-const solveTsp = async (costMatrix: number[][]) => {
-    try {
-        const response = await apolloClient.query<SolveTspQuery, SolveTspQueryVariables>({
-            query: SolveTSP,
-            variables: { costMatrix },
-        })
-
-        return response.data.tsp
     } catch (error) {
         throw new Error(`Failed to optimize route ${error}`)
     }
