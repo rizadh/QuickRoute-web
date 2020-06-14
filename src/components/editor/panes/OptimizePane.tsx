@@ -5,7 +5,7 @@ import { OptimizationParameter } from '../../../generated/graphql'
 import { useInput } from '../../../hooks/useInput'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
-import { Alert, DangerAlert, WarningAlert } from '../../common/Alert'
+import { Alert, WarningAlert } from '../../common/Alert'
 import { Button, Variant } from '../../common/Button'
 import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
@@ -71,12 +71,6 @@ export const OptimizePane = () => {
                         <Alert>
                             Find optimal route from start point to end point passing through all intermediate waypoints
                         </Alert>
-                        <DangerAlert>
-                            Note: Due to a large volume of recent requests, QuickRoute has fallen back to a less
-                            effective optimization strategy. Suboptimal results may be obtained during this time so
-                            ensure that the route provided is checked for obvious errors and manually corrected. Regular
-                            service is expected to return shortly after April 2, 2020. -&nbsp;Rizadh&nbsp;(22/Mar/2020)
-                        </DangerAlert>
                         <InputRow>
                             <Input
                                 type="text"
