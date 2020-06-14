@@ -99,7 +99,7 @@ export const NavigatePane = () => {
                 <Body>
                     <Alert>
                         Use the links below to navigate using Google Maps. Each link contains up to ten waypoints due to
-                        Google's limitations
+                        Google&apos;s limitations
                     </Alert>
                     {navigationLinks.map((url, index) => (
                         <InputRow key={url}>

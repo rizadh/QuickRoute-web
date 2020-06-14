@@ -21,14 +21,15 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
         case 'SET_ADDRESS':
             waypoints[action.index].address = action.address
             break
-        case 'MOVE_WAYPOINT':
+        case 'MOVE_WAYPOINT': {
             if (action.sourceIndex === action.targetIndex) return
 
             const [removed] = waypoints.splice(action.sourceIndex, 1)
 
             waypoints.splice(action.targetIndex, 0, removed)
             break
-        case 'MOVE_SELECTED_WAYPOINTS':
+        }
+        case 'MOVE_SELECTED_WAYPOINTS': {
             const lowestIndex = waypoints.findIndex(({ selected }) => selected)
             const partitionIndex = lowestIndex < action.index ? action.index + 1 : action.index
 
@@ -41,11 +42,13 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
             )
 
             return [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
-        case 'SELECT_WAYPOINT':
+        }
+        case 'SELECT_WAYPOINT': {
             const wasSelected = waypoints[action.index].selected
             for (const waypoint of waypoints) delete waypoint.selected
             if (!wasSelected) waypoints[action.index].selected = Date.now()
             break
+        }
         case 'DESELECT_ALL_WAYPOINTS':
             for (const waypoint of waypoints) delete waypoint.selected
             break
@@ -54,7 +57,7 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
             else waypoints[action.index].selected = Date.now()
 
             break
-        case 'SELECT_WAYPOINT_RANGE':
+        case 'SELECT_WAYPOINT_RANGE': {
             const [lastSelectedWaypointIndex] = waypoints.reduce<[number, number | undefined]>(
                 (prev, curr, index) =>
                     curr.selected && (!prev[1] || prev[1] < curr.selected) ? [index, curr.selected] : prev,
@@ -69,6 +72,7 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
 
             waypoints[action.index].selected = Date.now()
             break
+        }
         case 'SET_EDITOR_PANE':
             for (const waypoint of waypoints) delete waypoint.selected
             break
