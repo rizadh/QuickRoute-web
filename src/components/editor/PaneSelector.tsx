@@ -16,8 +16,8 @@ const Container = styled.div`
 `
 
 type SelectorButtonProps = {
-    pane: EditorPane;
-    className?: ButtonHTMLAttributes<HTMLButtonElement>['className'];
+    pane: EditorPane
+    className?: ButtonHTMLAttributes<HTMLButtonElement>['className']
 }
 
 const SelectorButton = styled(({ pane, className }: SelectorButtonProps) => {

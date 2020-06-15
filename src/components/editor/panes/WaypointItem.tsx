@@ -48,8 +48,8 @@ const DangerStatusIndicator = styled(StatusIndicator)`
 `
 
 type WaypointItemProps = {
-    index: number;
-    isBeingDraggedAlong: boolean;
+    index: number
+    isBeingDraggedAlong: boolean
 }
 
 export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) => {
