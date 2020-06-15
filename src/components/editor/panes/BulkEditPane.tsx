@@ -40,6 +40,7 @@ export const BulkEditPane = () => {
                 <InputRow>
                     <Input
                         // TODO: Fix this once type definition works without 'as any'
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         as={TextareaAutosize as any}
                         minRows={3}
                         {...bulkEditFieldProps}
