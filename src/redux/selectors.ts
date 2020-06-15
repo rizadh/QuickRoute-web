@@ -2,22 +2,22 @@ import range from 'lodash/range'
 import { AppState } from '../redux/state'
 
 type NoRouteInformation = Readonly<{
-    status: 'NO_ROUTE';
+    status: 'NO_ROUTE'
 }>
 
 type FetchedRouteInformation = Readonly<{
-    status: 'FETCHED';
-    totalDistance: number;
-    totalTime: number;
+    status: 'FETCHED'
+    totalDistance: number
+    totalTime: number
 }>
 
 type FetchFailedRouteInformation = Readonly<{
-    status: 'FAILED';
+    status: 'FAILED'
 }>
 
 type FetchingRouteInformation = Readonly<{
-    status: 'FETCHING';
-    progress: number;
+    status: 'FETCHING'
+    progress: number
 }>
 
 export type RouteInformation =

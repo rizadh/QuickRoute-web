@@ -5,7 +5,6 @@
     "repository": "https://github.com/rizadh/route-planner",
     "scripts": {
         "lint": "eslint src",
-        "lint:fix": "eslint --fix src",
         "clean": "rm -rf public",
         "build": "parcel build --out-dir public --no-source-maps src/index.html",
         "develop": "parcel --out-dir public --https src/index.html",

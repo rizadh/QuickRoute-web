@@ -3,8 +3,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 type StatViewProps = {
-    title: string;
-    value: string;
+    title: string
+    value: string
 }
 
 const Title = styled.span`
