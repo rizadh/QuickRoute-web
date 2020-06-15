@@ -4,9 +4,8 @@
     "description": "Web app to plan routes with large numbers of waypoints",
     "repository": "https://github.com/rizadh/route-planner",
     "scripts": {
-        "lint": "concurrently -n tsc,eslint \"yarn lint:tsc\" \"yarn lint:eslint\"",
-        "lint:tsc": "tsc -p . -noEmit",
-        "lint:eslint": "eslint src",
+        "lint": "eslint src",
+        "lint:fix": "eslint --fix src",
         "clean": "rm -rf public",
         "build": "parcel build --out-dir public --no-source-maps src/index.html",
         "develop": "parcel --out-dir public --https src/index.html",

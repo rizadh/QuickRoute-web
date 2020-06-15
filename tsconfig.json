@@ -5,8 +5,6 @@
         "strict": true,
         "jsx": "react",
         "target": "es2015",
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
         "noEmit": true,
         "allowSyntheticDefaultImports": true
     }
