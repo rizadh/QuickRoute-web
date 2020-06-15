@@ -1,15 +1,15 @@
-import { combineEpics, Epic, ofType } from 'redux-observable'
-import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs'
-import { catchError, filter, first, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators'
-import { apolloClient } from '..'
+import { combineEpics, Epic, ofType } from 'redux-observable';
+import { concat, EMPTY, from, merge, Observable, ObservableInput, of, range } from 'rxjs';
+import { catchError, filter, first, flatMap, map, mergeMap, take, takeUntil } from 'rxjs/operators';
+import { apolloClient } from '..';
 import {
     ImportWaypointsQuery,
     ImportWaypointsQueryVariables,
     OptimizationParameter,
     OptimizeQuery,
     OptimizeQueryVariables,
-} from '../generated/graphql'
-import { ImportWaypoints, Optimize } from '../queries'
+} from '../generated/graphql';
+import { ImportWaypoints, Optimize } from '../queries';
 import {
     AddWaypointAction,
     AppAction,
@@ -33,37 +33,37 @@ import {
     ReplaceWaypointsAction,
     ReverseWaypointsAction,
     SetAddressAction,
-} from './actionTypes'
-import { AppState, Coordinate, EditorPane } from './state'
-import { createWaypointFromAddress } from './util/createWaypointFromAddress'
+} from './actionTypes';
+import { AppState, Coordinate, EditorPane } from './state';
+import { createWaypointFromAddress } from './util/createWaypointFromAddress';
 
-type AppEpic = Epic<AppAction, AppAction, AppState>
-type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
+type AppEpic = Epic<AppAction, AppAction, AppState>;
+type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction;
 
-const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
-const directions = new mapkit.Directions()
+const geocoder = new mapkit.Geocoder({ getsUserLocation: true });
+const directions = new mapkit.Directions();
 
 const performLookup = (address: string) =>
     new Observable<FetchPlaceResultAction>(observer => {
         const fetchId = geocoder.lookup(address, (error, data) => {
             if (error) {
-                observer.next({ type: 'FETCH_PLACE_FAILED', address, error: `${error} ('${address}')` })
-                observer.complete()
+                observer.next({ type: 'FETCH_PLACE_FAILED', address, error: `${error} ('${address}')` });
+                observer.complete();
 
-                return
+                return;
             }
 
-            const place = data.results[0]
+            const place = data.results[0];
 
             if (!place) {
                 observer.next({
                     type: 'FETCH_PLACE_FAILED',
                     address,
                     error: `No places returned ('${address}')`,
-                })
-                observer.complete()
+                });
+                observer.complete();
 
-                return
+                return;
             }
 
             observer.next({
@@ -76,16 +76,16 @@ const performLookup = (address: string) =>
                     },
                     address: place.formattedAddress,
                 },
-            })
-            observer.complete()
-        })
+            });
+            observer.complete();
+        });
 
-        observer.next({ type: 'FETCH_PLACE_IN_PROGRESS', address, fetchId })
+        observer.next({ type: 'FETCH_PLACE_IN_PROGRESS', address, fetchId });
 
-        return () => geocoder.cancel(fetchId)
-    })
+        return () => geocoder.cancel(fetchId);
+    });
 
-type FetchRouteResultAction = FetchRouteInProgressAction | FetchRouteSuccessAction | FetchRouteFailedAction
+type FetchRouteResultAction = FetchRouteInProgressAction | FetchRouteSuccessAction | FetchRouteFailedAction;
 
 const performRoute = (
     origin: { address: string; coordinate: Coordinate },
@@ -104,13 +104,13 @@ const performRoute = (
                         origin: origin.address,
                         destination: destination.address,
                         error: `${error} ('${origin.address}' -> '${origin.address}')`,
-                    })
-                    observer.complete()
+                    });
+                    observer.complete();
 
-                    return
+                    return;
                 }
 
-                const route = data.routes[0]
+                const route = data.routes[0];
 
                 if (!route) {
                     observer.next({
@@ -118,10 +118,10 @@ const performRoute = (
                         origin: origin.address,
                         destination: destination.address,
                         error: `No routes returned ('${origin.address}' -> '${origin.address}')`,
-                    })
-                    observer.complete()
+                    });
+                    observer.complete();
 
-                    return
+                    return;
                 }
 
                 observer.next({
@@ -133,20 +133,20 @@ const performRoute = (
                         distance: route.distance,
                         time: route.expectedTravelTime,
                     },
-                })
-                observer.complete()
+                });
+                observer.complete();
             },
-        )
+        );
 
         observer.next({
             type: 'FETCH_ROUTE_IN_PROGRESS',
             origin: origin.address,
             destination: destination.address,
             fetchId,
-        })
+        });
 
-        return () => directions.cancel(fetchId)
-    })
+        return () => directions.cancel(fetchId);
+    });
 
 const replaceWaypointsEpic: AppEpic = combineEpics(
     action$ =>
@@ -159,7 +159,7 @@ const replaceWaypointsEpic: AppEpic = combineEpics(
             ofType<AppAction, ReplaceWaypointsAction>('REPLACE_WAYPOINTS'),
             map(() => ({ type: 'FETCH_ALL_ROUTES' })),
         ),
-)
+);
 
 const addWaypointEpic: AppEpic = combineEpics(
     action$ =>
@@ -177,7 +177,7 @@ const addWaypointEpic: AppEpic = combineEpics(
                 destination: address,
             })),
         ),
-)
+);
 
 const deleteWaypointEpic: AppEpic = (action$, state$) =>
     action$.pipe(
@@ -188,13 +188,13 @@ const deleteWaypointEpic: AppEpic = (action$, state$) =>
             origin: state$.value.waypoints[index - 1].address,
             destination: state$.value.waypoints[index].address,
         })),
-    )
+    );
 
 const deleteSelectedWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, DeleteSelectedWaypointsAction>('DELETE_SELECTED_WAYPOINTS'),
         map(() => ({ type: 'FETCH_ALL_ROUTES' })),
-    )
+    );
 
 const setAddressEpic: AppEpic = combineEpics(
     action$ =>
@@ -222,32 +222,32 @@ const setAddressEpic: AppEpic = combineEpics(
                 destination: state$.value.waypoints[index + 1].address,
             })),
         ),
-)
+);
 
 const moveWaypointEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, MoveWaypointAction>('MOVE_WAYPOINT'),
         map(() => ({ type: 'FETCH_ALL_ROUTES' })),
-    )
+    );
 
 const moveSelectedWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, MoveSelectedWaypointsAction>('MOVE_SELECTED_WAYPOINTS'),
         map(() => ({ type: 'FETCH_ALL_ROUTES' })),
-    )
+    );
 
 const reverseWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, ReverseWaypointsAction>('REVERSE_WAYPOINTS'),
         map(() => ({ type: 'FETCH_ALL_ROUTES' })),
-    )
+    );
 
 const fetchPlaceEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, FetchPlaceAction>('FETCH_PLACE'),
         filter(({ address }) => !state$.value.fetchedPlaces[address]),
         mergeMap(({ address }) => performLookup(address)),
-    )
+    );
 
 const fetchAllRoutesEpic: AppEpic = (action$, state$) =>
     action$.pipe(
@@ -269,7 +269,7 @@ const fetchAllRoutesEpic: AppEpic = (action$, state$) =>
                 ),
             ),
         ),
-    )
+    );
 
 const fetchRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
@@ -281,23 +281,23 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
                 of<AppAction>({ type: 'FETCH_PLACE', address: destination }),
                 state$.pipe(
                     mergeMap(state => {
-                        const fetchedOrigin = state.fetchedPlaces[origin]
-                        const fetchedDestination = state.fetchedPlaces[destination]
+                        const fetchedOrigin = state.fetchedPlaces[origin];
+                        const fetchedDestination = state.fetchedPlaces[destination];
 
-                        if (!fetchedOrigin || fetchedOrigin.status === 'IN_PROGRESS') return EMPTY
+                        if (!fetchedOrigin || fetchedOrigin.status === 'IN_PROGRESS') return EMPTY;
                         if (fetchedOrigin.status === 'FAILED') {
-                            throw new Error(`Route fetching failed: ${fetchedOrigin.error}`)
+                            throw new Error(`Route fetching failed: ${fetchedOrigin.error}`);
                         }
 
-                        if (!fetchedDestination || fetchedDestination.status === 'IN_PROGRESS') return EMPTY
+                        if (!fetchedDestination || fetchedDestination.status === 'IN_PROGRESS') return EMPTY;
                         if (fetchedDestination.status === 'FAILED') {
-                            throw new Error(`Route fetching failed: ${fetchedDestination.error}`)
+                            throw new Error(`Route fetching failed: ${fetchedDestination.error}`);
                         }
 
                         return of({
                             fetchedOrigin: fetchedOrigin.result,
                             fetchedDestination: fetchedDestination.result,
-                        })
+                        });
                     }),
                     take(1),
                     mergeMap(({ fetchedOrigin, fetchedDestination }) =>
@@ -312,29 +312,29 @@ const fetchRouteEpic: AppEpic = (action$, state$) =>
                             origin,
                             destination,
                             error: error instanceof Error ? error.message : error.toString(),
-                        } as FetchRouteFailedAction)
+                        } as FetchRouteFailedAction);
                     }),
                 ),
             ),
         ),
-    )
+    );
 
 const importWaypoints = async (driverNumber: string, password: string) => {
     try {
         const response = await apolloClient.query<ImportWaypointsQuery, ImportWaypointsQueryVariables>({
             query: ImportWaypoints,
             variables: { driverNumber, password },
-        })
+        });
 
-        return response.data
+        return response.data;
     } catch (error) {
-        throw new Error(`Failed to import waypoints for driver ${driverNumber} (ERROR: '${error}')`)
+        throw new Error(`Failed to import waypoints for driver ${driverNumber} (ERROR: '${error}')`);
     }
-}
+};
 
 const extractAddress = (address: string) => {
-    return /(\d+ [\w ]+)/.exec(address)?.[1] ?? address
-}
+    return /(\d+ [\w ]+)/.exec(address)?.[1] ?? address;
+};
 
 const importWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
@@ -378,28 +378,28 @@ const importWaypointsEpic: AppEpic = action$ =>
                 ),
             ),
         ),
-    )
+    );
 
 const optimizeRoute = async (coordinates: Coordinate[], optimizationParameter: OptimizationParameter) => {
     try {
         const response = await apolloClient.query<OptimizeQuery, OptimizeQueryVariables>({
             query: Optimize,
             variables: { coordinates, optimizationParameter },
-        })
+        });
 
-        return response.data.optimizedRoute
+        return response.data.optimizedRoute;
     } catch (error) {
-        throw new Error(`Failed to optimize route ${error}`)
+        throw new Error(`Failed to optimize route ${error}`);
     }
-}
+};
 
 const optimizeRouteEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType<AppAction, OptimizeRouteAction>('OPTIMIZE_ROUTE'),
         mergeMap<OptimizeRouteAction, ObservableInput<AppAction>>(({ optimizationParameter, startPoint, endPoint }) => {
-            const optimizationWaypoints = [...state$.value.waypoints.map(w => w.address)]
-            if (startPoint) optimizationWaypoints.splice(0, 0, startPoint)
-            if (endPoint) optimizationWaypoints.push(endPoint)
+            const optimizationWaypoints = [...state$.value.waypoints.map(w => w.address)];
+            if (startPoint) optimizationWaypoints.splice(0, 0, startPoint);
+            if (endPoint) optimizationWaypoints.push(endPoint);
 
             return merge<AppAction, AppAction>(
                 [
@@ -412,32 +412,32 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                 state$.pipe(
                     first(state =>
                         optimizationWaypoints.every(waypoint => {
-                            const place = state.fetchedPlaces[waypoint]
-                            return place !== undefined && place.status !== 'IN_PROGRESS'
+                            const place = state.fetchedPlaces[waypoint];
+                            return place !== undefined && place.status !== 'IN_PROGRESS';
                         }),
                     ),
                     mergeMap(async state => {
                         const getCoordinates = (waypoint: string): Coordinate => {
-                            const place = state.fetchedPlaces[waypoint]
+                            const place = state.fetchedPlaces[waypoint];
 
                             if (!place || place.status === 'IN_PROGRESS') {
-                                throw new Error('Optimization failed: Internal assertion failed')
+                                throw new Error('Optimization failed: Internal assertion failed');
                             }
 
                             if (place.status === 'FAILED') {
-                                throw new Error(`Optimization failed: ${place.error}`)
+                                throw new Error(`Optimization failed: ${place.error}`);
                             }
 
-                            return place.result.coordinate
-                        }
+                            return place.result.coordinate;
+                        };
 
                         let optimalOrdering = await optimizeRoute(
                             optimizationWaypoints.map(getCoordinates),
                             optimizationParameter,
-                        )
-                        if (startPoint) optimalOrdering = optimalOrdering.slice(1).map(i => i - 1)
-                        if (endPoint) optimalOrdering = optimalOrdering.slice(0, -1)
-                        return optimalOrdering.map(i => state.waypoints[i].address)
+                        );
+                        if (startPoint) optimalOrdering = optimalOrdering.slice(1).map(i => i - 1);
+                        if (endPoint) optimalOrdering = optimalOrdering.slice(0, -1);
+                        return optimalOrdering.map(i => state.waypoints[i].address);
                     }),
                     mergeMap(optimalOrdering => [
                         { type: 'OPTIMIZE_ROUTE_SUCCESS', optimizationParameter },
@@ -461,9 +461,9 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
                         ),
                     ),
                 ),
-            )
+            );
         }),
-    )
+    );
 
 export default combineEpics(
     replaceWaypointsEpic,
@@ -479,4 +479,4 @@ export default combineEpics(
     fetchRouteEpic,
     importWaypointsEpic,
     optimizeRouteEpic,
-)
+);

@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react'
-import { useDarkMode } from './useDarkMode'
+import { useEffect, useState } from 'react';
+import { useDarkMode } from './useDarkMode';
 
-const accentColorFromDocument = () => getComputedStyle(document.documentElement).getPropertyValue('--accent-color')
+const accentColorFromDocument = () => getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
 
 export const useAccentColor = () => {
-    const darkMode = useDarkMode()
-    const [accentColor, setAccentColor] = useState(accentColorFromDocument())
+    const darkMode = useDarkMode();
+    const [accentColor, setAccentColor] = useState(accentColorFromDocument());
 
-    useEffect(() => setAccentColor(accentColorFromDocument()), [darkMode])
+    useEffect(() => setAccentColor(accentColorFromDocument()), [darkMode]);
 
-    return accentColor
-}
+    return accentColor;
+};

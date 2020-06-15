@@ -1,14 +1,14 @@
-import { AppReducer } from './appReducer'
+import { AppReducer } from './appReducer';
 
 export const optimizationInProgressReducer: AppReducer<boolean> = (optimizationInProgress = false, action) => {
     switch (action.type) {
         case 'OPTIMIZE_ROUTE_IN_PROGRESS':
-            return true
+            return true;
         case 'OPTIMIZE_ROUTE_CANCEL':
         case 'OPTIMIZE_ROUTE_SUCCESS':
         case 'OPTIMIZE_ROUTE_FAILED':
-            return false
+            return false;
     }
 
-    return optimizationInProgress
-}
+    return optimizationInProgress;
+};

@@ -1,7 +1,7 @@
-import { Draft, produce } from 'immer'
-import { AppAction } from '../actionTypes'
-import { FetchedPlaces } from '../state'
-import { AppReducer } from './appReducer'
+import { Draft, produce } from 'immer';
+import { AppAction } from '../actionTypes';
+import { FetchedPlaces } from '../state';
+import { AppReducer } from './appReducer';
 
 export const fetchedPlacesReducer: AppReducer<FetchedPlaces> = produce(
     (fetchedPlaces: Draft<FetchedPlaces>, action: AppAction) => {
@@ -10,21 +10,21 @@ export const fetchedPlacesReducer: AppReducer<FetchedPlaces> = produce(
                 fetchedPlaces[action.address] = {
                     status: 'IN_PROGRESS',
                     fetchId: action.fetchId,
-                }
-                break
+                };
+                break;
             case 'FETCH_PLACE_SUCCESS':
                 fetchedPlaces[action.address] = {
                     status: 'SUCCESS',
                     result: action.place,
-                }
-                break
+                };
+                break;
             case 'FETCH_PLACE_FAILED':
                 fetchedPlaces[action.address] = {
                     status: 'FAILED',
                     error: action.error,
-                }
-                break
+                };
+                break;
         }
     },
     {},
-)
+);

@@ -1,42 +1,42 @@
-import range from 'lodash/range'
-import { AppState } from '../redux/state'
+import range from 'lodash/range';
+import { AppState } from '../redux/state';
 
 type NoRouteInformation = Readonly<{
-    status: 'NO_ROUTE'
-}>
+    status: 'NO_ROUTE';
+}>;
 
 type FetchedRouteInformation = Readonly<{
-    status: 'FETCHED'
-    totalDistance: number
-    totalTime: number
-}>
+    status: 'FETCHED';
+    totalDistance: number;
+    totalTime: number;
+}>;
 
 type FetchFailedRouteInformation = Readonly<{
-    status: 'FAILED'
-}>
+    status: 'FAILED';
+}>;
 
 type FetchingRouteInformation = Readonly<{
-    status: 'FETCHING'
-    progress: number
-}>
+    status: 'FETCHING';
+    progress: number;
+}>;
 
 export type RouteInformation =
     | FetchedRouteInformation
     | FetchFailedRouteInformation
     | FetchingRouteInformation
-    | NoRouteInformation
+    | NoRouteInformation;
 
 export const routeInformation = (state: AppState): RouteInformation => {
-    const routeCount = state.waypoints.length - 1
+    const routeCount = state.waypoints.length - 1;
 
-    if (routeCount <= 0) return { status: 'NO_ROUTE' }
+    if (routeCount <= 0) return { status: 'NO_ROUTE' };
 
     const routes = range(0, routeCount).map(
         i => state.fetchedRoutes[state.waypoints[i].address]?.[state.waypoints[i + 1].address],
-    )
+    );
 
-    const routeSuccessCount = routes.filter(result => result?.status === 'SUCCESS').length
-    const routeFailedCount = routes.filter(result => result?.status === 'FAILED').length
+    const routeSuccessCount = routes.filter(result => result?.status === 'SUCCESS').length;
+    const routeFailedCount = routes.filter(result => result?.status === 'FAILED').length;
 
     if (routeSuccessCount === routeCount) {
         return {
@@ -47,10 +47,10 @@ export const routeInformation = (state: AppState): RouteInformation => {
             totalTime: routes
                 .map(route => (route?.status === 'SUCCESS' ? route.result.time : 0))
                 .reduce((acc, cur) => acc + cur, 0),
-        }
+        };
     } else if (routeSuccessCount + routeFailedCount === routeCount) {
-        return { status: 'FAILED' }
+        return { status: 'FAILED' };
     } else {
-        return { status: 'FETCHING', progress: (routeSuccessCount + routeFailedCount) / routeCount }
+        return { status: 'FETCHING', progress: (routeSuccessCount + routeFailedCount) / routeCount };
     }
-}
+};
