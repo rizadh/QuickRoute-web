@@ -56,7 +56,7 @@ export const NavigatePane = () => {
     const shareLink = useCallback(
         (index: number) => async () => {
             try {
-                await (navigator as INavigator).share({
+                await navigator.share({
                     url: navigationLinks[index],
                 })
             } catch (e) {
@@ -73,7 +73,7 @@ export const NavigatePane = () => {
 
     const shareAllLinks = useCallback(async () => {
         try {
-            await (navigator as INavigator).share({
+            await navigator.share({
                 title: 'Navigation Links',
                 text: navigationLinks.join('\n'),
             })
@@ -99,12 +99,12 @@ export const NavigatePane = () => {
                 <Body>
                     <Alert>
                         Use the links below to navigate using Google Maps. Each link contains up to ten waypoints due to
-                        Google's limitations
+                        Google&apos;s limitations
                     </Alert>
                     {navigationLinks.map((url, index) => (
                         <InputRow key={url}>
                             <Input type="text" value={url} readOnly={true} />
-                            {(navigator as INavigator).share && (
+                            {navigator.share && (
                                 <Button variant={Variant.Primary} onClick={shareLink(index)} title="Share this link">
                                     <i className="fas fa-fw fa-share" />
                                 </Button>
@@ -125,7 +125,7 @@ export const NavigatePane = () => {
             )}
 
             <Footer>
-                {(navigator as INavigator).share && (
+                {navigator.share && (
                     <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
                         <i className="fas fa-fw fa-share" /> Share All
                     </Button>
