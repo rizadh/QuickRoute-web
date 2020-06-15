@@ -2,7 +2,7 @@ os: linux
 language: node_js
 node_js: node
 env:
-    - NPM_SCRIPT=lint
+    - NPM_SCRIPT=lint:strict
     - NPM_SCRIPT=test
     - NPM_SCRIPT=build
 script: yarn autoclean --force && yarn $NPM_SCRIPT

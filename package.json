@@ -5,6 +5,8 @@
     "repository": "https://github.com/rizadh/route-planner",
     "scripts": {
         "lint": "eslint src",
+        "lint:strict": "yarn lint --max-warnings 0",
+        "lint:precommit": "yarn lint:strict --cache --fix",
         "clean": "rm -rf public",
         "build": "parcel build --out-dir public --no-source-maps src/index.html",
         "develop": "parcel --out-dir public --https src/index.html",
