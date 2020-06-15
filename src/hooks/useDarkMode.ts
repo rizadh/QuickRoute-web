@@ -1,3 +1,3 @@
-import { useMedia } from './useMedia';
+import { useMedia } from './useMedia'
 
-export const useDarkMode = () => useMedia('(prefers-color-scheme: dark)');
+export const useDarkMode = () => useMedia('(prefers-color-scheme: dark)')

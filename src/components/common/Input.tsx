@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 export const Input = styled.input`
     padding: var(--standard-padding);
@@ -37,4 +37,4 @@ export const Input = styled.input`
         background-color: var(--input-disabled-color);
         color: var(--secondary-text-color);
     }
-`;
+`

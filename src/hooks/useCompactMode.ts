@@ -1,3 +1,3 @@
-import { useMedia } from './useMedia';
+import { useMedia } from './useMedia'
 
-export const useCompactMode = () => useMedia('(max-width: 800px)');
+export const useCompactMode = () => useMedia('(max-width: 800px)')

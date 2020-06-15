@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { animated, useTransition } from 'react-spring';
-import styled from 'styled-components';
-import { AppState } from '../redux/state';
-import { Button, Variant } from './common/Button';
+import React, { useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { animated, useTransition } from 'react-spring'
+import styled from 'styled-components'
+import { AppState } from '../redux/state'
+import { Button, Variant } from './common/Button'
 
 const Container = animated(styled.div`
     position: absolute;
@@ -27,19 +27,19 @@ const Container = animated(styled.div`
         line-height: 1;
         flex-shrink: 0;
     }
-`);
+`)
 
 export const ErrorDialog = () => {
-    const error = useSelector((state: AppState) => state.error);
-    const dispatch = useDispatch();
-    const clearError = useCallback(() => dispatch({ type: 'CLEAR_ERROR' }), []);
+    const error = useSelector((state: AppState) => state.error)
+    const dispatch = useDispatch()
+    const clearError = useCallback(() => dispatch({ type: 'CLEAR_ERROR' }), [])
 
     const containerTransitions = useTransition(error, null, {
         from: { transform: 'translateY(-100%)', opacity: 0 },
         enter: { transform: 'translateY(0%)', opacity: 1 },
         leave: { transform: 'translateY(-100%)', opacity: 0 },
         config: { mass: 1, tension: 350, friction: 35 },
-    });
+    })
 
     return (
         <>
@@ -55,5 +55,5 @@ export const ErrorDialog = () => {
                     ),
             )}
         </>
-    );
-};
+    )
+}

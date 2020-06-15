@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 export const InputRow = styled.div`
     display: flex;
@@ -17,4 +17,4 @@ export const InputRow = styled.div`
     > :not(input, textarea) {
         flex-shrink: 0;
     }
-`;
+`

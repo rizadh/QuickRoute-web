@@ -1,82 +1,82 @@
-import b64toblob from 'b64-to-blob';
-import { saveAs } from 'file-saver';
-import isMobileFn from 'ismobilejs';
-import React, { Dispatch, useCallback } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { apolloClient } from '../../..';
-import { GeneratePdfQuery, GeneratePdfQueryVariables } from '../../../generated/graphql';
-import { useInput } from '../../../hooks/useInput';
-import { GeneratePDF } from '../../../queries';
-import { AppAction } from '../../../redux/actionTypes';
-import { routeInformation } from '../../../redux/selectors';
-import { AppState } from '../../../redux/state';
-import { createWaypointFromAddress } from '../../../redux/util/createWaypointFromAddress';
-import { isValidAddress } from '../../../redux/validator';
-import { Alert } from '../../common/Alert';
-import { DangerAlert } from '../../common/Alert';
-import { Button, Variant } from '../../common/Button';
-import { Input } from '../../common/Input';
-import { InputRow } from '../../common/InputRow';
-import { Body, Footer } from '../Editor';
-import { WaypointList } from './WaypointList';
+import b64toblob from 'b64-to-blob'
+import { saveAs } from 'file-saver'
+import isMobileFn from 'ismobilejs'
+import React, { Dispatch, useCallback } from 'react'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { apolloClient } from '../../..'
+import { GeneratePdfQuery, GeneratePdfQueryVariables } from '../../../generated/graphql'
+import { useInput } from '../../../hooks/useInput'
+import { GeneratePDF } from '../../../queries'
+import { AppAction } from '../../../redux/actionTypes'
+import { routeInformation } from '../../../redux/selectors'
+import { AppState } from '../../../redux/state'
+import { createWaypointFromAddress } from '../../../redux/util/createWaypointFromAddress'
+import { isValidAddress } from '../../../redux/validator'
+import { Alert } from '../../common/Alert'
+import { DangerAlert } from '../../common/Alert'
+import { Button, Variant } from '../../common/Button'
+import { Input } from '../../common/Input'
+import { InputRow } from '../../common/InputRow'
+import { Body, Footer } from '../Editor'
+import { WaypointList } from './WaypointList'
 
 export const WaypointsPane = () => {
-    const waypoints = useSelector((state: AppState) => state.waypoints);
-    const currentRouteInformation = useSelector(routeInformation, shallowEqual);
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const currentRouteInformation = useSelector(routeInformation, shallowEqual)
 
     const { props: waypointFieldProps, commitValue: addWaypoint, valueIsValid: waypointIsValid } = useInput({
         predicate: isValidAddress,
         onCommit: useCallback((waypoint: string) => {
-            dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(waypoint) });
-            return true;
+            dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(waypoint) })
+            return true
         }, []),
         resetAfterCommit: true,
-    });
+    })
 
-    const dispatch: Dispatch<AppAction> = useDispatch();
-    const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), []);
-    const deleteSelectedWaypoints = useCallback(() => dispatch({ type: 'DELETE_SELECTED_WAYPOINTS' }), []);
-    const deselectAllWaypoints = useCallback(() => dispatch({ type: 'DESELECT_ALL_WAYPOINTS' }), []);
+    const dispatch: Dispatch<AppAction> = useDispatch()
+    const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
+    const deleteSelectedWaypoints = useCallback(() => dispatch({ type: 'DELETE_SELECTED_WAYPOINTS' }), [])
+    const deselectAllWaypoints = useCallback(() => dispatch({ type: 'DESELECT_ALL_WAYPOINTS' }), [])
 
     const generatePdf = useCallback(async () => {
-        dispatch({ type: 'CLEAR_ERROR' });
+        dispatch({ type: 'CLEAR_ERROR' })
 
         try {
             const response = await apolloClient.query<GeneratePdfQuery, GeneratePdfQueryVariables>({
                 query: GeneratePDF,
                 variables: { waypoints: waypoints.map(w => w.address) },
-            });
+            })
 
-            saveAs(b64toblob(response.data.pdf), 'waypoints.pdf');
+            saveAs(b64toblob(response.data.pdf), 'waypoints.pdf')
         } catch (error) {
             dispatch({
                 type: 'ERROR_OCCURRED',
                 error: `Failed to generate PDF (ERROR: '${error}')`,
-            });
+            })
         }
-    }, [waypoints]);
+    }, [waypoints])
 
     const shareWaypoints = useCallback(async () => {
-        const searchParams = new URLSearchParams();
-        searchParams.set('waypoints', waypoints.map(w => w.address).join(','));
+        const searchParams = new URLSearchParams()
+        searchParams.set('waypoints', waypoints.map(w => w.address).join(','))
 
         try {
             await navigator.share({
                 url: location.origin + location.pathname + '?' + searchParams.toString(),
-            });
+            })
         } catch (e) {
             if (e instanceof Error && e.name !== 'AbortError') {
                 dispatch({
                     type: 'ERROR_OCCURRED',
                     error: `Share failed: ${e.message}`,
-                });
+                })
             }
         }
-    }, [waypoints]);
+    }, [waypoints])
 
-    const isMobileDevice = isMobileFn().any;
+    const isMobileDevice = isMobileFn().any
 
-    const selectedWaypointsCount = waypoints.filter(waypoint => waypoint.selected).length;
+    const selectedWaypointsCount = waypoints.filter(waypoint => waypoint.selected).length
 
     return (
         <>
@@ -136,5 +136,5 @@ export const WaypointsPane = () => {
                 )}
             </Footer>
         </>
-    );
-};
+    )
+}

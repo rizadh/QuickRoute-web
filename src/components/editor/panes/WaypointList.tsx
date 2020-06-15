@@ -1,39 +1,39 @@
-import React, { Dispatch, useCallback, useState } from 'react';
-import { DragDropContext, DragStart, Droppable, DropResult } from 'react-beautiful-dnd';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppAction } from '../../../redux/actionTypes';
-import { AppState, Waypoint } from '../../../redux/state';
-import { WaypointItem } from './WaypointItem';
+import React, { Dispatch, useCallback, useState } from 'react'
+import { DragDropContext, DragStart, Droppable, DropResult } from 'react-beautiful-dnd'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppAction } from '../../../redux/actionTypes'
+import { AppState, Waypoint } from '../../../redux/state'
+import { WaypointItem } from './WaypointItem'
 
 export const WaypointList = () => {
-    const waypoints = useSelector((state: AppState) => state.waypoints);
-    const dispatch: Dispatch<AppAction> = useDispatch();
+    const waypoints = useSelector((state: AppState) => state.waypoints)
+    const dispatch: Dispatch<AppAction> = useDispatch()
 
-    const [draggedWaypoint, setDraggedWaypoint] = useState<Waypoint | null>(null);
+    const [draggedWaypoint, setDraggedWaypoint] = useState<Waypoint | null>(null)
 
     const onDragEnd = useCallback(
         (result: DropResult) => {
-            if (!result.destination) return;
-            if (result.destination.index === result.source.index) return;
+            if (!result.destination) return
+            if (result.destination.index === result.source.index) return
 
             if (waypoints[result.source.index].selected) {
-                dispatch({ type: 'MOVE_SELECTED_WAYPOINTS', index: result.destination.index });
+                dispatch({ type: 'MOVE_SELECTED_WAYPOINTS', index: result.destination.index })
             } else {
                 dispatch({
                     type: 'MOVE_WAYPOINT',
                     sourceIndex: result.source.index,
                     targetIndex: result.destination.index,
-                });
+                })
             }
 
-            setDraggedWaypoint(null);
+            setDraggedWaypoint(null)
         },
         [waypoints],
-    );
+    )
 
     const onDragStart = useCallback((initial: DragStart) => setDraggedWaypoint(waypoints[initial.source.index]), [
         waypoints,
-    ]);
+    ])
 
     /**
      * Returns true iff waypoint is being dragged due to being selected, but is not being dragged directly
@@ -49,7 +49,7 @@ export const WaypointList = () => {
             // Check that this waypoint is selected
             !!waypoint.selected,
         [draggedWaypoint],
-    );
+    )
 
     return (
         <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
@@ -68,5 +68,5 @@ export const WaypointList = () => {
                 )}
             </Droppable>
         </DragDropContext>
-    );
-};
+    )
+}

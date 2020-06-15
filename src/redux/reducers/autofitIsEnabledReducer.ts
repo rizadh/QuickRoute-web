@@ -1,12 +1,12 @@
-import { AppReducer } from './appReducer';
+import { AppReducer } from './appReducer'
 
 export const autofitIsEnabledReducer: AppReducer<boolean> = (autofitIsEnabled = true, action) => {
     switch (action.type) {
         case 'ENABLE_AUTOFIT':
-            return true;
+            return true
         case 'DISABLE_AUTOFIT':
-            return false;
+            return false
     }
 
-    return autofitIsEnabled;
-};
+    return autofitIsEnabled
+}
