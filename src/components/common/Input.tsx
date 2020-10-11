@@ -55,8 +55,7 @@ export const Checkbox = styled.input`
         }
     }
 
-    padding: var(--standard-padding);
-    border-radius: var(--standard-border-radius);
+    border-radius: calc(var(--standard-border-radius) / 2);
     border: var(--standard-border);
 
     font-weight: 500;
