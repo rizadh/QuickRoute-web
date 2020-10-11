@@ -8,7 +8,7 @@ export const InputRow = styled.div`
         margin-right: calc(var(--standard-margin) / 2);
     }
 
-    > input,
+    > input:not([type='checkbox']),
     > textarea {
         flex-grow: 1;
         min-width: 0;

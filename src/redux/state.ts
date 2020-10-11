@@ -76,6 +76,11 @@ export const attributesForEditorPane = (editorPane: EditorPane): EditorPaneAttri
                 displayName: 'Optimize',
                 iconName: 'star-half-alt',
             }
+        case EditorPane.Export:
+            return {
+                displayName: 'Export',
+                iconName: 'file-pdf',
+            }
     }
 }
 
@@ -85,6 +90,7 @@ export enum EditorPane {
     Import = 'import',
     Navigate = 'urls',
     Optimize = 'optimizer',
+    Export = 'print',
 }
 
 export type Waypoints = ReadonlyArray<Waypoint>

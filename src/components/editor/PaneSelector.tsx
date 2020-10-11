@@ -56,6 +56,7 @@ export const PaneSelector = () => (
             <SelectorButton pane={EditorPane.Navigate} />
             <SelectorButton pane={EditorPane.Import} />
             <SelectorButton pane={EditorPane.Optimize} />
+            <SelectorButton pane={EditorPane.Export} />
         </Container>
     </Wrapper>
 )

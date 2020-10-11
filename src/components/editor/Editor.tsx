@@ -16,6 +16,7 @@ import { BulkEditPane } from './panes/BulkEditPane'
 import { ImportPane } from './panes/ImportPane'
 import { NavigatePane } from './panes/NavigatePane'
 import { OptimizePane } from './panes/OptimizePane'
+import { ExportPane } from './panes/ExportPane'
 import { WaypointsPane } from './panes/WaypointsPane'
 import { PaneSelector } from './PaneSelector'
 
@@ -65,7 +66,7 @@ export const Body = styled.div`
         border-right: none;
     }
 
-    ${Alert}, ${InputRow} {
+    > ${Alert}, ${InputRow} {
         padding: calc(var(--standard-margin) / 2);
     }
 `
@@ -168,5 +169,7 @@ const Content = () => {
             return <ImportPane />
         case EditorPane.Optimize:
             return <OptimizePane />
+        case EditorPane.Export:
+            return <ExportPane />
     }
 }
