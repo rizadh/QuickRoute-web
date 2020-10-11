@@ -79,7 +79,7 @@ export const attributesForEditorPane = (editorPane: EditorPane): EditorPaneAttri
         case EditorPane.Export:
             return {
                 displayName: 'Export',
-                iconName: 'file-pdf',
+                iconName: 'file-export',
             }
     }
 }
