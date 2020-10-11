@@ -221,6 +221,8 @@ it('should handle MOVE_SELECTED_WAYPOINTS', () => {
 })
 
 it('should handle SELECT_WAYPOINT', () => {
+    const currentTime = Date.now()
+
     testWaypointsReducer(
         [
             { address: 'ONE', uuid: 'one' },
@@ -228,7 +230,7 @@ it('should handle SELECT_WAYPOINT', () => {
             { address: 'THREE', uuid: 'three' },
             { address: 'FOUR', uuid: 'four', selected: 2 },
         ],
-        { type: 'SELECT_WAYPOINT', index: 1 },
+        { type: 'SELECT_WAYPOINT', index: 1, time: currentTime },
         [
             { address: 'ONE', uuid: 'one' },
             { address: 'TWO', uuid: 'two' },
@@ -243,11 +245,11 @@ it('should handle SELECT_WAYPOINT', () => {
             { address: 'THREE', uuid: 'three' },
             { address: 'FOUR', uuid: 'four', selected: 2 },
         ],
-        { type: 'SELECT_WAYPOINT', index: 2 },
+        { type: 'SELECT_WAYPOINT', index: 2, time: currentTime },
         [
             { address: 'ONE', uuid: 'one' },
             { address: 'TWO', uuid: 'two' },
-            { address: 'THREE', uuid: 'three', selected: Date.now() },
+            { address: 'THREE', uuid: 'three', selected: currentTime },
             { address: 'FOUR', uuid: 'four' },
         ],
     )

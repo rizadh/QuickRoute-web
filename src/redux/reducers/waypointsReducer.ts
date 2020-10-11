@@ -44,9 +44,10 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
             return [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
         }
         case 'SELECT_WAYPOINT': {
+            const selectedWaypointsCount = waypoints.filter(({ selected }) => selected).length
             const waypointWasSelected = waypoints[action.index].selected
             for (const waypoint of waypoints) delete waypoint.selected
-            if (!waypointWasSelected) waypoints[action.index].selected = Date.now()
+            if (!waypointWasSelected || selectedWaypointsCount > 1) waypoints[action.index].selected = action.time
             break
         }
         case 'DESELECT_ALL_WAYPOINTS':

@@ -44,6 +44,7 @@ export type SetAddressAction = Readonly<{
 export type SelectWaypointAction = Readonly<{
     type: 'SELECT_WAYPOINT'
     index: number
+    time: number
 }>
 
 export type DeselectAllWaypointsAction = Readonly<{
