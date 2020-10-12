@@ -4,9 +4,8 @@
     "description": "Web app to plan routes with large numbers of waypoints",
     "repository": "https://github.com/rizadh/route-planner",
     "scripts": {
-        "lint": "eslint src",
-        "lint:strict": "yarn lint --max-warnings 0",
-        "lint:precommit": "yarn lint:strict --cache --fix",
+        "lint": "eslint src --max-warnings 0 --cache",
+        "lint:fix": "eslint src --max-warnings 0 --cache --fix",
         "clean": "rm -rf public",
         "build": "parcel build --out-dir public --no-source-maps src/index.html",
         "develop": "parcel --out-dir public --https src/index.html",
@@ -73,6 +72,7 @@
         "eslint-plugin-prettier": "^3.1.4",
         "eslint-plugin-react": "^7.20.0",
         "eslint-plugin-react-hooks": "^4.0.4",
+        "husky": "^4.3.0",
         "jest": "^26.0.1",
         "parcel": "^1.12.4",
         "prettier": "^2.0.5",
@@ -83,5 +83,10 @@
     },
     "alias": {
         "react-dom": "@hot-loader/react-dom"
+    },
+    "husky": {
+        "hooks": {
+            "pre-push": "yarn lint"
+        }
     }
 }
