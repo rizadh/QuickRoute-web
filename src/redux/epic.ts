@@ -324,6 +324,7 @@ const importWaypoints = async (driverNumber: string, password: string) => {
         const response = await apolloClient.query<ImportWaypointsQuery, ImportWaypointsQueryVariables>({
             query: ImportWaypoints,
             variables: { driverNumber, password },
+            fetchPolicy: 'no-cache',
         })
 
         return response.data
