@@ -4,8 +4,8 @@
     "description": "Web app to plan routes with large numbers of waypoints",
     "repository": "https://github.com/rizadh/route-planner",
     "scripts": {
-        "lint": "eslint src --max-warnings 0 --cache",
-        "lint:fix": "eslint src --max-warnings 0 --cache --fix",
+        "lint": "prettier -c . && eslint src --max-warnings 0 --cache",
+        "lint:fix": "prettier --write . && eslint src --cache --fix",
         "clean": "rm -rf public",
         "build": "parcel build --out-dir public --no-source-maps src/index.html",
         "develop": "parcel --out-dir public --https src/index.html",

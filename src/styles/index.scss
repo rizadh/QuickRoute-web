@@ -1,5 +1,5 @@
-@import "./colors.scss";
-@import "./spacings.scss";
+@import './colors.scss';
+@import './spacings.scss';
 
 #root {
     position: fixed;
@@ -12,6 +12,6 @@
 :root {
     background-color: var(--primary-fill-color);
     color: var(--primary-text-color);
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-tap-highlight-color: transparent;
 }
