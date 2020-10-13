@@ -89,5 +89,8 @@
         "hooks": {
             "pre-push": "yarn lint"
         }
+    },
+    "jest": {
+        "preset": "ts-jest"
     }
 }
