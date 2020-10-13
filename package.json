@@ -9,7 +9,7 @@
         "clean": "rm -rf public",
         "build": "parcel build --out-dir public --no-source-maps src/index.html",
         "build:ci": "tsc -noEmit -p . && yarn build",
-        "develop": "parcel --out-dir public --https src/index.html",
+        "develop": "parcel --out-dir out --https src/index.html",
         "test": "jest",
         "generate": "graphql-codegen --config codegen.yml"
     },
