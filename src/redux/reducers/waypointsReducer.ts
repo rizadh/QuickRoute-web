@@ -67,7 +67,7 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
             const upperBound = Math.max(action.index, lastSelectedWaypointIndex)
 
             for (let i = lowerBound; i < upperBound + 1; i++) {
-                waypoints[i].selected = waypoints[i].selected ?? Date.now()
+                waypoints[i].selected = waypoints[i].selected ?? action.time
             }
 
             break

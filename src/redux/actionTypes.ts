@@ -59,6 +59,7 @@ export type ToggleWaypointSelectionAction = Readonly<{
 export type SelectWaypointRangeAction = Readonly<{
     type: 'SELECT_WAYPOINT_RANGE'
     index: number
+    time: number
 }>
 
 export type FetchPlaceAction = Readonly<{

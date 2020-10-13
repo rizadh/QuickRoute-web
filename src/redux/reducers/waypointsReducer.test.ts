@@ -5,6 +5,8 @@ import { AppAction } from '../actionTypes'
 const testWaypointsReducer = (initial: Waypoints | undefined, action: AppAction, final: Waypoints) =>
     expect(waypointsReducer(initial, action)).toEqual(final)
 
+const currentTime = Date.now()
+
 it('should return the initial state', () => {
     testWaypointsReducer(undefined, { type: 'REVERSE_WAYPOINTS' }, [])
     testWaypointsReducer(undefined, { type: 'DELETE_SELECTED_WAYPOINTS' }, [])
@@ -221,8 +223,6 @@ it('should handle MOVE_SELECTED_WAYPOINTS', () => {
 })
 
 it('should handle SELECT_WAYPOINT', () => {
-    const currentTime = Date.now()
-
     testWaypointsReducer(
         [
             { address: 'ONE', uuid: 'one' },
@@ -233,7 +233,7 @@ it('should handle SELECT_WAYPOINT', () => {
         { type: 'SELECT_WAYPOINT', index: 1, time: currentTime },
         [
             { address: 'ONE', uuid: 'one' },
-            { address: 'TWO', uuid: 'two' },
+            { address: 'TWO', uuid: 'two', selected: currentTime },
             { address: 'THREE', uuid: 'three' },
             { address: 'FOUR', uuid: 'four' },
         ],
@@ -298,11 +298,11 @@ it('should handle SELECT_WAYPOINT_RANGE', () => {
             { address: 'FIVE', uuid: 'five' },
             { address: 'SIX', uuid: 'six' },
         ],
-        { type: 'SELECT_WAYPOINT_RANGE', index: 2 },
+        { type: 'SELECT_WAYPOINT_RANGE', index: 2, time: currentTime },
         [
-            { address: 'ONE', uuid: 'one', selected: Date.now() },
-            { address: 'TWO', uuid: 'two', selected: Date.now() },
-            { address: 'THREE', uuid: 'three', selected: Date.now() },
+            { address: 'ONE', uuid: 'one', selected: currentTime },
+            { address: 'TWO', uuid: 'two', selected: currentTime },
+            { address: 'THREE', uuid: 'three', selected: currentTime },
             { address: 'FOUR', uuid: 'four' },
             { address: 'FIVE', uuid: 'five' },
             { address: 'SIX', uuid: 'six' },
@@ -317,12 +317,12 @@ it('should handle SELECT_WAYPOINT_RANGE', () => {
             { address: 'FIVE', uuid: 'five' },
             { address: 'SIX', uuid: 'six' },
         ],
-        { type: 'SELECT_WAYPOINT_RANGE', index: 3 },
+        { type: 'SELECT_WAYPOINT_RANGE', index: 3, time: currentTime },
         [
             { address: 'ONE', uuid: 'one' },
             { address: 'TWO', uuid: 'two', selected: 1 },
-            { address: 'THREE', uuid: 'three', selected: Date.now() },
-            { address: 'FOUR', uuid: 'four', selected: Date.now() },
+            { address: 'THREE', uuid: 'three', selected: currentTime },
+            { address: 'FOUR', uuid: 'four', selected: currentTime },
             { address: 'FIVE', uuid: 'five' },
             { address: 'SIX', uuid: 'six' },
         ],
@@ -336,13 +336,13 @@ it('should handle SELECT_WAYPOINT_RANGE', () => {
             { address: 'FIVE', uuid: 'five' },
             { address: 'SIX', uuid: 'six', selected: 2 },
         ],
-        { type: 'SELECT_WAYPOINT_RANGE', index: 3 },
+        { type: 'SELECT_WAYPOINT_RANGE', index: 3, time: currentTime },
         [
             { address: 'ONE', uuid: 'one' },
             { address: 'TWO', uuid: 'two', selected: 1 },
             { address: 'THREE', uuid: 'three' },
-            { address: 'FOUR', uuid: 'four', selected: Date.now() },
-            { address: 'FIVE', uuid: 'five', selected: Date.now() },
+            { address: 'FOUR', uuid: 'four', selected: currentTime },
+            { address: 'FIVE', uuid: 'five', selected: currentTime },
             { address: 'SIX', uuid: 'six', selected: 2 },
         ],
     )
