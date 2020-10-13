@@ -129,7 +129,7 @@ export const MapView = () => {
                             lineWidth: 6,
                             strokeOpacity: !selectedWaypointsCount || selected ? 0.75 : 0.5,
                             strokeColor: !selectedWaypointsCount || selected ? accentColor : grayColor,
-                        }),
+                        } as mapkit.StyleConstructorOptions),
                     },
                 )
             }
