@@ -34,8 +34,8 @@ export const ExportPane = () => {
     const canDownload = rowsIsValid && columnsIsValid && fontSizeIsValid
 
     const downloadPdf = useCallback(async () => {
-        const PAGE_MARGIN = 15
-        const LIST_INDENT = 40
+        const PAGE_MARGIN = 72 / 4
+        const LIST_INDENT = 72 / 2
 
         const rowsPerPage = parseInt(rowsFieldValue) || DEFAULT_ROWS_PER_PAGE
         const columnsPerPage = parseInt(columnsFieldValue) || DEFAULT_COLUMNS_PER_PAGE
