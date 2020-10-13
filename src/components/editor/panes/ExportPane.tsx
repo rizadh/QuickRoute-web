@@ -71,7 +71,8 @@ export const ExportPane = () => {
             page.drawText(waypoint.address, { x: columnPosition + LIST_INDENT, y: rowPosition, size: fontSize, font })
         })
 
-        saveAs(new Blob([await document.save()]), `waypoints-${Date.now()}.pdf`)
+        const dateString = new Date().toISOString().split('T')[0].replace(/-/g, '')
+        saveAs(new Blob([await document.save()]), `waypoints-${dateString}.pdf`)
     }, [waypoints, orderByAddress, rowsFieldValue, columnsFieldValue, fontSizeFieldValue])
 
     return (
