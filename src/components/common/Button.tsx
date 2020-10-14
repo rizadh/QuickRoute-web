@@ -74,7 +74,7 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
     }
 
     &::after {
-        content: "";
+        content: '';
 
         position: absolute;
         top: 0;

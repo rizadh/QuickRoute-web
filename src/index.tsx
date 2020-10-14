@@ -7,7 +7,7 @@ import { GetTokenQuery, GetTokenQueryVariables } from './generated/graphql'
 import { GetToken } from './queries'
 import store from './redux/store'
 
-export const appVersion = '2020.06.14'
+export const appVersion = '2020.10.12'
 export const apolloClient = new ApolloClient({ uri: 'https://api.quickroute.rizadh.com/graphql' })
 
 // tslint:disable-next-line:no-var-requires
@@ -16,7 +16,11 @@ require('babel-polyfill')
 mapkit.init({
     authorizationCallback: done =>
         apolloClient
-            .query<GetTokenQuery, GetTokenQueryVariables>({ query: GetToken, variables: { origin: document.origin } })
+            .query<GetTokenQuery, GetTokenQueryVariables>({
+                query: GetToken,
+                variables: { origin: self.origin },
+                fetchPolicy: 'no-cache',
+            })
             .then(result => done(result.data.mapkitToken)),
 })
 

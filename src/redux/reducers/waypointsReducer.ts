@@ -44,9 +44,10 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
             return [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
         }
         case 'SELECT_WAYPOINT': {
-            const wasSelected = waypoints[action.index].selected
+            const selectedWaypointsCount = waypoints.filter(({ selected }) => selected).length
+            const waypointWasSelected = waypoints[action.index].selected
             for (const waypoint of waypoints) delete waypoint.selected
-            if (!wasSelected) waypoints[action.index].selected = Date.now()
+            if (!waypointWasSelected || selectedWaypointsCount > 1) waypoints[action.index].selected = action.time
             break
         }
         case 'DESELECT_ALL_WAYPOINTS':
@@ -55,7 +56,6 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
         case 'TOGGLE_WAYPOINT_SELECTION':
             if (waypoints[action.index].selected) delete waypoints[action.index].selected
             else waypoints[action.index].selected = Date.now()
-
             break
         case 'SELECT_WAYPOINT_RANGE': {
             const [lastSelectedWaypointIndex] = waypoints.reduce<[number, number | undefined]>(
@@ -67,10 +67,9 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
             const upperBound = Math.max(action.index, lastSelectedWaypointIndex)
 
             for (let i = lowerBound; i < upperBound + 1; i++) {
-                waypoints[i].selected = Date.now()
+                waypoints[i].selected = waypoints[i].selected ?? action.time
             }
 
-            waypoints[action.index].selected = Date.now()
             break
         }
         case 'SET_EDITOR_PANE':

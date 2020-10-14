@@ -3,20 +3,20 @@ import { ChangeEvent, KeyboardEvent, useCallback, useMemo, useState } from 'reac
 type InputElement = { value: string }
 
 type InputConfig<E extends InputElement> = {
-    initialValue?: string;
-    predicate?: (value: string) => boolean;
-    acceptKeyboardEvent?: (event: KeyboardEvent<E>) => boolean;
-    onCommit?: (value: string) => void;
-    resetAfterCommit?: boolean;
+    initialValue?: string
+    predicate?: (value: string) => boolean
+    acceptKeyboardEvent?: (event: KeyboardEvent<E>) => boolean
+    onCommit?: (value: string) => void
+    resetAfterCommit?: boolean
 }
 
 type InputValues<E extends InputElement> = {
-    value: string;
-    setValue: (value: string) => void;
-    props: React.InputHTMLAttributes<E> | React.TextareaHTMLAttributes<E>;
-    resetValue: () => void;
-    commitValue: () => void;
-    valueIsValid: boolean;
+    value: string
+    setValue: (value: string) => void
+    props: React.InputHTMLAttributes<E> | React.TextareaHTMLAttributes<E>
+    resetValue: () => void
+    commitValue: () => void
+    valueIsValid: boolean
 }
 
 export const useInput = <E extends InputElement>(config?: InputConfig<E>): InputValues<E> => {

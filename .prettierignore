@@ -1,1 +1,6 @@
-package-lock.json
+.vscode
+.cache
+public
+out
+
+src/generated

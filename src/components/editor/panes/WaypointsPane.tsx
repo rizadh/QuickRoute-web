@@ -1,12 +1,7 @@
-import b64toblob from 'b64-to-blob'
-import { saveAs } from 'file-saver'
 import isMobileFn from 'ismobilejs'
 import React, { Dispatch, useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { apolloClient } from '../../..'
-import { GeneratePdfQuery, GeneratePdfQueryVariables } from '../../../generated/graphql'
 import { useInput } from '../../../hooks/useInput'
-import { GeneratePDF } from '../../../queries'
 import { AppAction } from '../../../redux/actionTypes'
 import { routeInformation } from '../../../redux/selectors'
 import { AppState } from '../../../redux/state'
@@ -37,24 +32,6 @@ export const WaypointsPane = () => {
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [])
     const deleteSelectedWaypoints = useCallback(() => dispatch({ type: 'DELETE_SELECTED_WAYPOINTS' }), [])
     const deselectAllWaypoints = useCallback(() => dispatch({ type: 'DESELECT_ALL_WAYPOINTS' }), [])
-
-    const generatePdf = useCallback(async () => {
-        dispatch({ type: 'CLEAR_ERROR' })
-
-        try {
-            const response = await apolloClient.query<GeneratePdfQuery, GeneratePdfQueryVariables>({
-                query: GeneratePDF,
-                variables: { waypoints: waypoints.map(w => w.address) },
-            })
-
-            saveAs(b64toblob(response.data.pdf), 'waypoints.pdf')
-        } catch (error) {
-            dispatch({
-                type: 'ERROR_OCCURRED',
-                error: `Failed to generate PDF (ERROR: '${error}')`,
-            })
-        }
-    }, [waypoints])
 
     const shareWaypoints = useCallback(async () => {
         const searchParams = new URLSearchParams()
@@ -117,9 +94,6 @@ export const WaypointsPane = () => {
                                 <i className="fas fa-fw fa-plus" />
                             </Button>
                         </InputRow>
-                        <Button variant={Variant.Primary} onClick={generatePdf} disabled={waypoints.length === 0}>
-                            <i className={'fas fa-fw fa-file-download'} /> Save PDF
-                        </Button>
                         <Button variant={Variant.Primary} onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                             <i className="fas fa-fw fa-exchange-alt" /> Reverse
                         </Button>

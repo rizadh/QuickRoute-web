@@ -16,8 +16,8 @@ const Container = styled.div`
 `
 
 type SelectorButtonProps = {
-    pane: EditorPane;
-    className?: ButtonHTMLAttributes<HTMLButtonElement>['className'];
+    pane: EditorPane
+    className?: ButtonHTMLAttributes<HTMLButtonElement>['className']
 }
 
 const SelectorButton = styled(({ pane, className }: SelectorButtonProps) => {
@@ -56,6 +56,7 @@ export const PaneSelector = () => (
             <SelectorButton pane={EditorPane.Navigate} />
             <SelectorButton pane={EditorPane.Import} />
             <SelectorButton pane={EditorPane.Optimize} />
+            <SelectorButton pane={EditorPane.Export} />
         </Container>
     </Wrapper>
 )

@@ -5,4 +5,5 @@ env:
     - NPM_SCRIPT=lint
     - NPM_SCRIPT=test
     - NPM_SCRIPT=build
+    - NPM_SCRIPT=build:tsc
 script: yarn autoclean --force && yarn $NPM_SCRIPT
