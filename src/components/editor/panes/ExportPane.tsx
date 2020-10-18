@@ -11,9 +11,9 @@ import { AppState } from '../../../redux/state'
 import { saveAs } from 'file-saver'
 import { useInput } from '../../../hooks/useInput'
 
-const DEFAULT_ROWS_PER_PAGE = 20
+const DEFAULT_ROWS_PER_PAGE = 25
 const DEFAULT_COLUMNS_PER_PAGE = 2
-const DEFAULT_FONT_SIZE = 18
+const DEFAULT_FONT_SIZE = 16
 
 export const ExportPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -24,21 +24,18 @@ export const ExportPane = () => {
     const { value: rowsFieldValue, props: rowsFieldProps, valueIsValid: rowsIsValid } = useInput({
         predicate: value => value.length === 0 || !isNaN(parseInt(value)),
     })
-    const { value: columnsFieldValue, props: columnsFieldProps, valueIsValid: columnsIsValid } = useInput({
-        predicate: value => value.length === 0 || !isNaN(parseInt(value)),
-    })
     const { value: fontSizeFieldValue, props: fontSizeFieldProps, valueIsValid: fontSizeIsValid } = useInput({
         predicate: value => value.length === 0 || !isNaN(parseInt(value)),
     })
 
-    const canDownload = rowsIsValid && columnsIsValid && fontSizeIsValid
+    const canDownload = rowsIsValid && fontSizeIsValid
 
     const downloadPdf = useCallback(async () => {
         const PAGE_MARGIN = 72 / 4
         const LIST_INDENT = 72 / 2
 
         const rowsPerPage = parseInt(rowsFieldValue) || DEFAULT_ROWS_PER_PAGE
-        const columnsPerPage = parseInt(columnsFieldValue) || DEFAULT_COLUMNS_PER_PAGE
+        const columnsPerPage = DEFAULT_COLUMNS_PER_PAGE
         const fontSize = parseInt(fontSizeFieldValue) || DEFAULT_FONT_SIZE
         const waypointsPerPage = rowsPerPage * columnsPerPage
 
@@ -73,7 +70,7 @@ export const ExportPane = () => {
 
         const dateString = new Date().toISOString().split('T')[0].replace(/-/g, '')
         saveAs(new Blob([await document.save()]), `waypoints-${dateString}.pdf`)
-    }, [waypoints, orderByAddress, rowsFieldValue, columnsFieldValue, fontSizeFieldValue])
+    }, [waypoints, orderByAddress, rowsFieldValue, fontSizeFieldValue])
 
     return (
         <>
@@ -82,11 +79,6 @@ export const ExportPane = () => {
                     <Alert>Rows per page</Alert>
                     <Spacer />
                     <FixedWidthInput placeholder={DEFAULT_ROWS_PER_PAGE.toString()} {...rowsFieldProps} />
-                </InputRow>
-                <InputRow>
-                    <Alert>Columns per page</Alert>
-                    <Spacer />
-                    <FixedWidthInput placeholder={DEFAULT_COLUMNS_PER_PAGE.toString()} {...columnsFieldProps} />
                 </InputRow>
                 <InputRow>
                     <Alert>Font size</Alert>
