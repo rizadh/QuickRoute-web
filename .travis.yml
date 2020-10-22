@@ -1,6 +1,6 @@
 os: linux
 language: node_js
-node_js: node
+node_js: 14
 env:
     - NPM_SCRIPT=lint
     - NPM_SCRIPT=test
