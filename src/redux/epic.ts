@@ -40,7 +40,7 @@ import { createWaypointFromAddress } from './util/createWaypointFromAddress'
 type AppEpic = Epic<AppAction, AppAction, AppState>
 type FetchPlaceResultAction = FetchPlaceInProgressAction | FetchPlaceSuccessAction | FetchPlaceFailedAction
 
-const geocoder = new mapkit.Geocoder({ getsUserLocation: false })
+const geocoder = new mapkit.Geocoder({ getsUserLocation: true })
 const directions = new mapkit.Directions()
 
 const performLookup = (address: string) =>
