@@ -57,6 +57,7 @@ export const ExportPane = () => {
             const { height: pageHeight, width: pageWidth } = page.getSize()
 
             const effectivePageHeight = pageHeight - 2 * PAGE_MARGIN
+            const rowPadding = effectivePageHeight / rowsPerPage - font.heightAtSize(fontSize)
             const rowHeight = effectivePageHeight / rowsPerPage
             const rowPosition = pageHeight - PAGE_MARGIN - (rowIndex + 1) * rowHeight
 
@@ -64,8 +65,18 @@ export const ExportPane = () => {
             const columnWidth = effectivePageWidth / columnsPerPage
             const columnPosition = PAGE_MARGIN + columnIndex * columnWidth
 
-            page.drawText(`${originalIndex + 1}.`, { x: columnPosition, y: rowPosition, size: fontSize, font })
-            page.drawText(waypoint.address, { x: columnPosition + LIST_INDENT, y: rowPosition, size: fontSize, font })
+            page.drawText(`${originalIndex + 1}.`, {
+                x: columnPosition,
+                y: rowPosition + rowPadding / 2,
+                size: fontSize,
+                font,
+            })
+            page.drawText(waypoint.address, {
+                x: columnPosition + LIST_INDENT,
+                y: rowPosition + rowPadding / 2,
+                size: fontSize,
+                font,
+            })
         })
 
         const dateString = new Date().toISOString().split('T')[0].replace(/-/g, '')
