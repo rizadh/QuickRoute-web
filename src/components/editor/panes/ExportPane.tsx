@@ -5,7 +5,7 @@ import { Button, Variant } from '../../common/Button'
 import { Checkbox, Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
 import { Body, Footer } from '../Editor'
-import { PageSizes, PDFDocument, range, StandardFonts } from 'pdf-lib'
+import { LineCapStyle, PageSizes, PDFDocument, range, StandardFonts } from 'pdf-lib'
 import { useSelector } from 'react-redux'
 import { AppState } from '../../../redux/state'
 import { saveAs } from 'file-saver'
@@ -131,58 +131,78 @@ async function generateAndDownloadPdf(
     addresses: string[],
     { rowsPerPage, columnsPerPage, preferredfontSize, orderByAddress, useLandscape, drawDividers }: GeneratePdfOptions,
 ) {
-    const waypointsPerPage = rowsPerPage * columnsPerPage
-
+    // Document and font setup
     const document = await PDFDocument.create()
     const font = await document.embedFont(StandardFonts.HelveticaBold)
+
+    // Page creation
     const [pageWidth, pageHeight] = useLandscape ? [...PageSizes.Letter].reverse() : PageSizes.Letter
+    const waypointsPerPage = rowsPerPage * columnsPerPage
+    const numPages = Math.ceil(addresses.length / waypointsPerPage)
+    const pages = range(0, numPages).map(() => document.addPage([pageWidth, pageHeight]))
+
+    // Vertical positioning
     const rowHeight = (pageHeight - 2 * PAGE_MARGIN) / rowsPerPage
-    const baselineOffset = rowHeight - font.heightAtSize(preferredfontSize)
-    const columnWidth = (pageWidth - (1 + columnsPerPage) * PAGE_MARGIN) / columnsPerPage
-    const pages = range(0, Math.ceil(addresses.length / waypointsPerPage)).map(() =>
-        document.addPage([pageWidth, pageHeight]),
-    )
-    const indexTextWidth = font.widthOfTextAtSize('00.', preferredfontSize)
     const textHeight = font.heightAtSize(preferredfontSize)
+    const baselineOffset = (rowHeight - textHeight) / 1.5
+
+    // Horizontal positioning
+    const columnWidth = (pageWidth - (1 + columnsPerPage) * PAGE_MARGIN) / columnsPerPage
+    const indexTextWidth = font.widthOfTextAtSize('00.', preferredfontSize)
     const addressIndent = indexTextWidth + textHeight / 2
     const availableAddressWidth = columnWidth - addressIndent
 
+    // Address sorting
     const indexedAddresses = addresses.map((address, index) => ({ address, index }))
     if (orderByAddress) indexedAddresses.sort((a, b) => a.address.localeCompare(b.address))
 
-    let lastCharacter: string
+    // Draw loop
+    let previousFirstCharacter: string
     indexedAddresses.forEach(({ address, index: originalIndex }, index) => {
+        // Row position
         const rowIndex = index % rowsPerPage
-        const columnIndex = Math.floor(index / rowsPerPage) % columnsPerPage
         const rowPosition = pageHeight - PAGE_MARGIN - (rowIndex + 1) * rowHeight
+
+        // Column position
+        const columnIndex = Math.floor(index / rowsPerPage) % columnsPerPage
         const columnPosition = PAGE_MARGIN + columnIndex * (columnWidth + PAGE_MARGIN)
 
+        // Shrink address to fit
         const fullsizeAddressWidth = font.widthOfTextAtSize(address, preferredfontSize)
         const fontScaleFactor = Math.min(availableAddressWidth / fullsizeAddressWidth, 1)
 
+        // Get current page
         const page = pages[Math.floor(index / waypointsPerPage)]
+
+        // Draw index
         page.drawText(`${originalIndex + 1}.`, {
             x: columnPosition,
             y: rowPosition + baselineOffset,
             size: preferredfontSize,
             font,
         })
+
+        // Draw address
         page.drawText(address, {
             x: columnPosition + addressIndent,
             y: rowPosition + baselineOffset,
             size: preferredfontSize * fontScaleFactor,
             font,
         })
-        if (orderByAddress && drawDividers && lastCharacter && lastCharacter !== address[0]) {
+
+        // Draw divider above address if previous first character was different
+        if (orderByAddress && drawDividers && previousFirstCharacter && previousFirstCharacter !== address[0]) {
             page.drawLine({
                 start: { x: columnPosition, y: rowPosition + rowHeight },
                 end: { x: columnPosition + columnWidth, y: rowPosition + rowHeight },
+                thickness: preferredfontSize / 9,
+                lineCap: LineCapStyle.Round,
             })
         }
 
-        lastCharacter = address[0]
+        previousFirstCharacter = address[0]
     })
 
-    const dateString = new Date().toISOString().split('T')[0].replace(/-/g, '')
-    saveAs(new Blob([await document.save()]), `waypoints-${dateString}.pdf`)
+    const dateString = new Date().toLocaleDateString(undefined, { month: 'short', day: '2-digit' })
+    saveAs(new Blob([await document.save()]), `Route - ${dateString}.pdf`)
 }
