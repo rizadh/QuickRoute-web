@@ -11,90 +11,58 @@ import { AppState } from '../../../redux/state'
 import { saveAs } from 'file-saver'
 import { useInput } from '../../../hooks/useInput'
 
-const DEFAULT_ROWS_PER_PAGE = 40
 const DEFAULT_COLUMNS_PER_PAGE = 2
-const DEFAULT_FONT_SIZE = 14
+const DEFAULT_ROWS_PER_PAGE = 30
 
 export const ExportPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
-    const [useLandscape, setUseLandscape] = useState(false)
+    const [useLandscape, setUseLandscape] = useState(true)
     const [orderByAddress, setOrderByAddress] = useState(false)
-    const [drawDividers, setDrawDividers] = useState(false)
     const handleOrderByAddressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setOrderByAddress(e.currentTarget.checked)
-        // if (!e.currentTarget.checked) setDrawDividers(false)
     }, [])
     const handleUseLandscapeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setUseLandscape(e.currentTarget.checked)
     }, [])
-    const handleDrawDividersChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setDrawDividers(e.currentTarget.checked)
-    }, [])
-    const { value: rowsFieldValue, props: rowsFieldProps, valueIsValid: rowsIsValid } = useInput({
-        predicate: value => value.length === 0 || !isNaN(parseInt(value)),
-    })
-    const { value: columnsFieldValue, props: columnsFieldProps, valueIsValid: columnsIsValid } = useInput({
-        predicate: value => value.length === 0 || !isNaN(parseInt(value)),
-    })
-    const { value: fontSizeFieldValue, props: fontSizeFieldProps, valueIsValid: fontSizeIsValid } = useInput({
-        predicate: value => value.length === 0 || !isNaN(parseInt(value)),
-    })
+    const rowsField = useInput({ predicate: value => value.length === 0 || !isNaN(parseInt(value)) })
+    const columnsField = useInput({ predicate: value => value.length === 0 || !isNaN(parseInt(value)) })
 
-    const fieldsAreValid = rowsIsValid && columnsIsValid && fontSizeIsValid
+    const fieldsAreValid = rowsField.valueIsValid && columnsField.valueIsValid
+
+    const rowsPerPage = parseInt(rowsField.value, 10) || DEFAULT_ROWS_PER_PAGE
+    const columnsPerPage = parseInt(columnsField.value, 10) || DEFAULT_COLUMNS_PER_PAGE
 
     const downloadPdf = useCallback(
         () =>
             generateAndDownloadPdf(
                 waypoints.map(({ address }) => address),
-                {
-                    rowsPerPage: parseInt(rowsFieldValue, 10) || DEFAULT_ROWS_PER_PAGE,
-                    columnsPerPage: parseInt(columnsFieldValue, 10) || DEFAULT_COLUMNS_PER_PAGE,
-                    preferredfontSize: parseInt(fontSizeFieldValue, 10) || DEFAULT_FONT_SIZE,
-                    orderByAddress,
-                    useLandscape,
-                    drawDividers,
-                },
+                { rowsPerPage, columnsPerPage, orderByAddress, useLandscape },
             ),
-        [waypoints, rowsFieldValue, columnsFieldValue, fontSizeFieldValue, orderByAddress, useLandscape, drawDividers],
+        [waypoints, rowsField.value, columnsField.value, orderByAddress, useLandscape],
     )
 
     return (
         <>
             <Body>
                 <InputRow>
-                    <Alert>Rows per page</Alert>
-                    <Spacer />
-                    <FixedWidthInput placeholder={DEFAULT_ROWS_PER_PAGE.toString()} {...rowsFieldProps} />
-                </InputRow>
-                <InputRow>
                     <Alert>Columns per page</Alert>
                     <Spacer />
-                    <FixedWidthInput placeholder={DEFAULT_COLUMNS_PER_PAGE.toString()} {...columnsFieldProps} />
+                    <FixedWidthInput placeholder={DEFAULT_COLUMNS_PER_PAGE.toString()} {...columnsField.props} />
                 </InputRow>
                 <InputRow>
-                    <Alert>Font size</Alert>
+                    <Alert>Rows per page</Alert>
                     <Spacer />
-                    <FixedWidthInput placeholder={DEFAULT_FONT_SIZE.toString()} {...fontSizeFieldProps} />
+                    <FixedWidthInput placeholder={DEFAULT_ROWS_PER_PAGE.toString()} {...rowsField.props} />
                 </InputRow>
                 <InputRow>
-                    <Alert>Use landscape orientation</Alert>
+                    <Alert>Layout in landscape</Alert>
                     <Spacer />
                     <Checkbox type="checkbox" checked={useLandscape} onChange={handleUseLandscapeChange}></Checkbox>
                 </InputRow>
                 <InputRow>
-                    <Alert>Sort by house number</Alert>
+                    <Alert>Organize by house number</Alert>
                     <Spacer />
                     <Checkbox type="checkbox" checked={orderByAddress} onChange={handleOrderByAddressChange}></Checkbox>
-                </InputRow>
-                <InputRow>
-                    <Alert>Draw dividers</Alert>
-                    <Spacer />
-                    <Checkbox
-                        type="checkbox"
-                        checked={drawDividers}
-                        disabled={!orderByAddress}
-                        onChange={handleDrawDividersChange}
-                    ></Checkbox>
                 </InputRow>
             </Body>
             <Footer>
@@ -119,26 +87,25 @@ const FixedWidthInput = styled(Input)`
 const PAGE_MARGIN = 72 / 4
 
 type GeneratePdfOptions = {
-    rowsPerPage: number
-    columnsPerPage: number
-    preferredfontSize: number
-    orderByAddress: boolean
     useLandscape: boolean
-    drawDividers: boolean
+    columnsPerPage: number
+    rowsPerPage: number
+    orderByAddress: boolean
 }
 
 async function generateAndDownloadPdf(
     addresses: string[],
-    { rowsPerPage, columnsPerPage, preferredfontSize, orderByAddress, useLandscape, drawDividers }: GeneratePdfOptions,
+    { rowsPerPage, columnsPerPage, orderByAddress, useLandscape }: GeneratePdfOptions,
 ) {
     // Document and font setup
     const document = await PDFDocument.create()
     const font = await document.embedFont(StandardFonts.HelveticaBold)
+    const preferredfontSize = (useLandscape ? 500 : 700) / rowsPerPage
 
     // Page creation
     const [pageWidth, pageHeight] = useLandscape ? [...PageSizes.Letter].reverse() : PageSizes.Letter
-    const waypointsPerPage = rowsPerPage * columnsPerPage
-    const numPages = Math.ceil(addresses.length / waypointsPerPage)
+    const addressesPerPage = rowsPerPage * columnsPerPage
+    const numPages = Math.ceil(addresses.length / addressesPerPage)
     const pages = range(0, numPages).map(() => document.addPage([pageWidth, pageHeight]))
 
     // Vertical positioning
@@ -148,7 +115,12 @@ async function generateAndDownloadPdf(
 
     // Horizontal positioning
     const columnWidth = (pageWidth - (1 + columnsPerPage) * PAGE_MARGIN) / columnsPerPage
-    const indexTextWidth = font.widthOfTextAtSize('00.', preferredfontSize)
+    const maxDigits = Math.floor(Math.log10(addresses.length)) + 1
+    const indexTextPlaceholder =
+        range(0, maxDigits)
+            .map(() => '0')
+            .join('') + '.'
+    const indexTextWidth = font.widthOfTextAtSize(indexTextPlaceholder, preferredfontSize)
     const addressIndent = indexTextWidth + textHeight / 2
     const availableAddressWidth = columnWidth - addressIndent
 
@@ -172,7 +144,7 @@ async function generateAndDownloadPdf(
         const fontScaleFactor = Math.min(availableAddressWidth / fullsizeAddressWidth, 1)
 
         // Get current page
-        const page = pages[Math.floor(index / waypointsPerPage)]
+        const page = pages[Math.floor(index / addressesPerPage)]
 
         // Draw index
         page.drawText(`${originalIndex + 1}.`, {
@@ -191,11 +163,12 @@ async function generateAndDownloadPdf(
         })
 
         // Draw divider above address if previous first character was different
-        if (orderByAddress && drawDividers && previousFirstCharacter && previousFirstCharacter !== address[0]) {
+        if (orderByAddress && previousFirstCharacter && previousFirstCharacter !== address[0]) {
+            const thickness = preferredfontSize / 8
             page.drawLine({
-                start: { x: columnPosition, y: rowPosition + rowHeight },
-                end: { x: columnPosition + columnWidth, y: rowPosition + rowHeight },
-                thickness: preferredfontSize / 9,
+                start: { x: columnPosition, y: rowPosition + rowHeight - thickness / 2 },
+                end: { x: columnPosition + columnWidth, y: rowPosition + rowHeight - thickness / 2 },
+                thickness,
                 lineCap: LineCapStyle.Round,
             })
         }
