@@ -16,27 +16,22 @@ export const ImportPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
-    const {
-        value: driverNumberFieldValue,
-        props: driverNumberFieldProps,
-        valueIsValid: driverNumberIsValid,
-    } = useInput({
-        predicate: value => !!value,
-    })
-
-    const { value: passwordFieldValue, props: passwordFieldProps, valueIsValid: passwordIsValid } = useInput({
-        predicate: value => !!value,
-    })
+    const driverNumberField = useInput({ predicate: value => !!value })
+    const passwordField = useInput({ predicate: value => !!value })
 
     const importWaypoints = useCallback(
         () =>
-            dispatch({ type: 'IMPORT_WAYPOINTS', driverNumber: driverNumberFieldValue, password: passwordFieldValue }),
-        [dispatch, driverNumberFieldValue, passwordFieldValue],
+            dispatch({
+                type: 'IMPORT_WAYPOINTS',
+                driverNumber: driverNumberField.value,
+                password: passwordField.value,
+            }),
+        [dispatch, driverNumberField.value, passwordField.value],
     )
 
     const cancelImport = useCallback(
-        () => dispatch({ type: 'IMPORT_WAYPOINTS_CANCEL', driverNumber: driverNumberFieldValue }),
-        [dispatch, driverNumberFieldValue],
+        () => dispatch({ type: 'IMPORT_WAYPOINTS_CANCEL', driverNumber: driverNumberField.value }),
+        [dispatch, driverNumberField.value],
     )
 
     const isMobileDevice = isMobileFn().any
@@ -52,13 +47,18 @@ export const ImportPane = () => {
                     <Input
                         type="text"
                         placeholder="Driver number"
-                        {...driverNumberFieldProps}
+                        {...driverNumberField.props}
                         disabled={importInProgress}
                         autoFocus={!isMobileDevice}
                     />
                 </InputRow>
                 <InputRow>
-                    <Input type="password" placeholder="Password" {...passwordFieldProps} disabled={importInProgress} />
+                    <Input
+                        type="password"
+                        placeholder="Password"
+                        {...passwordField.props}
+                        disabled={importInProgress}
+                    />
                 </InputRow>
                 {waypoints.length > 0 && <WarningAlert>Existing waypoints will be replaced</WarningAlert>}
             </Body>
@@ -77,7 +77,7 @@ export const ImportPane = () => {
                     <Button
                         variant={Variant.Primary}
                         onClick={importWaypoints}
-                        disabled={!driverNumberIsValid || !passwordIsValid}
+                        disabled={!driverNumberField.valueIsValid || !passwordField.valueIsValid}
                     >
                         <i className="fas fa-fw fa-arrow-alt-circle-down" /> Import
                     </Button>

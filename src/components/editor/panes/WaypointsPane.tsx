@@ -20,17 +20,20 @@ export const WaypointsPane = () => {
     const currentRouteInformation = useSelector(routeInformation, shallowEqual)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
-    const { props: waypointFieldProps, commitValue: addWaypoint, valueIsValid: waypointIsValid } = useInput({
+    const waypointField = useInput({
         predicate: isValidAddress,
         onCommit: useCallback(
             (waypoint: string) => {
                 dispatch({ type: 'ADD_WAYPOINT', waypoint: createWaypointFromAddress(waypoint) })
-                return true
             },
             [dispatch],
         ),
         resetAfterCommit: true,
     })
+    const addWaypoint = useCallback(() => {
+        waypointField.commitValue()
+        waypointField.resetValue()
+    }, [waypointField])
 
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [dispatch])
     const deleteSelectedWaypoints = useCallback(() => dispatch({ type: 'DELETE_SELECTED_WAYPOINTS' }), [dispatch])
@@ -85,14 +88,14 @@ export const WaypointsPane = () => {
                             <Input
                                 type="text"
                                 placeholder="New waypoint"
-                                {...waypointFieldProps}
+                                {...waypointField.props}
                                 autoFocus={!isMobileDevice}
                             />
                             <Button
                                 variant={Variant.Primary}
                                 title="Add waypoint"
                                 onClick={addWaypoint}
-                                disabled={!waypointIsValid}
+                                disabled={!waypointField.valueIsValid}
                             >
                                 <i className="fas fa-fw fa-plus" />
                             </Button>

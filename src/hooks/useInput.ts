@@ -19,6 +19,8 @@ type InputValues<E extends InputElement> = {
     valueIsValid: boolean
 }
 
+const defaultEventFilter = (event: KeyboardEvent<InputElement>) => event.key === 'Enter'
+
 export const useInput = <E extends InputElement>(config?: InputConfig<E>): InputValues<E> => {
     const [value, setValue] = useState(config?.initialValue ?? '')
 
@@ -28,15 +30,25 @@ export const useInput = <E extends InputElement>(config?: InputConfig<E>): Input
 
     const onChange = useCallback((event: ChangeEvent<E>) => setValue(event.currentTarget.value), [])
     const onKeyPress = useCallback(
-        (event: KeyboardEvent<E>) =>
-            event.key === 'Enter' &&
-            valueIsValid &&
-            (config?.acceptKeyboardEvent?.(event) ?? true) &&
-            config?.onCommit?.(value) &&
-            config?.resetAfterCommit &&
-            resetValue(),
+        (event: KeyboardEvent<E>) => {
+            if (!valueIsValid || !config) return
+            if (!(config.acceptKeyboardEvent || defaultEventFilter)(event)) return
+
+            config.onCommit?.(value)
+            if (config.resetAfterCommit) resetValue()
+        },
         [valueIsValid, config, value, resetValue],
     )
 
-    return { value, setValue, props: { value, onChange, onKeyPress }, resetValue, commitValue, valueIsValid }
+    return useMemo(
+        () => ({
+            value,
+            setValue,
+            props: { value, onChange, onKeyPress },
+            resetValue,
+            commitValue,
+            valueIsValid,
+        }),
+        [commitValue, onChange, onKeyPress, resetValue, value, valueIsValid],
+    )
 }
