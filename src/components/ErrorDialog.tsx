@@ -32,7 +32,7 @@ const Container = animated(styled.div`
 export const ErrorDialog = () => {
     const error = useSelector((state: AppState) => state.error)
     const dispatch = useDispatch()
-    const clearError = useCallback(() => dispatch({ type: 'CLEAR_ERROR' }), [])
+    const clearError = useCallback(() => dispatch({ type: 'CLEAR_ERROR' }), [dispatch])
 
     const containerTransitions = useTransition(error, null, {
         from: { transform: 'translateY(-100%)', opacity: 0 },

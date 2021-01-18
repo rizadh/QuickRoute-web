@@ -65,10 +65,13 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
     } = useInput({
         initialValue: waypoint.address,
         predicate: value => !isOriginalAddress(value) && isValidAddress(value),
-        onCommit: useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [index]),
+        onCommit: useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [
+            dispatch,
+            index,
+        ]),
     })
 
-    const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [index])
+    const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [dispatch, index])
 
     const placeFetchResult = useSelector((state: AppState) => state.fetchedPlaces[waypoint.address])
 

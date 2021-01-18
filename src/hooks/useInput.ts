@@ -22,7 +22,9 @@ type InputValues<E extends InputElement> = {
 export const useInput = <E extends InputElement>(config?: InputConfig<E>): InputValues<E> => {
     const [value, setValue] = useState(config?.initialValue ?? '')
 
-    const valueIsValid = useMemo(() => config?.predicate?.(value) ?? true, [value, config?.predicate])
+    const valueIsValid = useMemo(() => config?.predicate?.(value) ?? true, [config, value])
+    const resetValue = useCallback(() => setValue(config?.initialValue ?? ''), [config?.initialValue])
+    const commitValue = useCallback(() => config?.onCommit?.(value), [config, value])
 
     const onChange = useCallback((event: ChangeEvent<E>) => setValue(event.currentTarget.value), [])
     const onKeyPress = useCallback(
@@ -33,11 +35,8 @@ export const useInput = <E extends InputElement>(config?: InputConfig<E>): Input
             config?.onCommit?.(value) &&
             config?.resetAfterCommit &&
             resetValue(),
-        [value, config?.onCommit, config?.acceptKeyboardEvent, config?.resetAfterCommit],
+        [valueIsValid, config, value, resetValue],
     )
-
-    const resetValue = useCallback(() => setValue(config?.initialValue ?? ''), [config?.initialValue])
-    const commitValue = useCallback(() => config?.onCommit?.(value), [value, config?.onCommit])
 
     return { value, setValue, props: { value, onChange, onKeyPress }, resetValue, commitValue, valueIsValid }
 }

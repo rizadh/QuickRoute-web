@@ -30,7 +30,7 @@ export const OptimizePane = () => {
                 startPoint,
                 endPoint,
             }),
-        [startPoint, endPoint],
+        [dispatch, startPoint, endPoint],
     )
 
     const optimizeTime = useCallback(
@@ -41,7 +41,7 @@ export const OptimizePane = () => {
                 startPoint,
                 endPoint,
             }),
-        [startPoint, endPoint],
+        [dispatch, startPoint, endPoint],
     )
 
     const cancelOptimize = useCallback(
@@ -51,7 +51,7 @@ export const OptimizePane = () => {
                 startPoint,
                 endPoint,
             }),
-        [startPoint, endPoint],
+        [dispatch, startPoint, endPoint],
     )
 
     const insufficientWaypoints = waypoints.length < 3

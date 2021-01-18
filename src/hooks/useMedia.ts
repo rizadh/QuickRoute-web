@@ -10,7 +10,7 @@ export const useMedia = (query: string) => {
         const handleChange = () => setResult(queryList.matches)
         queryList.addEventListener('change', handleChange)
         return () => queryList.removeEventListener('change', handleChange)
-    }, [query])
+    }, [query, result])
 
     return result
 }

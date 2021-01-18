@@ -20,15 +20,18 @@ export const BulkEditPane = () => {
     const { props: bulkEditFieldProps, commitValue: commitBulkEdit } = useInput({
         initialValue: waypoints.map(w => w.address).join('\n'),
         acceptKeyboardEvent: event => event.shiftKey,
-        onCommit: useCallback((value: string) => {
-            const validAddresses = value
-                .split('\n')
-                .filter(isValidAddress)
-                .map(address => address.trim())
+        onCommit: useCallback(
+            (value: string) => {
+                const validAddresses = value
+                    .split('\n')
+                    .filter(isValidAddress)
+                    .map(address => address.trim())
 
-            dispatch({ type: 'REPLACE_WAYPOINTS', waypoints: validAddresses.map(createWaypointFromAddress) })
-            dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints })
-        }, []),
+                dispatch({ type: 'REPLACE_WAYPOINTS', waypoints: validAddresses.map(createWaypointFromAddress) })
+                dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints })
+            },
+            [dispatch],
+        ),
     })
 
     const isMobileDevice = isMobileFn().any

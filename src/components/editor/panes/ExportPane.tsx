@@ -38,7 +38,7 @@ export const ExportPane = () => {
                 waypoints.map(({ address }) => address),
                 { rowsPerPage, columnsPerPage, orderByAddress, useLandscape },
             ),
-        [waypoints, rowsField.value, columnsField.value, orderByAddress, useLandscape],
+        [waypoints, rowsPerPage, columnsPerPage, orderByAddress, useLandscape],
     )
 
     return (

@@ -68,7 +68,7 @@ export const NavigatePane = () => {
                 }
             }
         },
-        [navigationLinks],
+        [dispatch, navigationLinks],
     )
 
     const shareAllLinks = useCallback(async () => {
@@ -85,7 +85,7 @@ export const NavigatePane = () => {
                 })
             }
         }
-    }, [navigationLinks])
+    }, [dispatch, navigationLinks])
 
     const insufficientWaypoints = waypoints.length === 0
 

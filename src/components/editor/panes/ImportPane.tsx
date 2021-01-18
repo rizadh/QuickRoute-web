@@ -31,12 +31,12 @@ export const ImportPane = () => {
     const importWaypoints = useCallback(
         () =>
             dispatch({ type: 'IMPORT_WAYPOINTS', driverNumber: driverNumberFieldValue, password: passwordFieldValue }),
-        [driverNumberFieldValue, passwordFieldValue],
+        [dispatch, driverNumberFieldValue, passwordFieldValue],
     )
 
     const cancelImport = useCallback(
         () => dispatch({ type: 'IMPORT_WAYPOINTS_CANCEL', driverNumber: driverNumberFieldValue }),
-        [driverNumberFieldValue],
+        [dispatch, driverNumberFieldValue],
     )
 
     const isMobileDevice = isMobileFn().any
