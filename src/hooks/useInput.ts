@@ -19,25 +19,36 @@ type InputValues<E extends InputElement> = {
     valueIsValid: boolean
 }
 
+const defaultEventFilter = (event: KeyboardEvent<InputElement>) => event.key === 'Enter'
+
 export const useInput = <E extends InputElement>(config?: InputConfig<E>): InputValues<E> => {
     const [value, setValue] = useState(config?.initialValue ?? '')
 
-    const valueIsValid = useMemo(() => config?.predicate?.(value) ?? true, [value, config?.predicate])
+    const valueIsValid = useMemo(() => config?.predicate?.(value) ?? true, [config, value])
+    const resetValue = useCallback(() => setValue(config?.initialValue ?? ''), [config?.initialValue])
+    const commitValue = useCallback(() => config?.onCommit?.(value), [config, value])
 
     const onChange = useCallback((event: ChangeEvent<E>) => setValue(event.currentTarget.value), [])
     const onKeyPress = useCallback(
-        (event: KeyboardEvent<E>) =>
-            event.key === 'Enter' &&
-            valueIsValid &&
-            (config?.acceptKeyboardEvent?.(event) ?? true) &&
-            config?.onCommit?.(value) &&
-            config?.resetAfterCommit &&
-            resetValue(),
-        [value, config?.onCommit, config?.acceptKeyboardEvent, config?.resetAfterCommit],
+        (event: KeyboardEvent<E>) => {
+            if (!valueIsValid || !config) return
+            if (!(config.acceptKeyboardEvent || defaultEventFilter)(event)) return
+
+            config.onCommit?.(value)
+            if (config.resetAfterCommit) resetValue()
+        },
+        [valueIsValid, config, value, resetValue],
     )
 
-    const resetValue = useCallback(() => setValue(config?.initialValue ?? ''), [config?.initialValue])
-    const commitValue = useCallback(() => config?.onCommit?.(value), [value, config?.onCommit])
-
-    return { value, setValue, props: { value, onChange, onKeyPress }, resetValue, commitValue, valueIsValid }
+    return useMemo(
+        () => ({
+            value,
+            setValue,
+            props: { value, onChange, onKeyPress },
+            resetValue,
+            commitValue,
+            valueIsValid,
+        }),
+        [commitValue, onChange, onKeyPress, resetValue, value, valueIsValid],
+    )
 }

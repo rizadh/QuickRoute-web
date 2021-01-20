@@ -37,8 +37,8 @@ export const MapButtons = () => {
     const editorPane = useSelector((state: AppState) => state.editorPane)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
-    const enableAutofit = useCallback(() => dispatch({ type: 'ENABLE_AUTOFIT' }), [])
-    const showEditorPane = useCallback(() => dispatch({ type: 'SHOW_EDITOR_PANE' }), [])
+    const enableAutofit = useCallback(() => dispatch({ type: 'ENABLE_AUTOFIT' }), [dispatch])
+    const showEditorPane = useCallback(() => dispatch({ type: 'SHOW_EDITOR_PANE' }), [dispatch])
 
     return (
         <Container>
