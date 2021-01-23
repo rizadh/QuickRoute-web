@@ -352,7 +352,7 @@ const importWaypointsEpic: AppEpic = action$ =>
                                       {
                                           type: 'REPLACE_WAYPOINTS',
                                           waypoints: [...dispatched, ...inprogress]
-                                              .map(w => `${extractAddress(w.address)} ${w.postalCode}`)
+                                              .map(w => `${extractAddress(w.address)} ${w.city}`)
                                               .map(createWaypointFromAddress),
                                       },
                                       { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
