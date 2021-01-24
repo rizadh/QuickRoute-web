@@ -7,7 +7,7 @@ import { GetTokenQuery, GetTokenQueryVariables } from './generated/graphql'
 import { GetToken } from './queries'
 import store from './redux/store'
 
-export const appVersion = '2021.01.17'
+export const appVersion = '2021.01.23'
 export const apolloClient = new ApolloClient({ uri: 'https://api.quickroute.rizadh.com/graphql' })
 
 // tslint:disable-next-line:no-var-requires
