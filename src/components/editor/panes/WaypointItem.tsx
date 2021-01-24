@@ -57,18 +57,16 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
     const waypoint = useSelector((state: AppState) => state.waypoints[index])
     const isOriginalAddress = (value: string) => value.trim() === waypoint.address
 
-    const {
-        value: waypointFieldValue,
-        props: waypointFieldProps,
-        resetValue: resetWaypointField,
-        commitValue: commitWaypointField,
-    } = useInput({
+    const waypointField = useInput({
         initialValue: waypoint.address,
         predicate: value => !isOriginalAddress(value) && isValidAddress(value),
-        onCommit: useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [index]),
+        onCommit: useCallback(newAddress => dispatch({ type: 'SET_ADDRESS', index, address: newAddress }), [
+            dispatch,
+            index,
+        ]),
     })
 
-    const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [index])
+    const deleteWaypoint = useCallback(() => dispatch({ type: 'DELETE_WAYPOINT', index }), [dispatch, index])
 
     const placeFetchResult = useSelector((state: AppState) => state.fetchedPlaces[waypoint.address])
 
@@ -147,8 +145,8 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                     >
                         <i className="fas fa-fw fa-grip-vertical" /> {index + 1}
                     </DragHandle>
-                    <Input {...waypointFieldProps} />
-                    {isOriginalAddress(waypointFieldValue) ? (
+                    <Input {...waypointField.props} />
+                    {isOriginalAddress(waypointField.value) ? (
                         <>
                             {fetchFailed && (
                                 <DangerStatusIndicator title={failureMessage}>{failureIcon}</DangerStatusIndicator>
@@ -164,10 +162,18 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
                         </>
                     ) : (
                         <>
-                            <Button variant={Variant.Secondary} onClick={resetWaypointField} title="Revert waypoint">
+                            <Button
+                                variant={Variant.Secondary}
+                                onClick={waypointField.resetValue}
+                                title="Revert waypoint"
+                            >
                                 <i className="fas fa-fw fa-times" />
                             </Button>
-                            <Button variant={Variant.Primary} onClick={commitWaypointField} title="Change waypoint">
+                            <Button
+                                variant={Variant.Primary}
+                                onClick={waypointField.commitValue}
+                                title="Change waypoint"
+                            >
                                 <i className="fas fa-fw fa-check" />
                             </Button>
                         </>

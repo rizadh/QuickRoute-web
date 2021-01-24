@@ -1,4 +1,5 @@
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -6,23 +7,26 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE'
-}
+export type Waypoint = {
+  __typename?: 'Waypoint';
+  address: Scalars['String'];
+  city: Scalars['String'];
+  postalCode: Scalars['String'];
+};
+
+export type ImportedWaypoints = {
+  __typename?: 'ImportedWaypoints';
+  dispatched: Array<Waypoint>;
+  inprogress: Array<Waypoint>;
+};
 
 export type Coordinates = {
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
-};
-
-export type ImportedWaypoints = {
-   __typename?: 'ImportedWaypoints';
-  dispatched: Array<Waypoint>;
-  inprogress: Array<Waypoint>;
 };
 
 export enum OptimizationParameter {
@@ -31,7 +35,7 @@ export enum OptimizationParameter {
 }
 
 export type Query = {
-   __typename?: 'Query';
+  __typename?: 'Query';
   mapkitToken: Scalars['String'];
   importedWaypoints: ImportedWaypoints;
   pdf: Scalars['String'];
@@ -66,17 +70,15 @@ export type QueryTspArgs = {
   costMatrix: Array<Array<Scalars['Float']>>;
 };
 
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE'
+}
 
-export type Waypoint = {
-   __typename?: 'Waypoint';
-  address: Scalars['String'];
-  city: Scalars['String'];
-  postalCode: Scalars['String'];
-};
 
-export type GetTokenQueryVariables = {
+export type GetTokenQueryVariables = Exact<{
   origin?: Maybe<Scalars['String']>;
-};
+}>;
 
 
 export type GetTokenQuery = (
@@ -84,10 +86,10 @@ export type GetTokenQuery = (
   & Pick<Query, 'mapkitToken'>
 );
 
-export type ImportWaypointsQueryVariables = {
+export type ImportWaypointsQueryVariables = Exact<{
   driverNumber: Scalars['String'];
   password: Scalars['String'];
-};
+}>;
 
 
 export type ImportWaypointsQuery = (
@@ -104,10 +106,10 @@ export type ImportWaypointsQuery = (
   ) }
 );
 
-export type OptimizeQueryVariables = {
+export type OptimizeQueryVariables = Exact<{
   coordinates: Array<Coordinates>;
   optimizationParameter: OptimizationParameter;
-};
+}>;
 
 
 export type OptimizeQuery = (
@@ -115,9 +117,9 @@ export type OptimizeQuery = (
   & Pick<Query, 'optimizedRoute'>
 );
 
-export type GeneratePdfQueryVariables = {
+export type GeneratePdfQueryVariables = Exact<{
   waypoints: Array<Scalars['String']>;
-};
+}>;
 
 
 export type GeneratePdfQuery = (
@@ -125,9 +127,9 @@ export type GeneratePdfQuery = (
   & Pick<Query, 'pdf'>
 );
 
-export type SolveTspQueryVariables = {
+export type SolveTspQueryVariables = Exact<{
   costMatrix: Array<Array<Scalars['Float']>>;
-};
+}>;
 
 
 export type SolveTspQuery = (
