@@ -25,7 +25,7 @@ export const BulkEditPane = () => {
                 const validAddresses = value
                     .split('\n')
                     .filter(isValidAddress)
-                    .map(address => address.trim())
+                    .map(address => address.replace(/\t/, ' ').trim())
 
                 dispatch({ type: 'REPLACE_WAYPOINTS', waypoints: validAddresses.map(createWaypointFromAddress) })
                 dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints })
