@@ -16,11 +16,11 @@ export const OptimizePane = () => {
     const optimizationInProgress = useSelector((state: AppState) => state.optimizationInProgress)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
-    const startPointField = useInput()
-    const endPointField = useInput()
+    const { value: startPointFieldValue, props: startPointFieldProps } = useInput()
+    const { value: endPointFieldValue, props: endPointFieldProps } = useInput()
 
-    const startPoint = (startPointField.value || endPointField.value).trim()
-    const endPoint = (endPointField.value || startPointField.value).trim()
+    const startPoint = (startPointFieldValue || endPointFieldValue).trim()
+    const endPoint = (endPointFieldValue || startPointFieldValue).trim()
 
     const optimizeDistance = useCallback(
         () =>
@@ -30,7 +30,7 @@ export const OptimizePane = () => {
                 startPoint,
                 endPoint,
             }),
-        [dispatch, startPoint, endPoint],
+        [startPoint, endPoint],
     )
 
     const optimizeTime = useCallback(
@@ -41,7 +41,7 @@ export const OptimizePane = () => {
                 startPoint,
                 endPoint,
             }),
-        [dispatch, startPoint, endPoint],
+        [startPoint, endPoint],
     )
 
     const cancelOptimize = useCallback(
@@ -51,7 +51,7 @@ export const OptimizePane = () => {
                 startPoint,
                 endPoint,
             }),
-        [dispatch, startPoint, endPoint],
+        [startPoint, endPoint],
     )
 
     const insufficientWaypoints = waypoints.length < 3
@@ -75,7 +75,7 @@ export const OptimizePane = () => {
                             <Input
                                 type="text"
                                 placeholder={`Start Point (${defaultStartPoint()})`}
-                                {...startPointField.props}
+                                {...startPointFieldProps}
                                 disabled={optimizationInProgress}
                                 autoFocus={!isMobileDevice}
                             />
@@ -84,7 +84,7 @@ export const OptimizePane = () => {
                             <Input
                                 type="text"
                                 placeholder={`End Point (${defaultEndPoint()})`}
-                                {...endPointField.props}
+                                {...endPointFieldProps}
                                 disabled={optimizationInProgress}
                             />
                         </InputRow>

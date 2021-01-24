@@ -28,7 +28,7 @@ export const WaypointList = () => {
 
             setDraggedWaypoint(null)
         },
-        [dispatch, waypoints],
+        [waypoints],
     )
 
     const onDragStart = useCallback((initial: DragStart) => setDraggedWaypoint(waypoints[initial.source.index]), [

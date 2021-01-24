@@ -122,7 +122,7 @@ export const Editor = () => {
     const compactMode = useCompactMode()
 
     const dispatch: Dispatch<AppAction> = useDispatch()
-    const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [dispatch])
+    const hideEditorPane = useCallback(() => dispatch({ type: 'HIDE_EDITOR_PANE' }), [])
 
     const props = useSpring({
         transform: `translateX(${editorIsHidden ? -100 : 0}%)`,

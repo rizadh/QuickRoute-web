@@ -42,7 +42,7 @@ export const MapView = () => {
     const accentColor = useAccentColor()
     const centerMap = useCallback(
         (animate: boolean) => void map?.showItems([...map.annotations, ...map.overlays], { animate }),
-        [map],
+        [autofitIsEnabled, map],
     )
 
     // Initialize map
@@ -69,7 +69,7 @@ export const MapView = () => {
         setMap(newMap)
 
         return () => newMap.destroy()
-    }, [dispatch])
+    }, [])
 
     // Update annotations and overlays
     useEffect(() => {
@@ -139,24 +139,12 @@ export const MapView = () => {
         map.overlays = overlays.filter((a): a is mapkit.PolygonOverlay => !!a)
 
         if (autofitIsEnabled) centerMap(true)
-    }, [
-        map,
-        waypoints,
-        fetchedPlaces,
-        fetchedRoutes,
-        darkMode,
-        status,
-        operationInProgress,
-        autofitIsEnabled,
-        centerMap,
-        selectedWaypointsCount,
-        accentColor,
-    ])
+    }, [map, waypoints, fetchedPlaces, fetchedRoutes, darkMode])
 
     // Center map when autofit is enabled
     useEffect(() => {
         if (autofitIsEnabled) centerMap(true)
-    }, [autofitIsEnabled, centerMap])
+    }, [autofitIsEnabled])
 
     // Center map when map is resized with autofit enabled
     useEffect(() => {
@@ -166,7 +154,7 @@ export const MapView = () => {
         observer.observe(mapviewRef.current)
 
         return () => observer.disconnect()
-    }, [map, autofitIsEnabled, centerMap])
+    }, [map, autofitIsEnabled])
 
     // Switch map color scheme based on dark mode
     useEffect(() => {

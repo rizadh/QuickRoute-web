@@ -8,9 +8,9 @@ export const useMedia = (query: string) => {
         if (queryList.matches !== result) setResult(queryList.matches)
 
         const handleChange = () => setResult(queryList.matches)
-        queryList.addEventListener('change', handleChange)
-        return () => queryList.removeEventListener('change', handleChange)
-    }, [query, result])
+        queryList.addListener(handleChange)
+        return () => queryList.removeListener(handleChange)
+    }, [query])
 
     return result
 }

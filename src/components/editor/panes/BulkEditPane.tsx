@@ -17,21 +17,18 @@ export const BulkEditPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
     const dispatch: Dispatch<AppAction> = useDispatch()
 
-    const bulkEditField = useInput({
+    const { props: bulkEditFieldProps, commitValue: commitBulkEdit } = useInput({
         initialValue: waypoints.map(w => w.address).join('\n'),
-        acceptKeyboardEvent: event => event.key === 'Enter' && event.shiftKey,
-        onCommit: useCallback(
-            (value: string) => {
-                const validAddresses = value
-                    .split('\n')
-                    .filter(isValidAddress)
-                    .map(address => address.trim())
+        acceptKeyboardEvent: event => event.shiftKey,
+        onCommit: useCallback((value: string) => {
+            const validAddresses = value
+                .split('\n')
+                .filter(isValidAddress)
+                .map(address => address.trim())
 
-                dispatch({ type: 'REPLACE_WAYPOINTS', waypoints: validAddresses.map(createWaypointFromAddress) })
-                dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints })
-            },
-            [dispatch],
-        ),
+            dispatch({ type: 'REPLACE_WAYPOINTS', waypoints: validAddresses.map(createWaypointFromAddress) })
+            dispatch({ type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints })
+        }, []),
     })
 
     const isMobileDevice = isMobileFn().any
@@ -46,14 +43,15 @@ export const BulkEditPane = () => {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         as={TextareaAutosize as any}
                         minRows={3}
-                        {...bulkEditField.props}
+                        {...bulkEditFieldProps}
+                        value={bulkEditFieldProps.value?.toString()}
                         autoFocus={!isMobileDevice}
                     />
                 </InputRow>
             </Body>
 
             <Footer>
-                <Button variant={Variant.Primary} onClick={bulkEditField.commitValue}>
+                <Button variant={Variant.Primary} onClick={commitBulkEdit}>
                     <i className="fas fa-fw fa-save" /> Save
                 </Button>
             </Footer>
