@@ -8,7 +8,7 @@ export const GetToken = gql`
 
 export const ImportWaypoints = gql`
     query ImportWaypoints($driverNumber: String!, $password: String!) {
-        importedWaypoints(driverNumber: $driverNumber, password: $password) {
+        atripcoOrders(driverNumber: $driverNumber, password: $password) {
             dispatched {
                 address
                 city
@@ -26,17 +26,5 @@ export const ImportWaypoints = gql`
 export const Optimize = gql`
     query Optimize($coordinates: [Coordinates!]!, $optimizationParameter: OptimizationParameter!) {
         optimizedRoute(coordinates: $coordinates, optimizationParameter: $optimizationParameter)
-    }
-`
-
-export const GeneratePDF = gql`
-    query GeneratePDF($waypoints: [String!]!) {
-        pdf(waypoints: $waypoints)
-    }
-`
-
-export const SolveTSP = gql`
-    query SolveTSP($costMatrix: [[Float!]!]!) {
-        tsp(costMatrix: $costMatrix)
     }
 `
