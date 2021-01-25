@@ -345,7 +345,7 @@ const importWaypointsEpic: AppEpic = action$ =>
                 of<AppAction>({ type: 'IMPORT_WAYPOINTS_IN_PROGRESS', driverNumber }),
                 from(importWaypoints(driverNumber, password)).pipe(
                     mergeMap<ImportWaypointsQuery, ObservableInput<AppAction>>(
-                        ({ importedWaypoints: { dispatched, inprogress } }) =>
+                        ({ atripcoOrders: { dispatched, inprogress } }) =>
                             dispatched.length + inprogress.length > 0
                                 ? [
                                       { type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber },
