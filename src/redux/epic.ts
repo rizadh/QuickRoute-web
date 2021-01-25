@@ -333,7 +333,7 @@ const importWaypoints = async (driverNumber: string, password: string) => {
     }
 }
 
-const extractAddress = (address: string) => {
+function sanitizeAddress(address: string) {
     return /(?:\d+-)?(\d+ [^,]+)/.exec(address)?.[1] ?? address
 }
 
@@ -351,9 +351,9 @@ const importWaypointsEpic: AppEpic = action$ =>
                                       { type: 'IMPORT_WAYPOINTS_SUCCESS', driverNumber },
                                       {
                                           type: 'REPLACE_WAYPOINTS',
-                                          waypoints: [...dispatched, ...inprogress]
-                                              .map(w => `${extractAddress(w.address)} ${w.postalCode}`)
-                                              .map(createWaypointFromAddress),
+                                          waypoints: [...dispatched, ...inprogress].map(({ address, postalCode }) =>
+                                              createWaypointFromAddress(`${sanitizeAddress(address)} ${postalCode}`),
+                                          ),
                                       },
                                       { type: 'SET_EDITOR_PANE', editorPane: EditorPane.Waypoints },
                                   ]
