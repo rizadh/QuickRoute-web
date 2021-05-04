@@ -60,8 +60,8 @@
     },
     "devDependencies": {
         "@graphql-codegen/cli": "^1.17.10",
-        "@graphql-codegen/typescript": "1.20.0",
-        "@graphql-codegen/typescript-operations": "1.17.13",
+        "@graphql-codegen/typescript": "^1.20.0",
+        "@graphql-codegen/typescript-operations": "^1.17.13",
         "@types/jest": "^26.0.14",
         "@types/redux-logger": "^3.0.7",
         "@typescript-eslint/eslint-plugin": "^4.4.1",
