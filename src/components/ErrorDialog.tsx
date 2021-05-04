@@ -34,7 +34,7 @@ export const ErrorDialog = () => {
     const dispatch = useDispatch()
     const clearError = useCallback(() => dispatch({ type: 'CLEAR_ERROR' }), [dispatch])
 
-    const containerTransitions = useTransition(error, null, {
+    const containerTransitions = useTransition(error, {
         from: { transform: 'translateY(-100%)', opacity: 0 },
         enter: { transform: 'translateY(0%)', opacity: 1 },
         leave: { transform: 'translateY(-100%)', opacity: 0 },
@@ -43,10 +43,10 @@ export const ErrorDialog = () => {
 
     return (
         <>
-            {containerTransitions.map(
-                ({ item, key, props }) =>
+            {containerTransitions(
+                (style, item) =>
                     item && (
-                        <Container key={key} style={props}>
+                        <Container style={style}>
                             <Button variant={Variant.Secondary} onClick={clearError}>
                                 <i className="fa fa-fw fa-times" />
                             </Button>
