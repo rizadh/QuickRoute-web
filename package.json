@@ -34,7 +34,7 @@
         "apollo-boost": "^0.4.7",
         "b64-to-blob": "^1.2.19",
         "babel-polyfill": "^6.26.0",
-        "copy-text-to-clipboard": "^2.1.0",
+        "copy-text-to-clipboard": "^3.0.1",
         "file-saver": "^2.0.2",
         "graphql": "^15.3.0",
         "haversine": "^1.1.1",
