@@ -51,11 +51,11 @@ export const MapButtons = () => {
 
     return (
         <Container style={props} fullscreen={fullscreen}>
-            <CSSTransition timeout={200} in={editorIsHidden} classNames="transition" unmountOnExit={true}>
+            {editorIsHidden && (
                 <Button variant={Variant.Primary} onClick={showEditorPane}>
                     <i className={`fas fa-fw fa-${attributesForEditorPane(editorPane).iconName}`} />
                 </Button>
-            </CSSTransition>
+            )}
             <CSSTransition timeout={200} in={!autofitIsEnabled} classNames="transition" unmountOnExit={true}>
                 <Button variant={Variant.Warning} onClick={enableAutofit}>
                     <i className="fas fa-fw fa-route" /> Center Map
