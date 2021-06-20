@@ -39,7 +39,7 @@ const SelectorButton = styled(({ pane, className }: SelectorButtonProps) => {
             onClick={selected ? undefined : setPane}
         >
             <i className={`fas fa-fw fa-${attributes.iconName}`} />
-            {!compactMode && ` ${attributes.displayName}`}
+            {(!compactMode || selected) && ` ${attributes.displayName}`}
         </Button>
     )
 })`

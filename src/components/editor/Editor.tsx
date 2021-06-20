@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { appVersion } from '../..'
 import { useCompactMode } from '../../hooks/useCompactMode'
 import { AppAction } from '../../redux/actionTypes'
-import { AppState, attributesForEditorPane, EditorPane } from '../../redux/state'
+import { AppState, EditorPane } from '../../redux/state'
 import { Alert } from '../common/Alert'
 import { Button, Variant } from '../common/Button'
 import { InputRow } from '../common/InputRow'
@@ -117,8 +117,6 @@ const AppVersion = styled.div`
 
 export const Editor = () => {
     const editorIsHidden = useSelector((state: AppState) => state.editorIsHidden)
-    const editorPane = useSelector((state: AppState) => state.editorPane)
-    const title = attributesForEditorPane(editorPane).displayName
     const compactMode = useCompactMode()
 
     const dispatch: Dispatch<AppAction> = useDispatch()
@@ -141,10 +139,9 @@ export const Editor = () => {
                 </HideButton>
 
                 <AppTitle>
-                    {compactMode ? title : 'QuickRoute'}
+                    QuickRoute
                     <AppVersion>
-                        {compactMode ? 'QuickRoute' : `v${appVersion}`} by{' '}
-                        <Link href="https://github.com/rizadh">@rizadh</Link>
+                        v{appVersion} by <Link href="https://github.com/rizadh">@rizadh</Link>
                     </AppVersion>
                 </AppTitle>
                 <PaneSelector />
