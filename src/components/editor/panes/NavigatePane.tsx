@@ -1,7 +1,7 @@
 import copyToClipboard from 'copy-text-to-clipboard'
 import chunk from 'lodash/chunk'
 import { stringify } from 'query-string'
-import React, { ButtonHTMLAttributes, Dispatch, useCallback, useMemo, useRef, useState } from 'react'
+import React, { ButtonHTMLAttributes, Dispatch, useCallback, useMemo, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
@@ -141,20 +141,23 @@ type CopyButtonProps = {
 
 const CopyButton = (props: ButtonHTMLAttributes<HTMLButtonElement> & CopyButtonProps) => {
     const [copied, setCopied] = useState(false)
-    const timeout = useRef<ReturnType<typeof setTimeout>>()
 
     const originalOnClick = props.onClick
     const onClick = useCallback(
         event => {
+            copyButtonRegistry.trigger()
             setCopied(true)
-
-            if (timeout.current !== undefined) clearTimeout(timeout.current)
-            timeout.current = setTimeout(() => setCopied(false), 5000)
 
             return originalOnClick?.(event)
         },
         [originalOnClick],
     )
+
+    useEffect(() => {
+        copyButtonRegistry.register(setCopied)
+
+        return () => void copyButtonRegistry.deregister(setCopied)
+    }, [])
 
     return (
         <Button {...props} variant={copied ? Variant.Success : Variant.Primary} onClick={onClick}>
@@ -162,3 +165,22 @@ const CopyButton = (props: ButtonHTMLAttributes<HTMLButtonElement> & CopyButtonP
         </Button>
     )
 }
+
+type CopyButtonRegistryHandler = (copied: false) => void
+class CopyButtonRegistry {
+    private handlers = new Set<CopyButtonRegistryHandler>()
+
+    trigger() {
+        this.handlers.forEach(handler => handler(false))
+    }
+
+    register(handler: CopyButtonRegistryHandler) {
+        this.handlers.add(handler)
+    }
+
+    deregister(handler: CopyButtonRegistryHandler) {
+        this.handlers.delete(handler)
+    }
+}
+
+const copyButtonRegistry = new CopyButtonRegistry()
