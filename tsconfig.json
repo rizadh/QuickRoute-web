@@ -6,6 +6,7 @@
         "jsx": "react",
         "target": "es2015",
         "noEmit": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true
     }
 }

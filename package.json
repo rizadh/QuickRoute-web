@@ -1,6 +1,6 @@
 {
     "name": "route-planner",
-    "version": "1.0.0",
+    "version": "2021.06.20",
     "author": "Rizadh Nizam",
     "description": "Web app to plan routes with large numbers of waypoints",
     "license": "MIT",
