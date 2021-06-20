@@ -172,13 +172,15 @@ export const MapView = () => {
 
     // Center map when map is resized with autofit enabled
     useEffect(() => {
-        if (!mapviewRef.current || !autofitIsEnabled || !window.ResizeObserver) return
+        if (!mapviewRef.current || !window.ResizeObserver) return
 
-        const observer = new window.ResizeObserver(() => centerMap(false))
+        const observer = new window.ResizeObserver(() => {
+            dispatch({ type: 'DISABLE_AUTOFIT' })
+        })
         observer.observe(mapviewRef.current)
 
         return () => observer.disconnect()
-    }, [map, autofitIsEnabled, centerMap])
+    }, [dispatch])
 
     // Switch map color scheme based on dark mode
     useEffect(() => {
