@@ -1,8 +1,9 @@
 import { sortBy } from 'lodash'
-import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Dispatch, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { useAccentColor } from '../../hooks/useAccentColor'
+import { useCompactMode } from '../../hooks/useCompactMode'
 import { useDarkMode } from '../../hooks/useDarkMode'
 import { AppAction } from '../../redux/actionTypes'
 import { routeInformation } from '../../redux/selectors'
@@ -40,21 +41,26 @@ export const MapView = () => {
     const status = useSelector((state: AppState) => routeInformation(state).status)
     const darkMode = useDarkMode()
     const accentColor = useAccentColor()
+    const compactMode = useCompactMode()
+    const fullscreen = compactMode || editorIsHidden
     const centerMap = useCallback(
         (animate: boolean) => void map?.showItems([...map.annotations, ...map.overlays], { animate }),
         [map],
     )
+    const mapPadding = useMemo(
+        () => new mapkit.Padding({ top: 16 + 42, left: fullscreen ? 0 : 420, right: 0, bottom: 0 }),
+        [fullscreen],
+    )
 
     // Initialize map
     useEffect(() => {
-        if (mapviewRef.current == null) return
+        if (mapviewRef.current === null) return
 
         const newMap = new mapkit.Map(mapviewRef.current, {
             showsMapTypeControl: false,
             showsScale: mapkit.FeatureVisibility.Adaptive,
             showsPointsOfInterest: false,
             mapType: mapkit.Map.MapTypes.MutedStandard,
-            padding: new mapkit.Padding({ top: 16 + 42, left: 0, right: 0, bottom: 0 }),
         })
 
         const mapDidMove = () => {
@@ -70,6 +76,12 @@ export const MapView = () => {
 
         return () => newMap.destroy()
     }, [dispatch])
+
+    useEffect(() => {
+        if (!map) return
+
+        map.padding = mapPadding
+    }, [map, mapPadding])
 
     // Update annotations and overlays
     useEffect(() => {
