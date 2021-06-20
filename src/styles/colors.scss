@@ -14,9 +14,9 @@
     --standard-border-color: rgba(0, 0, 0, 0.1);
 
     // Fill Colors
-    --primary-fill-color: hsl(40, 30%, 95%);
-    --secondary-fill-color: hsl(40, 50%, 97%);
-    --tertiary-fill-color: hsl(40, 50%, 99%);
+    --primary-fill-color: hsl(40, 30%, 97%);
+    --secondary-fill-color: hsl(40, 50%, 99%);
+    --tertiary-fill-color: white;
     --accent-color: hsl(35, 90%, 50%);
     --error-color: hsl(5, 80%, 60%);
 
@@ -25,9 +25,9 @@
     --secondary-text-color: hsl(40, 5%, 50%);
 
     // Input Colors
-    --input-color: hsl(40, 20%, 90%);
-    --input-focus-color: hsl(40, 20%, 99%);
-    --input-disabled-color: hsl(40, 20%, 85%);
+    --input-color: hsl(40, 20%, 92%);
+    --input-focus-color: white;
+    --input-disabled-color: hsl(40, 20%, 88%);
     --input-border-color: hsl(40, 20%, 80%);
 
     // Button Colors
@@ -47,9 +47,9 @@
         --apple-system-yellow: rgb(255, 214, 10);
 
         // Fill Colors
-        --primary-fill-color: hsl(210, 5%, 18%);
+        --primary-fill-color: hsl(210, 5%, 20%);
         --secondary-fill-color: hsl(210, 5%, 22%);
-        --tertiary-fill-color: hsl(210, 5%, 27%);
+        --tertiary-fill-color: hsl(210, 5%, 26%);
         --accent-color: hsl(210, 80%, 50%);
         --error-color: hsl(5, 50%, 50%);
 
@@ -61,9 +61,9 @@
         --standard-border-color: rgba(255, 255, 255, 0.05);
 
         // Input Colors
-        --input-color: hsl(210, 5%, 15%);
-        --input-focus-color: hsl(210, 5%, 10%);
-        --input-disabled-color: hsl(210, 5%, 17%);
+        --input-color: hsl(210, 5%, 16%);
+        --input-focus-color: hsl(210, 5%, 14%);
+        --input-disabled-color: hsl(210, 5%, 18%);
         --input-border-color: hsl(210, 5%, 25%);
 
         // Button Colors
