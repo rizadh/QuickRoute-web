@@ -69,7 +69,6 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
     }
 
     &.transition-exit {
-        transform: none;
         opacity: 1;
     }
 
