@@ -31,6 +31,7 @@ import {
     OptimizeRouteAction,
     OptimizeRouteCancelAction,
     ReplaceWaypointsAction,
+    ReverseSelectedWaypointsAction,
     ReverseWaypointsAction,
     SetAddressAction,
 } from './actionTypes'
@@ -239,6 +240,12 @@ const moveSelectedWaypointsEpic: AppEpic = action$ =>
 const reverseWaypointsEpic: AppEpic = action$ =>
     action$.pipe(
         ofType<AppAction, ReverseWaypointsAction>('REVERSE_WAYPOINTS'),
+        map(() => ({ type: 'FETCH_ALL_ROUTES' })),
+    )
+
+const reverseSelectedWaypointsEpic: AppEpic = action$ =>
+    action$.pipe(
+        ofType<AppAction, ReverseSelectedWaypointsAction>('REVERSE_SELECTED_WAYPOINTS'),
         map(() => ({ type: 'FETCH_ALL_ROUTES' })),
     )
 
@@ -469,6 +476,7 @@ const optimizeRouteEpic: AppEpic = (action$, state$) =>
 export default combineEpics(
     replaceWaypointsEpic,
     reverseWaypointsEpic,
+    reverseSelectedWaypointsEpic,
     addWaypointEpic,
     deleteWaypointEpic,
     deleteSelectedWaypointsEpic,

@@ -43,6 +43,16 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
 
             return [...waypointsBeforePartition, ...movedWaypoints, ...waypointsAfterPartition]
         }
+        case 'REVERSE_SELECTED_WAYPOINTS': {
+            const selectedWaypoints = waypoints
+                .map((waypoint, index) => ({ waypoint, index }))
+                .filter(({ waypoint: { selected } }) => selected)
+            const selectedIndexes = selectedWaypoints.map(({ index }) => index).reverse()
+            selectedIndexes.forEach((selectedIndex, index) => {
+                waypoints[selectedIndex] = selectedWaypoints[index].waypoint
+            })
+            break
+        }
         case 'SELECT_WAYPOINT': {
             const selectedWaypointsCount = waypoints.filter(({ selected }) => selected).length
             const waypointWasSelected = waypoints[action.index].selected

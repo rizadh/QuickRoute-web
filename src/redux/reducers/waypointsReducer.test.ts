@@ -135,6 +135,62 @@ it('should handle REVERSE_WAYPOINTS', () => {
     )
 })
 
+it('should handle REVERSE_SELECTED_WAYPOINTS', () => {
+    testWaypointsReducer(
+        [
+            { address: 'ONE', uuid: 'one' },
+            { address: 'TWO', uuid: 'two' },
+            { address: 'THREE', uuid: 'three' },
+            { address: 'FOUR', uuid: 'four' },
+            { address: 'FIVE', uuid: 'five' },
+        ],
+        { type: 'REVERSE_SELECTED_WAYPOINTS' },
+        [
+            { address: 'ONE', uuid: 'one' },
+            { address: 'TWO', uuid: 'two' },
+            { address: 'THREE', uuid: 'three' },
+            { address: 'FOUR', uuid: 'four' },
+            { address: 'FIVE', uuid: 'five' },
+        ],
+    )
+
+    testWaypointsReducer(
+        [
+            { address: 'ONE', uuid: 'one' },
+            { address: 'TWO', uuid: 'two', selected: 1 },
+            { address: 'THREE', uuid: 'three' },
+            { address: 'FOUR', uuid: 'four', selected: 2 },
+            { address: 'FIVE', uuid: 'five' },
+        ],
+        { type: 'REVERSE_SELECTED_WAYPOINTS' },
+        [
+            { address: 'ONE', uuid: 'one' },
+            { address: 'FOUR', uuid: 'four', selected: 2 },
+            { address: 'THREE', uuid: 'three' },
+            { address: 'TWO', uuid: 'two', selected: 1 },
+            { address: 'FIVE', uuid: 'five' },
+        ],
+    )
+
+    testWaypointsReducer(
+        [
+            { address: 'ONE', uuid: 'one', selected: 1 },
+            { address: 'TWO', uuid: 'two', selected: 2 },
+            { address: 'THREE', uuid: 'three', selected: 3 },
+            { address: 'FOUR', uuid: 'four', selected: 4 },
+            { address: 'FIVE', uuid: 'five', selected: 5 },
+        ],
+        { type: 'REVERSE_SELECTED_WAYPOINTS' },
+        [
+            { address: 'FIVE', uuid: 'five', selected: 5 },
+            { address: 'FOUR', uuid: 'four', selected: 4 },
+            { address: 'THREE', uuid: 'three', selected: 3 },
+            { address: 'TWO', uuid: 'two', selected: 2 },
+            { address: 'ONE', uuid: 'one', selected: 1 },
+        ],
+    )
+})
+
 it('should handle SET_ADDRESS', () => {
     testWaypointsReducer(
         [

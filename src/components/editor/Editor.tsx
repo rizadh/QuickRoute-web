@@ -89,7 +89,7 @@ export const Footer = styled.div`
     background-color: var(--secondary-fill-color);
 
     button,
-    ${InputRow} {
+    ${InputRow}, ${Alert} {
         margin: calc(var(--standard-margin) / 2);
     }
 

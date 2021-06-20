@@ -38,6 +38,7 @@ export const WaypointsPane = () => {
     }, [waypointField])
 
     const reverseWaypoints = useCallback(() => dispatch({ type: 'REVERSE_WAYPOINTS' }), [dispatch])
+    const reverseSelectedWaypoints = useCallback(() => dispatch({ type: 'REVERSE_SELECTED_WAYPOINTS' }), [dispatch])
     const deleteSelectedWaypoints = useCallback(() => dispatch({ type: 'DELETE_SELECTED_WAYPOINTS' }), [dispatch])
     const deselectAllWaypoints = useCallback(() => dispatch({ type: 'DESELECT_ALL_WAYPOINTS' }), [dispatch])
 
@@ -99,11 +100,16 @@ export const WaypointsPane = () => {
             <Footer>
                 {selectedWaypointsCount > 0 ? (
                     <>
+                        <Alert>
+                            {selectedWaypointsCount} waypoint{selectedWaypointsCount > 1 ? 's' : ''} selected
+                        </Alert>
                         <Button variant={Variant.Danger} onClick={deleteSelectedWaypoints}>
-                            <i className="fas fa-fw fa-trash" /> Delete {selectedWaypointsCount}{' '}
-                            {selectedWaypointsCount > 1 ? 'Waypoints' : 'Waypoint'}
+                            <i className="fas fa-fw fa-trash" /> Delete
                         </Button>
-                        <Button variant={Variant.Primary} onClick={deselectAllWaypoints}>
+                        <Button variant={Variant.Primary} onClick={reverseSelectedWaypoints}>
+                            <i className="fas fa-fw fa-exchange-alt" /> Reverse
+                        </Button>
+                        <Button variant={Variant.Secondary} onClick={deselectAllWaypoints}>
                             <i className="fas fa-fw fa-ban" /> Cancel
                         </Button>
                     </>

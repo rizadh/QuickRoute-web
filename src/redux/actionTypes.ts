@@ -35,6 +35,10 @@ export type ReverseWaypointsAction = Readonly<{
     type: 'REVERSE_WAYPOINTS'
 }>
 
+export type ReverseSelectedWaypointsAction = Readonly<{
+    type: 'REVERSE_SELECTED_WAYPOINTS'
+}>
+
 export type SetAddressAction = Readonly<{
     type: 'SET_ADDRESS'
     index: number
@@ -217,6 +221,7 @@ export type AppAction =
     | MoveWaypointAction
     | MoveSelectedWaypointsAction
     | ReverseWaypointsAction
+    | ReverseSelectedWaypointsAction
     | SetAddressAction
     | SelectWaypointAction
     | DeselectAllWaypointsAction
