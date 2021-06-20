@@ -6,6 +6,7 @@ export enum Variant {
     Secondary,
     Danger,
     Warning,
+    Success,
 }
 
 export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) => {
@@ -34,6 +35,11 @@ export const Button = styled((props: ButtonHTMLAttributes<HTMLButtonElement>) =>
                 return css`
                     background-color: var(--apple-system-yellow);
                     color: rgba(0, 0, 0, 0.6);
+                `
+            case Variant.Success:
+                return css`
+                    background-color: var(--apple-system-green);
+                    color: white;
                 `
         }
     }};

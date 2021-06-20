@@ -1,7 +1,7 @@
 import copyToClipboard from 'copy-text-to-clipboard'
 import chunk from 'lodash/chunk'
 import { stringify } from 'query-string'
-import React, { Dispatch, useCallback, useMemo } from 'react'
+import React, { ButtonHTMLAttributes, Dispatch, useCallback, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppAction } from '../../../redux/actionTypes'
 import { AppState } from '../../../redux/state'
@@ -104,18 +104,13 @@ export const NavigatePane = () => {
                     {navigationLinks.map((url, index) => (
                         <InputRow key={url}>
                             <Input type="text" value={url} readOnly={true} />
-                            {navigator.share && (
+                            {/* TODO: Cleanup this navigator.share usage when possible */}
+                            {(navigator.share as Navigator['share']) && (
                                 <Button variant={Variant.Primary} onClick={shareLink(index)} title="Share this link">
                                     <i className="fas fa-fw fa-share" />
                                 </Button>
                             )}
-                            <Button
-                                variant={Variant.Primary}
-                                onClick={copyLink(index)}
-                                title="Copy this link to clipboard"
-                            >
-                                <i className="fas fa-fw fa-clipboard" />
-                            </Button>
+                            <CopyButton onClick={copyLink(index)}></CopyButton>
                             <Button variant={Variant.Primary} onClick={openUrl(index)} title="Open this link">
                                 <i className="fas fa-fw fa-external-link-alt" />
                             </Button>
@@ -125,18 +120,45 @@ export const NavigatePane = () => {
             )}
 
             <Footer>
-                {navigator.share && (
+                {/* TODO: Cleanup this navigator.share usage when possible */}
+                {(navigator.share as Navigator['share']) && (
                     <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
                         <i className="fas fa-fw fa-share" /> Share All
                     </Button>
                 )}
-                <Button variant={Variant.Primary} onClick={copyAllLinks} disabled={insufficientWaypoints}>
-                    <i className="fas fa-fw fa-clipboard" /> Copy All
-                </Button>
+                <CopyButton onClick={copyAllLinks} disabled={insufficientWaypoints} label="Copy All"></CopyButton>
                 <Button variant={Variant.Primary} onClick={openAllLinks} disabled={insufficientWaypoints}>
                     <i className="fas fa-fw fa-external-link-alt" /> Open All
                 </Button>
             </Footer>
         </>
+    )
+}
+
+type CopyButtonProps = {
+    label?: string
+}
+
+const CopyButton = (props: ButtonHTMLAttributes<HTMLButtonElement> & CopyButtonProps) => {
+    const [copied, setCopied] = useState(false)
+    const timeout = useRef<ReturnType<typeof setTimeout>>()
+
+    const originalOnClick = props.onClick
+    const onClick = useCallback(
+        event => {
+            setCopied(true)
+
+            if (timeout.current !== undefined) clearTimeout(timeout.current)
+            timeout.current = setTimeout(() => setCopied(false), 5000)
+
+            return originalOnClick?.(event)
+        },
+        [originalOnClick],
+    )
+
+    return (
+        <Button {...props} variant={copied ? Variant.Success : Variant.Primary} onClick={onClick}>
+            <i className={'fas fa-fw fa-' + (copied ? 'check' : 'clipboard')} /> {props.label}
+        </Button>
     )
 }
