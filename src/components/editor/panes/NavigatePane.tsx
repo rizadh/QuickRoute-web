@@ -30,8 +30,9 @@ export const NavigatePane = () => {
                 return 'https://www.google.com/maps/dir/?' + stringify(parameters)
             })
     }, [waypoints])
+    const hasMultipleLinks = navigationLinks.length > 1
 
-    const openUrl = useCallback(
+    const openLink = useCallback(
         (index: number) => () => {
             window.open(navigationLinks[index])
         },
@@ -97,23 +98,31 @@ export const NavigatePane = () => {
                 </Body>
             ) : (
                 <Body>
-                    <Alert>
-                        Use the links below to navigate using Google Maps. Each link contains up to ten waypoints due to
-                        Google&apos;s limitations
-                    </Alert>
+                    <Alert>Use the link{hasMultipleLinks ? 's' : ''} below to navigate using Google Maps</Alert>
+                    {hasMultipleLinks && (
+                        <Alert>Due to Google Maps limitations, each link contains a set of up to 10 waypoints</Alert>
+                    )}
                     {navigationLinks.map((url, index) => (
                         <InputRow key={url}>
                             <Input type="text" value={url} readOnly={true} />
-                            {/* TODO: Cleanup this navigator.share usage when possible */}
-                            {(navigator.share as Navigator['share']) && (
-                                <Button variant={Variant.Primary} onClick={shareLink(index)} title="Share this link">
-                                    <i className="fas fa-fw fa-share" />
-                                </Button>
+                            {hasMultipleLinks && (
+                                <>
+                                    {/* TODO: Cleanup this navigator.share usage when possible */}
+                                    {(navigator.share as Navigator['share']) && (
+                                        <Button
+                                            variant={Variant.Primary}
+                                            onClick={shareLink(index)}
+                                            title="Share this link"
+                                        >
+                                            <i className="fas fa-fw fa-share" />
+                                        </Button>
+                                    )}
+                                    <CopyButton onClick={copyLink(index)}></CopyButton>
+                                    <Button variant={Variant.Primary} onClick={openLink(index)} title="Open this link">
+                                        <i className="fas fa-fw fa-external-link-alt" />
+                                    </Button>
+                                </>
                             )}
-                            <CopyButton onClick={copyLink(index)}></CopyButton>
-                            <Button variant={Variant.Primary} onClick={openUrl(index)} title="Open this link">
-                                <i className="fas fa-fw fa-external-link-alt" />
-                            </Button>
                         </InputRow>
                     ))}
                 </Body>
@@ -122,13 +131,25 @@ export const NavigatePane = () => {
             <Footer>
                 {/* TODO: Cleanup this navigator.share usage when possible */}
                 {(navigator.share as Navigator['share']) && (
-                    <Button variant={Variant.Primary} onClick={shareAllLinks} disabled={insufficientWaypoints}>
-                        <i className="fas fa-fw fa-share" /> Share All
+                    <Button
+                        variant={Variant.Primary}
+                        onClick={hasMultipleLinks ? shareAllLinks : shareLink(0)}
+                        disabled={insufficientWaypoints}
+                    >
+                        <i className="fas fa-fw fa-share" /> {hasMultipleLinks ? 'Share All' : 'Share'}
                     </Button>
                 )}
-                <CopyButton onClick={copyAllLinks} disabled={insufficientWaypoints} label="Copy All"></CopyButton>
-                <Button variant={Variant.Primary} onClick={openAllLinks} disabled={insufficientWaypoints}>
-                    <i className="fas fa-fw fa-external-link-alt" /> Open All
+                <CopyButton
+                    onClick={hasMultipleLinks ? copyAllLinks : copyLink(0)}
+                    disabled={insufficientWaypoints}
+                    label={hasMultipleLinks ? 'Copy All' : 'Copy'}
+                ></CopyButton>
+                <Button
+                    variant={Variant.Primary}
+                    onClick={hasMultipleLinks ? openAllLinks : openLink(0)}
+                    disabled={insufficientWaypoints}
+                >
+                    <i className="fas fa-fw fa-external-link-alt" /> {hasMultipleLinks ? 'Open All' : 'Open'}
                 </Button>
             </Footer>
         </>
@@ -143,7 +164,7 @@ const CopyButton = (props: ButtonHTMLAttributes<HTMLButtonElement> & CopyButtonP
     const [copied, setCopied] = useState(false)
 
     const originalOnClick = props.onClick
-    const onClick = useCallback(
+    const handleOnClick = useCallback(
         event => {
             copyButtonRegistry.trigger()
             setCopied(true)
@@ -160,7 +181,7 @@ const CopyButton = (props: ButtonHTMLAttributes<HTMLButtonElement> & CopyButtonP
     }, [])
 
     return (
-        <Button {...props} variant={copied ? Variant.Success : Variant.Primary} onClick={onClick}>
+        <Button {...props} variant={copied ? Variant.Success : Variant.Primary} onClick={handleOnClick}>
             <i className={'fas fa-fw fa-' + (copied ? 'check' : 'clipboard')} /> {props.label}
         </Button>
     )
