@@ -89,7 +89,7 @@ export const WaypointItem = ({ index, isBeingDraggedAlong }: WaypointItemProps) 
             if (e.shiftKey) {
                 dispatch({ type: 'SELECT_WAYPOINT_RANGE', index, time: Date.now() })
             } else if (e.ctrlKey || e.metaKey) {
-                dispatch({ type: 'TOGGLE_WAYPOINT_SELECTION', index })
+                dispatch({ type: 'TOGGLE_WAYPOINT_SELECTION', index, time: Date.now() })
             } else {
                 dispatch({ type: 'SELECT_WAYPOINT', index, time: Date.now() })
             }

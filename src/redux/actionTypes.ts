@@ -54,6 +54,7 @@ export type DeselectAllWaypointsAction = Readonly<{
 export type ToggleWaypointSelectionAction = Readonly<{
     type: 'TOGGLE_WAYPOINT_SELECTION'
     index: number
+    time: number
 }>
 
 export type SelectWaypointRangeAction = Readonly<{

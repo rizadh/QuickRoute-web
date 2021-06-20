@@ -55,7 +55,7 @@ export const waypointsReducer: AppReducer<Waypoints> = produce((waypoints: Draft
             break
         case 'TOGGLE_WAYPOINT_SELECTION':
             if (waypoints[action.index].selected) delete waypoints[action.index].selected
-            else waypoints[action.index].selected = Date.now()
+            else waypoints[action.index].selected = action.time
             break
         case 'SELECT_WAYPOINT_RANGE': {
             const [lastSelectedWaypointIndex] = waypoints.reduce<[number, number | undefined]>(

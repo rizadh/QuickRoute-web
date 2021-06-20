@@ -263,7 +263,7 @@ it('should handle TOGGLE_WAYPOINT_SELECTION', () => {
             { address: 'THREE', uuid: 'three' },
             { address: 'FOUR', uuid: 'four', selected: 2 },
         ],
-        { type: 'TOGGLE_WAYPOINT_SELECTION', index: 1 },
+        { type: 'TOGGLE_WAYPOINT_SELECTION', index: 1, time: currentTime },
         [
             { address: 'ONE', uuid: 'one' },
             { address: 'TWO', uuid: 'two' },
@@ -278,11 +278,11 @@ it('should handle TOGGLE_WAYPOINT_SELECTION', () => {
             { address: 'THREE', uuid: 'three' },
             { address: 'FOUR', uuid: 'four', selected: 2 },
         ],
-        { type: 'TOGGLE_WAYPOINT_SELECTION', index: 2 },
+        { type: 'TOGGLE_WAYPOINT_SELECTION', index: 2, time: currentTime },
         [
             { address: 'ONE', uuid: 'one' },
             { address: 'TWO', uuid: 'two', selected: 1 },
-            { address: 'THREE', uuid: 'three', selected: Date.now() },
+            { address: 'THREE', uuid: 'three', selected: currentTime },
             { address: 'FOUR', uuid: 'four', selected: 2 },
         ],
     )
