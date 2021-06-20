@@ -11,7 +11,7 @@ const Container = styled.div`
     justify-content: space-evenly;
     padding: var(--standard-margin);
 
-    background-color: var(--primary-fill-color);
+    background-color: var(--secondary-fill-color);
 
     border-right: var(--standard-border);
 
