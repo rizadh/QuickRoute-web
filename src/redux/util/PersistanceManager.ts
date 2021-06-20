@@ -1,24 +1,33 @@
-import { AppState } from '../state'
-import { createWaypointFromAddress } from './createWaypointFromAddress'
+class PersistanceManager {
+    private static ADDRESSES_STORAGE_KEY = 'addresses'
 
-export class PersistanceManager {
-    static get persistedState(): Partial<AppState> {
-        const persisted = localStorage.getItem(PersistanceManager.STATE_STORAGE_KEY)
-        if (!persisted) return {}
+    private initialAddreses: string[] | null = PersistanceManager.retrieveAddresses()
+    private addresses: string[] | null = null
 
-        const addresses = JSON.parse(persisted)
-        if (!Array.isArray(addresses) || addresses.some(a => typeof a !== 'string')) return {}
-
-        return { waypoints: addresses.map(createWaypointFromAddress) }
+    private static retrieveAddresses() {
+        const storageValue = localStorage.getItem(PersistanceManager.ADDRESSES_STORAGE_KEY)
+        return storageValue && JSON.parse(storageValue)
     }
 
-    static persistState(state: AppState) {
-        localStorage.setItem(PersistanceManager.STATE_STORAGE_KEY, JSON.stringify(state.waypoints.map(w => w.address)))
+    constructor() {
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') this.persistAddresses()
+        })
     }
 
-    static resetState() {
-        localStorage.removeItem(PersistanceManager.STATE_STORAGE_KEY)
+    getAddresses(): string[] | null {
+        return this.initialAddreses
     }
 
-    private static STATE_STORAGE_KEY = 'com.rizadh.QuickRoute.state'
+    setAddresses(addresses: string[]) {
+        this.addresses = addresses
+    }
+
+    private persistAddresses() {
+        if (!this.addresses || this.addresses.length === 0) return
+        const storageValue = JSON.stringify(this.addresses)
+        localStorage.setItem(PersistanceManager.ADDRESSES_STORAGE_KEY, storageValue)
+    }
 }
+
+export default new PersistanceManager()

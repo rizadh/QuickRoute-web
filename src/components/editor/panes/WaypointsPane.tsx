@@ -14,6 +14,8 @@ import { Input } from '../../common/Input'
 import { InputRow } from '../../common/InputRow'
 import { Body, Footer } from '../Editor'
 import { WaypointList } from './WaypointList'
+import persistanceManager from '../../../redux/util/PersistanceManager'
+import { Link } from '../../common/Link'
 
 export const WaypointsPane = () => {
     const waypoints = useSelector((state: AppState) => state.waypoints)
@@ -61,13 +63,36 @@ export const WaypointsPane = () => {
 
     const selectedWaypointsCount = waypoints.filter(waypoint => waypoint.selected).length
 
+    const persistedAddresses = persistanceManager.getAddresses()
+    const restoreWaypoints = useCallback(() => {
+        if (!persistedAddresses) return
+
+        dispatch({
+            type: 'REPLACE_WAYPOINTS',
+            waypoints: persistedAddresses.map(createWaypointFromAddress),
+        })
+    }, [dispatch, persistedAddresses])
+
     return (
         <>
             <Body>
                 {currentRouteInformation.status === 'FAILED' && (
                     <DangerAlert>One or more waypoints could not be routed</DangerAlert>
                 )}
-                {waypoints.length === 0 && <Alert>Add a waypoint to begin</Alert>}
+                {waypoints.length === 0 && (
+                    <Alert>
+                        Add a waypoint to begin
+                        {persistedAddresses && persistedAddresses.length > 1 ? (
+                            <>
+                                {' '}
+                                or{' '}
+                                <Link href="#" onClick={restoreWaypoints}>
+                                    click here to restore {persistedAddresses.length} waypoints
+                                </Link>
+                            </>
+                        ) : null}
+                    </Alert>
+                )}
                 {waypoints.length === 1 && <Alert>Add another waypoint to show route information</Alert>}
                 <WaypointList />
             </Body>
@@ -103,7 +128,8 @@ export const WaypointsPane = () => {
                         <Button variant={Variant.Primary} onClick={reverseWaypoints} disabled={waypoints.length < 2}>
                             <i className="fas fa-fw fa-exchange-alt" /> Reverse
                         </Button>
-                        {navigator.share && (
+                        {/* TODO: Cleanup this navigator.share usage when possible */}
+                        {(navigator.share as Navigator['share']) && (
                             <Button
                                 variant={Variant.Primary}
                                 onClick={shareWaypoints}
