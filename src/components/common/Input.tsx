@@ -45,6 +45,8 @@ export const Checkbox = styled.input`
     width: 24px;
     height: 24px;
 
+    margin: 6px 0;
+
     background-color: var(--input-color);
 
     &:checked {
