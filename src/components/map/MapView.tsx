@@ -29,6 +29,7 @@ export const MapView = () => {
     const mapviewRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<mapkit.Map>()
     const waypoints = useSelector((state: AppState) => state.waypoints)
+    const waypointsExist = waypoints.length > 0
     const selectedWaypointsCount = useSelector(
         (state: AppState) => state.waypoints.filter(waypoint => waypoint.selected).length,
     )
@@ -174,13 +175,18 @@ export const MapView = () => {
     useEffect(() => {
         if (!mapviewRef.current || !window.ResizeObserver) return
 
+        let initialCallWasReceived = false
         const observer = new window.ResizeObserver(() => {
-            dispatch({ type: 'DISABLE_AUTOFIT' })
+            if (!initialCallWasReceived) {
+                initialCallWasReceived = true
+            } else if (waypointsExist) {
+                dispatch({ type: 'DISABLE_AUTOFIT' })
+            }
         })
         observer.observe(mapviewRef.current)
 
         return () => observer.disconnect()
-    }, [dispatch])
+    }, [dispatch, waypointsExist])
 
     // Switch map color scheme based on dark mode
     useEffect(() => {
